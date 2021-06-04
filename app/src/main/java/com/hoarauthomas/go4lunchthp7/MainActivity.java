@@ -19,7 +19,8 @@ public class MainActivity extends AppCompatActivity {
 
     List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.EmailBuilder().build(),
-            new AuthUI.IdpConfig.GoogleBuilder().build());
+            new AuthUI.IdpConfig.GoogleBuilder().build(),
+            new AuthUI.IdpConfig.FacebookBuilder().build());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

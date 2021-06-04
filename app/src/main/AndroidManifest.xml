@@ -18,4 +18,9 @@
         </activity>
     </application>
 
+
+    <!-- Added for integration of facebook login -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+
 </manifest>
