@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
 }
 
-//Added 04/06/21 for Firebase
+//Added 04/06/21 for Firebase integration
 apply plugin: 'com.google.gms.google-services'
 
 android {
@@ -40,5 +40,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    implementation 'com.google.firebase:firebase-core:19.0.0'
+    //FIREBASE can't add this because duplicate error ?
+    //implementation 'com.google.firebase:firebase-core:19.0.0'
+    //FIREBASE-UI
+    implementation 'com.firebaseui:firebase-ui-auth:6.4.0'
+
 }
