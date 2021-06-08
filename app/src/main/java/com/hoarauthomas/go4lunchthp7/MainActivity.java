@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateUIWhenResuming() {
 
+
+
     }
 
 
@@ -54,9 +56,10 @@ public class MainActivity extends AppCompatActivity {
         //setContentView(R.layout.activity_main);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
+        setContentView(view);
 
         //call Firebase Sign In Activity
-        startSignInActivity();
+       // startSignInActivity();
 
 
     }

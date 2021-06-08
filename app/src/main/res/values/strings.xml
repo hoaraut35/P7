@@ -6,4 +6,14 @@
     <string name="fb_login_protocol_scheme">fb3512562515510897</string>
 
 
+
+
+    <string name="info_no_username_found">Empty user name</string>
+
+    <!-- Added for bootm navigation menu-->
+    <string name="bottom_navigation_menu_map">Map View</string>
+    <string name="bottom_navigation_menu_list">List View</string>
+    <string name="btoom_navigation_menu_work">Workmates</string>
+    <string name="header_title">Go4Lunch</string>
+
 </resources>

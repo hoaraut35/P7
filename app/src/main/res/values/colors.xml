@@ -7,4 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+
+    <!-- for bottom navigation menu  -->
+    <color name="background_light">#fafafa</color>
+    <color name="background_gray">#eeee</color>
+
 </resources>

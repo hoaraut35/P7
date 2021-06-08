@@ -32,7 +32,6 @@ android {
 
     //Added for view binding
     buildFeatures {
-
         viewBinding true
     }
 }
@@ -55,4 +54,7 @@ dependencies {
     //FACEBOOK
     implementation 'com.facebook.android:facebook-android-sdk:[8,9)'
 
+
+    //implementation 'com.google.android.material:material:'
+    implementation 'com.google.android.material:material:1.4.0-rc01'
 }
