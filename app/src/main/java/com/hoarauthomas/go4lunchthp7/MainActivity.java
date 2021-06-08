@@ -67,9 +67,10 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
-                        .setTheme(R.style.LoginTheme)
                         .setAvailableProviders(providers)
-                        //.setLogo(R.drawable.ic_logo)
+                        .setLogo(R.drawable.ic_logo)
+                        .setTheme(R.style.LoginTheme)
+                        .setIsSmartLockEnabled(false,true)
                         .build(), RC_SIGN_IN
         );
     }
