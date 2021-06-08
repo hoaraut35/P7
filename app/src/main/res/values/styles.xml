@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <!-- Style de base -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+
+    </style>
+
+    <!-- Style de base -->
+    <style name="AppTheme.NotTitle" parent="AppTheme">
+
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="actionBarTheme">@null</item>
+
+
+    </style>
+
+    <!-- Style de base -->
+    <style name="LoginTheme" parent="AppTheme">
+
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+
+
+    </style>
+
+
+</resources>

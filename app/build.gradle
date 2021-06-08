@@ -32,6 +32,7 @@ android {
 
     //Added for view binding
     buildFeatures {
+
         viewBinding true
     }
 }
