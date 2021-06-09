@@ -15,12 +15,16 @@ import android.view.View;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static android.view.View.*;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -64,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         //call Firebase Sign In Activity
         // startSignInActivity();
 
-        setupTopBar();
+        setupTopAppBar();
         setupBottomBAr();
         setupNavigationDrawer();
 
@@ -82,6 +86,11 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
+
+
+
     }
 
     private void setupFragments() {
@@ -93,7 +102,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void setupTopBar() {
+    private void setupTopAppBar() {
+
+        binding.topAppBar.setNavigationOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("THOMAS","clic sur menu top bar");
+            }
+        });
+
+        binding.topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Log.i("THOMAS","Clic sur recherche top bar app");
+                return false;
+            }
+        });
 
 
 
