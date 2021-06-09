@@ -10,7 +10,7 @@
 
 
     <!-- for bottom navigation menu  -->
-    <color name="background_light">#fafafa</color>
+    <color name="background_light">#000000</color>
     <color name="background_orange">#FF5722</color>
 
 </resources>
