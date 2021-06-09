@@ -2,18 +2,35 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/group1">
+
+        <item
+            android:id="@+id/activity_main_drawer_news3"
+            android:icon="@drawable/ic_launcher_foreground"
+            android:title="@string/my_account_link" />
+
+    </group>
+
+
+    <group
+
+        android:id="@+id/group2"
+        android:color="#ff8a50">
 
         <item
             android:id="@+id/activity_main_drawer_news"
-            android:title="YOUR LUNCH" />
+            android:icon="@drawable/ic_map"
+            android:title="@string/your_lunch" />
 
         <item
-            android:id="@+id/activity_main_drawer_news"
-            android:title="SETTINGS" />
+            android:id="@+id/activity_main_drawer_news12"
+            android:icon="@drawable/ic_work"
+            android:title="@string/settings" />
         <item
-            android:id="@+id/activity_main_drawer_news"
-            android:title="LOGOUT" />
+            android:id="@+id/activity_main_drawer_news4"
+            android:icon="@drawable/ic_logout"
+            android:title="@string/logout" />
 
 
     </group>

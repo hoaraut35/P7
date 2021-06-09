@@ -10,10 +10,19 @@
 
     <string name="info_no_username_found">Empty user name</string>
 
-    <!-- Added for bootm navigation menu-->
+    <!-- Added for bottom navigation menu-->
     <string name="bottom_navigation_menu_map">Map View</string>
     <string name="bottom_navigation_menu_list">List View</string>
-    <string name="btoom_navigation_menu_work">Workmates</string>
+    <string name="bottom_navigation_menu_work">Workmates</string>
+
     <string name="header_title">Go4Lunch</string>
+    <string name="my_account_link">MY ACCOUNT LINK</string>
+    <string name="your_lunch">YOUR LUNCH</string>
+    <string name="settings">SETTINGS</string>
+    <string name="logout">LOGOUT</string>
+    <string name="login_name">John SMITH</string>
+    <string name="content_description_favorite">description_favorite</string>
+    <string name="favorite">favorite_text</string>
+    <string name="bottom_navigation_work">Workmates</string>
 
 </resources>

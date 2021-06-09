@@ -2,10 +2,14 @@ package com.hoarauthomas.go4lunchthp7;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 
 import com.firebase.ui.auth.AuthUI;
@@ -45,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     private void updateUIWhenResuming() {
 
 
-
     }
 
 
@@ -59,7 +62,39 @@ public class MainActivity extends AppCompatActivity {
         setContentView(view);
 
         //call Firebase Sign In Activity
-       // startSignInActivity();
+        // startSignInActivity();
+
+        setupTopBar();
+        setupBottomBAr();
+        setupNavigationDrawer();
+
+        setupFragments();
+
+
+
+    }
+
+    private void setupNavigationDrawer() {
+    }
+
+    private void setupBottomBAr() {
+
+
+
+
+    }
+
+    private void setupFragments() {
+
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+
+
+    }
+
+    private void setupTopBar() {
+
 
 
     }
@@ -73,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                         .setAvailableProviders(providers)
                         .setLogo(R.drawable.ic_logo)
                         .setTheme(R.style.LoginTheme)
-                        .setIsSmartLockEnabled(false,true)
+                        .setIsSmartLockEnabled(false, true)
                         .build(), RC_SIGN_IN
         );
     }
