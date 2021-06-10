@@ -6,8 +6,6 @@
     <string name="fb_login_protocol_scheme">fb3512562515510897</string>
 
 
-
-
     <string name="info_no_username_found">Empty user name</string>
 
     <!-- Added for bottom navigation menu-->
@@ -24,5 +22,7 @@
     <string name="content_description_favorite">description_favorite</string>
     <string name="favorite">favorite_text</string>
     <string name="bottom_navigation_work">Workmates</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

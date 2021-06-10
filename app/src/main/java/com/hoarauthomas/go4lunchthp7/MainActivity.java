@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -79,17 +80,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupNavigationDrawer() {
+
+
     }
 
     private void setupBottomBAr() {
 
 
-
-
-
-
-
-
+      //  binding.bottomNavigationMenu.setOnNavigationItemReselectedListener(item ->
 
     }
 
@@ -104,10 +102,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupTopAppBar() {
 
+        //binding.topAppBar
+        //g/etSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
         binding.topAppBar.setNavigationOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("THOMAS","clic sur menu top bar");
+
+
+                binding.drawerLayout.openDrawer(Gravity.START);
             }
         });
 
