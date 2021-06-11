@@ -20,7 +20,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.hoarauthomas.go4lunchthp7.adapter.FragmentsAdapter;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
+import com.hoarauthomas.go4lunchthp7.view.WorkFragment;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
     private static final int SIGN_OUT_TASK = 10;
     private static final int DELETE_USER_TASK = 20;
+
+
+    //
+    FragmentsAdapter myFragmentAdapter;
 
     //Added for login mode
     List<AuthUI.IdpConfig> providers = Arrays.asList(
@@ -70,11 +76,9 @@ public class MainActivity extends AppCompatActivity {
         // startSignInActivity();
 
         setupTopAppBar();
-        setupBottomBAr();
         setupNavigationDrawer();
-
+        setupBottomBAr();
         setupFragments();
-
 
 
     }
@@ -87,16 +91,26 @@ public class MainActivity extends AppCompatActivity {
     private void setupBottomBAr() {
 
 
-      //  binding.bottomNavigationMenu.setOnNavigationItemReselectedListener(item ->
+        //  binding.bottomNavigationMenu.setOnNavigationItemReselectedListener(item ->
 
     }
 
     private void setupFragments() {
+        myFragmentAdapter = new FragmentsAdapter(getSupportFragmentManager());
+        binding.viewpager.setAdapter(myFragmentAdapter);
+        Log.i("THOMAS","viewpager item : " + binding.viewpager.getCurrentItem());
+        binding.viewpager.setCurrentItem(4);
+        Log.i("THOMAS","viewpager item : " + binding.viewpager.getCurrentItem());
 
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        //Work fine to show a fragment
+      /*  FragmentManager fM = getSupportFragmentManager();
+        fM.beginTransaction()
+                .replace(R.id.frameLayout, new WorkFragment())
+                .addToBackStack(null)
+                .commit();
 
-
+       */
 
     }
 
@@ -109,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         binding.topAppBar.setNavigationOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("THOMAS","clic sur menu top bar");
+                Log.i("THOMAS", "clic sur menu top bar");
 
 
                 binding.drawerLayout.openDrawer(Gravity.START);
@@ -119,11 +133,10 @@ public class MainActivity extends AppCompatActivity {
         binding.topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                Log.i("THOMAS","Clic sur recherche top bar app");
+                Log.i("THOMAS", "Clic sur recherche top bar app");
                 return false;
             }
         });
-
 
 
     }

@@ -15,16 +15,7 @@
     tools:openDrawer="start">
 
 
-    <FrameLayout
-        android:id="@+id/frameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
 
-        android:layout_gravity="center">
-
-
-
-    </FrameLayout>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -54,6 +45,26 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
+
+
+
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            >
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                ></androidx.viewpager.widget.ViewPager>
+
+
+
+
+        </FrameLayout>
+
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation_menu"
             android:layout_width="match_parent"
@@ -72,6 +83,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
+        app:headerLayout="@layout/header_navigation_drawer"
         app:menu="@menu/activity_main_menu_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
