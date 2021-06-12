@@ -5,11 +5,17 @@
     android:layout_height="match_parent"
     tools:context=".view.ListFragment">
 
-    <TextView
+
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:tag="recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:textSize="20dp"
-        android:text="Liste de restaurants" />
+        android:name="com.hoarauthomas.go4lunchthp7.view.ListFragment"
+        tools:listitem="@layout/item_list">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
 </FrameLayout>

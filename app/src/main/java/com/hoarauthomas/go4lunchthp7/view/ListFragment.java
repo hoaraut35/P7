@@ -7,16 +7,21 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.hoarauthomas.go4lunchthp7.R;
+import com.hoarauthomas.go4lunchthp7.adapter.CustomRecyclerViewAdapter;
 
 public class ListFragment extends Fragment {
 
-    private ListViewModel mViewModel;
+    //for add a recyclerview on this fragment
+    private RecyclerView recyclerView;
+    private CustomRecyclerViewAdapter myAdapter;
 
     public static ListFragment newInstance() {
         return new ListFragment();
@@ -25,13 +30,26 @@ public class ListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.list_fragment, container, false);
+
+        View view =inflater.inflate(R.layout.list_fragment,container,false);
+
+
+        recyclerView = view.findViewWithTag("recycler_view");
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        recyclerView.setAdapter(new CustomRecyclerViewAdapter(1));
+        return view;
     }
+
+
+
+
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(ListViewModel.class);
+       // mViewModel = new ViewModelProvider(this).get(ListViewModel.class);
         // TODO: Use the ViewModel
     }
 

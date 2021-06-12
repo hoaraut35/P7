@@ -22,11 +22,13 @@ public class FragmentsAdapter extends FragmentPagerAdapter {
 
         switch(position)
         {
-            case 0:
-                return new MapsFragment();
             case 1:
-                return ListFragment.newInstance();
+                //TODO : disable for test to prevent use of api map
+                return new MapsFragment();
+
             case 2:
+                return ListFragment.newInstance();
+            case 3:
                 return WorkFragment.newInstance("","");
             default:
                 return WorkFragment.newInstance("","");
@@ -35,6 +37,6 @@ public class FragmentsAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 }

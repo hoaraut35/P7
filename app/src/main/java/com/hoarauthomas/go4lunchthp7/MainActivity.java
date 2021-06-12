@@ -1,5 +1,6 @@
 package com.hoarauthomas.go4lunchthp7;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -20,6 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.hoarauthomas.go4lunchthp7.adapter.CustomRecyclerViewAdapter;
 import com.hoarauthomas.go4lunchthp7.adapter.FragmentsAdapter;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 import com.hoarauthomas.go4lunchthp7.view.WorkFragment;
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     //
     FragmentsAdapter myFragmentAdapter;
+
 
     //Added for login mode
     List<AuthUI.IdpConfig> providers = Arrays.asList(
@@ -78,7 +81,13 @@ public class MainActivity extends AppCompatActivity {
         setupTopAppBar();
         setupNavigationDrawer();
         setupBottomBAr();
-        setupFragments();
+        setupViewPager(0);
+
+        setupAdapter();
+
+    }
+
+    private void setupAdapter() {
 
 
     }
@@ -91,16 +100,43 @@ public class MainActivity extends AppCompatActivity {
     private void setupBottomBAr() {
 
 
-        //  binding.bottomNavigationMenu.setOnNavigationItemReselectedListener(item ->
+        binding.bottomNavigationMenu.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                switch (item.getItemId()) {
+                    case R.id.action_map:
+                        //add function to pen fragment
+                        binding.viewpager.setCurrentItem(1);
+                        Log.i("THOMAS","clic sur carte");
+                        break;
+                    case R.id.action_list:
+                        //add function to pen fragment
+                        binding.viewpager.setCurrentItem(2);
+                        Log.i("THOMAS","clic sur liste");
+                        break;
+                    case R.id.action_work:
+                        //add function to pen fragment
+                        binding.viewpager.setCurrentItem(3);
+                        Log.i("THOMAS","clic sur collegues");
+                        break;
+                }
+
+
+                return true;
+            }
+        });
+
+
 
     }
 
-    private void setupFragments() {
+    private void setupViewPager(int mode) {
         myFragmentAdapter = new FragmentsAdapter(getSupportFragmentManager());
         binding.viewpager.setAdapter(myFragmentAdapter);
-        Log.i("THOMAS","viewpager item : " + binding.viewpager.getCurrentItem());
-        binding.viewpager.setCurrentItem(4);
-        Log.i("THOMAS","viewpager item : " + binding.viewpager.getCurrentItem());
+        Log.i("THOMAS", "viewpager item : " + binding.viewpager.getCurrentItem());
+        binding.viewpager.setCurrentItem(2);
+        Log.i("THOMAS", "viewpager item : " + binding.viewpager.getCurrentItem());
 
 
         //Work fine to show a fragment
