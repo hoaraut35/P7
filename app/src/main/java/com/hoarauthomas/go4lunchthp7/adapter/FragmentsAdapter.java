@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.hoarauthomas.go4lunchthp7.view.ListFragment;
 import com.hoarauthomas.go4lunchthp7.view.MapsFragment;
+import com.hoarauthomas.go4lunchthp7.view.SettingsFragment;
 import com.hoarauthomas.go4lunchthp7.view.WorkFragment;
 
 public class FragmentsAdapter extends FragmentPagerAdapter {
@@ -30,6 +31,9 @@ public class FragmentsAdapter extends FragmentPagerAdapter {
                 return ListFragment.newInstance();
             case 3:
                 return WorkFragment.newInstance("","");
+
+            case 4:
+                return new SettingsFragment();
             default:
                 return WorkFragment.newInstance("","");
         }
@@ -37,6 +41,6 @@ public class FragmentsAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+        return 5;
     }
 }

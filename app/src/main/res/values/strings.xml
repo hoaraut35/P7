@@ -25,16 +25,17 @@
     <!-- TODO: Remove or change this placeholder text -->
 
 
-
     <!-- strings for Workmates view -->
     <string name="hello_blank_fragment">Liste des collègues</string>
 
 
+    <!-- Preference Default ViewPager -->
+    <string name="default_screen">Ecran par défaut</string>
 
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
+    <string name="sync_header">Notifications</string>
 
     <!-- Messages Preferences -->
     <string name="signature_title">Your signature</string>
@@ -46,5 +47,6 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="google_maps_key">C5:96:C3:23:C6:85:89:22:E1:D5:82:65:4A:05:74:F2:49:0A:F7:5E</string>
 
 </resources>

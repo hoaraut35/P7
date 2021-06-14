@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,44 +20,47 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.adapter.CustomRecyclerViewAdapter;
 import com.hoarauthomas.go4lunchthp7.adapter.FragmentsAdapter;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
+import com.hoarauthomas.go4lunchthp7.model.User;
 import com.hoarauthomas.go4lunchthp7.view.WorkFragment;
+import com.hoarauthomas.go4lunchthp7.viewmodel.LoginUserViewModel;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static android.view.View.*;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    //Added for view binding
+    //Added for View Binding
     private ActivityMainBinding binding;
+
+    //Added to use View Model
+    private LoginUserViewModel loginUVM;
 
     //Added for return state
     private static final int RC_SIGN_IN = 123;
     private static final int SIGN_OUT_TASK = 10;
     private static final int DELETE_USER_TASK = 20;
 
-
-    //
+    //Added for manage 3 screens
     FragmentsAdapter myFragmentAdapter;
 
-
-    //Added for login mode
+    //Added for authentification with Firebase UI
     List<AuthUI.IdpConfig> providers = Arrays.asList(
-            new AuthUI.IdpConfig.EmailBuilder().build(),
-            new AuthUI.IdpConfig.GoogleBuilder().build(),
-            new AuthUI.IdpConfig.FacebookBuilder().build());
+          //  new AuthUI.IdpConfig.FacebookBuilder().build(),
+            new AuthUI.IdpConfig.GoogleBuilder().build());
 
 
     @Override
     protected void onResume() {
         super.onResume();
-        this.updateUIWhenResuming();
+        security();
 
     }
 
@@ -75,15 +79,59 @@ public class MainActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
-        //call Firebase Sign In Activity
-        // startSignInActivity();
+        security();
 
         setupTopAppBar();
+
         setupNavigationDrawer();
+
         setupBottomBAr();
+
         setupViewPager(0);
 
         setupAdapter();
+
+        setupViewModel();
+
+    }
+
+
+    protected FirebaseUser getCurrentUser() {
+        return FirebaseAuth.getInstance().getCurrentUser();
+    }
+
+    protected Boolean isCurrentUserLogged() {
+        return (this.getCurrentUser() != null);
+    }
+
+    private void security() {
+        if (!isCurrentUserLogged()) {
+            Log.i("THOMAS", "Utilisateur non autehntifié !");
+            request_login();
+        } else {
+            Log.i("THOMAS", "Utilisateur authentifié");
+        }
+    }
+
+    private void request_login() {
+
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(providers)
+                        //.setLogo(R.drawable.ic_logo)
+                        .setTheme(R.style.LoginTheme)
+                        .setIsSmartLockEnabled(false, true)
+                        .build(), RC_SIGN_IN
+        );
+
+    }
+
+
+    private void setupViewModel() {
+        loginUVM = new ViewModelProvider(this).get(LoginUserViewModel.class);
+        // loginUVM.getUser().observe(this,this::security);
+
 
     }
 
@@ -95,6 +143,32 @@ public class MainActivity extends AppCompatActivity {
     private void setupNavigationDrawer() {
 
 
+        binding.navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                switch (item.getItemId()) {
+                    case R.id.navigation_drawer_lunch:
+                        binding.viewpager.setCurrentItem(1);
+                        break;
+                    case R.id.navigation_drawer_settings:
+                        binding.viewpager.setCurrentItem(4);
+                        break;
+                    case R.id.navigation_drawer_logout:
+                        //logout function;call  viewmodel to logout because ui activity don't know logic
+                        AuthUI.getInstance()
+                                .signOut(getApplicationContext());
+
+                        //loginUVM.userSignout();
+                        break;
+
+
+                }
+                binding.drawerLayout.closeDrawer(Gravity.START);
+
+                return true;
+            }
+        });
     }
 
     private void setupBottomBAr() {
@@ -108,17 +182,17 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.action_map:
                         //add function to pen fragment
                         binding.viewpager.setCurrentItem(1);
-                        Log.i("THOMAS","clic sur carte");
+                        Log.i("THOMAS", "clic sur carte");
                         break;
                     case R.id.action_list:
                         //add function to pen fragment
                         binding.viewpager.setCurrentItem(2);
-                        Log.i("THOMAS","clic sur liste");
+                        Log.i("THOMAS", "clic sur liste");
                         break;
                     case R.id.action_work:
                         //add function to pen fragment
                         binding.viewpager.setCurrentItem(3);
-                        Log.i("THOMAS","clic sur collegues");
+                        Log.i("THOMAS", "clic sur collegues");
                         break;
                 }
 
@@ -128,10 +202,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
     }
 
     private void setupViewPager(int mode) {
+
         myFragmentAdapter = new FragmentsAdapter(getSupportFragmentManager());
         binding.viewpager.setAdapter(myFragmentAdapter);
         Log.i("THOMAS", "viewpager item : " + binding.viewpager.getCurrentItem());
@@ -177,18 +251,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //open Firebase UI SignIn Activity
-    //TODO: add a theme for login form, create lmogo
+    //TODO: Start Activity for login
     private void startSignInActivity() {
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .setLogo(R.drawable.ic_logo)
-                        .setTheme(R.style.LoginTheme)
-                        .setIsSmartLockEnabled(false, true)
-                        .build(), RC_SIGN_IN
-        );
+
     }
 
 
@@ -206,6 +271,8 @@ public class MainActivity extends AppCompatActivity {
             //success
             if (resultCode == RESULT_OK) {
                 Log.i("THOMAS", "authentification réussi");
+
+
             } else {//error
 
                 if (response == null) {
@@ -223,14 +290,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //get a singleton for current user
-    protected FirebaseUser getCurrentUser() {
-        return FirebaseAuth.getInstance().getCurrentUser();
-    }
 
-    //check if currentuser is connected or not
-    protected Boolean isCurrentUserLogged() {
-        return this.getCurrentUser() != null;
-    }
+    //get item selected on navigation drawer
 
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+
+        return true;
+    }
 }

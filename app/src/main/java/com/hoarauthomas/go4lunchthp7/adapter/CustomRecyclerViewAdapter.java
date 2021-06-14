@@ -41,7 +41,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
     @Override
     public void onBindViewHolder(@NonNull CustomRecyclerViewAdapter.ViewHolder holder, int position) {
 
-        holder.textView.setText("toto");
+        holder.textView.setText("Le Zinc");
     }
 
 
