@@ -14,6 +14,7 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -110,7 +111,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             request_login();
         } else {
             Log.i("THOMAS", "Utilisateur authentifié");
+
+            request_user_info();
+
+
+
         }
+    }
+
+    private void request_user_info() {
+
+        View hv = binding.navigationView.getHeaderView(0);
+        TextView name= (TextView)hv.findViewById(R.id.displayName);
+        name.setText(this.getCurrentUser().getDisplayName());
+        TextView email = (TextView)hv.findViewById(R.id.email);
+        email.setText(this.getCurrentUser().getEmail());
+
+
+
+
     }
 
     private void request_login() {
@@ -159,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         AuthUI.getInstance()
                                 .signOut(getApplicationContext());
 
-                        //loginUVM.userSignout();
+                        security();
                         break;
 
 

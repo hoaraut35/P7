@@ -47,6 +47,6 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
-    <string name="google_maps_key">C5:96:C3:23:C6:85:89:22:E1:D5:82:65:4A:05:74:F2:49:0A:F7:5E</string>
+    <string name="google_maps_key">AIzaSyCKxZQFg6PZiBL9kHASYdFWt6A0Ai2mAZw</string>
 
 </resources>
