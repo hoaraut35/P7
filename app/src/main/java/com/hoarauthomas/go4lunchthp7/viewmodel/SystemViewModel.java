@@ -29,6 +29,9 @@ public class SystemViewModel extends ViewModel {
         return (this.getCurrentUser() != null);
     }
 
+
+
+
     private MutableLiveData<Boolean> loginState = new MutableLiveData<>();
 
     public void updateStateLogin(boolean bool) {
@@ -36,7 +39,19 @@ public class SystemViewModel extends ViewModel {
     }
 
     public LiveData<Boolean> getSystemVM() {
-        return loginState;
+        if (getCurrentUser() == null)
+        {
+
+            updateStateLogin(false);
+
+            return loginState;
+        }else
+        {
+            updateStateLogin(true);
+            return loginState;
+        }
+
+
     }
 
 

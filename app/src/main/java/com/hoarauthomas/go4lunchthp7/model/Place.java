@@ -7,7 +7,6 @@ import android.media.Image;
 //This is a Model Class for API Google Places
 public class Place {
 
-
     private String name;
     private int distance;
     private Image image;

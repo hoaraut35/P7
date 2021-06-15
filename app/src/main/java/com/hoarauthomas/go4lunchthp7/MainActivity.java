@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
@@ -12,7 +11,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,18 +19,14 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.hoarauthomas.go4lunchthp7.adapter.CustomRecyclerViewAdapter;
 import com.hoarauthomas.go4lunchthp7.adapter.FragmentsAdapter;
-import com.hoarauthomas.go4lunchthp7.api.GitHubService;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 import com.hoarauthomas.go4lunchthp7.model.User;
-import com.hoarauthomas.go4lunchthp7.utils.Authentification;
-import com.hoarauthomas.go4lunchthp7.view.WorkFragment;
 import com.hoarauthomas.go4lunchthp7.viewmodel.LoginUserViewModel;
 import com.hoarauthomas.go4lunchthp7.viewmodel.SystemViewModel;
 
@@ -40,7 +34,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static android.view.View.*;
-import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -54,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //Added for return state
     private static final int RC_SIGN_IN = 123;
     private static final int SIGN_OUT_TASK = 10;
+
     private static final int DELETE_USER_TASK = 20;
 
     //Added for manage 3 screens
@@ -64,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             new AuthUI.IdpConfig.FacebookBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build());
 
-
+    //Added to check security
     @Override
     protected void onResume() {
         super.onResume();
@@ -89,21 +83,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //  setupViewModel();
 
 
-
         security();
 
         setupTopAppBar();
 
         setupNavigationDrawer();
 
-        setupBottomBAr();
+    //    setupBottomBAr();
 
-        setupViewPager(2);
+        //    setupViewPager(2);
 
-        setupAdapter();
+    //    setupAdapter();
 
 
-       // Log.i("[THOMAS","" + GitHubService().toString());
+     //   setupPlaces();
+
+
+        // Log.i("[THOMAS","" + GitHubService().toString());
+
+    }
+
+    private void setupPlaces() {
+
+        //  GitHubService service = RetrofitService.
 
     }
 
@@ -118,45 +120,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void security() {
 
-        systemVM = new ViewModelProvider(this).get(SystemViewModel.class);
-        systemVM.getSystemVM().observe(this, this::updateUI);
-
-
-
-
+        //to get actual singleton of firebase user
         getCurrentUser();
 
+        //to check is user is connected or not
         if (!isCurrentUserLogged()) {
-            Log.i("[THOMAS]", "Utilisateur non autehntifié !");
+            //if not connected then request login
             request_login();
         } else {
-            Log.i("[THOMAS]", "Utilisateur authentifié");
+            //else request user info to update ui
             request_user_info();
         }
     }
 
     private void updateUI(Boolean aBoolean) {
 
-        if (aBoolean==false)
-        {
-           // systemVM.startLogin();
+        if (aBoolean == false) {
+            Log.i("[THOMAS]", "non logué");
+
+        } else {
+            Log.i("[THOMAS]", "logué");
         }
-
-
-
 
 
     }
 
 
-
-
-
-
-
-
-
+    //update navigation drawer data user
     private void request_user_info() {
+        Log.i("[THOMAS]","request user infos...");
 
         View hv = binding.navigationView.getHeaderView(0);
         TextView name = (TextView) hv.findViewById(R.id.displayName);
@@ -164,20 +156,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TextView email = (TextView) hv.findViewById(R.id.email);
         email.setText(this.getCurrentUser().getEmail());
 
-
-        ImageView avatar =(ImageView)hv.findViewById(R.id.avatar);
+        ImageView avatar = (ImageView) hv.findViewById(R.id.avatar);
 
         Glide.with(avatar)
                 .load(this.getCurrentUser().getPhotoUrl())
                 .into(avatar);
-
-
-
-
-
     }
 
+    //to load firebase ui auth activity
     private void request_login() {
+        Log.i("[THOMAS","request login...");
 
         startActivityForResult(
                 AuthUI.getInstance()
@@ -196,10 +184,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Log.i("[THOMAS]", "Enter in setupViewModel ...");
 
-    //    loginUVM = new ViewModelProvider(this).get(LoginUserViewModel.class);
-     //   loginUVM.getUser().observe(this, this::nextstep);
+        //    loginUVM = new ViewModelProvider(this).get(LoginUserViewModel.class);
+        //   loginUVM.getUser().observe(this, this::nextstep);
 
-       // loginUVM.getLogin().observe(this, this::loginform);
+        // loginUVM.getLogin().observe(this, this::loginform);
 
 
 //        loginUVM.initAuth();
@@ -247,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         Log.i("[THOMAS]", "Enter in nexstep...");
-       // loginUVM.updateCurrentUser(this.getCurrentUser().getDisplayName(), this.getCurrentUser().getEmail());
+        // loginUVM.updateCurrentUser(this.getCurrentUser().getDisplayName(), this.getCurrentUser().getEmail());
     }
 
     private void setupAdapter() {
@@ -272,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
                         request_logout();
-                       // loginUVM.signOut();
+                        // loginUVM.signOut();
                         Log.i("[THOMAS]", "logout");
                         break;
                 }
@@ -286,10 +274,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         AuthUI.getInstance()
-                .signOut(this);
-        //    .addOnSuccessListener(getgetApplicationContext(),this.updateUIAfterRESTRequestCompleted(SIGN_OUT));
+                .signOut(this)
+                .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted(SIGN_OUT_TASK));
 
     }
+
+    private OnSuccessListener<Void> updateUIAfterRESTRequestsCompleted(final int origin){
+        return new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                switch (origin){
+                    case SIGN_OUT_TASK:
+                        security();
+                       // finish();
+                        break;
+                    case DELETE_USER_TASK:
+                       // finish();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
+    }
+
 
     private void setupBottomBAr() {
 
@@ -392,7 +400,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (resultCode == RESULT_OK) {
                 Log.i("THOMAS", "authentification réussi");
 
-             //   loginUVM.updateCurrentUser(this.getCurrentUser().getDisplayName(), this.getCurrentUser().getEmail());
+                //   loginUVM.updateCurrentUser(this.getCurrentUser().getDisplayName(), this.getCurrentUser().getEmail());
 
 
             } else {//error
@@ -422,7 +430,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         return true;
     }
-
 
 
 }
