@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,13 +24,22 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.adapter.FragmentsAdapter;
+import com.hoarauthomas.go4lunchthp7.retrofit.ApiRetrofitService;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
+import com.hoarauthomas.go4lunchthp7.model.GitHubRepo;
 import com.hoarauthomas.go4lunchthp7.model.User;
 import com.hoarauthomas.go4lunchthp7.viewmodel.LoginUserViewModel;
 import com.hoarauthomas.go4lunchthp7.viewmodel.SystemViewModel;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.view.View.*;
 
@@ -85,13 +93,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         security();
 
+        setupRetrofit();
+
         setupTopAppBar();
 
         setupNavigationDrawer();
 
     //    setupBottomBAr();
 
-        //    setupViewPager(2);
+            setupViewPager(2);
 
     //    setupAdapter();
 
@@ -100,6 +110,63 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         // Log.i("[THOMAS","" + GitHubService().toString());
+
+    }
+
+
+
+    //Create a simple REST
+    private void setupRetrofit() {
+
+
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.github.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        //Create a REST
+        ApiRetrofitService service = retrofit.create(ApiRetrofitService.class);
+
+        //Fetch a list of the Github repositories
+        Call<List<GitHubRepo>> call = service.reposForUser("hoaraut35");
+
+        //Execute th e call asynchronolously
+        call.enqueue(new Callback<List<GitHubRepo>>() {
+            @Override
+            public void onResponse(Call<List<GitHubRepo>> call, Response<List<GitHubRepo>> response) {
+
+
+
+                List<GitHubRepo> newlist = new ArrayList<>();
+
+                newlist.addAll(response.body());
+
+                Log.i("[THOMAS]","retour retrofit => " + response.body().size());
+
+
+                for (int i = 0; i  < newlist.size(); i++)
+                {
+                    Log.i("[THOMAS]","" + newlist.get(i).getName());
+                }
+
+                //use repository to viewx data
+
+
+
+
+            }
+
+            @Override
+            public void onFailure(Call<List<GitHubRepo>> call, Throwable t) {
+
+            }
+        });
+
+
+
+
+
 
     }
 
