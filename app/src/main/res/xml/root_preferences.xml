@@ -8,7 +8,7 @@
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
-            app:defaultValue="reply"
+            app:defaultValue="list"
             app:entries="@array/reply_entries"
             app:entryValues="@array/reply_values"
             app:key="reply"
@@ -31,6 +31,16 @@
             app:summaryOff="@string/attachment_summary_off"
             app:summaryOn="@string/attachment_summary_on"
             app:title="@string/attachment_title" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/sync_header">
+
+        <SwitchPreferenceCompat
+            app:key="sync"
+            app:title="@string/langage_mode" />
+
+
 
     </PreferenceCategory>
 

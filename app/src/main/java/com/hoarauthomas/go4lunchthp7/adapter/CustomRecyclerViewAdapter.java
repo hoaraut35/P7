@@ -63,8 +63,8 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
         {
             super(view);
 
-            textView = (TextView) view.findViewById(R.id.item_list_name);
-            textView2 = (TextView) view.findViewById(R.id.item_list_name2);
+            textView = (TextView) view.findViewById(R.id.list_name);
+            textView2 = (TextView) view.findViewById(R.id.list_adress);
 
         }
 

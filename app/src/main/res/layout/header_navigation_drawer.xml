@@ -45,7 +45,7 @@
     </TextView>
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/avatar"
         android:layout_width="74dp"
         android:layout_height="80dp"
         app:layout_constraintStart_toStartOf="parent"

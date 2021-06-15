@@ -14,8 +14,10 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
@@ -26,15 +28,19 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.adapter.CustomRecyclerViewAdapter;
 import com.hoarauthomas.go4lunchthp7.adapter.FragmentsAdapter;
+import com.hoarauthomas.go4lunchthp7.api.GitHubService;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 import com.hoarauthomas.go4lunchthp7.model.User;
+import com.hoarauthomas.go4lunchthp7.utils.Authentification;
 import com.hoarauthomas.go4lunchthp7.view.WorkFragment;
 import com.hoarauthomas.go4lunchthp7.viewmodel.LoginUserViewModel;
+import com.hoarauthomas.go4lunchthp7.viewmodel.SystemViewModel;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static android.view.View.*;
+import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -43,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //Added to use View Model
     private LoginUserViewModel loginUVM;
+    private SystemViewModel systemVM;
 
     //Added for return state
     private static final int RC_SIGN_IN = 123;
@@ -54,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //Added for authentification with Firebase UI
     List<AuthUI.IdpConfig> providers = Arrays.asList(
-          //  new AuthUI.IdpConfig.FacebookBuilder().build(),
+            new AuthUI.IdpConfig.FacebookBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build());
 
 
@@ -62,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
         security();
-
     }
 
     private void updateUIWhenResuming() {
@@ -80,6 +86,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         View view = binding.getRoot();
         setContentView(view);
 
+        //  setupViewModel();
+
+
+
         security();
 
         setupTopAppBar();
@@ -88,11 +98,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setupBottomBAr();
 
-        setupViewPager(0);
+        setupViewPager(2);
 
         setupAdapter();
 
-        setupViewModel();
+
+       // Log.i("[THOMAS","" + GitHubService().toString());
 
     }
 
@@ -106,26 +117,60 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void security() {
+
+        systemVM = new ViewModelProvider(this).get(SystemViewModel.class);
+        systemVM.getSystemVM().observe(this, this::updateUI);
+
+
+
+
+        getCurrentUser();
+
         if (!isCurrentUserLogged()) {
-            Log.i("THOMAS", "Utilisateur non autehntifié !");
+            Log.i("[THOMAS]", "Utilisateur non autehntifié !");
             request_login();
         } else {
-            Log.i("THOMAS", "Utilisateur authentifié");
-
+            Log.i("[THOMAS]", "Utilisateur authentifié");
             request_user_info();
-
-
-
         }
     }
+
+    private void updateUI(Boolean aBoolean) {
+
+        if (aBoolean==false)
+        {
+           // systemVM.startLogin();
+        }
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
 
     private void request_user_info() {
 
         View hv = binding.navigationView.getHeaderView(0);
-        TextView name= (TextView)hv.findViewById(R.id.displayName);
+        TextView name = (TextView) hv.findViewById(R.id.displayName);
         name.setText(this.getCurrentUser().getDisplayName());
-        TextView email = (TextView)hv.findViewById(R.id.email);
+        TextView email = (TextView) hv.findViewById(R.id.email);
         email.setText(this.getCurrentUser().getEmail());
+
+
+        ImageView avatar =(ImageView)hv.findViewById(R.id.avatar);
+
+        Glide.with(avatar)
+                .load(this.getCurrentUser().getPhotoUrl())
+                .into(avatar);
+
 
 
 
@@ -148,10 +193,61 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     private void setupViewModel() {
-        loginUVM = new ViewModelProvider(this).get(LoginUserViewModel.class);
-        // loginUVM.getUser().observe(this,this::security);
+
+        Log.i("[THOMAS]", "Enter in setupViewModel ...");
+
+    //    loginUVM = new ViewModelProvider(this).get(LoginUserViewModel.class);
+     //   loginUVM.getUser().observe(this, this::nextstep);
+
+       // loginUVM.getLogin().observe(this, this::loginform);
 
 
+//        loginUVM.initAuth();
+
+      /*  if (loginUVM.check_login()) {
+            Log.i("[THOMAS]", "connecté  " + loginUVM.check_login());
+            request_user_info();
+
+        }else
+        {
+            Log.i("[THOMAS]", "non connecté " + loginUVM.check_login());
+            request_login();
+        }
+
+
+       */
+
+
+        //Log.i("[THOMAS]","retour checl login" + loginUVM.check_login());
+        //  security();
+
+        //loginUVM.getUser().observe(this, this::nextstep);
+
+
+    }
+
+    private void loginform(String s) {
+        switch (s) {
+            case "false":
+                // request_login();
+                Log.i("[THOMAS]", "demande login mainactivity deja fait");
+                request_user_info();
+                break;
+            case "true":
+                request_login();
+                Log.i("[THOMAS]", "demande login mainactivity");
+                break;
+
+        }
+
+        Log.i("[THOMAS]", "changement statut login");
+    }
+
+    private void nextstep(User user) {
+
+
+        Log.i("[THOMAS]", "Enter in nexstep...");
+       // loginUVM.updateCurrentUser(this.getCurrentUser().getDisplayName(), this.getCurrentUser().getEmail());
     }
 
     private void setupAdapter() {
@@ -165,7 +261,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding.navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
                 switch (item.getItemId()) {
                     case R.id.navigation_drawer_lunch:
                         binding.viewpager.setCurrentItem(1);
@@ -174,20 +269,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         binding.viewpager.setCurrentItem(4);
                         break;
                     case R.id.navigation_drawer_logout:
-                        //logout function;call  viewmodel to logout because ui activity don't know logic
-                        AuthUI.getInstance()
-                                .signOut(getApplicationContext());
 
-                        security();
+
+                        request_logout();
+                       // loginUVM.signOut();
+                        Log.i("[THOMAS]", "logout");
                         break;
-
-
                 }
                 binding.drawerLayout.closeDrawer(Gravity.START);
-
                 return true;
             }
         });
+    }
+
+    private void request_logout() {
+
+
+        AuthUI.getInstance()
+                .signOut(this);
+        //    .addOnSuccessListener(getgetApplicationContext(),this.updateUIAfterRESTRequestCompleted(SIGN_OUT));
+
     }
 
     private void setupBottomBAr() {
@@ -228,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         myFragmentAdapter = new FragmentsAdapter(getSupportFragmentManager());
         binding.viewpager.setAdapter(myFragmentAdapter);
         Log.i("THOMAS", "viewpager item : " + binding.viewpager.getCurrentItem());
-        binding.viewpager.setCurrentItem(2);
+        binding.viewpager.setCurrentItem(mode);
         Log.i("THOMAS", "viewpager item : " + binding.viewpager.getCurrentItem());
 
 
@@ -291,6 +392,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (resultCode == RESULT_OK) {
                 Log.i("THOMAS", "authentification réussi");
 
+             //   loginUVM.updateCurrentUser(this.getCurrentUser().getDisplayName(), this.getCurrentUser().getEmail());
+
 
             } else {//error
 
@@ -319,4 +422,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         return true;
     }
+
+
+
 }

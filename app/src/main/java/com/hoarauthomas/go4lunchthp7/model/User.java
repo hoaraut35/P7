@@ -8,10 +8,11 @@ public class User {
     private String strFirstName;
     private String strLastName;
 
-    public User(String strFirstName, String strLastName, Image imgAvatar) {
+    public User(String strFirstName, String strLastName) {
         this.strFirstName = strFirstName;
         this.strLastName = strLastName;
-        this.imgAvatar = imgAvatar;
+        //TODO:add avatar later
+        //this.imgAvatar = imgAvatar;
     }
 
     public Image getImgAvatar() {
@@ -24,5 +25,17 @@ public class User {
 
     public String getStrLastName() {
         return strLastName;
+    }
+
+    public void setImgAvatar(Image imgAvatar) {
+        this.imgAvatar = imgAvatar;
+    }
+
+    public void setStrFirstName(String strFirstName) {
+        this.strFirstName = strFirstName;
+    }
+
+    public void setStrLastName(String strLastName) {
+        this.strLastName = strLastName;
     }
 }

@@ -9,7 +9,7 @@
 
 
     <TextView
-        android:id="@+id/item_list_name"
+        android:id="@+id/list_name"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_gravity="top"
@@ -18,7 +18,7 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/item_list_name2"
+        android:id="@+id/list_adress"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_gravity="center"
@@ -26,7 +26,7 @@
         android:text="French - 12 rue du Faubourg Poissonière" />
 
     <TextView
-        android:id="@+id/item_list_name3"
+        android:id="@+id/list_time"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_gravity="bottom"
