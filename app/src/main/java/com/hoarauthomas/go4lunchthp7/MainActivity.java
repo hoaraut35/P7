@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,10 +26,13 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.adapter.FragmentsAdapter;
+import com.hoarauthomas.go4lunchthp7.model.Place;
 import com.hoarauthomas.go4lunchthp7.retrofit.ApiRetrofitService;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 import com.hoarauthomas.go4lunchthp7.model.GitHubRepo;
 import com.hoarauthomas.go4lunchthp7.model.User;
+import com.hoarauthomas.go4lunchthp7.retrofit.GooglePlacesInterface;
+import com.hoarauthomas.go4lunchthp7.viewmodel.ListPlacesViewModel;
 import com.hoarauthomas.go4lunchthp7.viewmodel.LoginUserViewModel;
 import com.hoarauthomas.go4lunchthp7.viewmodel.SystemViewModel;
 
@@ -51,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //Added to use View Model
     private LoginUserViewModel loginUVM;
     private SystemViewModel systemVM;
+    private ListPlacesViewModel myPlacesViewModel;
+
 
     //Added for return state
     private static final int RC_SIGN_IN = 123;
@@ -93,31 +100,73 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         security();
 
-        setupRetrofit();
+         setupRetrofit();
+        setupMyPlaces();
 
         setupTopAppBar();
 
         setupNavigationDrawer();
 
-    //    setupBottomBAr();
+        //    setupBottomBAr();
 
-            setupViewPager(2);
+        setupViewPager(2);
 
-    //    setupAdapter();
+        //    setupAdapter();
 
 
-     //   setupPlaces();
+        //   setupPlaces();
 
 
         // Log.i("[THOMAS","" + GitHubService().toString());
 
     }
 
+    private void setupMyPlaces() {
+
+        //    loginUVM = new ViewModelProvider(this).get(LoginUserViewModel.class);
+        //   loginUVM.getUser().observe(this, this::nextstep);
+
+        // myPlacesViewModel = new ViewModelProvider(this).get(ListPlacesViewModel.class);
+
+        //myPlacesViewModel.getMyPlaces().observe(this,this::newfunc);
+
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://maps.googleapis.com/maps/api/place/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        //Create a REST
+        GooglePlacesInterface service = retrofit.create(GooglePlacesInterface.class);
+
+        //Fetch a list of the Github repositories
+        Call<Place> call = service.getNearbyPlaces("AIzaSyDzUUJlN7hmetd7MtQR5s5TTzWiO4dwpCA",10);
+
+
+        call.enqueue(new Callback<Place>() {
+            @Override
+            public void onResponse(Call<Place> call, Response<Place> response) {
+                Log.i("[THOMAS]","dssdfdsf" + response.body().getStatus());
+
+
+            }
+
+            @Override
+            public void onFailure(Call<Place> call, Throwable t) {
+
+            }
+        });
+
+
+    }
+
+    private void newfunc(List<Place> places) {
+        Log.i("[THOMAS]", "ddddddddddddd");
+    }
 
 
     //Create a simple REST
     private void setupRetrofit() {
-
 
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -137,22 +186,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onResponse(Call<List<GitHubRepo>> call, Response<List<GitHubRepo>> response) {
 
 
-
                 List<GitHubRepo> newlist = new ArrayList<>();
 
                 newlist.addAll(response.body());
 
-                Log.i("[THOMAS]","retour retrofit => " + response.body().size());
+                Log.i("[THOMAS]", "retour retrofit => " + response.body().size());
 
 
-                for (int i = 0; i  < newlist.size(); i++)
-                {
-                    Log.i("[THOMAS]","" + newlist.get(i).getName());
+                for (int i = 0; i < newlist.size(); i++) {
+                    Log.i("[THOMAS]", "" + newlist.get(i).getName());
                 }
 
                 //use repository to viewx data
-
-
 
 
             }
@@ -162,10 +207,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             }
         });
-
-
-
-
 
 
     }
@@ -215,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //update navigation drawer data user
     private void request_user_info() {
-        Log.i("[THOMAS]","request user infos...");
+        Log.i("[THOMAS]", "request user infos...");
 
         View hv = binding.navigationView.getHeaderView(0);
         TextView name = (TextView) hv.findViewById(R.id.displayName);
@@ -232,7 +273,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //to load firebase ui auth activity
     private void request_login() {
-        Log.i("[THOMAS","request login...");
+        Log.i("[THOMAS", "request login...");
 
         startActivityForResult(
                 AuthUI.getInstance()
@@ -346,17 +387,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private OnSuccessListener<Void> updateUIAfterRESTRequestsCompleted(final int origin){
+    private OnSuccessListener<Void> updateUIAfterRESTRequestsCompleted(final int origin) {
         return new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                switch (origin){
+                switch (origin) {
                     case SIGN_OUT_TASK:
                         security();
-                       // finish();
+                        // finish();
                         break;
                     case DELETE_USER_TASK:
-                       // finish();
+                        // finish();
                         break;
                     default:
                         break;
