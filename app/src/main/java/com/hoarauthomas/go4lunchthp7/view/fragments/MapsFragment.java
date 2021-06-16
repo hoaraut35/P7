@@ -1,4 +1,4 @@
-package com.hoarauthomas.go4lunchthp7.view;
+package com.hoarauthomas.go4lunchthp7.view.fragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -67,18 +67,23 @@ public class MapsFragment extends Fragment implements ActivityCompat.OnRequestPe
         @Override
         public void onMapReady(GoogleMap googleMap) {
 
-            LatLng sydney = new LatLng(-34, 151);
-
-            googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
-
             map = googleMap;
 
-            getLocationPermission();
+            //setup
+            map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+                @Override
+                public boolean onMyLocationButtonClick() {
+                    return false;
+                }
+            });
 
-            updateLocationUI();
+
+
+            enableMyLocation();
+
+          //  getLocationPermission();
+
+         //   updateLocationUI();
 
 
             Retrofit retrofit = new Retrofit.Builder()
@@ -91,6 +96,7 @@ public class MapsFragment extends Fragment implements ActivityCompat.OnRequestPe
 
             //Fetch a list of the Github repositories
             Call<Place> call = service.getNearbyPlaces("AIzaSyDzUUJlN7hmetd7MtQR5s5TTzWiO4dwpCA",1000);
+
             //send asynchronous task
             call.enqueue(new Callback<Place>() {
                 @Override
@@ -112,7 +118,7 @@ public class MapsFragment extends Fragment implements ActivityCompat.OnRequestPe
                             Double lat = response.body().getResults().get(i).getGeometry().getLocation().getLat();
                             Double lng = response.body().getResults().get(i).getGeometry().getLocation().getLng();
 
-                            Log.i("[THOMAS]","coordonne["+ i + "] " + lat + " " + lng );
+                            //Log.i("[THOMAS]","coordonne["+ i + "] " + lat + " " + lng );
 
                             String placeName = response.body().getResults().get(i).getName();
 
@@ -122,7 +128,11 @@ public class MapsFragment extends Fragment implements ActivityCompat.OnRequestPe
                             markerOptions.title(placeName);
                             Marker m = map.addMarker(markerOptions);
 
+
+                            //move camera to the latest position
                             map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                            map.animateCamera(CameraUpdateFactory.zoomTo(14));
+
 
                         }
 
@@ -149,6 +159,20 @@ public class MapsFragment extends Fragment implements ActivityCompat.OnRequestPe
 
 
 
+    private void enableMyLocation() {
+
+
+
+        if (ContextCompat.checkSelfPermission(getContext(),Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED){
+            if (map !=null)
+            {
+                map.setMyLocationEnabled(true);
+            }
+            else
+            {
+            }
+        }
+    }
 
 
     private void updateLocationUI() {
@@ -165,7 +189,7 @@ public class MapsFragment extends Fragment implements ActivityCompat.OnRequestPe
                 map.setMyLocationEnabled(false);
                 map.getUiSettings().setMyLocationButtonEnabled(false);
                 lastKnownLocation = null;
-                getLocationPermission();
+            //    getLocationPermission();
             }
         } catch (SecurityException e) {
             //Log.e("Exception: %s", e.getMessage());
@@ -173,22 +197,6 @@ public class MapsFragment extends Fragment implements ActivityCompat.OnRequestPe
     }
 
 
-    private void getLocationPermission() {
-        /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
-         * onRequestPermissionsResult.
-         */
-        if (ContextCompat.checkSelfPermission(this.getContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            locationPermissionGranted = true;
-        } else {
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-    }
 
 
     private void getDeviceLocation() {

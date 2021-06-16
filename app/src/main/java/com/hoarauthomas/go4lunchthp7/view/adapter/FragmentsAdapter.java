@@ -5,10 +5,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.hoarauthomas.go4lunchthp7.view.ListFragment;
-import com.hoarauthomas.go4lunchthp7.view.MapsFragment;
-import com.hoarauthomas.go4lunchthp7.view.SettingsFragment;
-import com.hoarauthomas.go4lunchthp7.view.WorkFragment;
+import com.hoarauthomas.go4lunchthp7.view.fragments.ListFragment;
+import com.hoarauthomas.go4lunchthp7.view.fragments.MapsFragment;
+import com.hoarauthomas.go4lunchthp7.view.fragments.SettingsFragment;
+import com.hoarauthomas.go4lunchthp7.view.fragments.WorkFragment;
 
 public class FragmentsAdapter extends FragmentPagerAdapter {
 
@@ -21,8 +21,7 @@ public class FragmentsAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
 
-        switch(position)
-        {
+        switch (position) {
             case 1:
                 //TODO : disable for test to prevent use of api map
                 return new MapsFragment();
@@ -30,12 +29,12 @@ public class FragmentsAdapter extends FragmentPagerAdapter {
             case 2:
                 return ListFragment.newInstance();
             case 3:
-                return WorkFragment.newInstance("","");
+                return WorkFragment.newInstance("", "");
 
             case 4:
                 return new SettingsFragment();
             default:
-                return WorkFragment.newInstance("","");
+                return WorkFragment.newInstance("", "");
         }
     }
 

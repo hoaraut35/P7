@@ -3,14 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.WorkFragment">
+    tools:context=".view.fragments.WorkFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="20dp"
-        android:text="@string/hello_blank_fragment" />
+
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_workmates"
+        android:tag="recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.hoarauthomas.go4lunchthp7.view.WorkFragment"
+        tools:listitem="@layout/item_list">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
 </FrameLayout>
