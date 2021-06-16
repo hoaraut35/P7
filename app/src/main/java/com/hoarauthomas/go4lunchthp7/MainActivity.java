@@ -4,8 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,13 +23,13 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.hoarauthomas.go4lunchthp7.adapter.FragmentsAdapter;
-import com.hoarauthomas.go4lunchthp7.model.Place;
-import com.hoarauthomas.go4lunchthp7.retrofit.ApiRetrofitService;
+import com.hoarauthomas.go4lunchthp7.view.adapter.FragmentsAdapter;
+import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
+import com.hoarauthomas.go4lunchthp7.api.ApiRetrofitService;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 import com.hoarauthomas.go4lunchthp7.model.GitHubRepo;
 import com.hoarauthomas.go4lunchthp7.model.User;
-import com.hoarauthomas.go4lunchthp7.retrofit.GooglePlacesInterface;
+import com.hoarauthomas.go4lunchthp7.api.GooglePlacesInterface;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ListPlacesViewModel;
 import com.hoarauthomas.go4lunchthp7.viewmodel.LoginUserViewModel;
 import com.hoarauthomas.go4lunchthp7.viewmodel.SystemViewModel;
@@ -100,8 +98,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         security();
 
-         setupRetrofit();
-        setupMyPlaces();
+        //    setupRetrofit();
 
         setupTopAppBar();
 
@@ -109,56 +106,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //    setupBottomBAr();
 
-        setupViewPager(2);
+        setupViewPager(1);
 
         //    setupAdapter();
 
 
-        //   setupPlaces();
-
-
-        // Log.i("[THOMAS","" + GitHubService().toString());
-
     }
 
-    private void setupMyPlaces() {
-
-        //    loginUVM = new ViewModelProvider(this).get(LoginUserViewModel.class);
-        //   loginUVM.getUser().observe(this, this::nextstep);
-
-        // myPlacesViewModel = new ViewModelProvider(this).get(ListPlacesViewModel.class);
-
-        //myPlacesViewModel.getMyPlaces().observe(this,this::newfunc);
-
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://maps.googleapis.com/maps/api/place/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        //Create a REST
-        GooglePlacesInterface service = retrofit.create(GooglePlacesInterface.class);
-
-        //Fetch a list of the Github repositories
-        Call<Place> call = service.getNearbyPlaces("AIzaSyDzUUJlN7hmetd7MtQR5s5TTzWiO4dwpCA",10);
-
-
-        call.enqueue(new Callback<Place>() {
-            @Override
-            public void onResponse(Call<Place> call, Response<Place> response) {
-                Log.i("[THOMAS]","dssdfdsf" + response.body().getStatus());
-
-
-            }
-
-            @Override
-            public void onFailure(Call<Place> call, Throwable t) {
-
-            }
-        });
-
-
-    }
 
     private void newfunc(List<Place> places) {
         Log.i("[THOMAS]", "ddddddddddddd");

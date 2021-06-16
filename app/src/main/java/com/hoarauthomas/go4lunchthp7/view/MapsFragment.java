@@ -22,11 +22,21 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.hoarauthomas.go4lunchthp7.R;
+import com.hoarauthomas.go4lunchthp7.api.GooglePlacesInterface;
+import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static androidx.constraintlayout.motion.widget.Debug.getLocation;
 import static com.facebook.internal.FeatureManager.Feature.Places;
 
 public class MapsFragment extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -70,12 +80,76 @@ public class MapsFragment extends Fragment implements ActivityCompat.OnRequestPe
 
             updateLocationUI();
 
-            //TODO:don't work at this time
-      //      getDeviceLocation();
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://maps.googleapis.com/maps/api/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            //Create a REST
+            GooglePlacesInterface service = retrofit.create(GooglePlacesInterface.class);
+
+            //Fetch a list of the Github repositories
+            Call<Place> call = service.getNearbyPlaces("AIzaSyDzUUJlN7hmetd7MtQR5s5TTzWiO4dwpCA",1000);
+            //send asynchronous task
+            call.enqueue(new Callback<Place>() {
+                @Override
+                public void onResponse(Call<Place> call, Response<Place> response) {
+
+
+
+
+
+                    try{
+                        map.clear();
+
+
+                        Log.i("[THOMAS]","Nombre de restaurant(s) trouvé(s) : " + response.body().getResults().size());
+
+
+                        //loop to add marker on map for everybody result
+                        for (int i = 0; i < response.body().getResults().size(); i++){
+                            Double lat = response.body().getResults().get(i).getGeometry().getLocation().getLat();
+                            Double lng = response.body().getResults().get(i).getGeometry().getLocation().getLng();
+
+                            Log.i("[THOMAS]","coordonne["+ i + "] " + lat + " " + lng );
+
+                            String placeName = response.body().getResults().get(i).getName();
+
+                            MarkerOptions markerOptions = new MarkerOptions();
+                            LatLng latLng = new LatLng(lat,lng);
+                            markerOptions.position(latLng);
+                            markerOptions.title(placeName);
+                            Marker m = map.addMarker(markerOptions);
+
+                            map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+
+                        }
+
+
+
+                    }catch (Exception e)
+                    {
+                        Log.i("[THOMAS]","erreur map");
+                    }
+
+
+
+                }
+
+                @Override
+                public void onFailure(Call<Place> call, Throwable t) {
+
+                }
+            });
 
 
         }
     };
+
+
+
+
 
     private void updateLocationUI() {
 

@@ -1,7 +1,5 @@
 package com.hoarauthomas.go4lunchthp7.view;
 
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.hoarauthomas.go4lunchthp7.R;
-import com.hoarauthomas.go4lunchthp7.adapter.CustomRecyclerViewAdapter;
+import com.hoarauthomas.go4lunchthp7.view.adapter.CustomRecyclerViewAdapter;
 
 public class ListFragment extends Fragment {
 

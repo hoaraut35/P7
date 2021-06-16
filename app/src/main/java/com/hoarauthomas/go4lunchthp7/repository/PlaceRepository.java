@@ -1,25 +1,32 @@
 package com.hoarauthomas.go4lunchthp7.repository;
 
-import android.util.Log;
 
-import androidx.lifecycle.MutableLiveData;
+import com.hoarauthomas.go4lunchthp7.api.GooglePlacesInterface;
 
-import com.hoarauthomas.go4lunchthp7.model.GitHubRepo;
-import com.hoarauthomas.go4lunchthp7.model.Place;
-import com.hoarauthomas.go4lunchthp7.retrofit.ApiRetrofitService;
-import com.hoarauthomas.go4lunchthp7.retrofit.GooglePlacesInterface;
-
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-
 //TODO:https://medium.com/@kashifo/4-steps-to-mvvm-in-android-java-b05fb4148523
+//https://github.com/NinoDLC/MVVM_Clean_Archi_Java/blob/master/app/src/main/java/fr/delcey/mvvm_clean_archi_java/data/interwebs/WeatherRepository.java
 public class PlaceRepository {
+
+
+    private GooglePlacesInterface service;
+
+    public PlaceRepository() {
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://maps.googleapis.com/maps/api/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        service = retrofit.create(GooglePlacesInterface.class);
+    }
+
+
+
+
+
 
 /*
     public MutableLiveData<List<Place>> requestRepos() {
@@ -62,7 +69,7 @@ public class PlaceRepository {
 
        */
 
-        //return mutableLiveData;
+    //return mutableLiveData;
     //}
 
 

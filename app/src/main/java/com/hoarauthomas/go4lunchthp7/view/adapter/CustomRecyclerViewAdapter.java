@@ -1,4 +1,4 @@
-package com.hoarauthomas.go4lunchthp7.adapter;
+package com.hoarauthomas.go4lunchthp7.view.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,12 +7,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hoarauthomas.go4lunchthp7.R;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 

@@ -1,4 +1,4 @@
-package com.hoarauthomas.go4lunchthp7.retrofit;
+package com.hoarauthomas.go4lunchthp7.api;
 
 import com.hoarauthomas.go4lunchthp7.model.GitHubRepo;
 

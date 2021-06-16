@@ -4,9 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.facebook.internal.Mutable;
-import com.hoarauthomas.go4lunchthp7.model.GitHubRepo;
-import com.hoarauthomas.go4lunchthp7.model.Place;
+import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
 import com.hoarauthomas.go4lunchthp7.repository.PlaceRepository;
 
 

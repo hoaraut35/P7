@@ -1,4 +1,4 @@
-package com.hoarauthomas.go4lunchthp7.adapter;
+package com.hoarauthomas.go4lunchthp7.view.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
