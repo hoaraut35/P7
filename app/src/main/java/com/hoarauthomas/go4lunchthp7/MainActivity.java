@@ -26,9 +26,11 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.hoarauthomas.go4lunchthp7.data.UserHelper;
 import com.hoarauthomas.go4lunchthp7.injection.Injection;
 import com.hoarauthomas.go4lunchthp7.injection.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
+import com.hoarauthomas.go4lunchthp7.utils.Authentification;
 import com.hoarauthomas.go4lunchthp7.viewmodel.viewModelGo4Lunch;
 import com.hoarauthomas.go4lunchthp7.ui.adapter.FragmentsAdapter;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
@@ -47,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //Added for View Binding
     private ActivityMainBinding binding;
+
+    private Authentification myAuth;
 
     //Added for ViewModel
     private viewModelGo4Lunch myViewModel;
@@ -93,8 +97,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(view);
 
         security();
-
-
 
         //initialise viewmodel
         setupViewModel();
@@ -196,10 +198,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_drawer_lunch:
-                        binding.viewpager.setCurrentItem(1);
+
+                      //  Intent i = new Intent(this, DetailRestaurant.class);
+                      //  startActivity(i);
+                           myViewModel.createuser();
+
                         break;
                     case R.id.navigation_drawer_settings:
                         binding.viewpager.setCurrentItem(4);
+
+//                        UserHelper.createUser(this.getCurrentUser().getUid(),this.getCurrentUser().getDisplayName());
+
                         break;
                     case R.id.navigation_drawer_logout:
                         request_logout();
@@ -227,6 +236,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //success
             if (resultCode == RESULT_OK) {
                 Log.i("THOMAS", "authentification réussi");
+
+               // this.myViewModel.createuser();
+
+
+                UserHelper.createUser(this.getCurrentUser().getUid(),this.getCurrentUser().getDisplayName());
 
                 //   loginUVM.updateCurrentUser(this.getCurrentUser().getDisplayName(), this.getCurrentUser().getEmail());
 

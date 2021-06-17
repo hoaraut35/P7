@@ -1,8 +1,16 @@
 package com.hoarauthomas.go4lunchthp7.viewmodel;
 
+import android.util.Log;
+
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.hoarauthomas.go4lunchthp7.data.UserHelper;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
 import com.hoarauthomas.go4lunchthp7.repositories.RestaurantsRepository;
 
@@ -20,6 +28,11 @@ public class viewModelGo4Lunch extends ViewModel {
 
     //add here repositories ...
     private RestaurantsRepository myPlaceSource;
+
+    //protected
+    protected FirebaseUser getCurrentUser() {
+        return FirebaseAuth.getInstance().getCurrentUser();
+    }
 
 
     //constructor for viewmodel
@@ -43,6 +56,28 @@ public class viewModelGo4Lunch extends ViewModel {
         return myPlaceSource.getPlaces();
 
     }
+
+
+    //Add user to Firestore
+    public void createuser( ) {
+        if (this.getCurrentUser() != null) {
+
+            String uid = this.getCurrentUser().getUid();
+            String username = this.getCurrentUser().getDisplayName();
+            String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ? this.getCurrentUser().getPhotoUrl().toString() : null;
+            Log.i("[THOMAS]", "Add user to Firestore ... " + uid + " " +username + " " + urlPicture);
+
+            UserHelper.createUser(uid, username).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.i("[THOMAS]","erreur create firestore" + e.getMessage());
+                }
+            });
+            }
+
+
+        }
+
 
 
 }

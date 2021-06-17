@@ -2,41 +2,37 @@ package com.hoarauthomas.go4lunchthp7.model;
 
 import android.media.Image;
 
+import androidx.annotation.Nullable;
+
+
+//for Firestore
 public class User {
 
     private String uid;
-    private String strFirstName;
-    private String strLastName;
-    private Image imgAvatar;
+    private String username;
+    private Boolean isMentor;
+    @Nullable
+    private String urlPicture;
 
-    public User(String strFirstName, String strLastName) {
-        this.strFirstName = strFirstName;
-        this.strLastName = strLastName;
-        //TODO:add avatar later
-        //this.imgAvatar = imgAvatar;
+    public User() { }
+
+    public User(String uid, String username) {
+        this.uid = uid;
+        this.username = username;
+        this.urlPicture = urlPicture;
+        this.isMentor = false;
     }
 
-    public Image getImgAvatar() {
-        return imgAvatar;
-    }
+    // --- GETTERS ---
+    public String getUid() { return uid; }
+    public String getUsername() { return username; }
+    public String getUrlPicture() { return urlPicture; }
+    public Boolean getIsMentor() { return isMentor; }
 
-    public String getStrFirstName() {
-        return strFirstName;
-    }
-
-    public String getStrLastName() {
-        return strLastName;
-    }
-
-    public void setImgAvatar(Image imgAvatar) {
-        this.imgAvatar = imgAvatar;
-    }
-
-    public void setStrFirstName(String strFirstName) {
-        this.strFirstName = strFirstName;
-    }
-
-    public void setStrLastName(String strLastName) {
-        this.strLastName = strLastName;
-    }
+    // --- SETTERS ---
+    public void setUsername(String username) { this.username = username; }
+    public void setUid(String uid) { this.uid = uid; }
+    public void setUrlPicture(String urlPicture) { this.urlPicture = urlPicture; }
+    public void setIsMentor(Boolean mentor) { isMentor = mentor; }
 }
+

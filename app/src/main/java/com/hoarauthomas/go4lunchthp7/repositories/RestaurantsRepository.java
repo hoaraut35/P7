@@ -62,9 +62,9 @@ public class RestaurantsRepository {
 
                        allPlaces.add(response.body().getResults().get(i));
 
-                        Log.i("[THOMAS]","resultat de la liste " + allPlaces.size() );
 
                     }
+                    Log.i("[THOMAS]","resultat de la liste " + allPlaces.size() );
 
                     //TODO: set value or putvalue? extract data to place class
                     mutableLiveData.setValue(allPlaces);
