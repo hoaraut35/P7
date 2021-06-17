@@ -1,10 +1,12 @@
-package com.hoarauthomas.go4lunchthp7.api;
+package com.hoarauthomas.go4lunchthp7.data.api;
 
 import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
+
+//https://www.jsonschema2pojo.org/
 
 public interface GooglePlacesInterface {
 

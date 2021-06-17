@@ -17,6 +17,16 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="Carte">
+
+
+        <SwitchPreferenceCompat
+            app:key="sync"
+            app:title="Afficher zoom" />
+
+
+    </PreferenceCategory>
+
 
 
     <PreferenceCategory app:title="@string/sync_header">

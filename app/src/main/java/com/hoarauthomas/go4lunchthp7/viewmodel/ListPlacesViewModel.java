@@ -6,20 +6,24 @@ import androidx.lifecycle.ViewModel;
 
 import com.hoarauthomas.go4lunchthp7.model.User;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
+import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
 import com.hoarauthomas.go4lunchthp7.repositories.PlaceRepository;
 
 
 import java.util.List;
 import java.util.concurrent.Executor;
 
+//Business logic
+//share data between multiple fragment (list workmates etc)
 
 //https://medium.com/@kashifo/4-steps-to-mvvm-in-android-java-b05fb4148523
+
 public class ListPlacesViewModel extends ViewModel {
 
 
     //add here repositories ...
     private PlaceRepository myPlaceSource;
-    //private final Executor executor;
+
 
     private LiveData<Place> currentPlace;
 
@@ -46,7 +50,7 @@ public class ListPlacesViewModel extends ViewModel {
     private MutableLiveData<List<Place>> mutableLiveData;
 
 
-    public LiveData<List<String>> getPlaces() {
+    public LiveData<List<Result>> getPlaces() {
         return myPlaceSource.getPlaces();
 
     }

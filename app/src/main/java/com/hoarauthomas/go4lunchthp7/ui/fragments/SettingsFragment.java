@@ -1,4 +1,4 @@
-package com.hoarauthomas.go4lunchthp7.view.fragments;
+package com.hoarauthomas.go4lunchthp7.ui.fragments;
 
 import android.os.Bundle;
 

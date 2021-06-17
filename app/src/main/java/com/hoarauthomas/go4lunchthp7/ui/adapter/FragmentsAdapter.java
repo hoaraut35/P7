@@ -1,14 +1,14 @@
-package com.hoarauthomas.go4lunchthp7.view.adapter;
+package com.hoarauthomas.go4lunchthp7.ui.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.hoarauthomas.go4lunchthp7.view.fragments.ListFragment;
-import com.hoarauthomas.go4lunchthp7.view.fragments.MapsFragment;
-import com.hoarauthomas.go4lunchthp7.view.fragments.SettingsFragment;
-import com.hoarauthomas.go4lunchthp7.view.fragments.WorkFragment;
+import com.hoarauthomas.go4lunchthp7.ui.fragments.ListFragment;
+import com.hoarauthomas.go4lunchthp7.ui.fragments.MapsFragment;
+import com.hoarauthomas.go4lunchthp7.ui.fragments.SettingsFragment;
+import com.hoarauthomas.go4lunchthp7.ui.fragments.WorkFragment;
 
 public class FragmentsAdapter extends FragmentPagerAdapter {
 

@@ -4,9 +4,10 @@ import android.media.Image;
 
 public class User {
 
-    private Image imgAvatar;
+    private String uid;
     private String strFirstName;
     private String strLastName;
+    private Image imgAvatar;
 
     public User(String strFirstName, String strLastName) {
         this.strFirstName = strFirstName;

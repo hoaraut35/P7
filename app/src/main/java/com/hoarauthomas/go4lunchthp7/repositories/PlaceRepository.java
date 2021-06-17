@@ -3,16 +3,13 @@ package com.hoarauthomas.go4lunchthp7.repositories;
 
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.hoarauthomas.go4lunchthp7.api.GooglePlacesInterface;
+import com.hoarauthomas.go4lunchthp7.data.api.GooglePlacesInterface;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
+import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,14 +25,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PlaceRepository {
 
-    private List<String> allPlaces = new ArrayList<>();
+    private List<Result> allPlaces = new ArrayList<>();
+
+    public LiveData<List<Result>> getAllPlaces() {
+        return  getPlaces();
+    }
+
+
+
 
 
     private GooglePlacesInterface service;
 
-    public MutableLiveData<List<String>> getPlaces() {
+    public MutableLiveData<List<Result>> getPlaces() {
 
-        final MutableLiveData<List<String>> mutableLiveData = new MutableLiveData<>();
+        final MutableLiveData<List<Result>> mutableLiveData = new MutableLiveData<>();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://maps.googleapis.com/maps/api/")
@@ -56,26 +60,16 @@ public class PlaceRepository {
                     //loop to add marker on map for everybody result
                     for (int i = 0; i < response.body().getResults().size(); i++){
 
-                        Double lat = response.body().getResults().get(i).getGeometry().getLocation().getLat();
-                        Double lng = response.body().getResults().get(i).getGeometry().getLocation().getLng();
+                       allPlaces.add(response.body().getResults().get(i));
 
-
-                        Log.i("[THOMAS]","coordonne["+ i + "] " + lat + " " + lng );
-
-                        String placeName = response.body().getResults().get(i).getName();
-
-                        allPlaces.add(placeName);
-
-
+                        Log.i("[THOMAS]","resultat de la liste " + allPlaces.size() );
 
                     }
 
-
-
                     //TODO: set value or putvalue? extract data to place class
-                    //mutableLiveData.setValue(response.body());
+                    mutableLiveData.setValue(allPlaces);
 
-                   // return allPlaces.toArray();
+
                 }
             }
 
@@ -88,6 +82,8 @@ public class PlaceRepository {
         return mutableLiveData;
 
     }
+
+
 
 
 

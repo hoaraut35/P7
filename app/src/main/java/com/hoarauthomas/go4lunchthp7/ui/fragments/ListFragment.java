@@ -1,4 +1,4 @@
-package com.hoarauthomas.go4lunchthp7.view.fragments;
+package com.hoarauthomas.go4lunchthp7.ui.fragments;
 
 import android.os.Bundle;
 
@@ -13,13 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.hoarauthomas.go4lunchthp7.R;
-import com.hoarauthomas.go4lunchthp7.view.adapter.CustomRecyclerViewAdapter;
+import com.hoarauthomas.go4lunchthp7.ui.adapter.RecyclerViewAdapter;
 
 public class ListFragment extends Fragment {
 
     //for add a recyclerview on this fragment
     private RecyclerView recyclerView;
-    private CustomRecyclerViewAdapter myAdapter;
+    private RecyclerViewAdapter myAdapter;
 
     public static ListFragment newInstance() {
         return new ListFragment();
@@ -35,7 +35,7 @@ public class ListFragment extends Fragment {
         recyclerView = view.findViewWithTag("recycler_view");
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        recyclerView.setAdapter(new CustomRecyclerViewAdapter(1));
+        recyclerView.setAdapter(new RecyclerViewAdapter(1));
         return view;
     }
 

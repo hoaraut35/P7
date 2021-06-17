@@ -1,8 +1,8 @@
-package com.hoarauthomas.go4lunchthp7.view.fragments;
+package com.hoarauthomas.go4lunchthp7.ui.fragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -27,7 +27,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.hoarauthomas.go4lunchthp7.R;
-import com.hoarauthomas.go4lunchthp7.api.GooglePlacesInterface;
+import com.hoarauthomas.go4lunchthp7.data.api.GooglePlacesInterface;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
 
 import retrofit2.Call;
@@ -36,10 +36,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static androidx.constraintlayout.motion.widget.Debug.getLocation;
-import static com.facebook.internal.FeatureManager.Feature.Places;
-
-public class MapsFragment extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback {
+public class MapsFragment extends Fragment implements OnRequestPermissionsResultCallback {
 
 
     private LocationManager lm;
@@ -64,22 +61,37 @@ public class MapsFragment extends Fragment implements ActivityCompat.OnRequestPe
          * install it inside the SupportMapFragment. This method will only be triggered once the
          * user has installed Google Play services and returned to the app.
          */
+
+
+
+
         @Override
         public void onMapReady(GoogleMap googleMap) {
 
             map = googleMap;
 
-            //setup
-            map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+            map.getUiSettings().setZoomControlsEnabled(true);
+
+
+
+        //    map.setOnMyLocationButtonClickListener();
+         //   map.setOnMyLocationClickListener(this);
+
+            enableMyLocation();
+
+
+           /* map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
                 @Override
                 public boolean onMyLocationButtonClick() {
                     return false;
                 }
             });
 
+            */
 
 
-            enableMyLocation();
+
+
 
           //  getLocationPermission();
 
@@ -126,7 +138,10 @@ public class MapsFragment extends Fragment implements ActivityCompat.OnRequestPe
                             LatLng latLng = new LatLng(lat,lng);
                             markerOptions.position(latLng);
                             markerOptions.title(placeName);
+
+
                             Marker m = map.addMarker(markerOptions);
+                            //m.setTag();
 
 
                             //move camera to the latest position
@@ -154,25 +169,28 @@ public class MapsFragment extends Fragment implements ActivityCompat.OnRequestPe
             });
 
 
+
+
         }
     };
 
 
 
+
+
     private void enableMyLocation() {
-
-
-
-        if (ContextCompat.checkSelfPermission(getContext(),Manifest.permission.ACCESS_FINE_LOCATION)== PackageManager.PERMISSION_GRANTED){
-            if (map !=null)
-            {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            if (map != null) {
                 map.setMyLocationEnabled(true);
             }
-            else
-            {
-            }
+        } else {
+            // Permission to access the location is missing. Show rationale and request permission
+         //   PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
+           //         Manifest.permission.ACCESS_FINE_LOCATION, true);
         }
     }
+
 
 
     private void updateLocationUI() {

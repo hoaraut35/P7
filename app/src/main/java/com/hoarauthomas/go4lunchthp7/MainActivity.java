@@ -26,16 +26,20 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.injection.Injection;
 import com.hoarauthomas.go4lunchthp7.injection.ViewModelFactory;
-import com.hoarauthomas.go4lunchthp7.view.adapter.FragmentsAdapter;
-import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
-import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
+import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ListPlacesViewModel;
+import com.hoarauthomas.go4lunchthp7.ui.adapter.FragmentsAdapter;
+import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static android.view.View.*;
+
+
+//this is for user interaction only ....
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -49,6 +53,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int RC_SIGN_IN = 123;
     private static final int SIGN_OUT_TASK = 10;
     private static final int DELETE_USER_TASK = 20;
+
+    //list for restaurants
+    private final ArrayList<Result> allResult = new ArrayList<>();
+
 
     List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.FacebookBuilder().build(),
@@ -80,7 +88,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(view);
 
         security();
+
+        //initialise viewmodel
         setupViewModel();
+
+        //TODO: regroup to a ui file or baseactivitry file
         setupTopAppBar();
         setupNavigationDrawer();
         setupBottomBAr();
@@ -97,9 +109,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             request_login();
         } else {
             //else request user info to update ui
-
-
-
             request_user_info();
         }
     }
@@ -121,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .into(avatar);
     }
 
+    //TODO: move to viewmodel. ..
     //to load firebase ui auth activity
     private void request_login() {
         Log.i("[THOMAS", "request login...");
@@ -136,6 +146,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         );
     }
 
+    //TODO: move to viewmodel file...
+    private void request_logout() {
+        AuthUI.getInstance()
+                .signOut(this)
+                .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted(SIGN_OUT_TASK));
+    }
+
+
     //TODO: viewmodel setup
     private void setupViewModel() {
 
@@ -150,8 +168,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     //update ui xhen news data coming
-    private void onUpdatePlaces(List<String> places) {
-        Log.i("[THOMAS]","ViewModel update places" + places);
+    private void onUpdatePlaces(List<Result> places) {
+        Log.i("[THOMAS]","ViewModel update places" + places.size());
+
+        allResult.addAll(places);
+
     }
 
 
@@ -179,11 +200,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-    private void request_logout() {
-        AuthUI.getInstance()
-                .signOut(this)
-                .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted(SIGN_OUT_TASK));
-    }
 
     //get the result after login fail or not
     @Override

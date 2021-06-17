@@ -1,4 +1,4 @@
-package com.hoarauthomas.go4lunchthp7.view.fragments;
+package com.hoarauthomas.go4lunchthp7.ui.fragments;
 
 import android.os.Bundle;
 
@@ -6,14 +6,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.hoarauthomas.go4lunchthp7.R;
-import com.hoarauthomas.go4lunchthp7.api.UserHelper;
-import com.hoarauthomas.go4lunchthp7.view.adapter.CustomRecyclerViewAdapter;
+import com.hoarauthomas.go4lunchthp7.ui.adapter.RecyclerViewAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,7 +21,7 @@ import com.hoarauthomas.go4lunchthp7.view.adapter.CustomRecyclerViewAdapter;
 public class WorkFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private CustomRecyclerViewAdapter myAdapter;
+    private RecyclerViewAdapter myAdapter;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -83,7 +81,7 @@ public class WorkFragment extends Fragment {
         recyclerView = view.findViewWithTag("recycler_view");
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        recyclerView.setAdapter(new CustomRecyclerViewAdapter(1));
+        recyclerView.setAdapter(new RecyclerViewAdapter(1));
 
 
 //        Log.i("[THOMAS]","fragment workmates ... users" + UserHelper.getUsersCollection().toString());
