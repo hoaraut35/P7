@@ -4,8 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.hoarauthomas.go4lunchthp7.repositories.PlaceRepository;
-import com.hoarauthomas.go4lunchthp7.viewmodel.ListPlacesViewModel;
+import com.hoarauthomas.go4lunchthp7.repositories.RestaurantsRepository;
+import com.hoarauthomas.go4lunchthp7.viewmodel.viewModelGo4Lunch;
 
 import java.util.concurrent.Executor;
 
@@ -15,14 +15,14 @@ import java.util.concurrent.Executor;
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
     //regroup all repositories here ...
-    private final PlaceRepository placeRepository;
+    private final RestaurantsRepository placeRepository;
     //add others repository here...
 
     //for separated thread...
     private final Executor executor;
 
     //constructor to soulager MainAcitivty
-    public ViewModelFactory(PlaceRepository placeRepository, Executor executor) {
+    public ViewModelFactory(RestaurantsRepository placeRepository, Executor executor) {
         this.placeRepository = placeRepository;
         //add other repository here...
         this.executor = executor;
@@ -31,8 +31,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(ListPlacesViewModel.class)) {
-            return (T) new ListPlacesViewModel(placeRepository, executor);
+        if (modelClass.isAssignableFrom(viewModelGo4Lunch.class)) {
+            return (T) new viewModelGo4Lunch(placeRepository, executor);
         }
         throw new IllegalArgumentException("Unknow ViewModel class");
     }

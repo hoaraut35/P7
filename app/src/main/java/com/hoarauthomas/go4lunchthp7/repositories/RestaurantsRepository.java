@@ -23,7 +23,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 //https://github.com/NinoDLC/MVVM_Clean_Archi_Java/blob/master/app/src/main/java/fr/delcey/mvvm_clean_archi_java/data/interwebs/WeatherRepository.java
 
-public class PlaceRepository {
+public class RestaurantsRepository {
 
     private List<Result> allPlaces = new ArrayList<>();
 

@@ -12,8 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.hoarauthomas.go4lunchthp7.MainActivity;
 import com.hoarauthomas.go4lunchthp7.R;
+import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
 import com.hoarauthomas.go4lunchthp7.ui.adapter.RecyclerViewAdapter;
+
+import java.util.List;
+import java.util.ResourceBundle;
 
 public class ListFragment extends Fragment {
 
@@ -32,10 +37,14 @@ public class ListFragment extends Fragment {
         View view =inflater.inflate(R.layout.list_fragment,container,false);
 
 
+        MainActivity activity = (MainActivity)getActivity();
+        List<Result> cool = activity.myData();
+
+
         recyclerView = view.findViewWithTag("recycler_view");
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        recyclerView.setAdapter(new RecyclerViewAdapter(1));
+        recyclerView.setAdapter(new RecyclerViewAdapter(0,cool));
         return view;
     }
 

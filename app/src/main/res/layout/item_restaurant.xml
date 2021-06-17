@@ -9,16 +9,16 @@
 
 
     <TextView
-        android:id="@+id/list_name"
+        android:id="@+id/nameOfRestaurant"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:text="Le Zinc"
         android:textSize="18dp"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/list_adress"
+        android:id="@+id/addressOfRestaurant"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_gravity="center"
@@ -33,8 +33,16 @@
         android:text="Open until 7pm"
         android:textStyle="italic" />
 
+    <TextView
+        android:id="@+id/distanceOfRestaurant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:text="100m"
+        android:textStyle="italic" />
+
     <ImageView
-        android:id="@+id/image"
+        android:id="@+id/imageOfRestaurant"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_gravity="end"

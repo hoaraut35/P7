@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,7 +29,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.injection.Injection;
 import com.hoarauthomas.go4lunchthp7.injection.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
-import com.hoarauthomas.go4lunchthp7.viewmodel.ListPlacesViewModel;
+import com.hoarauthomas.go4lunchthp7.viewmodel.viewModelGo4Lunch;
 import com.hoarauthomas.go4lunchthp7.ui.adapter.FragmentsAdapter;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 
@@ -47,7 +49,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ActivityMainBinding binding;
 
     //Added for ViewModel
-    private ListPlacesViewModel myPlacesViewModel;
+    private viewModelGo4Lunch myViewModel;
+
+    RecyclerView recyclerView;
 
     //Added for security authentification
     private static final int RC_SIGN_IN = 123;
@@ -55,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int DELETE_USER_TASK = 20;
 
     //list for restaurants
-    private final ArrayList<Result> allResult = new ArrayList<>();
+    public final ArrayList<Result> allResult = new ArrayList<>();
 
 
     List<AuthUI.IdpConfig> providers = Arrays.asList(
@@ -76,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
+
     protected Boolean isCurrentUserLogged() {
         return (this.getCurrentUser() != null);
     }
@@ -88,6 +93,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(view);
 
         security();
+
+
 
         //initialise viewmodel
         setupViewModel();
@@ -111,6 +118,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //else request user info to update ui
             request_user_info();
         }
+    }
+
+    public List<Result> myData(){
+        return allResult;
     }
 
     //update navigation drawer data user
@@ -154,28 +165,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    //TODO: viewmodel setup
+    //**********************************************************************************************
     private void setupViewModel() {
-
-        Log.i("[THOMAS]", "Enter in setupViewModel ...");
-
-        //ok
         ViewModelFactory myViewModelFactory = Injection.provideViewModelFactory(this);
-        //ok but rename ListPlacesViewModel in Go4LunchViewModel ?
-        this.myPlacesViewModel = new  ViewModelProvider(this, myViewModelFactory).get(ListPlacesViewModel.class);
-        //init login security here in viewmodel ?
-        this.myPlacesViewModel.getPlaces().observe(this,this::onUpdatePlaces);
+        this.myViewModel = new ViewModelProvider(this, myViewModelFactory).get(viewModelGo4Lunch.class);
+        this.myViewModel.getSecurity().observe(this, this::onUpdateSecurity);
+        this.myViewModel.getRestaurants().observe(this, this::onUpdateRestaurants);
+        this.myViewModel.getWorkMates().observe(this, this::onUpdateWorkMates);
     }
 
-    //update ui xhen news data coming
-    private void onUpdatePlaces(List<Result> places) {
-        Log.i("[THOMAS]","ViewModel update places" + places.size());
+    private void onUpdateSecurity(List<Result> results) {
+        Log.i("[THOMAS]", "ViewModel Security Event");
+    }
 
+    private void onUpdateRestaurants(List<Result> places) {
+        Log.i("[THOMAS]", "ViewModel Restaurants Event" + places.size());
+        allResult.clear();
         allResult.addAll(places);
 
     }
 
-
+    private void onUpdateWorkMates(List<Result> results) {
+        Log.i("[THOMAS]", "ViewModel WorkMates Event" + results.size());
+    }
+    //**********************************************************************************************
 
     private void setupNavigationDrawer() {
         binding.navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -199,7 +212,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
-
 
     //get the result after login fail or not
     @Override
@@ -283,10 +295,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-    private void setupViewPager(int mode) {
-        myFragmentAdapter = new FragmentsAdapter(getSupportFragmentManager());
+    private void setupViewPager(int default_view) {
+
+        myFragmentAdapter = new FragmentsAdapter(this);//FragmentsAdapter(getSuppgetSupportFragmentManager());
         binding.viewpager.setAdapter(myFragmentAdapter);
-        binding.viewpager.setCurrentItem(mode);
+        //to setup default fragment to view
+        binding.viewpager.setCurrentItem(default_view);
     }
 
     private void setupTopAppBar() {
@@ -294,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
                 Log.i("THOMAS", "clic sur menu top bar");
-                binding.drawerLayout.openDrawer(Gravity.START);
+                binding.drawerLayout.openDrawer(GravityCompat.START);
             }
         });
 
@@ -306,8 +320,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
-
-
 
 
     //get item selected on navigation drawer

@@ -81,7 +81,7 @@ public class WorkFragment extends Fragment {
         recyclerView = view.findViewWithTag("recycler_view");
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        recyclerView.setAdapter(new RecyclerViewAdapter(1));
+       // recyclerView.setAdapter(new RecyclerViewAdapter(1));
 
 
 //        Log.i("[THOMAS]","fragment workmates ... users" + UserHelper.getUsersCollection().toString());

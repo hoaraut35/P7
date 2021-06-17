@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:name="com.hoarauthomas.go4lunchthp7.view.WorkFragment"
-        tools:listitem="@layout/item_list">
+        tools:listitem="@layout/item_restaurant">
 
     </androidx.recyclerview.widget.RecyclerView>
 
