@@ -1,287 +1,178 @@
+
 package com.hoarauthomas.go4lunchthp7.model.pojo;
+
+import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 
-import java.util.ArrayList;
-import java.util.List;
+public class Result {
 
-    public class Result {
+    @SerializedName("geometry")
+    @Expose
+    private Geometry geometry;
+    @SerializedName("icon")
+    @Expose
+    private String icon;
+    @SerializedName("name")
+    @Expose
+    private String name;
+    @SerializedName("photos")
+    @Expose
+    private List<Photo> photos = null;
+    @SerializedName("place_id")
+    @Expose
+    private String placeId;
+    @SerializedName("reference")
+    @Expose
+    private String reference;
+    @SerializedName("scope")
+    @Expose
+    private String scope;
+    @SerializedName("types")
+    @Expose
+    private List<String> types = null;
+    @SerializedName("vicinity")
+    @Expose
+    private String vicinity;
+    @SerializedName("business_status")
+    @Expose
+    private String businessStatus;
+    @SerializedName("opening_hours")
+    @Expose
+    private OpeningHours openingHours;
+    @SerializedName("plus_code")
+    @Expose
+    private PlusCode plusCode;
+    @SerializedName("rating")
+    @Expose
+    private Double rating;
+    @SerializedName("user_ratings_total")
+    @Expose
+    private Integer userRatingsTotal;
+    @SerializedName("price_level")
+    @Expose
+    private Integer priceLevel;
 
-        @SerializedName("geometry")
-        @Expose
-        private Geometry geometry;
-        @SerializedName("icon")
-        @Expose
-        private String icon;
-        @SerializedName("id")
-        @Expose
-        private String id;
-        @SerializedName("name")
-        @Expose
-        private String name;
-        @SerializedName("opening_hours")
-        @Expose
-        private OpeningHours openingHours;
-        @SerializedName("photos")
-        @Expose
-        private List<Photo> photos = new ArrayList<Photo>();
-        @SerializedName("place_id")
-        @Expose
-        private String placeId;
-        @SerializedName("rating")
-        @Expose
-        private Double rating;
-        @SerializedName("reference")
-        @Expose
-        private String reference;
-        @SerializedName("scope")
-        @Expose
-        private String scope;
-        @SerializedName("types")
-        @Expose
-        private List<String> types = new ArrayList<String>();
-        @SerializedName("vicinity")
-        @Expose
-        private String vicinity;
-        @SerializedName("price_level")
-        @Expose
-        private Integer priceLevel;
+    public Geometry getGeometry() {
+        return geometry;
+    }
 
-        /**
-         *
-         * @return
-         * The geometry
-         */
-        public Geometry getGeometry() {
-            return geometry;
-        }
+    public void setGeometry(Geometry geometry) {
+        this.geometry = geometry;
+    }
 
-        /**
-         *
-         * @param geometry
-         * The geometry
-         */
-        public void setGeometry(Geometry geometry) {
-            this.geometry = geometry;
-        }
+    public String getIcon() {
+        return icon;
+    }
 
-        /**
-         *
-         * @return
-         * The icon
-         */
-        public String getIcon() {
-            return icon;
-        }
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
 
-        /**
-         *
-         * @param icon
-         * The icon
-         */
-        public void setIcon(String icon) {
-            this.icon = icon;
-        }
+    public String getName() {
+        return name;
+    }
 
-        /**
-         *
-         * @return
-         * The id
-         */
-        public String getId() {
-            return id;
-        }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-        /**
-         *
-         * @param id
-         * The id
-         */
-        public void setId(String id) {
-            this.id = id;
-        }
+    public List<Photo> getPhotos() {
+        return photos;
+    }
 
-        /**
-         *
-         * @return
-         * The name
-         */
-        public String getName() {
-            return name;
-        }
+    public void setPhotos(List<Photo> photos) {
+        this.photos = photos;
+    }
 
-        /**
-         *
-         * @param name
-         * The name
-         */
-        public void setName(String name) {
-            this.name = name;
-        }
+    public String getPlaceId() {
+        return placeId;
+    }
 
-        /**
-         *
-         * @return
-         * The openingHours
-         */
-        public OpeningHours getOpeningHours() {
-            return openingHours;
-        }
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
+    }
 
-        /**
-         *
-         * @param openingHours
-         * The opening_hours
-         */
-        public void setOpeningHours(OpeningHours openingHours) {
-            this.openingHours = openingHours;
-        }
+    public String getReference() {
+        return reference;
+    }
 
-        /**
-         *
-         * @return
-         * The photos
-         */
-        public List<Photo> getPhotos() {
-            return photos;
-        }
+    public void setReference(String reference) {
+        this.reference = reference;
+    }
 
-        /**
-         *
-         * @param photos
-         * The photos
-         */
-        public void setPhotos(List<Photo> photos) {
-            this.photos = photos;
-        }
+    public String getScope() {
+        return scope;
+    }
 
-        /**
-         *
-         * @return
-         * The placeId
-         */
-        public String getPlaceId() {
-            return placeId;
-        }
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
 
-        /**
-         *
-         * @param placeId
-         * The place_id
-         */
-        public void setPlaceId(String placeId) {
-            this.placeId = placeId;
-        }
+    public List<String> getTypes() {
+        return types;
+    }
 
-        /**
-         *
-         * @return
-         * The rating
-         */
-        public Double getRating() {
-            return rating;
-        }
+    public void setTypes(List<String> types) {
+        this.types = types;
+    }
 
-        /**
-         *
-         * @param rating
-         * The rating
-         */
-        public void setRating(Double rating) {
-            this.rating = rating;
-        }
+    public String getVicinity() {
+        return vicinity;
+    }
 
-        /**
-         *
-         * @return
-         * The reference
-         */
-        public String getReference() {
-            return reference;
-        }
+    public void setVicinity(String vicinity) {
+        this.vicinity = vicinity;
+    }
 
-        /**
-         *
-         * @param reference
-         * The reference
-         */
-        public void setReference(String reference) {
-            this.reference = reference;
-        }
+    public String getBusinessStatus() {
+        return businessStatus;
+    }
 
-        /**
-         *
-         * @return
-         * The scope
-         */
-        public String getScope() {
-            return scope;
-        }
+    public void setBusinessStatus(String businessStatus) {
+        this.businessStatus = businessStatus;
+    }
 
-        /**
-         *
-         * @param scope
-         * The scope
-         */
-        public void setScope(String scope) {
-            this.scope = scope;
-        }
+    public OpeningHours getOpeningHours() {
+        return openingHours;
+    }
 
-        /**
-         *
-         * @return
-         * The types
-         */
-        public List<String> getTypes() {
-            return types;
-        }
+    public void setOpeningHours(OpeningHours openingHours) {
+        this.openingHours = openingHours;
+    }
 
-        /**
-         *
-         * @param types
-         * The types
-         */
-        public void setTypes(List<String> types) {
-            this.types = types;
-        }
+    public PlusCode getPlusCode() {
+        return plusCode;
+    }
 
-        /**
-         *
-         * @return
-         * The vicinity
-         */
-        public String getVicinity() {
-            return vicinity;
-        }
+    public void setPlusCode(PlusCode plusCode) {
+        this.plusCode = plusCode;
+    }
 
-        /**
-         *
-         * @param vicinity
-         * The vicinity
-         */
-        public void setVicinity(String vicinity) {
-            this.vicinity = vicinity;
-        }
+    public Double getRating() {
+        return rating;
+    }
 
-        /**
-         *
-         * @return
-         * The priceLevel
-         */
-        public Integer getPriceLevel() {
-            return priceLevel;
-        }
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
 
-        /**
-         *
-         * @param priceLevel
-         * The price_level
-         */
-        public void setPriceLevel(Integer priceLevel) {
-            this.priceLevel = priceLevel;
-        }
+    public Integer getUserRatingsTotal() {
+        return userRatingsTotal;
+    }
 
+    public void setUserRatingsTotal(Integer userRatingsTotal) {
+        this.userRatingsTotal = userRatingsTotal;
+    }
+
+    public Integer getPriceLevel() {
+        return priceLevel;
+    }
+
+    public void setPriceLevel(Integer priceLevel) {
+        this.priceLevel = priceLevel;
+    }
 
 }

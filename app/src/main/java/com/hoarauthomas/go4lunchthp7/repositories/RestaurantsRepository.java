@@ -48,13 +48,6 @@ public class RestaurantsRepository {
 
         service = retrofit.create(GooglePlacesInterface.class);
 
-
-
-
-
-
-
-
         service.getNearbyPlaces("AIzaSyDzUUJlN7hmetd7MtQR5s5TTzWiO4dwpCA", 1000).enqueue(new Callback<Place>() {
             @Override
             public void onResponse(Call<Place> call, Response<Place> response) {
@@ -63,21 +56,14 @@ public class RestaurantsRepository {
 
                 if (response.isSuccessful() && response.body() != null) {
 
-
                     //loop to add marker on map for everybody result
                     for (int i = 0; i < response.body().getResults().size(); i++){
-
                        allPlaces.add(response.body().getResults().get(i));
-
-
                     }
-                    Log.i("[THOMAS]","resultat de la liste " + allPlaces.size() );
 
-                    //TODO: set value or putvalue? extract data to place class
-                    mutableLiveData.setValue(allPlaces);
-
-
-                }
+                    Log.i("[THOMAS]","Repository resultats restaurants " + allPlaces.size() );
+                    mutableLiveData.postValue(allPlaces);
+               }
             }
 
             @Override

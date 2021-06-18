@@ -34,29 +34,26 @@ public class ListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View view =inflater.inflate(R.layout.list_fragment,container,false);
+        View view = inflater.inflate(R.layout.list_fragment, container, false);
 
 
-        MainActivity activity = (MainActivity)getActivity();
-        List<Result> cool = activity.myData();
+        MainActivity activity = (MainActivity) getActivity();
 
 
+        List<Result> listeRestaurants = activity.myData();
         recyclerView = view.findViewWithTag("recycler_view");
-        recyclerView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        recyclerView.setAdapter(new RecyclerViewAdapter(0,cool));
+        recyclerView.setAdapter(new RecyclerViewAdapter(0, listeRestaurants));
+
         return view;
     }
-
-
-
-
 
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-       // mViewModel = new ViewModelProvider(this).get(ListViewModel.class);
+        // mViewModel = new ViewModelProvider(this).get(ListViewModel.class);
         // TODO: Use the ViewModel
     }
 

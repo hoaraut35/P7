@@ -1,5 +1,6 @@
 package com.hoarauthomas.go4lunchthp7.data.api;
 
+
 import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
 
 import retrofit2.Call;

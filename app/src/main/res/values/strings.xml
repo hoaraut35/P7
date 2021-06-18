@@ -50,5 +50,12 @@
     <string name="google_maps_key">AIzaSyCKxZQFg6PZiBL9kHASYdFWt6A0Ai2mAZw</string>
     <string name="langage_mode">Langue de retour places : fr</string>
     <string name="topAppBar_title">Collègues</string>
+    <string name="nameOfRestaurant">French - 12 rue du Faubourg Poissonière</string>
+    <string name="distanceOfRestaurant">100m</string>
+    <string name="openTimeOfRestaurant">Open until 7pm</string>
+    <string name="titleOfRestaurant">Le Zinc</string>
+    <string name="numberOfWorkmates">10</string>
+    <string name="numberOfLike">3</string>
+    <string name="labelForOpeningHours">\"Ouvert : \"</string>
 
 </resources>

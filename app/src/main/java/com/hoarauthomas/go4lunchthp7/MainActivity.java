@@ -30,6 +30,7 @@ import com.hoarauthomas.go4lunchthp7.data.UserHelper;
 import com.hoarauthomas.go4lunchthp7.injection.Injection;
 import com.hoarauthomas.go4lunchthp7.injection.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
+import com.hoarauthomas.go4lunchthp7.ui.activity.DetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.utils.Authentification;
 import com.hoarauthomas.go4lunchthp7.utils.BaseActivity;
 import com.hoarauthomas.go4lunchthp7.viewmodel.viewModelGo4Lunch;
@@ -208,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         //  Intent i = new Intent(this, DetailRestaurant.class);
                         //  startActivity(i);
-
+                        openMyFavoriteRestaurant();
 
                         break;
                     case R.id.navigation_drawer_settings:
@@ -227,6 +228,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return true;
             }
         });
+    }
+
+    private void openMyFavoriteRestaurant() {
+
+        Log.i("[THOMAS]","Open favorite restaurant acitvity....");
+
+        Intent intent = new Intent(this, DetailRestaurant.class);
+        startActivity(intent);
     }
 
     //get the result after login fail or not
