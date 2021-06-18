@@ -70,7 +70,7 @@ public class viewModelGo4Lunch extends ViewModel {
             UserHelper.createUser(uid, username).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.i("[THOMAS]","erreur create firestore" + e.getMessage());
+                    Log.i("[THOMAS]","Erreur CREATE Firestore " + e.getMessage());
                 }
             });
             }

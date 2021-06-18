@@ -31,6 +31,7 @@ import com.hoarauthomas.go4lunchthp7.injection.Injection;
 import com.hoarauthomas.go4lunchthp7.injection.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
 import com.hoarauthomas.go4lunchthp7.utils.Authentification;
+import com.hoarauthomas.go4lunchthp7.utils.BaseActivity;
 import com.hoarauthomas.go4lunchthp7.viewmodel.viewModelGo4Lunch;
 import com.hoarauthomas.go4lunchthp7.ui.adapter.FragmentsAdapter;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
@@ -122,16 +123,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public List<Result> myData(){
+    public List<Result> myData() {
         return allResult;
     }
 
     //update navigation drawer data user
     private void request_user_info() {
-        Log.i("[THOMAS]", "request user infos...");
+
+        Log.i("[THOMAS]", "Request user information ...");
 
         View hv = binding.navigationView.getHeaderView(0);
+
         TextView name = (TextView) hv.findViewById(R.id.displayName);
+
+
         name.setText(this.getCurrentUser().getDisplayName());
         TextView email = (TextView) hv.findViewById(R.id.email);
         email.setText(this.getCurrentUser().getEmail());
@@ -140,13 +145,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Glide.with(avatar)
                 .load(this.getCurrentUser().getPhotoUrl())
+                .circleCrop()
                 .into(avatar);
     }
 
     //TODO: move to viewmodel. ..
     //to load firebase ui auth activity
     private void request_login() {
-        Log.i("[THOMAS", "request login...");
+
+        Log.i("[THOMAS", "request firebase-ui auth ...");
 
         startActivityForResult(
                 AuthUI.getInstance()
@@ -199,9 +206,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 switch (item.getItemId()) {
                     case R.id.navigation_drawer_lunch:
 
-                      //  Intent i = new Intent(this, DetailRestaurant.class);
-                      //  startActivity(i);
-                           myViewModel.createuser();
+                        //  Intent i = new Intent(this, DetailRestaurant.class);
+                        //  startActivity(i);
+
 
                         break;
                     case R.id.navigation_drawer_settings:
@@ -237,10 +244,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (resultCode == RESULT_OK) {
                 Log.i("THOMAS", "authentification réussi");
 
-               // this.myViewModel.createuser();
+                // this.myViewModel.createuser();
+                myViewModel.createuser();
 
-
-                UserHelper.createUser(this.getCurrentUser().getUid(),this.getCurrentUser().getDisplayName());
+                UserHelper.createUser(this.getCurrentUser().getUid(), this.getCurrentUser().getDisplayName());
 
                 //   loginUVM.updateCurrentUser(this.getCurrentUser().getDisplayName(), this.getCurrentUser().getEmail());
 

@@ -80,7 +80,7 @@
             android:contentDescription="TODO"
 
             android:layout_marginLeft="18dp"
-
+            android:color="@android:color/transparent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="@+id/displayName" />
 
