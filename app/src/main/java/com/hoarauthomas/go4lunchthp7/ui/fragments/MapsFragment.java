@@ -27,7 +27,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.hoarauthomas.go4lunchthp7.R;
-import com.hoarauthomas.go4lunchthp7.data.api.GooglePlacesInterface;
+import com.hoarauthomas.go4lunchthp7.api.GooglePlacesInterface;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
 
 import retrofit2.Call;
@@ -113,10 +113,6 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             call.enqueue(new Callback<Place>() {
                 @Override
                 public void onResponse(Call<Place> call, Response<Place> response) {
-
-
-
-
 
                     try{
                         map.clear();

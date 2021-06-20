@@ -36,59 +36,13 @@ public class FragmentsAdapter extends FragmentStateAdapter {
             case 4:
                 return new SettingsFragment();
             default:
-                return WorkFragment.newInstance("", "");
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        return 5;
-    }
-
-
-   /* public FragmentsAdapter(@NonNull FragmentActivity fa) {
-        super(fa);
-    }
-
-    @NonNull
-    @Override
-    public Fragment getItem(int position) {
-
-        switch (position) {
-            case 1:
-                //TODO : disable for test to prevent use of api map
-                return new MapsFragment();
-
-            case 2:
                 return ListFragment.newInstance();
-            case 3:
-                return WorkFragment.newInstance("", "");
-
-            case 4:
-                return new SettingsFragment();
-            default:
-                return WorkFragment.newInstance("", "");
         }
     }
 
     @Override
-    public int getCount() {
+    public int getItemCount() {
         return 5;
     }
 
-
-
-
-    @NonNull
-    @Override
-    public Fragment createFragment(int position) {
-        return null;
-    }
-
-    @Override
-    public int getItemCount() {
-        return 0;
-    }
-
-    */
 }

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,14 +27,14 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.hoarauthomas.go4lunchthp7.data.UserHelper;
+import com.hoarauthomas.go4lunchthp7.api.UserHelper;
 import com.hoarauthomas.go4lunchthp7.injection.Injection;
 import com.hoarauthomas.go4lunchthp7.injection.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
 import com.hoarauthomas.go4lunchthp7.ui.activity.DetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.utils.Authentification;
 import com.hoarauthomas.go4lunchthp7.utils.BaseActivity;
-import com.hoarauthomas.go4lunchthp7.viewmodel.viewModelGo4Lunch;
+import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 import com.hoarauthomas.go4lunchthp7.ui.adapter.FragmentsAdapter;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Authentification myAuth;
 
     //Added for ViewModel
-    private viewModelGo4Lunch myViewModel;
+    private ViewModelGo4Lunch myViewModel;
 
     RecyclerView recyclerView;
 
@@ -64,9 +65,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int SIGN_OUT_TASK = 10;
     private static final int DELETE_USER_TASK = 20;
 
+    public List<Result> myData() {
+        return allResult;
+    }
+
+
     //list for restaurants
     public final ArrayList<Result> allResult = new ArrayList<>();
-
 
     List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.FacebookBuilder().build(),
@@ -99,17 +104,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(view);
 
         security();
-
-        //initialise viewmodel
         setupViewModel();
 
-        //TODO: regroup to a ui file or baseactivitry file
         setupTopAppBar();
         setupNavigationDrawer();
         setupBottomBAr();
         setupViewPager(1);
     }
 
+    //TODO: move to viewmodel
     //function to check login statut
     public void security() {
         //to get actual singleton of firebase user
@@ -124,9 +127,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public List<Result> myData() {
-        return allResult;
-    }
 
     //update navigation drawer data user
     private void request_user_info() {
@@ -177,11 +177,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //**********************************************************************************************
     private void setupViewModel() {
+
         ViewModelFactory myViewModelFactory = Injection.provideViewModelFactory(this);
-        this.myViewModel = new ViewModelProvider(this, myViewModelFactory).get(viewModelGo4Lunch.class);
-        this.myViewModel.getSecurity().observe(this, this::onUpdateSecurity);
+
+        this.myViewModel = new ViewModelProvider(this, myViewModelFactory).get(ViewModelGo4Lunch.class);
+
+      //  this.myViewModel.getSecurity().observe(this, this::onUpdateSecurity);
         this.myViewModel.getRestaurants().observe(this, this::onUpdateRestaurants);
-        this.myViewModel.getWorkMates().observe(this, this::onUpdateWorkMates);
+      //  this.myViewModel.getWorkMates().observe(this, this::onUpdateWorkMates);
     }
 
     private void onUpdateSecurity(List<Result> results) {
@@ -206,22 +209,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.navigation_drawer_lunch:
-
-                        //  Intent i = new Intent(this, DetailRestaurant.class);
-                        //  startActivity(i);
                         openMyFavoriteRestaurant();
-
                         break;
                     case R.id.navigation_drawer_settings:
                         binding.viewpager.setCurrentItem(4);
-
-//                        UserHelper.createUser(this.getCurrentUser().getUid(),this.getCurrentUser().getDisplayName());
-
                         break;
                     case R.id.navigation_drawer_logout:
                         request_logout();
-                        // loginUVM.signOut();
-                        Log.i("[THOMAS]", "logout");
                         break;
                 }
                 binding.drawerLayout.closeDrawer(Gravity.START);
@@ -232,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void openMyFavoriteRestaurant() {
 
-        Log.i("[THOMAS]","Open favorite restaurant acitvity....");
+        Log.i("[THOMAS]", "Open favorite restaurant acitvity....");
 
         Intent intent = new Intent(this, DetailRestaurant.class);
         startActivity(intent);
@@ -256,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 // this.myViewModel.createuser();
                 myViewModel.createuser();
 
-                UserHelper.createUser(this.getCurrentUser().getUid(), this.getCurrentUser().getDisplayName());
+                UserHelper.createUser(this.getCurrentUser().getUid(), this.getCurrentUser().getDisplayName(), "OCPizza");
 
                 //   loginUVM.updateCurrentUser(this.getCurrentUser().getDisplayName(), this.getCurrentUser().getEmail());
 
@@ -331,6 +325,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding.viewpager.setAdapter(myFragmentAdapter);
         //to setup default fragment to view
         binding.viewpager.setCurrentItem(default_view);
+        binding.viewpager.setUserInputEnabled(false);
+
+
+
     }
 
     private void setupTopAppBar() {

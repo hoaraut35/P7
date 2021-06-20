@@ -59,8 +59,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             String base = "https://maps.googleapis.com/maps/api/place/photo?";
             String key = "key=AIzaSyDzUUJlN7hmetd7MtQR5s5TTzWiO4dwpCA";
             String reference = "&photoreference=" + mResults.get(position).getPhotos().get(0).getPhotoReference();
-            String maxH = "&maxheight=40";
-            String maxW = "&maxwidth=40";
+            String maxH = "&maxheight=157";
+            String maxW = "&maxwidth=157";
             String query = base + key + reference + maxH + maxW;
 
             Glide.with(holder.imageOfRestaurant)

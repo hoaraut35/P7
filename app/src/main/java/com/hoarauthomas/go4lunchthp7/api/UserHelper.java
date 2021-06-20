@@ -1,6 +1,4 @@
-package com.hoarauthomas.go4lunchthp7.data;
-
-import android.util.Log;
+package com.hoarauthomas.go4lunchthp7.api;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -21,8 +19,8 @@ public class UserHelper {
 
     // --- CREATE ---
 
-    public static Task<Void> createUser(String uid, String username) {
-        User userToCreate = new User(uid, username);
+    public static Task<Void> createUser(String uid, String username, String restaurant) {
+        User userToCreate = new User(uid, username, restaurant);
         return UserHelper.getUsersCollection().document(uid).set(userToCreate);
     }
 

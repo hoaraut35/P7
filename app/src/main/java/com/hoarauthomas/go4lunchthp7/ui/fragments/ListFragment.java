@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,9 +42,17 @@ public class ListFragment extends Fragment {
 
 
         List<Result> listeRestaurants = activity.myData();
+
+
+
+        //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),layoutManager);
+
         recyclerView = view.findViewWithTag("recycler_view");
+        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(),DividerItemDecoration.VERTICAL);
+
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setAdapter(new RecyclerViewAdapter(0, listeRestaurants));
 
         return view;

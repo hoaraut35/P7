@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.hoarauthomas.go4lunchthp7.repositories.RestaurantsRepository;
-import com.hoarauthomas.go4lunchthp7.viewmodel.viewModelGo4Lunch;
+import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 
 import java.util.concurrent.Executor;
 
@@ -31,8 +31,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(viewModelGo4Lunch.class)) {
-            return (T) new viewModelGo4Lunch(placeRepository, executor);
+        if (modelClass.isAssignableFrom(ViewModelGo4Lunch.class)) {
+            return (T) new ViewModelGo4Lunch(placeRepository, executor);
         }
         throw new IllegalArgumentException("Unknow ViewModel class");
     }
