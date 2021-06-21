@@ -4,11 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
+import android.app.Application;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -22,9 +27,13 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.api.UserHelper;
@@ -37,6 +46,7 @@ import com.hoarauthomas.go4lunchthp7.utils.BaseActivity;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 import com.hoarauthomas.go4lunchthp7.ui.adapter.FragmentsAdapter;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
+import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelLocation;
 
 
 import java.util.ArrayList;
@@ -50,25 +60,33 @@ import static android.view.View.*;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    //for debug
+    private static final String TAG = "[THOMAS]";
+    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
+
+    private FusedLocationProviderClient locationProviderClient;
+
+    private LocationRequest myLocationRequest;
+
+    private static  Application application;
+
     //Added for View Binding
     private ActivityMainBinding binding;
 
-    private Authentification myAuth;
-
     //Added for ViewModel
     private ViewModelGo4Lunch myViewModel;
+    private ViewModelLocation myVMlocation;
 
-    RecyclerView recyclerView;
-
-    //Added for security authentification
-    private static final int RC_SIGN_IN = 123;
-    private static final int SIGN_OUT_TASK = 10;
-    private static final int DELETE_USER_TASK = 20;
-
+    //added for list data
     public List<Result> myData() {
         return allResult;
     }
 
+    //TODO: move to viemodel authentification
+    //Added for security authentification
+    private static final int RC_SIGN_IN = 123;
+    private static final int SIGN_OUT_TASK = 10;
+    private static final int DELETE_USER_TASK = 20;
 
     //list for restaurants
     public final ArrayList<Result> allResult = new ArrayList<>();
@@ -80,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //Added for manage 3 screens (map, list, workmates and preferences)
     FragmentsAdapter myFragmentAdapter;
 
+    //TODO: must be disabled when security migrate to viewmodel
     //Added to check security after resume
     @Override
     protected void onResume() {
@@ -87,11 +106,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         security();
     }
 
+    //TODO: move to viewmodel
     //Added for Firebase UI Authentification
     protected FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
+    //TODO:move to viewmodel
     protected Boolean isCurrentUserLogged() {
         return (this.getCurrentUser() != null);
     }
@@ -103,13 +124,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         View view = binding.getRoot();
         setContentView(view);
 
+
         security();
+
+
         setupViewModel();
 
         setupTopAppBar();
         setupNavigationDrawer();
         setupBottomBAr();
         setupViewPager(1);
+
+
+        //localisation
+        if (!checkPermissions()) {
+            requestPermissions();
+        }
+
+        locationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        locationProviderClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            Log.i("[THOMAS]", "location ok ..." + location.getLatitude() + " " + location.getLongitude());
+                        }
+                    }
+                });
+
+
+
+    }
+
+
+    public static Application getInstance(){
+
+        return application;
     }
 
     //TODO: move to viewmodel
@@ -177,18 +228,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //**********************************************************************************************
     private void setupViewModel() {
-
         ViewModelFactory myViewModelFactory = Injection.provideViewModelFactory(this);
-
         this.myViewModel = new ViewModelProvider(this, myViewModelFactory).get(ViewModelGo4Lunch.class);
-
-      //  this.myViewModel.getSecurity().observe(this, this::onUpdateSecurity);
+        //this.myVMlocation.setFusedLocationProviderClient(locationProviderClient);
         this.myViewModel.getRestaurants().observe(this, this::onUpdateRestaurants);
-      //  this.myViewModel.getWorkMates().observe(this, this::onUpdateWorkMates);
+
+
+     //   this.myViewModel.startLocation();
+        //this.myViewModel.getSecurity().observe(this,this::onUpdateSecurity);
+       // this.myViewModel.getPosition().observe(this,this::onUpdatePosition);
+      // this.myViewModel.latitude().observe(this,this::onUpdatePosition);
     }
 
-    private void onUpdateSecurity(List<Result> results) {
-        Log.i("[THOMAS]", "ViewModel Security Event");
+    private void onUpdatePosition(String s) {
+        Log.i("[THOMAS]","retour position livedata" + s);
+    }
+
+
+    private void onUpdateSecurity(String s) {
     }
 
     private void onUpdateRestaurants(List<Result> places) {
@@ -328,7 +385,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding.viewpager.setUserInputEnabled(false);
 
 
-
     }
 
     private void setupTopAppBar() {
@@ -354,6 +410,72 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         return true;
+    }
+
+
+    private boolean checkPermissions() {
+        int permissionState = ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+        return permissionState == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermissions() {
+        boolean shouldProvideRationale =
+                ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION);
+
+        // Provide an additional rationale to the user. This would happen if the user denied the
+        // request previously, but didn't check the "Don't ask again" checkbox.
+        if (shouldProvideRationale) {
+           /* Log.i(TAG, "Displaying permission rationale to provide additional context.");
+            Snackbar.make(
+                    findViewById(R.id.activity_main),
+                    R.string.permission_rationale,
+                    Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.ok, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // Request permission
+                            ActivityCompat.requestPermissions(MainActivity.this,
+                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                    REQUEST_PERMISSIONS_REQUEST_CODE);
+                        }
+                    })
+                    .show();
+
+            */
+        } else {
+            Log.i(TAG, "Requesting permission");
+            // Request permission. It's possible this can be auto answered if device policy
+            // sets the permission in a given state or the user denied the permission
+            // previously and checked "Never ask again".
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_PERMISSIONS_REQUEST_CODE);
+        }
+    }
+
+    private void createlocationrequest() {
+        myLocationRequest = new LocationRequest();
+        // Sets the desired interval for active location updates. This interval is
+        // inexact. You may not receive updates at all if no location sources are available, or
+        // you may receive them slower than requested. You may also receive updates faster than
+        // requested if other applications are requesting location at a faster interval.
+        // Note: apps running on "O" devices (regardless of targetSdkVersion) may receive updates
+        // less frequently than this interval when the app is no longer in the foreground.
+        //toutes les minutes
+        myLocationRequest.setInterval(60000);
+        // Sets the fastest rate for active location updates. This interval is exact, and your
+        // application will never receive updates faster than this value.
+        //toutes les 30 secondes
+        myLocationRequest.setFastestInterval(30000);
+        myLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        // Sets the maximum time when batched location updates are delivered. Updates may be
+        // delivered sooner than this interval.
+        //toutes les 5 minutes
+        myLocationRequest.setMaxWaitTime(60000*5);
+
     }
 
 }

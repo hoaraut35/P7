@@ -2,6 +2,7 @@ package com.hoarauthomas.go4lunchthp7.ui.fragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -25,6 +27,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.api.GooglePlacesInterface;
@@ -45,12 +48,19 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean locationPermissionGranted;
     private Location lastKnownLocation;
+
+    //TODO: use this to locate the phone
     private FusedLocationProviderClient fusedLocationProviderClient;
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private GoogleMap map;
 
+
+    public LatLng myPosition;
+
+
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
+
 
         /**
          * Manipulates the map once available.
@@ -63,12 +73,16 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
          */
 
 
-
-
         @Override
         public void onMapReady(GoogleMap googleMap) {
 
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
+
+
+
+
             map = googleMap;
+
 
             map.getUiSettings().setZoomControlsEnabled(true);
 
@@ -78,6 +92,8 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
          //   map.setOnMyLocationClickListener(this);
 
             enableMyLocation();
+
+            getDeviceLocation();
 
 
            /* map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
@@ -106,6 +122,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             //Create a REST
             GooglePlacesInterface service = retrofit.create(GooglePlacesInterface.class);
 
+            //TODO: add long lat
             //Fetch a list of the Github repositories
             Call<Place> call = service.getNearbyPlaces("AIzaSyDzUUJlN7hmetd7MtQR5s5TTzWiO4dwpCA",1000);
 
@@ -233,6 +250,11 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(lastKnownLocation.getLatitude(),
                                                 lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+
+                               myPosition = new LatLng(lastKnownLocation.getLongitude(),lastKnownLocation.getLatitude());
+
+
+                                Log.i("[THOMAS]","" + lastKnownLocation.getLongitude() + lastKnownLocation.getLatitude());
                             }
                         } else {
                           //  Log.d("THOMAS", "Current location is null. Using defaults.");

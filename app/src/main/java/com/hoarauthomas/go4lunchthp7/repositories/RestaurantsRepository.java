@@ -40,7 +40,7 @@ public class RestaurantsRepository {
 
         final MutableLiveData<List<Result>> data = new MutableLiveData<>();
 
-        service.getNearbyPlaces("AIzaSyDzUUJlN7hmetd7MtQR5s5TTzWiO4dwpCA", 1000)
+        service.getNearbyPlaces("AIzaSyDzUUJlN7hmetd7MtQR5s5TTzWiO4dwpCA",1000)
                 .enqueue(new Callback<Place>() {
                     @Override
                     public void onResponse(Call<Place> call, Response<Place> response) {

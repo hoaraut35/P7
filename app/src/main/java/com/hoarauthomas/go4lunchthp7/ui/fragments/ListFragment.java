@@ -45,11 +45,9 @@ public class ListFragment extends Fragment {
 
 
 
-        //DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),layoutManager);
 
         recyclerView = view.findViewWithTag("recycler_view");
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(),DividerItemDecoration.VERTICAL);
-
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         recyclerView.addItemDecoration(itemDecoration);

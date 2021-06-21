@@ -1,20 +1,29 @@
 package com.hoarauthomas.go4lunchthp7.viewmodel;
 
+import android.app.Application;
+import android.content.Context;
+import android.content.res.Resources;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.hoarauthomas.go4lunchthp7.MainActivity;
 import com.hoarauthomas.go4lunchthp7.api.UserHelper;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
+import com.hoarauthomas.go4lunchthp7.repositories.LocationRepository;
 import com.hoarauthomas.go4lunchthp7.repositories.RestaurantsRepository;
 
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.Executor;
 
 //Business logic
@@ -24,13 +33,20 @@ import java.util.concurrent.Executor;
 
 public class ViewModelGo4Lunch extends ViewModel {
 
+    @NonNull Resources resources;
+
+
     //add here repositories ...
     private final RestaurantsRepository myPlaceSource;
+    private LocationRepository myLocationSource;
+
     private final LiveData<List<Result>> placesResponseLiveData;
 
     //constructor for viewmodel
-    public ViewModelGo4Lunch(RestaurantsRepository placeRepository, Executor executor) {
+    //public ViewModelGo4Lunch(RestaurantsRepository placeRepository, Executor executor) {
+    public ViewModelGo4Lunch( RestaurantsRepository placeRepository, LocationRepository locationRepository, Executor executor) {
         this.myPlaceSource = new RestaurantsRepository();
+    //    this.myLocationSource = new LocationRepository();
         this.placesResponseLiveData = myPlaceSource.getAllPlaces();
         //TODO:don't work ?
         executor = executor;
@@ -41,6 +57,9 @@ public class ViewModelGo4Lunch extends ViewModel {
         return placesResponseLiveData;
     }
 
+
+    //**********************************************************************************************
+    // Log
     //**********************************************************************************************
 
     //protected
@@ -52,10 +71,22 @@ public class ViewModelGo4Lunch extends ViewModel {
         return (this.getCurrentUser() != null);
     }
 
+    public void security() {
+        if (!isCurrentUserLogged()) {
+            //if not connected then request login
+            //    request_login();
+        } else {
+            //else request user info to update ui
+            //request_user_info();
+        }
+    }
 
 
+    //**********************************************************************************************
+    public void updateLocation() {
 
-
+    }
+    //**********************************************************************************************
 
     //Add user to Firestore
     public void createuser() {
@@ -74,6 +105,24 @@ public class ViewModelGo4Lunch extends ViewModel {
             });
         }
 
+
+    }
+
+
+    //**********************************************************************************************
+
+
+
+
+
+    //**********************************************************************************************
+
+    public void startLocation()
+    {
+      //  this.myLocationSource = new LocationRepository(context);
+       // myLocationSource.initMyFused();
+        //return "goo";
+        //resources.
 
     }
 
