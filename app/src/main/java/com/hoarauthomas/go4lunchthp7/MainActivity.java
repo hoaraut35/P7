@@ -8,6 +8,7 @@ import androidx.core.view.GravityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,12 +29,12 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactoryNew;
+import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
 import com.hoarauthomas.go4lunchthp7.ui.activity.DetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.ui.adapter.FragmentsAdapter;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
-import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4LunchNew;
+import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 
 
 import java.util.ArrayList;
@@ -51,9 +52,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private FusedLocationProviderClient locationProviderClient;
     private LocationRequest myLocationRequest;
-    private static Application application;
+
     private ActivityMainBinding binding;
-    private ViewModelGo4LunchNew myViewModel;
+    private ViewModelGo4Lunch myViewModel;
+
+    private static Application sApplication;
 
     public List<Result> myData() {
         return allResult;
@@ -80,6 +83,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setupSecurity();
     }
 
+
+
+
     //TODO: move to viewmodel ? but we must to open activity from viewmodel to login ....
     protected FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
@@ -96,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
+
         setupViewModel();
         setupSecurity();
         setupTopAppBar();
@@ -109,8 +116,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // Setup ViewModel
     //**********************************************************************************************
     private void setupViewModel() {
-        this.myViewModel = new ViewModelProvider(this, ViewModelFactoryNew.getInstance()).get(ViewModelGo4LunchNew.class);
-        this.myViewModel.getRestaurants().observe(this, this::onUpdateRestaurants);
+        this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
+     //   this.myViewModel.getRestaurants().observe(this, this::onUpdateRestaurants);
     }
     private void onUpdateRestaurants(List<Result> places) {
         Log.i("[THOMAS]", "ViewModel Restaurants Event" + places.size());

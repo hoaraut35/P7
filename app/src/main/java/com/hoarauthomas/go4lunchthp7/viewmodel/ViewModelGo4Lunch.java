@@ -13,12 +13,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.api.UserHelper;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
-import com.hoarauthomas.go4lunchthp7.repository.LocationRepository;
+import com.hoarauthomas.go4lunchthp7.repository.LocationRepositoryNew;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 
-
 import java.util.List;
-import java.util.concurrent.Executor;
 
 //This class is for the business logic
 //We expose only Livedata but we must use Mutable livedata to modify livedata value
@@ -28,22 +26,18 @@ import java.util.concurrent.Executor;
 
 public class ViewModelGo4Lunch extends ViewModel {
 
-    //add here repositories here ...
+    //add repo here...
     private final RestaurantsRepository myPlaceSource;
-    private LocationRepository myLocationSource;
-    private final Executor executor;
+    private final LocationRepositoryNew myLocationSource;
 
-    //data
     private final LiveData<List<Result>> placesResponseLiveData;
     private final LiveData<Location> responseLocation;
 
-    //constructor for viewmodel
-    public ViewModelGo4Lunch(RestaurantsRepository placeRepository, LocationRepository locationRepository, Executor executor) {
-        this.myPlaceSource = new RestaurantsRepository();
-        this.myLocationSource = new LocationRepository(null);
+    public ViewModelGo4Lunch(RestaurantsRepository placeRepository, LocationRepositoryNew locationRepository) {
+        this.myPlaceSource = placeRepository;
+        this.myLocationSource = locationRepository;
         this.placesResponseLiveData = myPlaceSource.getAllPlaces();
-        this.responseLocation = myLocationSource.getMyLocation();
-        this.executor = executor;
+        this.responseLocation = myLocationSource.getLocationLiveData();
     }
 
     //this method is use by MainActivity ...
