@@ -20,7 +20,7 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-public class LocationRepositoryNew {
+public class LocationRepository {
 
     private static final int LOCATION_REQUEST_INTERVAL_MS = 10_000;
     private static final float SMALLEST_DISPLACEMENT_THRESHOLD_METER = 25;
@@ -30,15 +30,11 @@ public class LocationRepositoryNew {
 
     private MutableLiveData<android.location.Location> locationMutableLiveData = new MutableLiveData<>();
 
-
-
-    public LocationRepositoryNew(FusedLocationProviderClient fusedLocationProviderClient){
+    public LocationRepository(FusedLocationProviderClient fusedLocationProviderClient){
         this.fusedLocationProviderClient = fusedLocationProviderClient;
     }
 
-    public LiveData<Location> getLocationLiveData(){
-        return locationMutableLiveData;
-    }
+    public LiveData<Location> getLocationLiveData(){return locationMutableLiveData;}
 
     //TODO: permission
 

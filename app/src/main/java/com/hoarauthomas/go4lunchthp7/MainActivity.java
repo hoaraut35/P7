@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -117,8 +118,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //**********************************************************************************************
     private void setupViewModel() {
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
-     //   this.myViewModel.getRestaurants().observe(this, this::onUpdateRestaurants);
+        this.myViewModel.getRestaurants().observe(this, this::onUpdateRestaurants);
+        this.myViewModel.getMyPosition().observe(this,this::onUpdatePosition);
+        this.myViewModel.refreshPosition();
     }
+
+    private void onUpdatePosition(Location location) {
+        Log.i("[THOMAS]","Update position" + location.getLongitude() + location.getLatitude());
+    }
+
     private void onUpdateRestaurants(List<Result> places) {
         Log.i("[THOMAS]", "ViewModel Restaurants Event" + places.size());
         allResult.clear();

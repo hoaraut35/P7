@@ -13,7 +13,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.api.UserHelper;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
-import com.hoarauthomas.go4lunchthp7.repository.LocationRepositoryNew;
+import com.hoarauthomas.go4lunchthp7.repository.LocationRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 
 import java.util.List;
@@ -28,12 +28,12 @@ public class ViewModelGo4Lunch extends ViewModel {
 
     //add repo here...
     private final RestaurantsRepository myPlaceSource;
-    private final LocationRepositoryNew myLocationSource;
+    private final LocationRepository myLocationSource;
 
     private final LiveData<List<Result>> placesResponseLiveData;
     private final LiveData<Location> responseLocation;
 
-    public ViewModelGo4Lunch(RestaurantsRepository placeRepository, LocationRepositoryNew locationRepository) {
+    public ViewModelGo4Lunch(RestaurantsRepository placeRepository, LocationRepository locationRepository) {
         this.myPlaceSource = placeRepository;
         this.myLocationSource = locationRepository;
         this.placesResponseLiveData = myPlaceSource.getAllPlaces();
@@ -47,6 +47,10 @@ public class ViewModelGo4Lunch extends ViewModel {
 
     //this method is use by MainActivity ...
     public LiveData<Location> getMyPosition() { return responseLocation;}
+
+    public void refreshPosition(){
+        myLocationSource.startLocationRequest();
+    }
 
 
 

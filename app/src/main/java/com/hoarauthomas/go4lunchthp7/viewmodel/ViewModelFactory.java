@@ -1,7 +1,6 @@
 package com.hoarauthomas.go4lunchthp7.viewmodel;
 
 import android.app.Application;
-import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -9,16 +8,15 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.location.LocationServices;
-import com.hoarauthomas.go4lunchthp7.MainActivity;
 import com.hoarauthomas.go4lunchthp7.MainApplication;
-import com.hoarauthomas.go4lunchthp7.repository.LocationRepositoryNew;
+import com.hoarauthomas.go4lunchthp7.repository.LocationRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
     private static ViewModelFactory myViewModelFactory;
 
-    private final LocationRepositoryNew locationRepository;
+    private final LocationRepository locationRepository;
     private final RestaurantsRepository restaurantsRepository;
 
     public static ViewModelFactory getInstance() {
@@ -30,7 +28,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
 
                     myViewModelFactory = new ViewModelFactory(
                             new RestaurantsRepository(),
-                            new LocationRepositoryNew(LocationServices.getFusedLocationProviderClient(application))
+                            new LocationRepository(LocationServices.getFusedLocationProviderClient(application))
                     );
                 }
             }
@@ -38,7 +36,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         return myViewModelFactory;
     }
 
-    private ViewModelFactory(RestaurantsRepository restaurantsRepository, LocationRepositoryNew locationRepository) {
+    private ViewModelFactory(RestaurantsRepository restaurantsRepository, LocationRepository locationRepository) {
         this.locationRepository = locationRepository;
         this.restaurantsRepository = restaurantsRepository;
     }

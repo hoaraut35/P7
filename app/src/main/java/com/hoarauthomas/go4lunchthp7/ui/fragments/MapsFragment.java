@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -33,6 +34,8 @@ import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.api.GooglePlacesInterface;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
+import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
+import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,13 +45,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MapsFragment extends Fragment implements OnRequestPermissionsResultCallback {
 
+    private ViewModelGo4Lunch viewModelGo4Lunch;
 
     private LocationManager lm;
     private static final int DEFAULT_ZOOM = 15;
     private final LatLng defaultLocation = new LatLng(-33.8523341, 151.2106085);
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean locationPermissionGranted;
-    private Location lastKnownLocation;
+    private Location lastKnownLocation, newPosition;
 
     //TODO: use this to locate the phone
     private FusedLocationProviderClient fusedLocationProviderClient;
@@ -283,7 +287,16 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        viewModelGo4Lunch = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
+        viewModelGo4Lunch.getMyPosition().observe(this,this::onUpdatePosition);
+
+
         return inflater.inflate(R.layout.fragment_maps, container, false);
+    }
+
+    private void onUpdatePosition(Location location) {
+        this.newPosition.set(location);
+
     }
 
     @Override
