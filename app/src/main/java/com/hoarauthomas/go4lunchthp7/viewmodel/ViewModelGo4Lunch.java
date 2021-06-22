@@ -3,6 +3,7 @@ package com.hoarauthomas.go4lunchthp7.viewmodel;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Resources;
+import android.location.Location;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.facebook.internal.Mutable;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,30 +28,30 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Executor;
 
-//Business logic
-//share data between multiple fragment (list workmates etc)
+//This class is for the business logic
+//We expose only Livedata but we must use Mutable livedata to modify livedata value
+//Do not use reference to a view or lifecycle here !!!!
 
 //https://medium.com/@kashifo/4-steps-to-mvvm-in-android-java-b05fb4148523
 
 public class ViewModelGo4Lunch extends ViewModel {
 
-    @NonNull Resources resources;
-
-
-    //add here repositories ...
+    //add here repositories here ...
     private final RestaurantsRepository myPlaceSource;
     private LocationRepository myLocationSource;
+    private final Executor executor;
 
+    //data
     private final LiveData<List<Result>> placesResponseLiveData;
+    private final LiveData<Location> responseLocation;
 
     //constructor for viewmodel
-    //public ViewModelGo4Lunch(RestaurantsRepository placeRepository, Executor executor) {
-    public ViewModelGo4Lunch( RestaurantsRepository placeRepository, LocationRepository locationRepository, Executor executor) {
+    public ViewModelGo4Lunch(RestaurantsRepository placeRepository, LocationRepository locationRepository, Executor executor) {
         this.myPlaceSource = new RestaurantsRepository();
-    //    this.myLocationSource = new LocationRepository();
+        this.myLocationSource = new LocationRepository(null);
         this.placesResponseLiveData = myPlaceSource.getAllPlaces();
-        //TODO:don't work ?
-        executor = executor;
+        this.responseLocation = myLocationSource.getMyLocation();
+        this.executor = executor;
     }
 
     //this method is use by MainActivity ...
@@ -57,12 +59,15 @@ public class ViewModelGo4Lunch extends ViewModel {
         return placesResponseLiveData;
     }
 
+    //this method is use by MainActivity ...
+    public LiveData<Location> getMyPosition() { return responseLocation;}
+
+
 
     //**********************************************************************************************
-    // Log
+    // Security section
     //**********************************************************************************************
 
-    //protected
     protected FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
@@ -71,22 +76,37 @@ public class ViewModelGo4Lunch extends ViewModel {
         return (this.getCurrentUser() != null);
     }
 
-    public void security() {
+    private MutableLiveData<Boolean> logged = new MutableLiveData<>();
+
+    public LiveData<Boolean> isLogged() {
+        checkSecurity();
+        return logged;
+    }
+
+    public Boolean checkSecurity() {
+
         if (!isCurrentUserLogged()) {
-            //if not connected then request login
-            //    request_login();
+            request_login();
+            return false;
         } else {
-            //else request user info to update ui
-            //request_user_info();
+            request_user_info();
+            return true;
         }
-    }
-
-
-    //**********************************************************************************************
-    public void updateLocation() {
 
     }
+
+    public void request_login() {
+        logged.setValue(false);
+    }
+
+    public void request_user_info() {
+        logged.setValue(true);
+    }
+
     //**********************************************************************************************
+    // End of Security section
+    //**********************************************************************************************
+
 
     //Add user to Firestore
     public void createuser() {
@@ -105,24 +125,6 @@ public class ViewModelGo4Lunch extends ViewModel {
             });
         }
 
-
-    }
-
-
-    //**********************************************************************************************
-
-
-
-
-
-    //**********************************************************************************************
-
-    public void startLocation()
-    {
-      //  this.myLocationSource = new LocationRepository(context);
-       // myLocationSource.initMyFused();
-        //return "goo";
-        //resources.
 
     }
 

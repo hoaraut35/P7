@@ -1,9 +1,7 @@
 package com.hoarauthomas.go4lunchthp7.injection;
 
-import android.app.Application;
 import android.content.Context;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.hoarauthomas.go4lunchthp7.repositories.LocationRepository;
 import com.hoarauthomas.go4lunchthp7.repositories.RestaurantsRepository;
 
@@ -12,8 +10,8 @@ import java.util.concurrent.Executors;
 
 public class Injection {
 
-    //add repository for places
-    public static RestaurantsRepository providePlaceDataSource(Context context) {
+    //add repository here...
+    public static RestaurantsRepository providePlaceDataSource() {
         return new RestaurantsRepository();
     }
 
@@ -21,19 +19,17 @@ public class Injection {
         return new LocationRepository(context);
     }
 
-    //add executor to load a separated thread
+    //to load in another thread...
     public static Executor provideExecutor() {
         return Executors.newSingleThreadExecutor();
     }
 
-    //public constructor to provide repository in MainActivity ..
+    //to construct ViewModelFactory
     public static ViewModelFactory provideViewModelFactory(Context context) {
-
-        RestaurantsRepository dataSourcePlace = providePlaceDataSource(context);
+        RestaurantsRepository dataSourcePlace = providePlaceDataSource();
         LocationRepository dataSourceLocation = provideLocationDataSource(context);
         Executor executor = provideExecutor();
-        //return new ViewModelFactory(dataSourcePlace, dataSourceLocation, executor);
-        return new ViewModelFactory(dataSourcePlace, dataSourceLocation,  executor);
+        return new ViewModelFactory(dataSourcePlace, dataSourceLocation, executor);
     }
 
 }

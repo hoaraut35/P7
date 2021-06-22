@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private LocationRequest myLocationRequest;
 
-    private static  Application application;
+    private static Application application;
 
     //Added for View Binding
     private ActivityMainBinding binding;
@@ -106,16 +107,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         security();
     }
 
-    //TODO: move to viewmodel
-    //Added for Firebase UI Authentification
+    //TODO: move to viewmodel ? but we must to open activity from viewmodel to login ....
     protected FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
-    //TODO:move to viewmodel
+    //TODO: move to viewmodel ? but we must to open activity from viewmodel to login ....
     protected Boolean isCurrentUserLogged() {
         return (this.getCurrentUser() != null);
     }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,89 +125,46 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-
-
-        security();
-
-
         setupViewModel();
-
+        security();
         setupTopAppBar();
         setupNavigationDrawer();
         setupBottomBAr();
         setupViewPager(1);
-
-
-        //localisation
-        if (!checkPermissions()) {
-            requestPermissions();
-        }
-
-        locationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
-        locationProviderClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location != null) {
-                            Log.i("[THOMAS]", "location ok ..." + location.getLatitude() + " " + location.getLongitude());
-                        }
-                    }
-                });
-
-
-
     }
 
 
-    public static Application getInstance(){
-
-        return application;
+    //**********************************************************************************************
+    // Setup ViewModel
+    //**********************************************************************************************
+    private void setupViewModel() {
+        ViewModelFactory myViewModelFactory = Injection.provideViewModelFactory(this);
+        this.myViewModel = new ViewModelProvider(this, myViewModelFactory).get(ViewModelGo4Lunch.class);
+        this.myViewModel.getRestaurants().observe(this, this::onUpdateRestaurants);
     }
+    private void onUpdateRestaurants(List<Result> places) {
+        Log.i("[THOMAS]", "ViewModel Restaurants Event" + places.size());
+        allResult.clear();
+        allResult.addAll(places);
+    }
+    //**********************************************************************************************
+    // End of Setup ViewModel
+    //**********************************************************************************************
 
-    //TODO: move to viewmodel
-    //function to check login statut
+
+    //**********************************************************************************************
+    // Security UI management
+    //**********************************************************************************************
+
     public void security() {
-        //to get actual singleton of firebase user
-        getCurrentUser();
-        //to check is user is connected or not
-        if (!isCurrentUserLogged()) {
-            //if not connected then request login
+       if (!isCurrentUserLogged()) {
             request_login();
         } else {
-            //else request user info to update ui
             request_user_info();
         }
     }
 
-
-    //update navigation drawer data user
-    private void request_user_info() {
-
-        Log.i("[THOMAS]", "Request user information ...");
-
-        View hv = binding.navigationView.getHeaderView(0);
-
-        TextView name = (TextView) hv.findViewById(R.id.displayName);
-
-
-        name.setText(this.getCurrentUser().getDisplayName());
-        TextView email = (TextView) hv.findViewById(R.id.email);
-        email.setText(this.getCurrentUser().getEmail());
-
-        ImageView avatar = (ImageView) hv.findViewById(R.id.avatar);
-
-        Glide.with(avatar)
-                .load(this.getCurrentUser().getPhotoUrl())
-                .circleCrop()
-                .into(avatar);
-    }
-
-    //TODO: move to viewmodel. ..
-    //to load firebase ui auth activity
     private void request_login() {
-
-        Log.i("[THOMAS", "request firebase-ui auth ...");
 
         startActivityForResult(
                 AuthUI.getInstance()
@@ -218,48 +177,59 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         );
     }
 
-    //TODO: move to viewmodel file...
+    private void request_user_info() {
+
+        View hv = binding.navigationView.getHeaderView(0);
+        TextView name = (TextView) hv.findViewById(R.id.displayName);
+
+        name.setText(this.getCurrentUser().getDisplayName());
+        TextView email = (TextView) hv.findViewById(R.id.email);
+        email.setText(this.getCurrentUser().getEmail());
+        ImageView avatar = (ImageView) hv.findViewById(R.id.avatar);
+
+        Glide.with(avatar)
+                .load(this.getCurrentUser().getPhotoUrl())
+                .circleCrop()
+                .into(avatar);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        IdpResponse response = IdpResponse.fromResultIntent(data);
+
+        if (requestCode == RC_SIGN_IN) {
+            if (resultCode == RESULT_OK) {
+                this.myViewModel.createuser();
+            } else {//error
+
+                if (response == null) {
+                    Log.i("THOMAS", "authentification annulée");
+                } else if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
+                    Log.i("THOMAS", "authentification impossible sans réseau");
+
+                } else if (response.getError().getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
+                    Log.i("THOMAS", "authentification impossible erreur inconnu");
+                }
+            }
+        }
+    }
+
     private void request_logout() {
         AuthUI.getInstance()
                 .signOut(this)
                 .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted(SIGN_OUT_TASK));
     }
 
-
     //**********************************************************************************************
-    private void setupViewModel() {
-        ViewModelFactory myViewModelFactory = Injection.provideViewModelFactory(this);
-        this.myViewModel = new ViewModelProvider(this, myViewModelFactory).get(ViewModelGo4Lunch.class);
-        //this.myVMlocation.setFusedLocationProviderClient(locationProviderClient);
-        this.myViewModel.getRestaurants().observe(this, this::onUpdateRestaurants);
-
-
-     //   this.myViewModel.startLocation();
-        //this.myViewModel.getSecurity().observe(this,this::onUpdateSecurity);
-       // this.myViewModel.getPosition().observe(this,this::onUpdatePosition);
-      // this.myViewModel.latitude().observe(this,this::onUpdatePosition);
-    }
-
-    private void onUpdatePosition(String s) {
-        Log.i("[THOMAS]","retour position livedata" + s);
-    }
-
-
-    private void onUpdateSecurity(String s) {
-    }
-
-    private void onUpdateRestaurants(List<Result> places) {
-        Log.i("[THOMAS]", "ViewModel Restaurants Event" + places.size());
-        allResult.clear();
-        allResult.addAll(places);
-
-    }
-
-    private void onUpdateWorkMates(List<Result> results) {
-        Log.i("[THOMAS]", "ViewModel WorkMates Event" + results.size());
-    }
+    // End of Security UI Management
     //**********************************************************************************************
 
+
+    //**********************************************************************************************
+    // Section for UI Tools
+    //**********************************************************************************************
     private void setupNavigationDrawer() {
         binding.navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -281,52 +251,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
+    //**********************************************************************************************
+    // End of Section for UI Tools
+    //**********************************************************************************************
+
+
     private void openMyFavoriteRestaurant() {
 
         Log.i("[THOMAS]", "Open favorite restaurant acitvity....");
 
         Intent intent = new Intent(this, DetailRestaurant.class);
         startActivity(intent);
-    }
-
-    //get the result after login fail or not
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        Log.i("THOMAS", "Retour authentification ...");
-
-        IdpResponse response = IdpResponse.fromResultIntent(data);
-
-        if (requestCode == RC_SIGN_IN) {
-
-            //success
-            if (resultCode == RESULT_OK) {
-                Log.i("THOMAS", "authentification réussi");
-
-                // this.myViewModel.createuser();
-                myViewModel.createuser();
-
-                UserHelper.createUser(this.getCurrentUser().getUid(), this.getCurrentUser().getDisplayName(), "OCPizza");
-
-                //   loginUVM.updateCurrentUser(this.getCurrentUser().getDisplayName(), this.getCurrentUser().getEmail());
-
-
-            } else {//error
-
-                if (response == null) {
-                    Log.i("THOMAS", "authentification annulée");
-                } else if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
-                    Log.i("THOMAS", "authentification impossible sans réseau");
-
-                } else if (response.getError().getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-                    Log.i("THOMAS", "authentification impossible erreur inconnu");
-                }
-
-
-            }
-
-        }
     }
 
     private OnSuccessListener<Void> updateUIAfterRESTRequestsCompleted(final int origin) {
@@ -405,77 +340,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-
     //get item selected on navigation drawer
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         return true;
-    }
-
-
-    private boolean checkPermissions() {
-        int permissionState = ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION);
-        return permissionState == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void requestPermissions() {
-        boolean shouldProvideRationale =
-                ActivityCompat.shouldShowRequestPermissionRationale(this,
-                        Manifest.permission.ACCESS_FINE_LOCATION);
-
-        // Provide an additional rationale to the user. This would happen if the user denied the
-        // request previously, but didn't check the "Don't ask again" checkbox.
-        if (shouldProvideRationale) {
-           /* Log.i(TAG, "Displaying permission rationale to provide additional context.");
-            Snackbar.make(
-                    findViewById(R.id.activity_main),
-                    R.string.permission_rationale,
-                    Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.ok, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            // Request permission
-                            ActivityCompat.requestPermissions(MainActivity.this,
-                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                    REQUEST_PERMISSIONS_REQUEST_CODE);
-                        }
-                    })
-                    .show();
-
-            */
-        } else {
-            Log.i(TAG, "Requesting permission");
-            // Request permission. It's possible this can be auto answered if device policy
-            // sets the permission in a given state or the user denied the permission
-            // previously and checked "Never ask again".
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_PERMISSIONS_REQUEST_CODE);
-        }
-    }
-
-    private void createlocationrequest() {
-        myLocationRequest = new LocationRequest();
-        // Sets the desired interval for active location updates. This interval is
-        // inexact. You may not receive updates at all if no location sources are available, or
-        // you may receive them slower than requested. You may also receive updates faster than
-        // requested if other applications are requesting location at a faster interval.
-        // Note: apps running on "O" devices (regardless of targetSdkVersion) may receive updates
-        // less frequently than this interval when the app is no longer in the foreground.
-        //toutes les minutes
-        myLocationRequest.setInterval(60000);
-        // Sets the fastest rate for active location updates. This interval is exact, and your
-        // application will never receive updates faster than this value.
-        //toutes les 30 secondes
-        myLocationRequest.setFastestInterval(30000);
-        myLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        // Sets the maximum time when batched location updates are delivered. Updates may be
-        // delivered sooner than this interval.
-        //toutes les 5 minutes
-        myLocationRequest.setMaxWaitTime(60000*5);
-
     }
 
 }
