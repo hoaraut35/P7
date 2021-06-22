@@ -1,5 +1,6 @@
 package com.hoarauthomas.go4lunchthp7.viewmodel;
 
+import android.content.Context;
 import android.location.Location;
 import android.util.Log;
 
@@ -32,7 +33,7 @@ public class ViewModelGo4LunchNew extends ViewModel {
     private final LiveData<List<Result>> placesResponseLiveData;
     private final LiveData<Location> responseLocation;
 
-    public ViewModelGo4LunchNew(RestaurantsRepository placeRepository, LocationRepository locationRepository) {
+    public ViewModelGo4LunchNew(Context context, RestaurantsRepository placeRepository, LocationRepository locationRepository) {
         this.myPlaceSource = new RestaurantsRepository();
         this.myLocationSource = new LocationRepository(null);//TODO: context ?
         this.placesResponseLiveData = myPlaceSource.getAllPlaces();

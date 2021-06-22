@@ -1,6 +1,7 @@
 package com.hoarauthomas.go4lunchthp7.repository;
 
 import android.Manifest;
+import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -15,6 +16,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 public class LocationRepository {
+
+    private Application mApplication;
 
     public Context context;
     private FusedLocationProviderClient myFusedLocationProviderClient;
@@ -44,7 +47,7 @@ public class LocationRepository {
     public LocationRepository(Context context) {
 
         try {
-            Log.i("[THOMAS]", "REPO LOCATION : Affichage du context => " + context);
+            Log.i("[THOMAS]", "REPO LOCATION : Affichage du context => " + mApplication);
 
             //get the context
             this.context = context;

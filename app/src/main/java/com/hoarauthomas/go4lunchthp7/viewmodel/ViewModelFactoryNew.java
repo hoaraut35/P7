@@ -1,5 +1,6 @@
 package com.hoarauthomas.go4lunchthp7.viewmodel;
 
+import android.app.Application;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
@@ -11,12 +12,14 @@ import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 
 public class ViewModelFactoryNew implements ViewModelProvider.Factory {
 
+    private Application application;
     private static Context context;
     private static ViewModelFactoryNew myFactory;
 
 
 
-    private ViewModelFactoryNew(Context context) {
+    private ViewModelFactoryNew(Context context)
+    {
         this.context = context;
     }
 
@@ -35,7 +38,7 @@ public class ViewModelFactoryNew implements ViewModelProvider.Factory {
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(ViewModelGo4LunchNew.class)) {
-            return (T) new ViewModelGo4LunchNew(new RestaurantsRepository(), new LocationRepository(context));
+            return (T) new ViewModelGo4LunchNew(context, new RestaurantsRepository(), new LocationRepository(context));
         }
         throw new IllegalArgumentException("Uknow ViewModel class");
     }
