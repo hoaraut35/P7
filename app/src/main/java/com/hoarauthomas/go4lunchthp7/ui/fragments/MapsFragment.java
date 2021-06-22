@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.api.GooglePlacesInterface;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
@@ -124,7 +125,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
             //TODO: add long lat
             //Fetch a list of the Github repositories
-            Call<Place> call = service.getNearbyPlaces("AIzaSyDzUUJlN7hmetd7MtQR5s5TTzWiO4dwpCA",1000);
+            Call<Place> call = service.getNearbyPlaces(BuildConfig.MAPS_API_KEY,1000);
 
             //send asynchronous task
             call.enqueue(new Callback<Place>() {

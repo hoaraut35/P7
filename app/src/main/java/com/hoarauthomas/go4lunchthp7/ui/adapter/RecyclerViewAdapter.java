@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.MainActivity;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
@@ -57,7 +58,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         try {
             Log.i("[THOMAS]", "Get photo [" + position + "] " + mResults.get(position).getPhotos().get(0).getPhotoReference());
             String base = "https://maps.googleapis.com/maps/api/place/photo?";
-            String key = "key=AIzaSyDzUUJlN7hmetd7MtQR5s5TTzWiO4dwpCA";
+            String key = "key="+ BuildConfig.MAPS_API_KEY;
             String reference = "&photoreference=" + mResults.get(position).getPhotos().get(0).getPhotoReference();
             String maxH = "&maxheight=157";
             String maxW = "&maxwidth=157";

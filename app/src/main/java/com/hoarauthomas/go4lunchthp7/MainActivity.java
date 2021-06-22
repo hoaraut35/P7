@@ -4,22 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
 import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,24 +23,17 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.hoarauthomas.go4lunchthp7.api.UserHelper;
-import com.hoarauthomas.go4lunchthp7.injection.Injection;
-import com.hoarauthomas.go4lunchthp7.injection.ViewModelFactory;
+import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactoryNew;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
 import com.hoarauthomas.go4lunchthp7.ui.activity.DetailRestaurant;
-import com.hoarauthomas.go4lunchthp7.utils.Authentification;
-import com.hoarauthomas.go4lunchthp7.utils.BaseActivity;
-import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 import com.hoarauthomas.go4lunchthp7.ui.adapter.FragmentsAdapter;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
-import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelLocation;
+import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4LunchNew;
 
 
 import java.util.ArrayList;
@@ -61,33 +47,22 @@ import static android.view.View.*;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    //for debug
     private static final String TAG = "[THOMAS]";
-    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
     private FusedLocationProviderClient locationProviderClient;
-
     private LocationRequest myLocationRequest;
-
     private static Application application;
-
-    //Added for View Binding
     private ActivityMainBinding binding;
+    private ViewModelGo4LunchNew myViewModel;
 
-    //Added for ViewModel
-    private ViewModelGo4Lunch myViewModel;
-    private ViewModelLocation myVMlocation;
-
-    //added for list data
     public List<Result> myData() {
         return allResult;
     }
 
-    //TODO: move to viemodel authentification
-    //Added for security authentification
     private static final int RC_SIGN_IN = 123;
     private static final int SIGN_OUT_TASK = 10;
     private static final int DELETE_USER_TASK = 20;
+    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
     //list for restaurants
     public final ArrayList<Result> allResult = new ArrayList<>();
@@ -99,12 +74,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //Added for manage 3 screens (map, list, workmates and preferences)
     FragmentsAdapter myFragmentAdapter;
 
-    //TODO: must be disabled when security migrate to viewmodel
-    //Added to check security after resume
     @Override
     protected void onResume() {
         super.onResume();
-        security();
+        setupSecurity();
     }
 
     //TODO: move to viewmodel ? but we must to open activity from viewmodel to login ....
@@ -117,8 +90,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return (this.getCurrentUser() != null);
     }
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         View view = binding.getRoot();
         setContentView(view);
         setupViewModel();
-        security();
+        setupSecurity();
         setupTopAppBar();
         setupNavigationDrawer();
         setupBottomBAr();
@@ -138,8 +109,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // Setup ViewModel
     //**********************************************************************************************
     private void setupViewModel() {
-        ViewModelFactory myViewModelFactory = Injection.provideViewModelFactory(this);
-        this.myViewModel = new ViewModelProvider(this, myViewModelFactory).get(ViewModelGo4Lunch.class);
+        this.myViewModel = new ViewModelProvider(this, ViewModelFactoryNew.getInstance()).get(ViewModelGo4LunchNew.class);
         this.myViewModel.getRestaurants().observe(this, this::onUpdateRestaurants);
     }
     private void onUpdateRestaurants(List<Result> places) {
@@ -156,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // Security UI management
     //**********************************************************************************************
 
-    public void security() {
+    public void setupSecurity() {
        if (!isCurrentUserLogged()) {
             request_login();
         } else {
@@ -270,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onSuccess(Void aVoid) {
                 switch (origin) {
                     case SIGN_OUT_TASK:
-                        security();
+                        setupSecurity();
                         // finish();
                         break;
                     case DELETE_USER_TASK:

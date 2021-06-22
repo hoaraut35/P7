@@ -1,4 +1,4 @@
-package com.hoarauthomas.go4lunchthp7.repositories;
+package com.hoarauthomas.go4lunchthp7.repository;
 
 
 import android.util.Log;
@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.api.GooglePlacesInterface;
 import com.hoarauthomas.go4lunchthp7.api.RetrofitRequest;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
@@ -17,8 +18,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 //TODO:https://medium.com/@kashifo/4-steps-to-mvvm-in-android-java-b05fb4148523
 
@@ -40,7 +39,7 @@ public class RestaurantsRepository {
 
         final MutableLiveData<List<Result>> data = new MutableLiveData<>();
 
-        service.getNearbyPlaces("AIzaSyDzUUJlN7hmetd7MtQR5s5TTzWiO4dwpCA",1000)
+        service.getNearbyPlaces(BuildConfig.MAPS_API_KEY,1000)
                 .enqueue(new Callback<Place>() {
                     @Override
                     public void onResponse(Call<Place> call, Response<Place> response) {

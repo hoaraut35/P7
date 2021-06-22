@@ -16,9 +16,7 @@ import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
 import com.hoarauthomas.go4lunchthp7.repository.LocationRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 
-
 import java.util.List;
-import java.util.concurrent.Executor;
 
 //This class is for the business logic
 //We expose only Livedata but we must use Mutable livedata to modify livedata value
@@ -26,24 +24,19 @@ import java.util.concurrent.Executor;
 
 //https://medium.com/@kashifo/4-steps-to-mvvm-in-android-java-b05fb4148523
 
-public class ViewModelGo4Lunch extends ViewModel {
+public class ViewModelGo4LunchNew extends ViewModel {
 
-    //add here repositories here ...
     private final RestaurantsRepository myPlaceSource;
-    private LocationRepository myLocationSource;
-    private final Executor executor;
+    private final LocationRepository myLocationSource;
 
-    //data
     private final LiveData<List<Result>> placesResponseLiveData;
     private final LiveData<Location> responseLocation;
 
-    //constructor for viewmodel
-    public ViewModelGo4Lunch(RestaurantsRepository placeRepository, LocationRepository locationRepository, Executor executor) {
+    public ViewModelGo4LunchNew(RestaurantsRepository placeRepository, LocationRepository locationRepository) {
         this.myPlaceSource = new RestaurantsRepository();
-        this.myLocationSource = new LocationRepository(null);
+        this.myLocationSource = new LocationRepository(null);//TODO: context ?
         this.placesResponseLiveData = myPlaceSource.getAllPlaces();
         this.responseLocation = myLocationSource.getMyLocation();
-        this.executor = executor;
     }
 
     //this method is use by MainActivity ...

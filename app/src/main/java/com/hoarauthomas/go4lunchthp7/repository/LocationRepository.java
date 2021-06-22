@@ -1,4 +1,4 @@
-package com.hoarauthomas.go4lunchthp7.repositories;
+package com.hoarauthomas.go4lunchthp7.repository;
 
 import android.Manifest;
 import android.content.Context;
@@ -6,23 +6,13 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
-
-import java.util.List;
-import java.util.concurrent.Executor;
 
 public class LocationRepository {
 
