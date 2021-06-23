@@ -24,6 +24,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -84,39 +85,23 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
 
+            Log.i("[THOMAS]", "Position du traitement 1 viezwmodel ");
 
 
             map = googleMap;
 
 
+
+
+
             map.getUiSettings().setZoomControlsEnabled(true);
 
-
-
-        //    map.setOnMyLocationButtonClickListener();
-         //   map.setOnMyLocationClickListener(this);
-
+            //    map.setOnMyLocationButtonClickListener();
+            //   map.setOnMyLocationClickListener(this);
             enableMyLocation();
-
             getDeviceLocation();
-
-
-           /* map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
-                @Override
-                public boolean onMyLocationButtonClick() {
-                    return false;
-                }
-            });
-
-            */
-
-
-
-
-
-          //  getLocationPermission();
-
-         //   updateLocationUI();
+            //  getLocationPermission();
+            //   updateLocationUI();
 
 
             Retrofit retrofit = new Retrofit.Builder()
@@ -129,22 +114,22 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
             //TODO: add long lat
             //Fetch a list of the Github repositories
-            Call<Place> call = service.getNearbyPlaces(BuildConfig.MAPS_API_KEY,1000);
+            Call<Place> call = service.getNearbyPlaces(BuildConfig.MAPS_API_KEY, 1000);
 
             //send asynchronous task
             call.enqueue(new Callback<Place>() {
                 @Override
                 public void onResponse(Call<Place> call, Response<Place> response) {
 
-                    try{
+                    try {
                         map.clear();
 
 
-                        Log.i("[THOMAS]","Nombre de restaurant(s) trouvé(s) : " + response.body().getResults().size());
+                        Log.i("[THOMAS]", "Nombre de restaurant(s) trouvé(s) : " + response.body().getResults().size());
 
 
                         //loop to add marker on map for everybody result
-                        for (int i = 0; i < response.body().getResults().size(); i++){
+                        for (int i = 0; i < response.body().getResults().size(); i++) {
                             Double lat = response.body().getResults().get(i).getGeometry().getLocation().getLat();
                             Double lng = response.body().getResults().get(i).getGeometry().getLocation().getLng();
 
@@ -153,7 +138,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                             String placeName = response.body().getResults().get(i).getName();
 
                             MarkerOptions markerOptions = new MarkerOptions();
-                            LatLng latLng = new LatLng(lat,lng);
+                            LatLng latLng = new LatLng(lat, lng);
                             markerOptions.position(latLng);
                             markerOptions.title(placeName);
 
@@ -163,19 +148,20 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
 
                             //move camera to the latest position
-                            map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                            map.animateCamera(CameraUpdateFactory.zoomTo(14));
+                            // map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                            // map.animateCamera(CameraUpdateFactory.zoomTo(14));
 
 
                         }
 
+                        getMyPosition();
 
 
-                    }catch (Exception e)
-                    {
-                        Log.i("[THOMAS]","erreur map");
+
+
+                    } catch (Exception e) {
+                        Log.i("[THOMAS]", "erreur map");
                     }
-
 
 
                 }
@@ -189,12 +175,36 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
 
 
+
+
         }
     };
 
 
+    private void getMyPosition(){
+        try {
+            Log.i("[THOMAS]","Longitude " + newPosition.getLongitude());
+            Log.i("[THOMAS]","Latitude " + newPosition.getLatitude());
 
+            MarkerOptions markerOptions2 = new MarkerOptions();
 
+            LatLng latLng = new LatLng(newPosition.getLatitude(), newPosition.getLongitude());
+            // LatLng latLng = new LatLng(48.0785146,-0.7669906);
+
+            markerOptions2.position(latLng);
+            markerOptions2.title("Ma position");
+            markerOptions2.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+            markerOptions2.snippet("kotchi").draggable(true);
+
+            Marker z = map.addMarker(markerOptions2);
+
+            map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            map.animateCamera(CameraUpdateFactory.zoomTo(14));
+
+        } catch (Exception e) {
+            Log.i("[THOMAS]","Exception position : " + e.getMessage());
+        }
+    }
 
     private void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -204,11 +214,10 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             }
         } else {
             // Permission to access the location is missing. Show rationale and request permission
-         //   PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
-           //         Manifest.permission.ACCESS_FINE_LOCATION, true);
+            //   PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
+            //         Manifest.permission.ACCESS_FINE_LOCATION, true);
         }
     }
-
 
 
     private void updateLocationUI() {
@@ -225,14 +234,12 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                 map.setMyLocationEnabled(false);
                 map.getUiSettings().setMyLocationButtonEnabled(false);
                 lastKnownLocation = null;
-            //    getLocationPermission();
+                //    getLocationPermission();
             }
         } catch (SecurityException e) {
             //Log.e("Exception: %s", e.getMessage());
         }
     }
-
-
 
 
     private void getDeviceLocation() {
@@ -256,13 +263,13 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                                         new LatLng(lastKnownLocation.getLatitude(),
                                                 lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
 
-                               myPosition = new LatLng(lastKnownLocation.getLongitude(),lastKnownLocation.getLatitude());
+                                myPosition = new LatLng(lastKnownLocation.getLongitude(), lastKnownLocation.getLatitude());
 
 
-                                Log.i("[THOMAS]","" + lastKnownLocation.getLongitude() + lastKnownLocation.getLatitude());
+                                Log.i("[THOMAS]", "" + lastKnownLocation.getLongitude() + lastKnownLocation.getLatitude());
                             }
                         } else {
-                          //  Log.d("THOMAS", "Current location is null. Using defaults.");
+                            //  Log.d("THOMAS", "Current location is null. Using defaults.");
                             //Log.e("THOMAS", "Exception: %s", task.getException());
                             map.moveCamera(CameraUpdateFactory
                                     .newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
@@ -280,6 +287,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     @Override
     public void onResume() {
         super.onResume();
+
     }
 
     @Nullable
@@ -288,14 +296,20 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         viewModelGo4Lunch = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
-        viewModelGo4Lunch.getMyPosition().observe(this,this::onUpdatePosition);
+        viewModelGo4Lunch.refreshPosition();
+        viewModelGo4Lunch.getMyPosition().observe(this, this::onUpdatePosition);
 
 
         return inflater.inflate(R.layout.fragment_maps, container, false);
     }
 
     private void onUpdatePosition(Location location) {
-        this.newPosition.set(location);
+        Log.i("[THOMAS]", "onUpdatePosition MapsFragment ... " + location.getLatitude() + location.getLongitude());
+
+        if (location != null) {
+            this.newPosition = new Location(location);
+        }
+
 
     }
 
