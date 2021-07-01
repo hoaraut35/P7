@@ -49,20 +49,24 @@ import static android.view.View.*;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String TAG = "[THOMAS]";
-
-    private FusedLocationProviderClient locationProviderClient;
-    private LocationRequest myLocationRequest;
-
+    //for binding
     private ActivityMainBinding binding;
+
+    //to add viewmodel
     private ViewModelGo4Lunch myViewModel;
 
+    //to debug
+    private static final String TAG = "[THOMAS]";
+
+    //to get context from application, used in repository and factory
     private static Application sApplication;
 
+    //to retrieve the full list of restaurant
     public List<Result> myData() {
         return allResult;
     }
 
+    //signal for activity result and callback
     private static final int RC_SIGN_IN = 123;
     private static final int SIGN_OUT_TASK = 10;
     private static final int DELETE_USER_TASK = 20;
@@ -71,21 +75,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //list for restaurants
     public final ArrayList<Result> allResult = new ArrayList<>();
 
+    //list of auth provider
     List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.FacebookBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build());
 
-    //Added for manage 3 screens (map, list, workmates and preferences)
+    //Added for manage 3 screens (map, list, workmates and preferences) finally we excluse the map fragment bug with googlemap
     FragmentsAdapter myFragmentAdapter;
 
+    //added to test security after resume
     @Override
     protected void onResume() {
         super.onResume();
         setupSecurity();
     }
-
-
-
 
     //TODO: move to viewmodel ? but we must to open activity from viewmodel to login ....
     protected FirebaseUser getCurrentUser() {
@@ -104,8 +107,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         View view = binding.getRoot();
         setContentView(view);
 
+        //TODO: migrate security to the viewmodel
         setupViewModel();
         setupSecurity();
+
+        //TODO: move to another class
         setupTopAppBar();
         setupNavigationDrawer();
         setupBottomBAr();
@@ -119,12 +125,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setupViewModel() {
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
         this.myViewModel.getRestaurants().observe(this, this::onUpdateRestaurants);
-        this.myViewModel.getMyPosition().observe(this,this::onUpdatePosition);
-        this.myViewModel.refreshPosition();
-    }
-
-    private void onUpdatePosition(Location location) {
-        Log.i("[THOMAS]","Update position" + location.getLongitude() + location.getLatitude());
     }
 
     private void onUpdateRestaurants(List<Result> places) {
@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //**********************************************************************************************
 
     public void setupSecurity() {
-       if (!isCurrentUserLogged()) {
+        if (!isCurrentUserLogged()) {
             request_login();
         } else {
             request_user_info();

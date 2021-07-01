@@ -2,13 +2,13 @@ package com.hoarauthomas.go4lunchthp7.ui.fragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -29,7 +29,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.R;
@@ -49,7 +48,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     private ViewModelGo4Lunch viewModelGo4Lunch;
 
     private LocationManager lm;
-    private static final int DEFAULT_ZOOM = 15;
+    private static final int DEFAULT_ZOOM = 10;
     private final LatLng defaultLocation = new LatLng(-33.8523341, 151.2106085);
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean locationPermissionGranted;
@@ -59,7 +58,9 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     private FusedLocationProviderClient fusedLocationProviderClient;
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private GoogleMap map;
+
+
+    private GoogleMap myMap;
 
 
     public LatLng myPosition;
@@ -80,30 +81,28 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
 
         @Override
-        public void onMapReady(GoogleMap googleMap) {
+        public void onMapReady(GoogleMap map) {
 
+            myMap = map;
+
+
+            //we must use location object with fused location provider
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
-
-            Log.i("[THOMAS]", "Position du traitement 1 viezwmodel ");
-
-
-            map = googleMap;
-
-
-
-
-
+            //Setup Google Map
             map.getUiSettings().setZoomControlsEnabled(true);
+            //map.setMinZoomPreference(10);//=zoom to city object
 
-            //    map.setOnMyLocationButtonClickListener();
-            //   map.setOnMyLocationClickListener(this);
-            enableMyLocation();
+            //To check permission
+            checkPermissions();
+
+            //used by fusedLocationProviderClient to get the last position
             getDeviceLocation();
+
             //  getLocationPermission();
             //   updateLocationUI();
 
-
+            //move to viewmodel
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("https://maps.googleapis.com/maps/api/")
                     .addConverterFactory(GsonConverterFactory.create())
@@ -144,20 +143,12 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
 
                             Marker m = map.addMarker(markerOptions);
-                            //m.setTag();
 
-
-                            //move camera to the latest position
-                            // map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                            // map.animateCamera(CameraUpdateFactory.zoomTo(14));
-
+                            latLng = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+                            myMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                            myMap.animateCamera(CameraUpdateFactory.zoomTo(10));//city zoom
 
                         }
-
-                        getMyPosition();
-
-
-
 
                     } catch (Exception e) {
                         Log.i("[THOMAS]", "erreur map");
@@ -173,15 +164,11 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             });
 
 
-
-
-
-
         }
     };
 
 
-    private void getMyPosition(){
+/*    private void getMyPosition(){
         try {
             Log.i("[THOMAS]","Longitude " + newPosition.getLongitude());
             Log.i("[THOMAS]","Latitude " + newPosition.getLatitude());
@@ -202,15 +189,17 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             map.animateCamera(CameraUpdateFactory.zoomTo(14));
 
         } catch (Exception e) {
-            Log.i("[THOMAS]","Exception position : " + e.getMessage());
+            Log.i("[THOMAS]","Exception getMyPosition() : " + e.getMessage());
         }
     }
 
-    private void enableMyLocation() {
+ */
+
+    private void checkPermissions() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            if (map != null) {
-                map.setMyLocationEnabled(true);
+            if (myMap != null) {
+                myMap.setMyLocationEnabled(true);
             }
         } else {
             // Permission to access the location is missing. Show rationale and request permission
@@ -220,7 +209,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     }
 
 
-    private void updateLocationUI() {
+/*    private void updateLocationUI() {
 
 
         if (map == null) {
@@ -241,7 +230,10 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
         }
     }
 
+ */
 
+
+    @SuppressLint("LongLogTag")
     private void getDeviceLocation() {
         /*
          * Get the best and most recent location of the device, which may be null in rare
@@ -259,27 +251,41 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                             // Set the map's camera position to the current location of the device.
                             lastKnownLocation = task.getResult();
                             if (lastKnownLocation != null) {
-                                map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(lastKnownLocation.getLatitude(),
                                                 lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
 
                                 myPosition = new LatLng(lastKnownLocation.getLongitude(), lastKnownLocation.getLatitude());
 
 
-                                Log.i("[THOMAS]", "" + lastKnownLocation.getLongitude() + lastKnownLocation.getLatitude());
+                                Log.i("[THOMAS]", "frag map getlast pos : " + lastKnownLocation.getLongitude() + " " + lastKnownLocation.getLatitude());
+
+
+                              //  LatLng latLng = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+                              //  myMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                              //  myMap.animateCamera(CameraUpdateFactory.zoomTo(10));//city zoom
+
+
+                            }
+                            else
+                            {
+                                Log.i("[THOMAS]","position introuvable ");
                             }
                         } else {
                             //  Log.d("THOMAS", "Current location is null. Using defaults.");
                             //Log.e("THOMAS", "Exception: %s", task.getException());
-                            map.moveCamera(CameraUpdateFactory
-                                    .newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
-                            map.getUiSettings().setMyLocationButtonEnabled(false);
+                            //map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
+                            //map.getUiSettings().setMyLocationButtonEnabled(false);
                         }
                     }
                 });
             }
+            else
+            {
+                Log.i("[THOMAS]","Problème d'autorisation map");
+            }
         } catch (SecurityException e) {
-            Log.e("Exception: %s", e.getMessage(), e);
+            Log.e("Exception de sécurité location : %s", e.getMessage(), e);
         }
     }
 
@@ -287,6 +293,8 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     @Override
     public void onResume() {
         super.onResume();
+
+
 
     }
 
@@ -305,6 +313,12 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
     private void onUpdatePosition(Location location) {
         Log.i("[THOMAS]", "onUpdatePosition MapsFragment ... " + location.getLatitude() + location.getLongitude());
+
+
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        myMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        myMap.animateCamera(CameraUpdateFactory.zoomTo(10));//city zoom
+
 
         if (location != null) {
             this.newPosition = new Location(location);

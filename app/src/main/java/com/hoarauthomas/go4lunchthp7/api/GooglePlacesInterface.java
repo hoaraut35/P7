@@ -14,4 +14,6 @@ public interface GooglePlacesInterface {
     Call<Place> getNearbyPlaces(
             @Query("key") String key,
             @Query("radius") int radius);
+         //   @Query("location") Double latitude);,
+
 }

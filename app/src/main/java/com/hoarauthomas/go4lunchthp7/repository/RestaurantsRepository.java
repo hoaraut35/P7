@@ -32,19 +32,21 @@ public class RestaurantsRepository {
     private final List<Result> allPlaces = new ArrayList<>();
 
     //this is the constructor for repository
-    public RestaurantsRepository() {service = RetrofitRequest.getRetrofitInstance().create(GooglePlacesInterface.class);}
+    public RestaurantsRepository() {
+        service = RetrofitRequest.getRetrofitInstance().create(GooglePlacesInterface.class);
+    }
 
     //this is livedata to publish to viewmodel
     public LiveData<List<Result>> getAllPlaces() {
 
         final MutableLiveData<List<Result>> data = new MutableLiveData<>();
 
-        service.getNearbyPlaces(BuildConfig.MAPS_API_KEY,1000)
+        service.getNearbyPlaces(BuildConfig.MAPS_API_KEY, 1000)
                 .enqueue(new Callback<Place>() {
                     @Override
                     public void onResponse(Call<Place> call, Response<Place> response) {
 
-                        if (response.body() != null){
+                        if (response.body() != null) {
 
                             //iterate all results ...
                             for (int i = 0; i < response.body().getResults().size(); i++) {
