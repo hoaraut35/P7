@@ -32,9 +32,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.R;
+
 import com.hoarauthomas.go4lunchthp7.api.GooglePlaceApi;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
-import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
+//import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
+import com.hoarauthomas.go4lunchthp7.pojo.Result;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 

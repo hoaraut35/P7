@@ -1,33 +1,32 @@
 
-package com.hoarauthomas.go4lunchthp7.model.pojo;
+package com.hoarauthomas.go4lunchthp7.pojo;
 
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-
 public class Viewport {
 
     @SerializedName("northeast")
     @Expose
-    private Northeast northeast;
+    private com.hoarauthomas.go4lunchthp7.Northeast northeast;
     @SerializedName("southwest")
     @Expose
-    private Southwest southwest;
+    private com.hoarauthomas.go4lunchthp7.Southwest southwest;
 
-    public Northeast getNortheast() {
+    public com.hoarauthomas.go4lunchthp7.Northeast getNortheast() {
         return northeast;
     }
 
-    public void setNortheast(Northeast northeast) {
+    public void setNortheast(com.hoarauthomas.go4lunchthp7.Northeast northeast) {
         this.northeast = northeast;
     }
 
-    public Southwest getSouthwest() {
+    public com.hoarauthomas.go4lunchthp7.Southwest getSouthwest() {
         return southwest;
     }
 
-    public void setSouthwest(Southwest southwest) {
+    public void setSouthwest(com.hoarauthomas.go4lunchthp7.Southwest southwest) {
         this.southwest = southwest;
     }
 

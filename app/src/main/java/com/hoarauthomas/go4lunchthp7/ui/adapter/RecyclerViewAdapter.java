@@ -16,7 +16,9 @@ import com.bumptech.glide.Glide;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.MainActivity;
 import com.hoarauthomas.go4lunchthp7.R;
-import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
+import com.hoarauthomas.go4lunchthp7.pojo.Result;
+
+//import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
 
 import java.util.List;
 
@@ -78,18 +80,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         //show the address of restaurant
         holder.addressOfRestaurant.setText(mResults.get(position).getVicinity());
 
-        switch (result.getOpeningHours().getOpenNow().toString()) {
-            case "true":
-                holder.openingHours.setText("Ouvert");
-                break;
-            case " false":
-                holder.openingHours.setText("Fermé");
-                break;
-            default:
-                holder.openingHours.setText("Inconnu");
-                break;
+       try{
+           switch (result.getOpeningHours().getOpenNow().toString()) {
+               case "true":
+                   holder.openingHours.setText("Ouvert");
+                   break;
+               case " false":
+                   holder.openingHours.setText("Fermé");
+                   break;
+               default:
+                   holder.openingHours.setText("Inconnu");
+                   break;
 
-        }
+           }
+       }catch (Exception e)
+       {
+           holder.openingHours.setText("Inconnu");
+       }
 
         //TODO: add the number of workmates
 

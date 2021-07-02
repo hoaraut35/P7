@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 import com.hoarauthomas.go4lunchthp7.pojo.Result;
 
 
-public class Place {
+public class Example {
 
     @SerializedName("html_attributions")
     @Expose

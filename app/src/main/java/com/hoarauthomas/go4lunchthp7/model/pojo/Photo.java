@@ -1,5 +1,5 @@
 
-package com.hoarauthomas.go4lunchthp7.model.pojo;
+package com.hoarauthomas.go4lunchthp7;
 
 import java.util.List;
 

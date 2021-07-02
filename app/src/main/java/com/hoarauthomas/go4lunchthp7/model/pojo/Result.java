@@ -1,14 +1,21 @@
 
-package com.hoarauthomas.go4lunchthp7.model.pojo;
+package com.hoarauthomas.go4lunchthp7.pojo;
 
 import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.hoarauthomas.go4lunchthp7.OpeningHours;
+import com.hoarauthomas.go4lunchthp7.Photo;
+import com.hoarauthomas.go4lunchthp7.PlusCode;
+import com.hoarauthomas.go4lunchthp7.model.pojo.Geometry;
 
 
 public class Result {
 
+    @SerializedName("business_status")
+    @Expose
+    private String businessStatus;
     @SerializedName("geometry")
     @Expose
     private Geometry geometry;
@@ -18,12 +25,24 @@ public class Result {
     @SerializedName("name")
     @Expose
     private String name;
+    @SerializedName("opening_hours")
+    @Expose
+    private OpeningHours openingHours;
     @SerializedName("photos")
     @Expose
-    private List<Photo> photos = null;
+    private List<com.hoarauthomas.go4lunchthp7.Photo> photos = null;
     @SerializedName("place_id")
     @Expose
     private String placeId;
+    @SerializedName("plus_code")
+    @Expose
+    private PlusCode plusCode;
+    @SerializedName("price_level")
+    @Expose
+    private Integer priceLevel;
+    @SerializedName("rating")
+    @Expose
+    private Double rating;
     @SerializedName("reference")
     @Expose
     private String reference;
@@ -33,27 +52,20 @@ public class Result {
     @SerializedName("types")
     @Expose
     private List<String> types = null;
-    @SerializedName("vicinity")
-    @Expose
-    private String vicinity;
-    @SerializedName("business_status")
-    @Expose
-    private String businessStatus;
-    @SerializedName("opening_hours")
-    @Expose
-    private OpeningHours openingHours;
-    @SerializedName("plus_code")
-    @Expose
-    private PlusCode plusCode;
-    @SerializedName("rating")
-    @Expose
-    private Double rating;
     @SerializedName("user_ratings_total")
     @Expose
     private Integer userRatingsTotal;
-    @SerializedName("price_level")
+    @SerializedName("vicinity")
     @Expose
-    private Integer priceLevel;
+    private String vicinity;
+
+    public String getBusinessStatus() {
+        return businessStatus;
+    }
+
+    public void setBusinessStatus(String businessStatus) {
+        this.businessStatus = businessStatus;
+    }
 
     public Geometry getGeometry() {
         return geometry;
@@ -79,6 +91,14 @@ public class Result {
         this.name = name;
     }
 
+    public OpeningHours getOpeningHours() {
+        return openingHours;
+    }
+
+    public void setOpeningHours(OpeningHours openingHours) {
+        this.openingHours = openingHours;
+    }
+
     public List<Photo> getPhotos() {
         return photos;
     }
@@ -93,6 +113,30 @@ public class Result {
 
     public void setPlaceId(String placeId) {
         this.placeId = placeId;
+    }
+
+    public PlusCode getPlusCode() {
+        return plusCode;
+    }
+
+    public void setPlusCode(PlusCode plusCode) {
+        this.plusCode = plusCode;
+    }
+
+    public Integer getPriceLevel() {
+        return priceLevel;
+    }
+
+    public void setPriceLevel(Integer priceLevel) {
+        this.priceLevel = priceLevel;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
     }
 
     public String getReference() {
@@ -119,46 +163,6 @@ public class Result {
         this.types = types;
     }
 
-    public String getVicinity() {
-        return vicinity;
-    }
-
-    public void setVicinity(String vicinity) {
-        this.vicinity = vicinity;
-    }
-
-    public String getBusinessStatus() {
-        return businessStatus;
-    }
-
-    public void setBusinessStatus(String businessStatus) {
-        this.businessStatus = businessStatus;
-    }
-
-    public OpeningHours getOpeningHours() {
-        return openingHours;
-    }
-
-    public void setOpeningHours(OpeningHours openingHours) {
-        this.openingHours = openingHours;
-    }
-
-    public PlusCode getPlusCode() {
-        return plusCode;
-    }
-
-    public void setPlusCode(PlusCode plusCode) {
-        this.plusCode = plusCode;
-    }
-
-    public Double getRating() {
-        return rating;
-    }
-
-    public void setRating(Double rating) {
-        this.rating = rating;
-    }
-
     public Integer getUserRatingsTotal() {
         return userRatingsTotal;
     }
@@ -167,12 +171,12 @@ public class Result {
         this.userRatingsTotal = userRatingsTotal;
     }
 
-    public Integer getPriceLevel() {
-        return priceLevel;
+    public String getVicinity() {
+        return vicinity;
     }
 
-    public void setPriceLevel(Integer priceLevel) {
-        this.priceLevel = priceLevel;
+    public void setVicinity(String vicinity) {
+        this.vicinity = vicinity;
     }
 
 }

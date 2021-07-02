@@ -7,10 +7,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
+
 import com.hoarauthomas.go4lunchthp7.api.GooglePlaceApi;
 import com.hoarauthomas.go4lunchthp7.api.RetrofitRequest;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
-import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
+import com.hoarauthomas.go4lunchthp7.pojo.Result;
+
 
 import java.util.ArrayList;
 import java.util.List;

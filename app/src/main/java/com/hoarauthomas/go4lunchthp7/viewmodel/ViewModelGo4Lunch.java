@@ -11,8 +11,10 @@ import androidx.lifecycle.ViewModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
 import com.hoarauthomas.go4lunchthp7.api.UserHelper;
-import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
+
+import com.hoarauthomas.go4lunchthp7.pojo.Result;
 import com.hoarauthomas.go4lunchthp7.repository.AuthentificationRepository;
 import com.hoarauthomas.go4lunchthp7.repository.LocationRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;

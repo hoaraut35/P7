@@ -17,7 +17,9 @@ import android.view.ViewGroup;
 
 import com.hoarauthomas.go4lunchthp7.MainActivity;
 import com.hoarauthomas.go4lunchthp7.R;
-import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
+//import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
+
+import com.hoarauthomas.go4lunchthp7.pojo.Result;
 import com.hoarauthomas.go4lunchthp7.ui.adapter.RecyclerViewAdapter;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;

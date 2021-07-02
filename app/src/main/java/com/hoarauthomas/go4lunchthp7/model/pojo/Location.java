@@ -1,5 +1,5 @@
 
-package com.hoarauthomas.go4lunchthp7.model.pojo;
+package com.hoarauthomas.go4lunchthp7.pojo;
 
 
 import com.google.gson.annotations.Expose;

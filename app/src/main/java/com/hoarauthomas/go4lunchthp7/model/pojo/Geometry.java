@@ -4,6 +4,8 @@ package com.hoarauthomas.go4lunchthp7.model.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.hoarauthomas.go4lunchthp7.pojo.Location;
+import com.hoarauthomas.go4lunchthp7.pojo.Viewport;
 
 
 public class Geometry {
