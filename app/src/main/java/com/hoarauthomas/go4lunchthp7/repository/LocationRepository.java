@@ -24,17 +24,21 @@ public class LocationRepository {
 
     private static final int LOCATION_REQUEST_INTERVAL_MS = 10_000;
     private static final float SMALLEST_DISPLACEMENT_THRESHOLD_METER = 25;
-    private FusedLocationProviderClient fusedLocationProviderClient;
-
+    private final FusedLocationProviderClient fusedLocationProviderClient;
+    private final Context myContext;
     private LocationCallback callback;
+    private final MutableLiveData<android.location.Location> locationMutableLiveData = new MutableLiveData<>();
 
-    private MutableLiveData<android.location.Location> locationMutableLiveData = new MutableLiveData<>();
-
-    public LocationRepository(FusedLocationProviderClient fusedLocationProviderClient){
+    //constructor
+    public LocationRepository(FusedLocationProviderClient fusedLocationProviderClient, Context context) {
         this.fusedLocationProviderClient = fusedLocationProviderClient;
+        this.myContext = context;
     }
 
-    public LiveData<Location> getLocationLiveData(){return locationMutableLiveData;}
+    //publish to viewmodel
+    public LiveData<Location> getLocationLiveData() {
+        return locationMutableLiveData;
+    }
 
     //TODO: permission
 
@@ -47,16 +51,29 @@ public class LocationRepository {
                     android.location.Location location = locationResult.getLastLocation();
                     locationMutableLiveData.setValue(location);
                 }
+
+
+
             };
         }
 
         fusedLocationProviderClient.removeLocationUpdates(callback);
 
+        if (ActivityCompat.checkSelfPermission(myContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(myContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         fusedLocationProviderClient.requestLocationUpdates(
                 LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setSmallestDisplacement(SMALLEST_DISPLACEMENT_THRESHOLD_METER)
-                .setInterval(LOCATION_REQUEST_INTERVAL_MS),
+                        .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                        .setSmallestDisplacement(SMALLEST_DISPLACEMENT_THRESHOLD_METER)
+                        .setInterval(LOCATION_REQUEST_INTERVAL_MS),
                 callback,
                 Looper.getMainLooper()
         );

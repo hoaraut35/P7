@@ -26,10 +26,10 @@ import retrofit2.Response;
 public class RestaurantsRepository {
 
     //this is api service class
-    private GooglePlaceApi service;
+    private final GooglePlaceApi service;
 
     //this is the list for add all iteration in a list to sned after in mutable
-    private final List<Result> allPlaces = new ArrayList<>();
+    private final List<Result> allRestaurants = new ArrayList<>();
 
     //this is the constructor for repository
     public RestaurantsRepository() {
@@ -37,11 +37,12 @@ public class RestaurantsRepository {
     }
 
     //this is livedata to publish to viewmodel
-    public LiveData<List<Result>> getAllPlaces() {
+    public LiveData<List<Result>> getAllRestaurants() {
 
         final MutableLiveData<List<Result>> data = new MutableLiveData<>();
 
-        service.getNearbyPlaces(BuildConfig.MAPS_API_KEY, 1000)
+        //service.getNearbyPlaces(BuildConfig.MAPS_API_KEY, 1000)
+        service.getNearbyPlaces(BuildConfig.MAPS_API_KEY)
                 .enqueue(new Callback<Place>() {
                     @Override
                     public void onResponse(Call<Place> call, Response<Place> response) {
@@ -50,9 +51,10 @@ public class RestaurantsRepository {
 
                             //iterate all results ...
                             for (int i = 0; i < response.body().getResults().size(); i++) {
-                                //?
-                                allPlaces.add(response.body().getResults().get(i));
-                                data.postValue(allPlaces);
+                                Log.i("[THOMAS]", "Repository Restaurants, getAllRestaurants : " + response.body().getResults().size());
+
+                                allRestaurants.add(response.body().getResults().get(i));
+                                data.postValue(allRestaurants);
                             }
                         }
                     }

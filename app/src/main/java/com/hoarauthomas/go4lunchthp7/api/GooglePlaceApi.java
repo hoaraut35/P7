@@ -13,10 +13,10 @@ import retrofit2.http.Query;
 
 public interface GooglePlaceApi {
 
-    @GET("place/nearbysearch/json?location=48.11198,%20-1.67429&type=restaurant")
+    @GET("place/nearbysearch/json?location=48.11198,%20-1.67429&rankby=distance&type=restaurant")
     Call<Place> getNearbyPlaces(
-            @Query("key") String key,
-            @Query("radius") int radius);
+            @Query("key") String key);
+            //@Query("radius") int radius);
          //   @Query("location") Double latitude);,
 
 }

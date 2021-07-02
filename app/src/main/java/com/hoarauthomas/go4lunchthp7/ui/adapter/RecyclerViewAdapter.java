@@ -56,7 +56,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         //show the image of restaurant
         try {
-            Log.i("[THOMAS]", "Get photo [" + position + "] " + mResults.get(position).getPhotos().get(0).getPhotoReference());
+          //  Log.i("[THOMAS]", "Get photo [" + position + "] " + mResults.get(position).getPhotos().get(0).getPhotoReference());
             String base = "https://maps.googleapis.com/maps/api/place/photo?";
             String key = "key="+ BuildConfig.MAPS_API_KEY;
             String reference = "&photoreference=" + mResults.get(position).getPhotos().get(0).getPhotoReference();

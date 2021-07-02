@@ -34,7 +34,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     myViewModelFactory = new ViewModelFactory(
                             new AuthentificationRepository(),
                             new RestaurantsRepository(),
-                            new LocationRepository(LocationServices.getFusedLocationProviderClient(application))
+                            new LocationRepository(LocationServices.getFusedLocationProviderClient(application),application)
                     );
                 }
             }

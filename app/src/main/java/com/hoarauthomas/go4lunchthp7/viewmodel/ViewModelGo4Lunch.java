@@ -41,8 +41,7 @@ public class ViewModelGo4Lunch extends ViewModel {
         this.myAuthentificationSource = authentificationRepository;
         this.myRestaurantsSource = placeRepository;
         this.myLocationSource = locationRepository;
-
-        this.placesResponseLiveData = myRestaurantsSource.getAllPlaces();
+        this.placesResponseLiveData = myRestaurantsSource.getAllRestaurants();
         this.responseLocation = myLocationSource.getLocationLiveData();
     }
 
@@ -55,23 +54,19 @@ public class ViewModelGo4Lunch extends ViewModel {
 
 
 
-    //**********************************************************************************************
-    // Security section
-    //**********************************************************************************************
 
-    protected FirebaseUser getCurrentUser() {
-        return FirebaseAuth.getInstance().getCurrentUser();
-    }
 
-    protected Boolean isCurrentUserLogged() {
-        return (this.getCurrentUser() != null);
-    }
 
     private MutableLiveData<Boolean> logged = new MutableLiveData<>();
 
     public LiveData<Boolean> isLogged() {
       //  checkSecurity();
         return logged;
+    }
+
+
+    public FirebaseUser getCurrentUser() {
+        return FirebaseAuth.getInstance().getCurrentUser();
     }
 
     public Boolean checkSecurity() {
@@ -87,17 +82,6 @@ public class ViewModelGo4Lunch extends ViewModel {
             request_user_info();
             return true;
         }
-
-        /*if (!isCurrentUserLogged()) {
-            request_login();
-            return false;
-        } else {
-            request_user_info();
-            return true;
-        }
-
-         */
-
     }
 
     public void request_login() {

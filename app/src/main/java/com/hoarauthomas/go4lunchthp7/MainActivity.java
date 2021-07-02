@@ -45,7 +45,7 @@ import java.util.List;
 import static android.view.View.*;
 
 
-//this is for user interaction only ....
+//user interaction with ui only ....
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -54,19 +54,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //to add viewmodel
     public ViewModelGo4Lunch myViewModel;
-
-    //to debug
-    private static final String TAG = "[THOMAS]";
-
-    //to get context from application, used in repository and factory
-    private static Application sApplication;
-
-    //to retrieve the full list of restaurant
-    public List<Result> myData() {
-        return allResult;
-    }
-
-    public final ArrayList<Result> allResult = new ArrayList<>();
 
     //signal for activity result and callback
     private static final int RC_SIGN_IN = 123;
@@ -79,19 +66,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             new AuthUI.IdpConfig.FacebookBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build());
 
-    //TODO: remove viexpager swipe?
-    //Added for manage 3 screens (map, list, workmates and preferences) finally we excluse the map fragment bug with googlemap
     FragmentsAdapter myFragmentAdapter;
-
-    //TODO: move to viewmodel ? but we must to open activity from viewmodel to login ....
-    protected FirebaseUser getCurrentUser() {
-        return FirebaseAuth.getInstance().getCurrentUser();
-    }
-
-    //TODO: move to viewmodel ? but we must to open activity from viewmodel to login ....
-    protected Boolean isCurrentUserLogged() {
-        return (this.getCurrentUser() != null);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
         this.myViewModel.checkSecurity();
         this.myViewModel.isLogged().observe(this, this::onLoginStateChange);
-      //  this.myViewModel.getRestaurants().observe(this, this::onUpdateRestaurants);
     }
 
     private void onLoginStateChange(Boolean aBoolean) {
@@ -123,13 +97,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-/*    private void onUpdateRestaurants(List<Result> places) {
-        Log.i("[THOMAS]", "ViewModel Restaurants Event" + places.size());
-        allResult.clear();
-        allResult.addAll(places);
-    }
 
- */
 
     //called when the user is not logged ...
     private void request_login() {
@@ -149,12 +117,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void request_user_info() {
         View hv = binding.navigationView.getHeaderView(0);
         TextView name = (TextView) hv.findViewById(R.id.displayName);
-        name.setText(this.getCurrentUser().getDisplayName());
+        name.setText(myViewModel.getCurrentUser().getDisplayName());
         TextView email = (TextView) hv.findViewById(R.id.email);
-        email.setText(this.getCurrentUser().getEmail());
+        email.setText(myViewModel.getCurrentUser().getEmail());
         ImageView avatar = (ImageView) hv.findViewById(R.id.avatar);
         Glide.with(avatar)
-                .load(this.getCurrentUser().getPhotoUrl())
+                .load(myViewModel.getCurrentUser().getPhotoUrl())
                 .circleCrop()
                 .into(avatar);
     }

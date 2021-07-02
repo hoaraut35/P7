@@ -24,6 +24,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -33,8 +34,11 @@ import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.api.GooglePlaceApi;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
+import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,6 +63,60 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     private GoogleMap myMap;
     public LatLng myPosition;
 
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        viewModelGo4Lunch = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
+        // viewModelGo4Lunch.refreshPosition();
+        viewModelGo4Lunch.getMyPosition().observe(getViewLifecycleOwner(), this::onUpdatePosition);
+        viewModelGo4Lunch.getRestaurants().observe(getViewLifecycleOwner(), this::onUpdateRestaurants);
+
+
+        return inflater.inflate(R.layout.fragment_maps, container, false);
+    }
+
+    private void onUpdatePosition(Location location) {
+
+        Log.i("[THOMAS]", "onUpdatePosition MapsFragment ... " + location.getLatitude() + " " + location.getLongitude());
+
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+        if (Double.isNaN(location.getLongitude()) && Double.isNaN(location.getLatitude())) {
+
+        }
+
+        if (location != null)
+            //check if position is empty
+            myMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        myMap.animateCamera(CameraUpdateFactory.zoomTo(10));//city zoom
+
+        if (location != null) {
+            this.newPosition = new Location(location);
+        }
+    }
+
+    private void onUpdateRestaurants(List<Result> results) {
+
+        Log.i("[THOMAS]", "Frag map, onUpdateRestaurants : total => " + results.size());
+
+        myMap.clear();
+
+        for (int i = 0; i < results.size(); i++) {
+            Double lat = results.get(i).getGeometry().getLocation().getLat();
+            Double lng = results.get(i).getGeometry().getLocation().getLng();
+            //String placeName = response.body().getResults().get(i).getName();
+            MarkerOptions markerOptions = new MarkerOptions();
+            LatLng latLng = new LatLng(lat, lng);
+            markerOptions.position(latLng);
+            markerOptions.title(results.get(i).getName());
+          //  markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_baseline_restaurant_24));
+            Marker m = myMap.addMarker(markerOptions);
+        }
+
+    }
+
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
@@ -80,72 +138,10 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             checkPermissions();
 
             //used by fusedLocationProviderClient to get the last position
-            getDeviceLocation();
+            //  getDeviceLocation();
 
             //  getLocationPermission();
             //   updateLocationUI();
-
-            //move to viewmodel
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("https://maps.googleapis.com/maps/api/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-
-            //Create a REST
-            GooglePlaceApi service = retrofit.create(GooglePlaceApi.class);
-
-            //TODO: add long lat
-            //Fetch a list of the Github repositories
-            Call<Place> call = service.getNearbyPlaces(BuildConfig.MAPS_API_KEY, 1000);
-
-            //send asynchronous task
-            call.enqueue(new Callback<Place>() {
-                @Override
-                public void onResponse(Call<Place> call, Response<Place> response) {
-
-                    try {
-
-                      //  map.clear();
-
-
-                        Log.i("[THOMAS]", "Nombre de restaurant(s) trouvé(s) : " + response.body().getResults().size());
-
-
-                        //loop to add marker on map for everybody result
-                        for (int i = 0; i < response.body().getResults().size(); i++) {
-                            Double lat = response.body().getResults().get(i).getGeometry().getLocation().getLat();
-                            Double lng = response.body().getResults().get(i).getGeometry().getLocation().getLng();
-
-                            //Log.i("[THOMAS]","coordonne["+ i + "] " + lat + " " + lng );
-
-                            String placeName = response.body().getResults().get(i).getName();
-
-                            MarkerOptions markerOptions = new MarkerOptions();
-                            LatLng latLng = new LatLng(lat, lng);
-                            markerOptions.position(latLng);
-                            markerOptions.title(placeName);
-
-
-                            Marker m = map.addMarker(markerOptions);
-
-                            latLng = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-                            myMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                            myMap.animateCamera(CameraUpdateFactory.zoomTo(10));//city zoom
-
-                        }
-
-                    } catch (Exception e) {
-                        Log.i("[THOMAS]", "erreur map");
-                    }
-
-
-                }
-
-                @Override
-                public void onFailure(Call<Place> call, Throwable t) {
-
-                }
-            });
 
 
         }
@@ -276,38 +272,8 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
         checkPermissions();
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        viewModelGo4Lunch = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
-        viewModelGo4Lunch.refreshPosition();
-        viewModelGo4Lunch.getMyPosition().observe(this, this::onUpdatePosition);
 
 
-        return inflater.inflate(R.layout.fragment_maps, container, false);
-    }
-
-    private void onUpdatePosition(Location location) {
-        Log.i("[THOMAS]", "onUpdatePosition MapsFragment ... " + location.getLatitude() + location.getLongitude());
-
-
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-
-        if (Double.isNaN(location.getLongitude()) && Double.isNaN(location.getLatitude())){
-
-        }
-
-        if (location != null)
-            //check if position is empty
-            myMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        myMap.animateCamera(CameraUpdateFactory.zoomTo(10));//city zoom
-
-        if (location != null) {
-            this.newPosition = new Location(location);
-        }
-    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
