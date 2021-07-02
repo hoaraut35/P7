@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.api.UserHelper;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
+import com.hoarauthomas.go4lunchthp7.repository.AuthentificationRepository;
 import com.hoarauthomas.go4lunchthp7.repository.LocationRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 
@@ -26,28 +27,28 @@ import java.util.List;
 
 public class ViewModelGo4Lunch extends ViewModel {
 
-    //add repo here...
-    private final RestaurantsRepository myPlaceSource;
+    //Add repository here...
+    private final AuthentificationRepository myAuthentificationSource;
+    private final RestaurantsRepository myRestaurantsSource;
     private final LocationRepository myLocationSource;
 
+    //Add livedata and mutableLiveData here...
     private final LiveData<List<Result>> placesResponseLiveData;
     private final LiveData<Location> responseLocation;
 
-    public ViewModelGo4Lunch(RestaurantsRepository placeRepository, LocationRepository locationRepository) {
-        this.myPlaceSource = placeRepository;
+    //constructor to get one instance of each object, called by ViewModelFactory
+    public ViewModelGo4Lunch(AuthentificationRepository authentificationRepository, RestaurantsRepository placeRepository, LocationRepository locationRepository) {
+        this.myAuthentificationSource = authentificationRepository;
+        this.myRestaurantsSource = placeRepository;
         this.myLocationSource = locationRepository;
-        this.placesResponseLiveData = myPlaceSource.getAllPlaces();
+
+        this.placesResponseLiveData = myRestaurantsSource.getAllPlaces();
         this.responseLocation = myLocationSource.getLocationLiveData();
     }
 
-    //this method is use by MainActivity ...
-    public LiveData<List<Result>> getRestaurants() {
-        return placesResponseLiveData;
-    }
-
-    //this method is use by MainActivity ...
-    public LiveData<Location> getMyPosition() { return responseLocation;}
-
+    //these methods are published to activity or fragments ...
+    public LiveData<List<Result>> getRestaurants() {     return placesResponseLiveData; }//add method to get restaurant from repository?
+    public LiveData<Location> getMyPosition() { return responseLocation;}//a&dd method to get position from repository location?
     public void refreshPosition(){
         myLocationSource.startLocationRequest();
     }
@@ -69,19 +70,33 @@ public class ViewModelGo4Lunch extends ViewModel {
     private MutableLiveData<Boolean> logged = new MutableLiveData<>();
 
     public LiveData<Boolean> isLogged() {
-        checkSecurity();
+      //  checkSecurity();
         return logged;
     }
 
     public Boolean checkSecurity() {
 
-        if (!isCurrentUserLogged()) {
+        if (!myAuthentificationSource.getLoginState()){
+            Log.i("[THOMAS]","VM, checkSecurity() non connecté");
+         request_login();
+         return false;
+        }
+        else
+        {
+            Log.i("[THOMAS]","VM, checkSecurity() connecté");
+            request_user_info();
+            return true;
+        }
+
+        /*if (!isCurrentUserLogged()) {
             request_login();
             return false;
         } else {
             request_user_info();
             return true;
         }
+
+         */
 
     }
 

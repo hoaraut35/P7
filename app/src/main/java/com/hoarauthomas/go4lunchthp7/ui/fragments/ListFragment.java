@@ -5,10 +5,12 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +19,21 @@ import com.hoarauthomas.go4lunchthp7.MainActivity;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
 import com.hoarauthomas.go4lunchthp7.ui.adapter.RecyclerViewAdapter;
+import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
+import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class ListFragment extends Fragment {
+
+    //to add viewmodel
+    private ViewModelGo4Lunch myViewModel;
+
+    public final ArrayList<Result> allResult = new ArrayList<>();
+  //  List<Result> listeRestaurants = activity.myData();
+
 
     //for add a recyclerview on this fragment
     private RecyclerView recyclerView;
@@ -38,11 +50,14 @@ public class ListFragment extends Fragment {
         View view = inflater.inflate(R.layout.list_fragment, container, false);
 
 
-        MainActivity activity = (MainActivity) getActivity();
+    //    MainActivity activity = (MainActivity) getActivity();
 
 
-        List<Result> listeRestaurants = activity.myData();
 
+
+
+        this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
+        this.myViewModel.getRestaurants().observe(this, this::onUpdateRestaurants);
 
 
 
@@ -51,17 +66,17 @@ public class ListFragment extends Fragment {
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         recyclerView.addItemDecoration(itemDecoration);
-        recyclerView.setAdapter(new RecyclerViewAdapter(0, listeRestaurants));
+        recyclerView.setAdapter(new RecyclerViewAdapter(0, allResult));
 
         return view;
     }
 
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        // mViewModel = new ViewModelProvider(this).get(ListViewModel.class);
-        // TODO: Use the ViewModel
+    private void onUpdateRestaurants(List<Result> results) {
+        Log.i("[THOMAS]", "List frag, Updaterestaurant Event " + results.size());
+        allResult.clear();
+        allResult.addAll(results);
+        recyclerView.getAdapter().notifyDataSetChanged();
     }
+
 
 }

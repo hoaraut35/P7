@@ -9,7 +9,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public interface GooglePlacesInterface {
+//This is the contract with the API...
+
+public interface GooglePlaceApi {
+
     @GET("place/nearbysearch/json?location=48.11198,%20-1.67429&type=restaurant")
     Call<Place> getNearbyPlaces(
             @Query("key") String key,

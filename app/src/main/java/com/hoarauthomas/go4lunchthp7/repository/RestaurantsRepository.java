@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
-import com.hoarauthomas.go4lunchthp7.api.GooglePlacesInterface;
+import com.hoarauthomas.go4lunchthp7.api.GooglePlaceApi;
 import com.hoarauthomas.go4lunchthp7.api.RetrofitRequest;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
@@ -26,14 +26,14 @@ import retrofit2.Response;
 public class RestaurantsRepository {
 
     //this is api service class
-    private GooglePlacesInterface service;
+    private GooglePlaceApi service;
 
     //this is the list for add all iteration in a list to sned after in mutable
     private final List<Result> allPlaces = new ArrayList<>();
 
     //this is the constructor for repository
     public RestaurantsRepository() {
-        service = RetrofitRequest.getRetrofitInstance().create(GooglePlacesInterface.class);
+        service = RetrofitRequest.getRetrofitInstance().create(GooglePlaceApi.class);
     }
 
     //this is livedata to publish to viewmodel

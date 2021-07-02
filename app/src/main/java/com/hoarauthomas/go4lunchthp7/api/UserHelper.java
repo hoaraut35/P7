@@ -30,6 +30,9 @@ public class UserHelper {
         return UserHelper.getUsersCollection().document(uid).get();
     }
 
+
+
+
     // --- UPDATE ---
 
     public static Task<Void> updateUsername(String username, String uid) {

@@ -83,6 +83,8 @@ dependencies {
     //Added for HTTP Clinet 14.06.21
     implementation 'com.squareup.retrofit2:retrofit:2.7.1'
 
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
+
     //Gson is a Java library that can be used to convert Java Objects into their JSON representation
     implementation 'com.google.code.gson:gson:2.8.7'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'

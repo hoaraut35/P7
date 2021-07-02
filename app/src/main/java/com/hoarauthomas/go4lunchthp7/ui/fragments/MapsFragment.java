@@ -24,7 +24,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -32,7 +31,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.R;
-import com.hoarauthomas.go4lunchthp7.api.GooglePlacesInterface;
+import com.hoarauthomas.go4lunchthp7.api.GooglePlaceApi;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
@@ -47,7 +46,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
     private ViewModelGo4Lunch viewModelGo4Lunch;
 
-    private LocationManager lm;
+
     private static final int DEFAULT_ZOOM = 10;
     private final LatLng defaultLocation = new LatLng(-33.8523341, 151.2106085);
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
@@ -56,43 +55,27 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
     //TODO: use this to locate the phone
     private FusedLocationProviderClient fusedLocationProviderClient;
-
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-
-
     private GoogleMap myMap;
-
-
     public LatLng myPosition;
 
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
-
-        /**
-         * Manipulates the map once available.
-         * This callback is triggered when the map is ready to be used.
-         * This is where we can add markers or lines, add listeners or move the camera.
-         * In this case, we just add a marker near Sydney, Australia.
-         * If Google Play services is not installed on the device, the user will be prompted to
-         * install it inside the SupportMapFragment. This method will only be triggered once the
-         * user has installed Google Play services and returned to the app.
-         */
-
-
         @Override
         public void onMapReady(GoogleMap map) {
 
+            //to get an instance
             myMap = map;
-
 
             //we must use location object with fused location provider
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
             //Setup Google Map
             map.getUiSettings().setZoomControlsEnabled(true);
-            //map.setMinZoomPreference(10);//=zoom to city object
+            map.setMinZoomPreference(1);
 
+            //TODO: update permissions control , add to resume
             //To check permission
             checkPermissions();
 
@@ -109,7 +92,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                     .build();
 
             //Create a REST
-            GooglePlacesInterface service = retrofit.create(GooglePlacesInterface.class);
+            GooglePlaceApi service = retrofit.create(GooglePlaceApi.class);
 
             //TODO: add long lat
             //Fetch a list of the Github repositories
@@ -121,7 +104,8 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                 public void onResponse(Call<Place> call, Response<Place> response) {
 
                     try {
-                        map.clear();
+
+                      //  map.clear();
 
 
                         Log.i("[THOMAS]", "Nombre de restaurant(s) trouvé(s) : " + response.body().getResults().size());
@@ -261,15 +245,13 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                                 Log.i("[THOMAS]", "frag map getlast pos : " + lastKnownLocation.getLongitude() + " " + lastKnownLocation.getLatitude());
 
 
-                              //  LatLng latLng = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-                              //  myMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                              //  myMap.animateCamera(CameraUpdateFactory.zoomTo(10));//city zoom
+                                //  LatLng latLng = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+                                //  myMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                                //  myMap.animateCamera(CameraUpdateFactory.zoomTo(10));//city zoom
 
 
-                            }
-                            else
-                            {
-                                Log.i("[THOMAS]","position introuvable ");
+                            } else {
+                                Log.i("[THOMAS]", "position introuvable ");
                             }
                         } else {
                             //  Log.d("THOMAS", "Current location is null. Using defaults.");
@@ -279,10 +261,8 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                         }
                     }
                 });
-            }
-            else
-            {
-                Log.i("[THOMAS]","Problème d'autorisation map");
+            } else {
+                Log.i("[THOMAS]", "Problème d'autorisation map");
             }
         } catch (SecurityException e) {
             Log.e("Exception de sécurité location : %s", e.getMessage(), e);
@@ -293,9 +273,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     @Override
     public void onResume() {
         super.onResume();
-
-
-
+        checkPermissions();
     }
 
     @Nullable
@@ -316,22 +294,24 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        myMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        myMap.animateCamera(CameraUpdateFactory.zoomTo(10));//city zoom
 
+        if (Double.isNaN(location.getLongitude()) && Double.isNaN(location.getLatitude())){
+
+        }
+
+        if (location != null)
+            //check if position is empty
+            myMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        myMap.animateCamera(CameraUpdateFactory.zoomTo(10));//city zoom
 
         if (location != null) {
             this.newPosition = new Location(location);
         }
-
-
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {

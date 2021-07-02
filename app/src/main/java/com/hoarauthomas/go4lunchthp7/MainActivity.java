@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ActivityMainBinding binding;
 
     //to add viewmodel
-    private ViewModelGo4Lunch myViewModel;
+    public ViewModelGo4Lunch myViewModel;
 
     //to debug
     private static final String TAG = "[THOMAS]";
@@ -66,29 +66,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return allResult;
     }
 
+    public final ArrayList<Result> allResult = new ArrayList<>();
+
     //signal for activity result and callback
     private static final int RC_SIGN_IN = 123;
     private static final int SIGN_OUT_TASK = 10;
     private static final int DELETE_USER_TASK = 20;
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
-    //list for restaurants
-    public final ArrayList<Result> allResult = new ArrayList<>();
-
     //list of auth provider
     List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.FacebookBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build());
 
+    //TODO: remove viexpager swipe?
     //Added for manage 3 screens (map, list, workmates and preferences) finally we excluse the map fragment bug with googlemap
     FragmentsAdapter myFragmentAdapter;
-
-    //added to test security after resume
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setupSecurity();
-    }
 
     //TODO: move to viewmodel ? but we must to open activity from viewmodel to login ....
     protected FirebaseUser getCurrentUser() {
@@ -106,51 +99,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-
-        //TODO: migrate security to the viewmodel
         setupViewModel();
-        setupSecurity();
-
-        //TODO: move to another class
         setupTopAppBar();
         setupNavigationDrawer();
         setupBottomBAr();
         setupViewPager(1);
     }
 
-
-    //**********************************************************************************************
-    // Setup ViewModel
-    //**********************************************************************************************
     private void setupViewModel() {
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
-        this.myViewModel.getRestaurants().observe(this, this::onUpdateRestaurants);
+        this.myViewModel.checkSecurity();
+        this.myViewModel.isLogged().observe(this, this::onLoginStateChange);
+      //  this.myViewModel.getRestaurants().observe(this, this::onUpdateRestaurants);
     }
 
-    private void onUpdateRestaurants(List<Result> places) {
-        Log.i("[THOMAS]", "ViewModel Restaurants Event" + places.size());
-        allResult.clear();
-        allResult.addAll(places);
-    }
-    //**********************************************************************************************
-    // End of Setup ViewModel
-    //**********************************************************************************************
+    private void onLoginStateChange(Boolean aBoolean) {
+        Log.i("[THOMAS]", "User log state : " + aBoolean);
 
-
-    //**********************************************************************************************
-    // Security UI management
-    //**********************************************************************************************
-
-    public void setupSecurity() {
-        if (!isCurrentUserLogged()) {
+        if (!aBoolean) {
             request_login();
         } else {
             request_user_info();
         }
     }
 
+/*    private void onUpdateRestaurants(List<Result> places) {
+        Log.i("[THOMAS]", "ViewModel Restaurants Event" + places.size());
+        allResult.clear();
+        allResult.addAll(places);
+    }
+
+ */
+
+    //called when the user is not logged ...
     private void request_login() {
 
+        //TODO: update this part of code to remove error
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
@@ -163,15 +147,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void request_user_info() {
-
         View hv = binding.navigationView.getHeaderView(0);
         TextView name = (TextView) hv.findViewById(R.id.displayName);
-
         name.setText(this.getCurrentUser().getDisplayName());
         TextView email = (TextView) hv.findViewById(R.id.email);
         email.setText(this.getCurrentUser().getEmail());
         ImageView avatar = (ImageView) hv.findViewById(R.id.avatar);
-
         Glide.with(avatar)
                 .load(this.getCurrentUser().getPhotoUrl())
                 .circleCrop()
@@ -249,13 +230,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(intent);
     }
 
+
+    //used when a succes login from firebase ui authentifiction
     private OnSuccessListener<Void> updateUIAfterRESTRequestsCompleted(final int origin) {
         return new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 switch (origin) {
                     case SIGN_OUT_TASK:
-                        setupSecurity();
+                        // setupSecurity();
                         // finish();
                         break;
                     case DELETE_USER_TASK:
@@ -267,6 +250,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         };
     }
+
 
     private void setupBottomBAr() {
         binding.bottomNavigationMenu.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -331,4 +315,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        myViewModel.checkSecurity();
+    }
 }
