@@ -13,9 +13,11 @@ import com.hoarauthomas.go4lunchthp7.repository.AuthentificationRepository;
 import com.hoarauthomas.go4lunchthp7.repository.LocationRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 
-//https://medium.com/koderlabs/viewmodel-with-viewmodelprovider-factory-the-creator-of-viewmodel-8fabfec1aa4f
+//TODO: erreur try to generify ?
 
-//ViewModelProvider.Factory is responsible to create the instance of ViewModel
+//https://medium.com/koderlabs/viewmodel-with-viewmodelprovider-factory-the-creator-of-viewmodel-8fabfec1aa4f
+//ViewModelProvider.Factory is responsible to create the instance of ViewModels
+
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
     private static ViewModelFactory myViewModelFactory;
@@ -25,20 +27,26 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final LocationRepository locationRepository;
     private final RestaurantsRepository restaurantsRepository;
 
-    //Get an instance of ViewModelFactory ... see pattern singleton, factory ?
+    //Get an instance of ViewModelFactory ... see pattern singleton
     public static ViewModelFactory getInstance() {
+        Log.i("[THOMAS]", "[VIEWMODELFACTORY INIT]");
         if (myViewModelFactory == null) {
             synchronized (ViewModelFactory.class) {
                 if (myViewModelFactory == null) {
+                    Log.i("[THOMAS]", "[VIEWMODELFACTORY NEW OBJECT]");
                     Application application = MainApplication.getApplication();
                     myViewModelFactory = new ViewModelFactory(
                             new AuthentificationRepository(),
                             new RestaurantsRepository(),
-                            new LocationRepository(LocationServices.getFusedLocationProviderClient(application),application)
+                            new LocationRepository(LocationServices.getFusedLocationProviderClient(application), application)
                     );
+                } else {
+                    Log.i("[THOMAS]", "[VIEWMODELFACTORY OBJECT ALREADY EXIST]");
                 }
+
             }
         }
+
         return myViewModelFactory;
     }
 
@@ -53,13 +61,9 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(ViewModelGo4Lunch.class)) {
-            return (T) new ViewModelGo4Lunch(
-                    //TODO: update this part code?
-                    this.authentificationRepository,
-                    this.restaurantsRepository,
-                    this.locationRepository
-            );
+            return (T) new ViewModelGo4Lunch(this.authentificationRepository, this.restaurantsRepository, this.locationRepository);
+            //return (T) new ViewModelGo4Lunch();
         }
-        throw new IllegalArgumentException("[ViewModelFactory] ]Unknow ViewModel class");
+        throw new IllegalArgumentException("[V M F] Unknow ViewModel class");
     }
 }

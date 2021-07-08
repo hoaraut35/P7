@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -20,6 +21,7 @@ import com.hoarauthomas.go4lunchthp7.repository.LocationRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 
 import java.util.List;
+import java.util.MissingFormatArgumentException;
 
 //This class is for the business logic
 //We expose only Livedata but we must use Mutable livedata to modify livedata value
@@ -30,7 +32,7 @@ import java.util.List;
 public class ViewModelGo4Lunch extends ViewModel {
 
     //Add repository here...
-    private final AuthentificationRepository myAuthentificationSource;
+    private  AuthentificationRepository myAuthentificationSource;
     private final RestaurantsRepository myRestaurantsSource;
     private final LocationRepository myLocationSource;
 
@@ -38,19 +40,38 @@ public class ViewModelGo4Lunch extends ViewModel {
     private final LiveData<List<Result>> placesResponseLiveData;
     private final LiveData<Location> responseLocation;
 
+    private MutableLiveData<FirebaseUser> myUserVM;
+    private MutableLiveData<Boolean> responseAuthentification;
+
     //constructor to get one instance of each object, called by ViewModelFactory
     public ViewModelGo4Lunch(AuthentificationRepository authentificationRepository, RestaurantsRepository placeRepository, LocationRepository locationRepository) {
+        //public ViewModelGo4Lunch() {
+        Log.i("[THOMAS]", "[VIEWMODELGO4LUNCH INIT]");
+
+        //this is ok...
         this.myAuthentificationSource = authentificationRepository;
+        this.myUserVM = myAuthentificationSource.getUserLiveData();
+        this.responseAuthentification = myAuthentificationSource.getMyUserState();
+
+        //in progress...
         this.myRestaurantsSource = placeRepository;
-        this.myLocationSource = locationRepository;
         this.placesResponseLiveData = myRestaurantsSource.getAllRestaurants();
+
+        //in progress...
+        this.myLocationSource = locationRepository;
         this.responseLocation = myLocationSource.getLocationLiveData();
     }
 
     //these methods are published to activity or fragments ...
-    public LiveData<List<Result>> getRestaurants() {     return placesResponseLiveData; }//add method to get restaurant from repository?
-    public LiveData<Location> getMyPosition() { return responseLocation;}//a&dd method to get position from repository location?
-    public void refreshPosition(){
+    public LiveData<List<Result>> getRestaurants() {
+        return placesResponseLiveData;
+    }//add method to get restaurant from repository?
+
+    public LiveData<Location> getMyPosition() {
+        return responseLocation;
+    }//a&dd method to get position from repository location?
+
+    public void refreshPosition() {
         myLocationSource.startLocationRequest();
     }
 
@@ -59,51 +80,55 @@ public class ViewModelGo4Lunch extends ViewModel {
 
 
 
-    private MutableLiveData<Boolean> logged = new MutableLiveData<>();
 
-    public LiveData<Boolean> isLogged() {
-      //  checkSecurity();
-        return logged;
+
+   /* public LiveData<Boolean> checkSecurity(String data) {
+
+        //return responseAuthentification;
+        final MutableLiveData<Boolean> dataresult = new MutableLiveData<>();
+        dataresult.setValue(myAuthentificationSource.getCurrentLoginState(data).getValue());
+        Log.i("[THOMAS]", "Check security from " + data + " with result : " + myAuthentificationSource.getCurrentLoginState(data).getValue());
+        return dataresult;
+    }
+
+    */
+
+    /*public void securityUpdate(){
+        final MutableLiveData<Boolean> data = new MutableLiveData<>();
+
+        //responseAuthentification.
+        //responseAuthentification.setValue(myAuthentificationSource.getCurrentLoginState("").getValue());
+
+    }
+
+     */
+
+
+
+
+    //publish method to activity for
+    public MutableLiveData<FirebaseUser> getMyCurrentUser(){
+        return myUserVM;
+    }
+
+    //publish method to activity... to log out
+    public void logOut(){
+        myAuthentificationSource.logOut();
+    }
+
+    //publish method to activity... (logged or not)
+    public MutableLiveData<Boolean> getMyUserState(){
+        return responseAuthentification;
     }
 
 
-    public FirebaseUser getCurrentUser() {
-        return FirebaseAuth.getInstance().getCurrentUser();
-    }
-
-    public Boolean checkSecurity() {
-
-        if (!myAuthentificationSource.getLoginState()){
-            Log.i("[THOMAS]","VM, checkSecurity() non connecté");
-         request_login();
-         return false;
-        }
-        else
-        {
-            Log.i("[THOMAS]","VM, checkSecurity() connecté");
-            request_user_info();
-            return true;
-        }
-    }
-
-    public void request_login() {
-        logged.setValue(false);
-    }
-
-    public void request_user_info() {
-        logged.setValue(true);
-    }
-
-    //**********************************************************************************************
-    // End of Security section
-    //**********************************************************************************************
-
+/*
 
     //Add user to Firestore
     public void createuser() {
-        if (this.getCurrentUser() != null) {
+        if (this.myUserVM != null) {
 
-            String uid = this.getCurrentUser().getUid();
+            String uid = this.myUserVM.getUid();
             String username = this.getCurrentUser().getDisplayName();
             String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ? this.getCurrentUser().getPhotoUrl().toString() : null;
             Log.i("[THOMAS]", "Add user to Firestore ... " + uid + " " + username + " " + urlPicture);
@@ -118,6 +143,8 @@ public class ViewModelGo4Lunch extends ViewModel {
 
 
     }
+
+ */
 
 
 }

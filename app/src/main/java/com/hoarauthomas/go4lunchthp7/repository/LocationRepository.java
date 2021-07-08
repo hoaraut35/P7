@@ -31,6 +31,7 @@ public class LocationRepository {
 
     //constructor
     public LocationRepository(FusedLocationProviderClient fusedLocationProviderClient, Context context) {
+        Log.i("[THOMAS]","- Appel Repository Location");
         this.fusedLocationProviderClient = fusedLocationProviderClient;
         this.myContext = context;
     }

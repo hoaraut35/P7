@@ -73,6 +73,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
         viewModelGo4Lunch = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
         // viewModelGo4Lunch.refreshPosition();
         viewModelGo4Lunch.getMyPosition().observe(getViewLifecycleOwner(), this::onUpdatePosition);
+
         viewModelGo4Lunch.getRestaurants().observe(getViewLifecycleOwner(), this::onUpdateRestaurants);
 
 

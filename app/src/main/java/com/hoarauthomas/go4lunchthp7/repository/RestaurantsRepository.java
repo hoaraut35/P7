@@ -35,6 +35,7 @@ public class RestaurantsRepository {
 
     //this is the constructor for repository
     public RestaurantsRepository() {
+        Log.i("[THOMAS]","- Appel Repository Restaurants");
         service = RetrofitRequest.getRetrofitInstance().create(GooglePlaceApi.class);
     }
 
