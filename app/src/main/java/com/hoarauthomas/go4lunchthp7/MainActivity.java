@@ -73,23 +73,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setupViewModel() {
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
-        //this.myViewModel.checkSecurity("setupViewmModel").observe(this, this::onCheckSecurity);
-        this.myViewModel.getMyUserState().observe(this,this::onCheckSecurity);
+        this.myViewModel.getMyUserState().observe(this, this::onCheckSecurity);
     }
 
     private void onCheckSecurity(Boolean aBoolean) {
-
-
         if (!aBoolean) {
             Log.i("[THOMAS]", "Security event : request login");
             request_login();
-
         } else {
             Log.i("[THOMAS]", "Security event : request user data");
             request_user_info();
         }
-
-
     }
 
 
@@ -111,10 +105,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void request_user_info() {
 
-
-
         Log.i("[THOMAS]", "info user request ... update ui");
-
         View hv = binding.navigationView.getHeaderView(0);
         TextView name = (TextView) hv.findViewById(R.id.displayName);
         name.setText(this.myViewModel.getMyCurrentUser().getValue().getDisplayName());
@@ -125,29 +116,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .load(this.myViewModel.getMyCurrentUser().getValue().getPhotoUrl())
                 .circleCrop()
                 .into(avatar);
-
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Log.i("[THOMAS]","onActivityResult load ...");
+        Log.i("[THOMAS]", "onActivityResult load ...");
         IdpResponse response = IdpResponse.fromResultIntent(data);
 
         if (requestCode == RC_SIGN_IN) {
 
-            Log.i("[THOMAS]","RC_SIGN_IN...");
+            Log.i("[THOMAS]", "RC_SIGN_IN...");
 
             if (resultCode == RESULT_OK) {
-                Log.i("[THOMAS]","RESULT_OK SDIGN IN ...");
+                Log.i("[THOMAS]", "RESULT_OK SDIGN IN ...");
 
-               // this.myViewModel.securityUpdate();
-             //   this.myViewModel.checkSecurity("onActivityResult result login ok");
                 //this.myViewModel.createuser();
-
-
 
             } else {//error
 
@@ -162,15 +147,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     }
-
-
-    private void request_logout() {
-        Log.i("[THOMAS]", "demand logout to FirebaseUI");
-        AuthUI.getInstance()
-                .signOut(this)
-                .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted(SIGN_OUT_TASK));
-    }
-
     //**********************************************************************************************
     // End of Security UI Management
     //**********************************************************************************************
@@ -194,7 +170,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         myViewModel.logOut();
                         //request_logout();
-                       // myViewModel.checkSecurity("setupNavigationDrawer")
                         break;
                 }
                 binding.drawerLayout.closeDrawer(Gravity.START);
@@ -214,7 +189,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivity(intent);
     }
 
-
     //used when a succes login from firebase ui authentifiction
     private OnSuccessListener<Void> updateUIAfterRESTRequestsCompleted(final int origin) {
         return new OnSuccessListener<Void>() {
@@ -223,8 +197,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 switch (origin) {
                     case SIGN_OUT_TASK:
                         Log.i("[THOMAS]", "Logout is completed");
-                      //  myViewModel.securityUpdate();
-                      //  myViewModel.checkSecurity("OnsuccesListener after logout");
+                        //  myViewModel.securityUpdate();
+                        //  myViewModel.checkSecurity("OnsuccesListener after logout");
 
                         break;
                     case DELETE_USER_TASK:
@@ -301,10 +275,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-
-       // this.myViewModel.checkSecurity("onPostResume");
-    }
 }

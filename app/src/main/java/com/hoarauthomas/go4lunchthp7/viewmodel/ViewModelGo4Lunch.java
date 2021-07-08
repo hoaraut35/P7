@@ -73,30 +73,6 @@ public class ViewModelGo4Lunch extends ViewModel {
 
 
 
-   /* public LiveData<Boolean> checkSecurity(String data) {
-
-        //return responseAuthentification;
-        final MutableLiveData<Boolean> dataresult = new MutableLiveData<>();
-        dataresult.setValue(myAuthentificationSource.getCurrentLoginState(data).getValue());
-        Log.i("[THOMAS]", "Check security from " + data + " with result : " + myAuthentificationSource.getCurrentLoginState(data).getValue());
-        return dataresult;
-    }
-
-    */
-
-    /*public void securityUpdate(){
-        final MutableLiveData<Boolean> data = new MutableLiveData<>();
-
-        //responseAuthentification.
-        //responseAuthentification.setValue(myAuthentificationSource.getCurrentLoginState("").getValue());
-
-    }
-
-     */
-
-
-
-
     //publish method to activity for
     public MutableLiveData<FirebaseUser> getMyCurrentUser(){
         return myUserVM;
