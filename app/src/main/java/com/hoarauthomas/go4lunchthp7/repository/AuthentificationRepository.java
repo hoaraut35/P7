@@ -49,7 +49,7 @@ public class AuthentificationRepository {
 
     public void logOut(){
         myAuth.signOut();
-        myUserState.postValue(true);
+        myUserState.postValue(false);
     }
 
 }

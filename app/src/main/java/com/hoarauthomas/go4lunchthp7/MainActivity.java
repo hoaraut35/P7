@@ -189,7 +189,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         break;
                     case R.id.navigation_drawer_logout:
 
-                        request_logout();
+                        myViewModel.logOut();
+                        //request_logout();
                        // myViewModel.checkSecurity("setupNavigationDrawer")
                         break;
                 }
