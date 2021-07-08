@@ -3,55 +3,46 @@ package com.hoarauthomas.go4lunchthp7.viewmodel;
 import android.location.Location;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import com.hoarauthomas.go4lunchthp7.api.UserHelper;
-
 import com.hoarauthomas.go4lunchthp7.pojo.Result;
-import com.hoarauthomas.go4lunchthp7.repository.AuthentificationRepository;
+import com.hoarauthomas.go4lunchthp7.repository.AuthRepository;
 import com.hoarauthomas.go4lunchthp7.repository.LocationRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 
 import java.util.List;
-import java.util.MissingFormatArgumentException;
 
 //This class is for the business logic
-//We expose only Livedata but we must use Mutable livedata to modify livedata value
+//We expose only Livedata
 //Do not use reference to a view or lifecycle here !!!!
-
 //https://medium.com/@kashifo/4-steps-to-mvvm-in-android-java-b05fb4148523
 
 public class ViewModelGo4Lunch extends ViewModel {
 
     //Add repository here...
-    private  AuthentificationRepository myAuthentificationSource;
+    private AuthRepository myAuthSource;
     private final RestaurantsRepository myRestaurantsSource;
     private final LocationRepository myLocationSource;
 
     //Add livedata and mutableLiveData here...
     private final LiveData<List<Result>> placesResponseLiveData;
     private final LiveData<Location> responseLocation;
-
     private MutableLiveData<FirebaseUser> myUserVM;
-    private MutableLiveData<Boolean> responseAuthentification;
+    private MutableLiveData<Boolean> myUserStateVM;
 
     //constructor to get one instance of each object, called by ViewModelFactory
-    public ViewModelGo4Lunch(AuthentificationRepository authentificationRepository, RestaurantsRepository placeRepository, LocationRepository locationRepository) {
-        //public ViewModelGo4Lunch() {
+    public ViewModelGo4Lunch(AuthRepository authRepository, RestaurantsRepository placeRepository, LocationRepository locationRepository) {
+
         Log.i("[THOMAS]", "[VIEWMODELGO4LUNCH INIT]");
 
-        //this is ok...
-        this.myAuthentificationSource = authentificationRepository;
-        this.myUserVM = myAuthentificationSource.getUserLiveData();
-        this.responseAuthentification = myAuthentificationSource.getMyUserState();
+        //this is ok ...
+        this.myAuthSource = authRepository;
+        this.myUserVM = myAuthSource.getUserLiveData();
+        this.myUserStateVM = myAuthSource.getMyUserState();
 
         //in progress...
         this.myRestaurantsSource = placeRepository;
@@ -111,14 +102,14 @@ public class ViewModelGo4Lunch extends ViewModel {
         return myUserVM;
     }
 
-    //publish method to activity... to log out
+    //publish method to activity... to log out work fine
     public void logOut(){
-        myAuthentificationSource.logOut();
+        myAuthSource.logOut();
     }
 
-    //publish method to activity... (logged or not)
+    //publish method to activity... (logged or not) work fine
     public MutableLiveData<Boolean> getMyUserState(){
-        return responseAuthentification;
+        return myUserStateVM;
     }
 
 

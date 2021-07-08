@@ -12,16 +12,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-//only for get data ...
-public class AuthentificationRepository {
+//Only to get data and publish it to ViewModel ...
+public class AuthRepository {
 
-    //variable
     private FirebaseAuth myAuth;
     private MutableLiveData<FirebaseUser> myUser;
     private MutableLiveData<Boolean> myUserState;
 
-    //constructor
-    public AuthentificationRepository() {
+    public AuthRepository() {
         myAuth = FirebaseAuth.getInstance();
         myUser = new MutableLiveData<>();
         myUserState = new MutableLiveData<>();
@@ -37,12 +35,10 @@ public class AuthentificationRepository {
         }
     }
 
-    //publish to viewmodel
     public MutableLiveData<FirebaseUser> getUserLiveData(){
         return myUser;
     }
 
-    //publish to viewmodel
     public MutableLiveData<Boolean> getMyUserState(){
         return myUserState;
     }
@@ -51,5 +47,4 @@ public class AuthentificationRepository {
         myAuth.signOut();
         myUserState.postValue(false);
     }
-
 }

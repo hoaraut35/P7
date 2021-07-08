@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.location.LocationServices;
 import com.hoarauthomas.go4lunchthp7.MainApplication;
-import com.hoarauthomas.go4lunchthp7.repository.AuthentificationRepository;
+import com.hoarauthomas.go4lunchthp7.repository.AuthRepository;
 import com.hoarauthomas.go4lunchthp7.repository.LocationRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 
@@ -23,7 +23,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private static ViewModelFactory myViewModelFactory;
 
     //Add repository here...
-    private final AuthentificationRepository authentificationRepository;
+    private final AuthRepository authRepository;
     private final LocationRepository locationRepository;
     private final RestaurantsRepository restaurantsRepository;
 
@@ -36,7 +36,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     Log.i("[THOMAS]", "[VIEWMODELFACTORY NEW OBJECT]");
                     Application application = MainApplication.getApplication();
                     myViewModelFactory = new ViewModelFactory(
-                            new AuthentificationRepository(),
+                            new AuthRepository(),
                             new RestaurantsRepository(),
                             new LocationRepository(LocationServices.getFusedLocationProviderClient(application), application)
                     );
@@ -51,8 +51,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     }
 
     //constructor of ViewModelFactory ...
-    private ViewModelFactory(AuthentificationRepository authentificationRepository, RestaurantsRepository restaurantsRepository, LocationRepository locationRepository) {
-        this.authentificationRepository = authentificationRepository;
+    private ViewModelFactory(AuthRepository authRepository, RestaurantsRepository restaurantsRepository, LocationRepository locationRepository) {
+        this.authRepository = authRepository;
         this.locationRepository = locationRepository;
         this.restaurantsRepository = restaurantsRepository;
     }
@@ -61,7 +61,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(ViewModelGo4Lunch.class)) {
-            return (T) new ViewModelGo4Lunch(this.authentificationRepository, this.restaurantsRepository, this.locationRepository);
+            return (T) new ViewModelGo4Lunch(this.authRepository, this.restaurantsRepository, this.locationRepository);
             //return (T) new ViewModelGo4Lunch();
         }
         throw new IllegalArgumentException("[V M F] Unknow ViewModel class");

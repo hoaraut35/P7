@@ -110,20 +110,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void request_user_info() {
+
+
+
         Log.i("[THOMAS]", "info user request ... update ui");
 
         View hv = binding.navigationView.getHeaderView(0);
         TextView name = (TextView) hv.findViewById(R.id.displayName);
-        //name.setText(myViewModel.getCurrentUser().getDisplayName());
+        name.setText(this.myViewModel.getMyCurrentUser().getValue().getDisplayName());
         TextView email = (TextView) hv.findViewById(R.id.email);
-        //email.setText(myViewModel.getCurrentUser().getEmail());
+        email.setText(this.myViewModel.getMyCurrentUser().getValue().getEmail());
         ImageView avatar = (ImageView) hv.findViewById(R.id.avatar);
-      /*  Glide.with(avatar)
-                .load(myViewModel.getCurrentUser().getPhotoUrl())
+        Glide.with(avatar)
+                .load(this.myViewModel.getMyCurrentUser().getValue().getPhotoUrl())
                 .circleCrop()
                 .into(avatar);
 
-       */
+
     }
 
     @Override
