@@ -9,8 +9,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.location.LocationServices;
 import com.hoarauthomas.go4lunchthp7.MainApplication;
+import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
 import com.hoarauthomas.go4lunchthp7.repository.AuthRepository;
-import com.hoarauthomas.go4lunchthp7.repository.LocationRepository;
+import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 
 //TODO: erreur try to generify ?
@@ -24,8 +25,9 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
 
     //Add repository here...
     private final AuthRepository authRepository;
-    private final LocationRepository locationRepository;
+    private final PositionRepository positionRepository;
     private final RestaurantsRepository restaurantsRepository;
+    private final PermissionChecker permissionChecker;
 
     //Get an instance of ViewModelFactory ... see pattern singleton
     public static ViewModelFactory getInstance() {
@@ -38,7 +40,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     myViewModelFactory = new ViewModelFactory(
                             new AuthRepository(),
                             new RestaurantsRepository(),
-                            new LocationRepository(LocationServices.getFusedLocationProviderClient(application), application)
+                            new PositionRepository(LocationServices.getFusedLocationProviderClient(application)),
+                            new PermissionChecker(application)
                     );
                 } else {
                     Log.i("[THOMAS]", "[VIEWMODELFACTORY OBJECT ALREADY EXIST]");
@@ -51,18 +54,22 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     }
 
     //constructor of ViewModelFactory ...
-    private ViewModelFactory(AuthRepository authRepository, RestaurantsRepository restaurantsRepository, LocationRepository locationRepository) {
+    private ViewModelFactory(AuthRepository authRepository, RestaurantsRepository restaurantsRepository, PositionRepository positionRepository, PermissionChecker permissionChecker) {
         this.authRepository = authRepository;
-        this.locationRepository = locationRepository;
+        this.positionRepository = positionRepository;
         this.restaurantsRepository = restaurantsRepository;
+        this.permissionChecker = permissionChecker;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(ViewModelGo4Lunch.class)) {
-            return (T) new ViewModelGo4Lunch(this.authRepository, this.restaurantsRepository, this.locationRepository);
-            //return (T) new ViewModelGo4Lunch();
+            return (T) new ViewModelGo4Lunch(
+                    authRepository,
+                    restaurantsRepository,
+                    positionRepository,
+                    permissionChecker);
         }
         throw new IllegalArgumentException("[V M F] Unknow ViewModel class");
     }

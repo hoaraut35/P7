@@ -19,6 +19,7 @@ public class AuthRepository {
     private MutableLiveData<FirebaseUser> myUser;
     private MutableLiveData<Boolean> myUserState;
 
+    //constructor
     public AuthRepository() {
         myAuth = FirebaseAuth.getInstance();
         myUser = new MutableLiveData<>();
@@ -35,14 +36,15 @@ public class AuthRepository {
         }
     }
 
+    //livedata for viewmodel
     public MutableLiveData<FirebaseUser> getUserLiveData(){
         return myUser;
     }
-
     public MutableLiveData<Boolean> getMyUserState(){
         return myUserState;
     }
 
+    //method for viewmodel
     public void logOut(){
         myAuth.signOut();
         myUserState.postValue(false);

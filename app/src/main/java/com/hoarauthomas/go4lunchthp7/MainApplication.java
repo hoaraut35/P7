@@ -2,7 +2,7 @@ package com.hoarauthomas.go4lunchthp7;
 
 import android.app.Application;
 
-public class MainApplication extends Application{
+public class MainApplication extends Application {
 
     private static Application sApplication;
 

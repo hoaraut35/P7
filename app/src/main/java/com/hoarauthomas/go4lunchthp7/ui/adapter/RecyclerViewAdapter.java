@@ -28,10 +28,28 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private int mode;
     private List<Result> mResults;
 
+
+
+
+
+
+
+    //interface for callback
+    public interface Listener{
+        void onClickDetailButton(int position);
+    }
+
+    //declare callbacl
+   // private final Listener callback;
+
     //the constructor
+    //public RecyclerViewAdapter(int mode, List<Result> myList, Listener callback) {
     public RecyclerViewAdapter(int mode, List<Result> myList) {
         this.mResults = myList;
         this.mode = mode;//to switch between restaurant and workmates ?
+
+        //for callabck
+        //this.callback = callback;
     }
 
     //for holder
@@ -75,6 +93,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             Log.i("[THOMAS]", "Exception : " + e.getMessage());
         }
 
+
         //TODO: must to add the distance here...
 
         //show the address of restaurant
@@ -103,6 +122,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         //TODO: add openinghours
 
         //TODO: add star
+
+        //TODO add listener
+        //holder.
 
     }
 

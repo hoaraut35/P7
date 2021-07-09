@@ -3,15 +3,18 @@ package com.hoarauthomas.go4lunchthp7.viewmodel;
 import android.location.Location;
 import android.util.Log;
 
+import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
 
+import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
 import com.hoarauthomas.go4lunchthp7.pojo.Result;
 import com.hoarauthomas.go4lunchthp7.repository.AuthRepository;
-import com.hoarauthomas.go4lunchthp7.repository.LocationRepository;
+import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 
 import java.util.List;
@@ -24,18 +27,19 @@ import java.util.List;
 public class ViewModelGo4Lunch extends ViewModel {
 
     //Add repository here...
-    private AuthRepository myAuthSource;
+    private final AuthRepository myAuthSource;
+    private final PositionRepository myLocationSource;
     private final RestaurantsRepository myRestaurantsSource;
-    private final LocationRepository myLocationSource;
+    private final PermissionChecker myPermissionChecker;
 
     //Add livedata and mutableLiveData here...
-    private final LiveData<List<Result>> placesResponseLiveData;
-    private final LiveData<Location> responseLocation;
     private MutableLiveData<FirebaseUser> myUserVM;
     private MutableLiveData<Boolean> myUserStateVM;
+    private LiveData<Location> myPositionVM;
+    private final LiveData<List<Result>> placesResponseLiveData;
 
     //constructor to get one instance of each object, called by ViewModelFactory
-    public ViewModelGo4Lunch(AuthRepository authRepository, RestaurantsRepository placeRepository, LocationRepository locationRepository) {
+    public ViewModelGo4Lunch(AuthRepository authRepository, RestaurantsRepository placeRepository, PositionRepository positionRepository, PermissionChecker permissionChecker) {
 
         Log.i("[THOMAS]", "[VIEWMODELGO4LUNCH INIT]");
 
@@ -44,52 +48,80 @@ public class ViewModelGo4Lunch extends ViewModel {
         this.myUserVM = myAuthSource.getUserLiveData();
         this.myUserStateVM = myAuthSource.getMyUserState();
 
+        //this is ok ...
+        this.myLocationSource = positionRepository;
+        this.myPositionVM = Transformations.map(myLocationSource.getLocationLiveData(), new Function<Location, Location>() {
+            @Override
+            public Location apply(Location input) {
+                if (input == null) {
+                    return null;//TODO: ?
+                } else {
+                    return input;
+                }
+            }
+        });
+
+        //this for permission
+        this.myPermissionChecker = permissionChecker;
+
         //in progress...
         this.myRestaurantsSource = placeRepository;
         this.placesResponseLiveData = myRestaurantsSource.getAllRestaurants();
 
-        //in progress...
-        this.myLocationSource = locationRepository;
-        this.responseLocation = myLocationSource.getLocationLiveData();
     }
+
+
+    //----------------------------------------------------------------------------------------------
+
+
+    //publish to activity or fragment
+    public LiveData<Location> getMyPosition() {
+        return myPositionVM;
+    }
+
+
+    //publish this method to activity for updat eposition...
+    public void refreshPosition() {
+
+        if (!myPermissionChecker.hasLocationPermission()) {
+            myLocationSource.stopLocationRequest();
+        } else {
+            myLocationSource.startLocationRequest();
+        }
+    }
+
+
+    //----------------------------------------------------------------------------------------------
+
+
+    //publish method to activity for
+    public MutableLiveData<FirebaseUser> getMyCurrentUser() {
+        return myUserVM;
+    }
+
+    //publish method to activity... to log out work fine
+    public void logOut() {
+        myAuthSource.logOut();
+    }
+
+    //publish method to activity... (logged or not) work fine
+    public MutableLiveData<Boolean> getMyUserState() {
+        return myUserStateVM;
+    }
+
+    //----------------------------------------------------------------------------------------------
+
 
     //these methods are published to activity or fragments ...
     public LiveData<List<Result>> getRestaurants() {
         return placesResponseLiveData;
     }//add method to get restaurant from repository?
 
-    public LiveData<Location> getMyPosition() {
-        return responseLocation;
-    }//a&dd method to get position from repository location?
 
-    public void refreshPosition() {
-        myLocationSource.startLocationRequest();
-    }
+    //----------------------------------------------------------------------------------------------
 
 
-
-
-
-
-
-
-    //publish method to activity for
-    public MutableLiveData<FirebaseUser> getMyCurrentUser(){
-        return myUserVM;
-    }
-
-    //publish method to activity... to log out work fine
-    public void logOut(){
-        myAuthSource.logOut();
-    }
-
-    //publish method to activity... (logged or not) work fine
-    public MutableLiveData<Boolean> getMyUserState(){
-        return myUserStateVM;
-    }
-
-
-/*
+    /*
 
     //Add user to Firestore
     public void createuser() {
@@ -111,7 +143,7 @@ public class ViewModelGo4Lunch extends ViewModel {
 
     }
 
- */
+    */
 
 
 }

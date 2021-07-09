@@ -1,9 +1,12 @@
 package com.hoarauthomas.go4lunchthp7;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,13 +16,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
@@ -29,22 +37,22 @@ import com.hoarauthomas.go4lunchthp7.ui.adapter.FragmentsAdapter;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static android.view.View.OnClickListener;
+import static androidx.core.view.GravityCompat.START;
 
 
 //for user interaction with ui only ....
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    //for View Binding... check if binding work from another class by sample
     public ActivityMainBinding binding;
-
-    //to add viewmodel
     public ViewModelGo4Lunch myViewModel;
 
-    //for viewpager
     FragmentsAdapter myFragmentAdapter;
 
     //signal for activity result and callback
@@ -58,17 +66,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             new AuthUI.IdpConfig.FacebookBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build());
 
+
+    private FusedLocationProviderClient myFusedLocationClient;
+    private LocationCallback myLocationCallback;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
+
+        setupPermission();
         setupViewModel();
         setupTopAppBar();
         setupNavigationDrawer();
         setupBottomBAr();
         setupViewPager(1);
+    }
+
+    private void setupPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
     }
 
     private void setupViewModel() {
@@ -85,7 +104,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             request_user_info();
         }
     }
-
 
     //called when the user is not logged ...
     private void request_login() {
@@ -156,25 +174,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     // Section for UI Tools
     //**********************************************************************************************
     private void setupNavigationDrawer() {
-        binding.navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.navigation_drawer_lunch:
-                        openMyFavoriteRestaurant();
-                        break;
-                    case R.id.navigation_drawer_settings:
-                        binding.viewpager.setCurrentItem(4);
-                        break;
-                    case R.id.navigation_drawer_logout:
+        binding.navigationView.setNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.navigation_drawer_lunch:
+                    openMyFavoriteRestaurant();
+                    break;
+                case R.id.navigation_drawer_settings:
+                    binding.viewpager.setCurrentItem(4);
+                    break;
+                case R.id.navigation_drawer_logout:
 
-                        myViewModel.logOut();
-                        //request_logout();
-                        break;
-                }
-                binding.drawerLayout.closeDrawer(Gravity.START);
-                return true;
+                    myViewModel.logOut();
+                    //request_logout();
+                    break;
             }
+            binding.drawerLayout.closeDrawer(START);
+            return true;
         });
     }
 
@@ -256,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View v) {
                 Log.i("THOMAS", "clic sur menu top bar");
-                binding.drawerLayout.openDrawer(GravityCompat.START);
+                binding.drawerLayout.openDrawer(START);
             }
         });
 
