@@ -20,22 +20,28 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:orientation="vertical">
 
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1.5"
                 android:src="@drawable/go4lunch_sign_in"
 
                 />
 
             <Button
                 android:id="@+id/google_btn"
-                android:layout_width="269dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_weight="1"
+                android:theme="@style/FirebaseUI.Button.AccountChooser.GoogleButton"
                 android:text="Google"
 
 
@@ -44,11 +50,15 @@
 
             <Button
                 android:id="@+id/facebook_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Facebook"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:theme="@style/FirebaseUI.Button.AccountChooser.FacebookButton"
 
+                android:layout_weight="1"
+                android:text="Facebook"
 
 
                 />
@@ -57,7 +67,6 @@
 
 
     </FrameLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
