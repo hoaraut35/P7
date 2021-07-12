@@ -20,6 +20,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
+import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
@@ -105,12 +106,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+
     //called when the user is not logged ...
     private void request_login() {
         Log.i("[THOMAS]", "Security login form show ...");
 
         //TODO: update this part of code to remove error
-        startActivityForResult(
+
+        //first version of login form without customization ...
+        /*  startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(providers)
@@ -119,7 +123,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .setIsSmartLockEnabled(false, true)
                         .build(), RC_SIGN_IN
         );
+
+       */
+
+        //customize login activity here ...
+        AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
+                .Builder(R.layout.custom_layout_login)
+                .setGoogleButtonId(R.id.google_btn)
+                .setFacebookButtonId(R.id.facebook_btn)
+                //...
+                //.setTosAndPrivacyPolicyId()
+                .build();
+
+        //start activity for login here ...
+        //TODO: must be corrected
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setAvailableProviders(providers)
+
+                        //added for customize layout
+                        .setAuthMethodPickerLayout(customLayout)
+
+                        //.setLogo(R.drawable.ic_logo)
+                        .setTheme(R.style.LoginTheme)
+                        .setIsSmartLockEnabled(false, true)
+                        .build(), RC_SIGN_IN
+        );
+
+
     }
+
 
     private void request_user_info() {
 

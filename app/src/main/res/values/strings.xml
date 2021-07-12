@@ -1,5 +1,8 @@
 <resources>
+
     <string name="app_name">Go4Lunch</string>
+
+
 
     <!-- Added 04/06/21 for integration of facebook login -->
     <string name="facebook_application_id">3512562515510897</string>
