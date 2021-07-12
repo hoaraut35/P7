@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .setAvailableProviders(providers)
 
                         //added for customize layout
-                      //  .setAuthMethodPickerLayout(customLayout)
+                        .setAuthMethodPickerLayout(customLayout)
 
                         .setLogo(R.drawable.go4lunch_sign_in)
                         .setTheme(R.style.LoginTheme)

@@ -61,4 +61,9 @@
     <string name="numberOfLike">3</string>
     <string name="labelForOpeningHours">\"Ouvert : \"</string>
 
+
+
+    <string name="facebook_btn_str">Sign in with Facebook</string>
+    <string name="google_btn_str">Sign in with Google</string>
+
 </resources>
