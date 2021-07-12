@@ -1,6 +1,9 @@
 package com.hoarauthomas.go4lunchthp7.api;
 
 
+import android.location.Location;
+import android.util.Log;
+
 import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
 
 import retrofit2.Call;
@@ -9,14 +12,23 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-//This is the contract with the API...
+//This is the contract with the API Places...
 
 public interface GooglePlaceApi {
 
-    @GET("place/nearbysearch/json?location=48.11198,%20-1.67429&rankby=distance&type=restaurant")
+/*
+    @GET("place/nearbysearch/json?location=48.11198,-1.67429&rankby=distance&type=restaurant")
     Call<Place> getNearbyPlaces(
             @Query("key") String key);
-            //@Query("radius") int radius);
-         //   @Query("location") Double latitude);,
+
+ */
+
+
+
+    @GET("place/nearbysearch/json?rankby=distance&type=restaurant")
+    Call<Place> getNearbyPlaces(
+            @Query("key") String key,
+            @Query("location") String myLocation);
+
 
 }

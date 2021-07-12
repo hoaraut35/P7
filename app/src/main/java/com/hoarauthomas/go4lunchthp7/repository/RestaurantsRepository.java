@@ -33,19 +33,37 @@ public class RestaurantsRepository {
     //this is the list for add all iteration in a list to sned after in mutable
     private final List<Result> allRestaurants = new ArrayList<>();
 
+    private Double Long, Lat;
+
     //this is the constructor for repository
     public RestaurantsRepository() {
-        Log.i("[THOMAS]","- Appel Repository Restaurants");
+        Log.i("[THOMAS]", "- Appel Repository Restaurants");
         service = RetrofitRequest.getRetrofitInstance().create(GooglePlaceApi.class);
     }
 
+
+    public void UpdateLngLat(Double Long, Double Lat) {
+        Log.i("[RESTAURANT]", "Repository restaurant position " + Lat + Long);
+        this.Long = Long;
+        this.Lat = Lat;
+    }
+
     //this is livedata to publish to viewmodel
-    public LiveData<List<Result>> getAllRestaurants() {
+    public LiveData<List<Result>> getAllRestaurants(Double Long, Double Lat) {
+
 
         final MutableLiveData<List<Result>> data = new MutableLiveData<>();
 
         //service.getNearbyPlaces(BuildConfig.MAPS_API_KEY, 1000)
-        service.getNearbyPlaces(BuildConfig.MAPS_API_KEY)
+        Log.i("[RESTAURANT]", "getAllRestaurant " + this.Long + Lat);
+
+
+        String myPositionStr = Lat+","+Long;
+        Log.i("[RESTAURANT]", "myLocation" + myPositionStr);
+
+        service.getNearbyPlaces(BuildConfig.MAPS_API_KEY, myPositionStr)
+        //service.getNearbyPlaces(BuildConfig.MAPS_API_KEY)
+
                 .enqueue(new Callback<Place>() {
                     @Override
                     public void onResponse(Call<Place> call, Response<Place> response) {
@@ -54,7 +72,7 @@ public class RestaurantsRepository {
 
                             //iterate all results ...
                             for (int i = 0; i < response.body().getResults().size(); i++) {
-                                Log.i("[THOMAS]", "Repository Restaurants, getAllRestaurants : " + response.body().getResults().size());
+                                Log.i("[RESTAURANT]", "Repository Restaurants, getAllRestaurants : " + response.body().getResults().size());
 
                                 allRestaurants.add(response.body().getResults().get(i));
                                 data.postValue(allRestaurants);
@@ -64,7 +82,7 @@ public class RestaurantsRepository {
 
                     @Override
                     public void onFailure(Call<Place> call, Throwable t) {
-                        Log.i("[THOMAS]", "[REPOSITORY FAIL] Erreur repository place ! ");
+                        Log.i("[RESTAURANT]", "[REPOSITORY FAIL] Erreur repository place ! ");
                         data.postValue(null);
                     }
                 });

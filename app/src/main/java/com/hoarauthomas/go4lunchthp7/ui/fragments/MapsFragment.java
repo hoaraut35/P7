@@ -56,16 +56,9 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         myViewModelGo4Lunch = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
         myViewModelGo4Lunch.getMyPosition().observe(getViewLifecycleOwner(), this::onUpdatePosition);
-        //myViewModelGo4Lunch.refreshPosition();
-
-        myViewModelGo4Lunch.getRestaurants().observe(getViewLifecycleOwner(), this::onUpdateRestaurants);
-
 
         return inflater.inflate(R.layout.fragment_maps, container, false);
     }
@@ -75,28 +68,25 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
         Log.i("[LOCATION]", "onUpdatePosition MapsFragment ... " + location.getLatitude() + " " + location.getLongitude());
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        myViewModelGo4Lunch.UpdateLngLat(location.getLongitude(), location.getLatitude());
 
-/*        if (Double.isNaN(location.getLongitude()) && Double.isNaN(location.getLatitude())) {
+        myViewModelGo4Lunch.getRestaurants().observe(getViewLifecycleOwner(), this::onUpdateRestaurants);
 
-        }
 
- */
+        //myViewModelGo4Lunch.setPosition(location.getLongitude(),location.getLatitude());
+        //myViewModelGo4Lunch.refreshPosition();
 
-    /*    if (location != null)
-            //check if position is empty
-            myMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        myMap.animateCamera(CameraUpdateFactory.zoomTo(10));//city zoom
 
         if (location != null) {
-            this.newPosition = new Location(location);
+            myMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            myMap.animateCamera(CameraUpdateFactory.zoomTo(10));//city zoom
         }
 
-     */
     }
 
     private void onUpdateRestaurants(List<Result> results) {
 
-        Log.i("[LOCATION]", "Frag map, onUpdateRestaurants : total => " + results.size());
+        Log.i("[RESTAURANT]", "Frag map, onUpdateRestaurants : total => " + results.size());
 
         myMap.clear();
 

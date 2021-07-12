@@ -36,6 +36,7 @@ public class PositionRepository {
 
     private LocationCallback myCallback;
 
+
     public PositionRepository(@NonNull FusedLocationProviderClient fusedLocationProviderClient) {
         Log.i("[LOCATION]", "- Appel Repository Position");
         this.fusedLocationProviderClient = fusedLocationProviderClient;
@@ -83,6 +84,8 @@ public class PositionRepository {
             fusedLocationProviderClient.removeLocationUpdates(myCallback);
         }
     }
+
+
 
 
 }

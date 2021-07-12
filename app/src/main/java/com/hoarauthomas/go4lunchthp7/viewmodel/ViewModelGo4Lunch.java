@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseUser;
 
 import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
@@ -36,7 +37,10 @@ public class ViewModelGo4Lunch extends ViewModel {
     private MutableLiveData<FirebaseUser> myUserVM;
     private MutableLiveData<Boolean> myUserStateVM;
     private LiveData<Location> myPositionVM;
-    private final LiveData<List<Result>> placesResponseLiveData;
+    private LiveData<List<Result>> placesResponseLiveData;
+
+
+    private Double Long, Lat;
 
     //constructor to get one instance of each object, called by ViewModelFactory
     public ViewModelGo4Lunch(AuthRepository authRepository, RestaurantsRepository placeRepository, PositionRepository positionRepository, PermissionChecker permissionChecker) {
@@ -66,7 +70,7 @@ public class ViewModelGo4Lunch extends ViewModel {
 
         //in progress...
         this.myRestaurantsSource = placeRepository;
-        this.placesResponseLiveData = myRestaurantsSource.getAllRestaurants();
+        this.placesResponseLiveData = myRestaurantsSource.getAllRestaurants(Long,Lat);
 
     }
 
@@ -76,6 +80,7 @@ public class ViewModelGo4Lunch extends ViewModel {
 
     //publish to activity or fragment
     public LiveData<Location> getMyPosition() {
+        Log.i("[RESTAURANT]","Appel fonction ds le ViewModel... getMyPosition");
         return myPositionVM;
     }
 
@@ -89,6 +94,22 @@ public class ViewModelGo4Lunch extends ViewModel {
             myLocationSource.startLocationRequest();
         }
     }
+
+
+    public void UpdateLngLat(Double Long, Double Lat){
+        Log.i("[RESTAURANT]","Update position in restaurant request ..." + Long + " " + Lat);
+        this.Long = Long;
+        this.Lat = Lat;
+        myRestaurantsSource.UpdateLngLat(Long, Lat);
+
+        final MutableLiveData<LatLng> data = new MutableLiveData<>();
+
+        this.placesResponseLiveData = myRestaurantsSource.getAllRestaurants(Long, Lat);
+
+    }
+
+
+
 
 
     //----------------------------------------------------------------------------------------------
@@ -114,6 +135,7 @@ public class ViewModelGo4Lunch extends ViewModel {
 
     //these methods are published to activity or fragments ...
     public LiveData<List<Result>> getRestaurants() {
+        Log.i("[RESTAURANT]","getRestaurant in ViewModelm " + this.Long + this.Lat);
         return placesResponseLiveData;
     }//add method to get restaurant from repository?
 
