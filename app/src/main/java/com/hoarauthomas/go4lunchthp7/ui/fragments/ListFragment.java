@@ -55,7 +55,7 @@ public class ListFragment extends Fragment {
 
     private void setupViewModel() {
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
-       // this.myViewModel.getRestaurants().observe(getViewLifecycleOwner(), this::onUpdateRestaurants);
+        this.myViewModel.getRestaurants().observe(getViewLifecycleOwner(), this::onUpdateRestaurants);
     }
 
     private void setupRecyclerView(View view) {
@@ -67,14 +67,14 @@ public class ListFragment extends Fragment {
         recyclerView.setAdapter(new RecyclerViewAdapter(0, allResult));
     }
 
- /*  private void onUpdateRestaurants(List<Result> results) {
-        Log.i("[THOMAS]", "Fragment liste, onUpdateRestaurants Event " + results.size());
+   private void onUpdateRestaurants(List<Result> results) {
+        Log.i("[LIST]", "Fragment liste, onUpdateRestaurants Event " + results.size());
         allResult.clear();
         allResult.addAll(results);
         Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
     }
 
-  */
+
 
 
 }

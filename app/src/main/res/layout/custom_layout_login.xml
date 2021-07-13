@@ -41,11 +41,12 @@
                 android:layout_margin="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
-
                 android:background="@drawable/background_button_google"
                 android:drawableStart="@drawable/logo_google"
-
-                android:text="Sign in with Google">
+                android:text="Sign in with Google"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textStyle="normal">
 
             </androidx.appcompat.widget.AppCompatButton>
 
@@ -62,6 +63,8 @@
                 android:background="@drawable/background_button_facebook"
                 android:drawableStart="@drawable/logo_facebook"
                 android:text="@string/facebook_btn_str"
+                android:textAlignment="center"
+                android:textAllCaps="false"
                 tools:text="Sign in with Facebook" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>

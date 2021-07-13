@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setupTopAppBar();
         setupNavigationDrawer();
         setupBottomBAr();
-        setupViewPager(1);
+        setupViewPager(1);//optional
     }
 
     private void setupPermission() {

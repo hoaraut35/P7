@@ -102,7 +102,7 @@ public class ViewModelGo4Lunch extends ViewModel {
         this.Lat = Lat;
         myRestaurantsSource.UpdateLngLat(Long, Lat);
 
-        final MutableLiveData<LatLng> data = new MutableLiveData<>();
+      //  final MutableLiveData<LatLng> data = new MutableLiveData<>();
 
         this.placesResponseLiveData = myRestaurantsSource.getAllRestaurants(Long, Lat);
 
@@ -135,6 +135,8 @@ public class ViewModelGo4Lunch extends ViewModel {
 
     //these methods are published to activity or fragments ...
     public LiveData<List<Result>> getRestaurants() {
+
+
         Log.i("[RESTAURANT]","getRestaurant in ViewModelm " + this.Long + this.Lat);
         return placesResponseLiveData;
     }//add method to get restaurant from repository?

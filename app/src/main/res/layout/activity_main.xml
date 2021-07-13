@@ -62,7 +62,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/background_orange"
+        android:background="@drawable/drawer_pic"
         app:itemTextColor="@color/white"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/header_navigation_drawer"

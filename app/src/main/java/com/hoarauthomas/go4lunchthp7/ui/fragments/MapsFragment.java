@@ -69,7 +69,10 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         myViewModelGo4Lunch.UpdateLngLat(location.getLongitude(), location.getLatitude());
-
+        if (location != null) {
+            myMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            myMap.animateCamera(CameraUpdateFactory.zoomTo(10));//city zoom
+        }
         myViewModelGo4Lunch.getRestaurants().observe(getViewLifecycleOwner(), this::onUpdateRestaurants);
 
 
@@ -77,10 +80,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
         //myViewModelGo4Lunch.refreshPosition();
 
 
-        if (location != null) {
-            myMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            myMap.animateCamera(CameraUpdateFactory.zoomTo(10));//city zoom
-        }
+
 
     }
 
