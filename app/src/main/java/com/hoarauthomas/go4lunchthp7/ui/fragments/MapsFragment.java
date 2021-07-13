@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -32,12 +33,15 @@ import com.hoarauthomas.go4lunchthp7.R;
 
 //import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
 import com.hoarauthomas.go4lunchthp7.pojo.Result;
+import com.hoarauthomas.go4lunchthp7.ui.activity.DetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
-public class MapsFragment extends Fragment implements OnRequestPermissionsResultCallback {
+public class MapsFragment extends Fragment implements OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener {
 
     private ViewModelGo4Lunch myViewModelGo4Lunch;
 
@@ -80,8 +84,6 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
         //myViewModelGo4Lunch.refreshPosition();
 
 
-
-
     }
 
     private void onUpdateRestaurants(List<Result> results) {
@@ -120,6 +122,22 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             //Setup Google Map
             map.getUiSettings().setZoomControlsEnabled(true);
             map.setMinZoomPreference(1);
+
+
+
+            map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(@NonNull @NotNull Marker marker) {
+                    Log.i("[MAP]","test click" + marker.getTitle());
+
+
+                    Intent intent = new Intent(getContext(), DetailRestaurant.class);
+                    startActivity(intent);
+
+
+                    return false;
+                }
+            });
 
             //TODO: update permissions control , add to resume
             //To check permission
@@ -269,5 +287,14 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
+    }
+
+    @Override
+    public boolean onMarkerClick(@NonNull @NotNull Marker marker) {
+
+
+        Log.i("[MAP]","clic marqueur");
+
+        return false;
     }
 }
