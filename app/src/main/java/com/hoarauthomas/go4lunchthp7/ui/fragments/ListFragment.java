@@ -1,5 +1,6 @@
 package com.hoarauthomas.go4lunchthp7.ui.fragments;
 
+import android.location.Location;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.MainActivity;
 import com.hoarauthomas.go4lunchthp7.R;
 //import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
@@ -55,6 +58,16 @@ public class ListFragment extends Fragment {
 
     private void setupViewModel() {
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
+        this.myViewModel.getMyPosition().observe(getViewLifecycleOwner(), this::onUpdatePosition);
+
+        this.myViewModel.getRestaurants().observe(getViewLifecycleOwner(), this::onUpdateRestaurants);
+    }
+
+    private void onUpdatePosition(Location location) {
+
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        this.myViewModel.UpdateLngLat(location.getLongitude(), location.getLatitude());
+
         this.myViewModel.getRestaurants().observe(getViewLifecycleOwner(), this::onUpdateRestaurants);
     }
 
@@ -68,7 +81,7 @@ public class ListFragment extends Fragment {
     }
 
    private void onUpdateRestaurants(List<Result> results) {
-        Log.i("[LIST]", "Fragment liste, onUpdateRestaurants Event " + results.size());
+        Log.i("[RESTAURANT]", "Fragment liste, onUpdateRestaurants Event " + results.size());
         allResult.clear();
         allResult.addAll(results);
         Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
