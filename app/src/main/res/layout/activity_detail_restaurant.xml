@@ -29,39 +29,44 @@
         </FrameLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.14"
             android:background="#FF5622"
-            android:padding="10dp">
+            android:padding="20dp">
 
             <TextView
                 android:id="@+id/restaurant_titre"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Le Zinc"
-                android:textStyle="bold"
-                app:layout_constraintLeft_toLeftOf="parent" />
-
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@id/restaurant_type"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/restaurant_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="French restaurant"
-                app:layout_constraintLeft_toLeftOf="parent"
+                android:gravity="center"
+                android:text="French restaurant - "
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/restaurant_titre" />
 
             <TextView
                 android:layout_width="210dp"
                 android:layout_height="23dp"
                 android:text="12 rue de Faubourg Poissoniere"
-                app:layout_constraintLeft_toRightOf="@+id/restaurant_type"
+
+                android:textColor="@color/white"
+                app:layout_constraintLeft_toRightOf="@id/restaurant_type"
                 app:layout_constraintTop_toTopOf="@id/restaurant_type" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
         <LinearLayout
 
@@ -72,63 +77,75 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:padding="20dp">
 
                 <ImageView
-                    android:id="@+id/call"
-                    android:layout_width="48dp"
-                    android:layout_height="78dp"
+                    android:id="@+id/call_btn"
+                    style="@style/Restaurant_detail_img"
                     android:src="@drawable/ic_baseline_call_24"
+                    app:layout_constraintBottom_toTopOf="@+id/call_txt"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@+id/start"
+                    app:layout_constraintRight_toLeftOf="@+id/like" />
 
-                    tools:ignore="MissingConstraints"
-                    tools:layout_editor_absoluteY="22dp" />
+                <TextView
+                    android:id="@+id/call_txt"
+                    style="@style/Restaurant_detail_txt"
+                    android:text="CALL"
+                    app:layout_constraintLeft_toLeftOf="@id/call_btn"
+                    app:layout_constraintRight_toRightOf="@id/call_btn"
+                    app:layout_constraintTop_toBottomOf="@id/call_btn"/>
 
                 <ImageView
                     android:id="@+id/like"
-                    android:layout_width="71dp"
-                    android:layout_height="71dp"
+                    style="@style/Restaurant_detail_img"
                     android:src="@drawable/ic_baseline_star_24"
-                    app:layout_constraintLeft_toRightOf="@+id/call"
-                    app:layout_constraintRight_toLeftOf="@+id/website"
+                    app:layout_constraintBottom_toTopOf="@id/like"
+                    app:layout_constraintLeft_toRightOf="@+id/call_btn"
+                    app:layout_constraintRight_toLeftOf="@+id/website" />
 
-                    tools:ignore="MissingConstraints"
-                    tools:layout_editor_absoluteY="29dp" />
+                <TextView
+                    style="@style/Restaurant_detail_txt"
+                    android:text="LIKE"
+
+                    app:layout_constraintLeft_toLeftOf="@id/like"
+                    app:layout_constraintRight_toRightOf="@id/like"
+                    app:layout_constraintTop_toBottomOf="@id/like"/>
 
                 <ImageView
                     android:id="@+id/website"
-                    android:layout_width="70dp"
-                    android:layout_height="61dp"
+                    style="@style/Restaurant_detail_img"
                     android:src="@drawable/ic_baseline_account_balance_24"
-                    app:layout_constraintRight_toRightOf="parent"
-                    tools:ignore="MissingConstraints"
-                    tools:layout_editor_absoluteY="39dp" />
+                    app:layout_constraintLeft_toRightOf="@id/like"
+                    app:layout_constraintRight_toRightOf="parent" />
 
+                <TextView
+                    style="@style/Restaurant_detail_txt"
+                    android:text="WEBSITE"
+                    app:layout_constraintLeft_toLeftOf="@id/website"
+                    app:layout_constraintRight_toRightOf="@id/website"
+                    app:layout_constraintTop_toBottomOf="@id/website" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
 
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.34"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Scarlett is joining !" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hugh is joining!" />
+            android:padding="10dp">
 
 
-        </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </LinearLayout>
@@ -137,11 +154,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:backgroundTint="@color/colorPrimary"
+        android:backgroundTint="@color/white"
+        android:contentDescription="todoupdatethis"
+        android:src="@drawable/ic_baseline_check_circle_24"
         app:layout_anchor="@id/background_image"
-        app:layout_anchorGravity="bottom|right">
-
-    </com.google.android.material.floatingactionbutton.FloatingActionButton>
+        app:layout_anchorGravity="bottom|right" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
