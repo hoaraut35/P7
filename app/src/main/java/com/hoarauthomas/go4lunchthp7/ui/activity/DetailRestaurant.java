@@ -81,6 +81,19 @@ public class DetailRestaurant extends AppCompatActivity {
     }
 
     private void setupButtonWeb() {
+        binding.website.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String url = "http://www.google.fr";
+                Intent makeURLBrowser = new Intent(Intent.ACTION_VIEW);
+                makeURLBrowser.setData(Uri.parse(url));
+                startActivity(makeURLBrowser);
+
+            }
+        });
+
+
     }
 
     private void setupButtonLike() {
@@ -92,7 +105,7 @@ public class DetailRestaurant extends AppCompatActivity {
             public void onClick(View v) {
                 Log.i("[DETAIL]","clic sur phone");
 
-                Intent makeCall = new Intent(Intent.ACTION_CALL);
+                Intent makeCall = new Intent(Intent.ACTION_DIAL);//not action_call...
                 makeCall.setData(Uri.parse("tel:" + "0781804664"));
                 startActivity(makeCall);
             }

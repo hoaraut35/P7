@@ -63,7 +63,6 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         myViewModelGo4Lunch = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
         myViewModelGo4Lunch.getMyPosition().observe(getViewLifecycleOwner(), this::onUpdatePosition);
-
         return inflater.inflate(R.layout.fragment_maps, container, false);
     }
 
@@ -124,11 +123,11 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             map.setMinZoomPreference(1);
 
 
-
+            //to open detail restaurant...
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(@NonNull @NotNull Marker marker) {
-                    Log.i("[MAP]","test click" + marker.getTitle());
+                    Log.i("[MAP]", "test click" + marker.getTitle());
 
 
                     Intent intent = new Intent(getContext(), DetailRestaurant.class);
@@ -293,7 +292,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     public boolean onMarkerClick(@NonNull @NotNull Marker marker) {
 
 
-        Log.i("[MAP]","clic marqueur");
+        Log.i("[MAP]", "clic marqueur");
 
         return false;
     }

@@ -16,19 +16,9 @@ import retrofit2.http.Query;
 
 public interface GooglePlaceApi {
 
-/*
-    @GET("place/nearbysearch/json?location=48.11198,-1.67429&rankby=distance&type=restaurant")
-    Call<Place> getNearbyPlaces(
-            @Query("key") String key);
-
- */
-
-
-
     @GET("place/nearbysearch/json?rankby=distance&type=restaurant")
     Call<Place> getNearbyPlaces(
             @Query("key") String key,
             @Query("location") String myLocation);
-
 
 }
