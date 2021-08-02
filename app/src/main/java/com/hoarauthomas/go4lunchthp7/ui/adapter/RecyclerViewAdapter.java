@@ -118,71 +118,72 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         //TODO: add star
 
-     //   mResults.get(position).getRating()
-      //  Log.i("'[RATING]","" + mResults.isEmpty()result.getRating());
+        //   mResults.get(position).getRating()
+        //  Log.i("'[RATING]","" + mResults.isEmpty()result.getRating());
 //        if (result.getRating())
 
-        try
-        {
-            if (result.getRating() < 3)
-            {
+
+        try {
+
+            double ratingDbl = map(result.getRating(),1.0,5.0,1.0,3.0);
+            int ratingInt = (int) Math.round(ratingDbl);
+
+            Log.i("[RATING]","Convert [1.0 ... 5.0] : " + result.getRating() + " to [1.00 ... 3.0] : " + map(result.getRating(),1.0,5.0,1.0,3.0)+ "to int :" +ratingInt);
+
+            if (ratingInt == 1) {
                 holder.rating.setRating(1);
-            }
-
-            if (result.getRating() ==3 )
-            {
+            }else if (ratingInt == 2) {
                 holder.rating.setRating(2);
-            }
-
-            if (result.getRating() > 3)
-            {
+            } else if (ratingInt ==3) {
                 holder.rating.setRating(3);
             }
 
-            Log.i("[RATING]","" + result.getRating());
 
-        }catch (Exception e){
+
+
+
+        } catch (Exception e) {
+            Log.i("[RATING]", "Pas de notation pour ce restaurant !" );
+            holder.rating.setRating(0);
 
         }
 
 
+        //TODO add listener
+        //holder.
 
+    }
 
-
-
-
-
-
-    //TODO add listener
-    //holder.
-
-}
+    //to map a range to another range ... from arduino library
+    public double map(double value, double in_min, double in_max, double out_min, double out_max){
+        return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    }
 
     @Override
     public int getItemCount() {
         return mResults.size();
     }
 
-public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
-    //TODO: can we add binding here ? add views here...
-    private final TextView nameOfRestaurant;
-    private final TextView addressOfRestaurant;
-    private final TextView distanceOfRestaurant;
-    private final ImageView imageOfRestaurant;
-    private final TextView openingHours;
-    private final TextView numberOfWorkmates;
-    private final RatingBar rating;
+        //TODO: can we add binding here ? add views here...
+        private final TextView nameOfRestaurant;
+        private final TextView addressOfRestaurant;
+        private final TextView distanceOfRestaurant;
+        private final ImageView imageOfRestaurant;
+        private final TextView openingHours;
+        private final TextView numberOfWorkmates;
+        private final RatingBar rating;
 
-    public ViewHolder(View view) {
-        super(view);
-        nameOfRestaurant = view.findViewById(R.id.nameOfRestaurant);
-        distanceOfRestaurant = view.findViewById(R.id.distanceOfRestaurant);
-        imageOfRestaurant = view.findViewById(R.id.imageOfRestaurant);
-        addressOfRestaurant = view.findViewById(R.id.addressOfRestaurant);
-        numberOfWorkmates = view.findViewById(R.id.numberOfWorkmates);
-        openingHours = view.findViewById(R.id.openinghours);
-        rating = view.findViewById(R.id.rating);
+        public ViewHolder(View view) {
+            super(view);
+            nameOfRestaurant = view.findViewById(R.id.nameOfRestaurant);
+            distanceOfRestaurant = view.findViewById(R.id.distanceOfRestaurant);
+            imageOfRestaurant = view.findViewById(R.id.imageOfRestaurant);
+            addressOfRestaurant = view.findViewById(R.id.addressOfRestaurant);
+            numberOfWorkmates = view.findViewById(R.id.numberOfWorkmates);
+            openingHours = view.findViewById(R.id.openinghours);
+            rating = view.findViewById(R.id.rating);
+        }
     }
-}
 }
