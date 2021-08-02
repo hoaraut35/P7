@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -29,18 +30,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private List<Result> mResults;
 
 
-
-
-
-
-
     //interface for callback
-    public interface Listener{
+    public interface Listener {
         void onClickDetailButton(int position);
     }
 
     //declare callbacl
-   // private final Listener callback;
+    // private final Listener callback;
 
     //the constructor
     //public RecyclerViewAdapter(int mode, List<Result> myList, Listener callback) {
@@ -76,9 +72,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         //show the image of restaurant
         try {
-          //  Log.i("[THOMAS]", "Get photo [" + position + "] " + mResults.get(position).getPhotos().get(0).getPhotoReference());
+            //  Log.i("[THOMAS]", "Get photo [" + position + "] " + mResults.get(position).getPhotos().get(0).getPhotoReference());
             String base = "https://maps.googleapis.com/maps/api/place/photo?";
-            String key = "key="+ BuildConfig.MAPS_API_KEY;
+            String key = "key=" + BuildConfig.MAPS_API_KEY;
             String reference = "&photoreference=" + mResults.get(position).getPhotos().get(0).getPhotoReference();
             String maxH = "&maxheight=157";
             String maxW = "&maxwidth=157";
@@ -99,23 +95,22 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         //show the address of restaurant
         holder.addressOfRestaurant.setText(mResults.get(position).getVicinity());
 
-       try{
-           switch (result.getOpeningHours().getOpenNow().toString()) {
-               case "true":
-                   holder.openingHours.setText("Ouvert");
-                   break;
-               case " false":
-                   holder.openingHours.setText("Fermé");
-                   break;
-               default:
-                   holder.openingHours.setText("Inconnu");
-                   break;
+        try {
+            switch (result.getOpeningHours().getOpenNow().toString()) {
+                case "true":
+                    holder.openingHours.setText("Ouvert");
+                    break;
+                case " false":
+                    holder.openingHours.setText("Fermé");
+                    break;
+                default:
+                    holder.openingHours.setText("Inconnu");
+                    break;
 
-           }
-       }catch (Exception e)
-       {
-           holder.openingHours.setText("Inconnu");
-       }
+            }
+        } catch (Exception e) {
+            holder.openingHours.setText("Inconnu");
+        }
 
         //TODO: add the number of workmates
 
@@ -123,34 +118,71 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         //TODO: add star
 
-        //TODO add listener
-        //holder.
+     //   mResults.get(position).getRating()
+      //  Log.i("'[RATING]","" + mResults.isEmpty()result.getRating());
+//        if (result.getRating())
 
-    }
+        try
+        {
+            if (result.getRating() < 3)
+            {
+                holder.rating.setRating(1);
+            }
+
+            if (result.getRating() ==3 )
+            {
+                holder.rating.setRating(2);
+            }
+
+            if (result.getRating() > 3)
+            {
+                holder.rating.setRating(3);
+            }
+
+            Log.i("[RATING]","" + result.getRating());
+
+        }catch (Exception e){
+
+        }
+
+
+
+
+
+
+
+
+
+    //TODO add listener
+    //holder.
+
+}
 
     @Override
     public int getItemCount() {
         return mResults.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        //TODO: can we add binding here ? add views here...
-        private final TextView nameOfRestaurant;
-        private final TextView addressOfRestaurant;
-        private final TextView distanceOfRestaurant;
-        private final ImageView imageOfRestaurant;
-        private final TextView openingHours;
-        private final TextView numberOfWorkmates;
+    //TODO: can we add binding here ? add views here...
+    private final TextView nameOfRestaurant;
+    private final TextView addressOfRestaurant;
+    private final TextView distanceOfRestaurant;
+    private final ImageView imageOfRestaurant;
+    private final TextView openingHours;
+    private final TextView numberOfWorkmates;
+    private final RatingBar rating;
 
-        public ViewHolder(View view) {
-            super(view);
-            nameOfRestaurant = view.findViewById(R.id.nameOfRestaurant);
-            distanceOfRestaurant = view.findViewById(R.id.distanceOfRestaurant);
-            imageOfRestaurant = view.findViewById(R.id.imageOfRestaurant);
-            addressOfRestaurant = view.findViewById(R.id.addressOfRestaurant);
-            numberOfWorkmates = view.findViewById(R.id.numberOfWorkmates);
-            openingHours = view.findViewById(R.id.openinghours);
-        }
+    public ViewHolder(View view) {
+        super(view);
+        nameOfRestaurant = view.findViewById(R.id.nameOfRestaurant);
+        distanceOfRestaurant = view.findViewById(R.id.distanceOfRestaurant);
+        imageOfRestaurant = view.findViewById(R.id.imageOfRestaurant);
+        addressOfRestaurant = view.findViewById(R.id.addressOfRestaurant);
+        numberOfWorkmates = view.findViewById(R.id.numberOfWorkmates);
+        openingHours = view.findViewById(R.id.openinghours);
+        rating = view.findViewById(R.id.rating);
     }
+}
 }

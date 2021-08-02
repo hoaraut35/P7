@@ -49,15 +49,22 @@
         app:layout_constraintRight_toLeftOf="@id/imageOfRestaurant"
         app:layout_constraintTop_toBottomOf="@id/distanceOfRestaurant" />
 
-    <TextView
-        android:id="@+id/numberOfLike"
+
+
+    <RatingBar
+        android:id="@+id/rating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="@string/numberOfLike"
-        android:textStyle="italic"
+        android:numStars="3"
+
+android:progressTint="@color/material_star"
+        style="@style/Widget.AppCompat.RatingBar.Small"
+        android:isIndicator="true"
+        android:stepSize="0.1"
+        android:rating="0"
         app:layout_constraintRight_toLeftOf="@id/imageOfRestaurant"
-        app:layout_constraintTop_toBottomOf="@id/numberOfWorkmates" />
+        app:layout_constraintTop_toBottomOf="@id/numberOfWorkmates"/>
+
 
     <TextView
         android:id="@+id/openinghours"

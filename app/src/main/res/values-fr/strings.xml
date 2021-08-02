@@ -8,9 +8,9 @@
     <string name="info_no_username_found">Empty user name</string>
 
     <!-- Added for bottom navigation menu-->
-    <string name="bottom_navigation_menu_map">Map View</string>
-    <string name="bottom_navigation_menu_list">List View</string>
-    <string name="bottom_navigation_menu_work">Workmates</string>
+    <string name="bottom_navigation_menu_map">Carte</string>
+    <string name="bottom_navigation_menu_list">Liste</string>
+    <string name="bottom_navigation_menu_work">Collègues</string>
     <string name="header_title">Go4Lunch</string>
     <string name="my_account_link">MY ACCOUNT LINK</string>
     <string name="your_lunch">YOUR LUNCH</string>

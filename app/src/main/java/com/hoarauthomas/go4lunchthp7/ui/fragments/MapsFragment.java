@@ -99,8 +99,13 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             LatLng latLng = new LatLng(lat, lng);
             markerOptions.position(latLng);
             markerOptions.title(results.get(i).getName());
+
             //  markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_baseline_restaurant_24));
             Marker m = myMap.addMarker(markerOptions);
+
+
+            //insert tag from google nearbysearch to ...
+            //m.setTag();
         }
 
     }
@@ -127,7 +132,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(@NonNull @NotNull Marker marker) {
-                    Log.i("[MAP]", "test click" + marker.getTitle());
+                    Log.i("[MAP]", "test click" + marker.getTitle()+ marker.getTag()                        );
 
 
                     Intent intent = new Intent(getContext(), DetailRestaurant.class);

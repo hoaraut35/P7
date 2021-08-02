@@ -131,7 +131,7 @@ public class Result {
         this.priceLevel = priceLevel;
     }
 
-    public Double getRating() {
+    public double getRating() {
         return rating;
     }
 

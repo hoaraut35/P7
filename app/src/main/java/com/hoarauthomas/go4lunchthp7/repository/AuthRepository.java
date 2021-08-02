@@ -40,6 +40,7 @@ public class AuthRepository {
     public MutableLiveData<FirebaseUser> getUserLiveData(){
         return myUser;
     }
+
     public MutableLiveData<Boolean> getMyUserState(){
         return myUserState;
     }

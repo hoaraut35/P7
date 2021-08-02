@@ -38,30 +38,27 @@ import java.util.List;
 import static android.view.View.OnClickListener;
 import static androidx.core.view.GravityCompat.START;
 
-
 //for user interaction with ui only ....
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+    //View Binding
     public ActivityMainBinding binding;
+
+    //ViewModel
     public ViewModelGo4Lunch myViewModel;
 
+    //Manage fragments map, list and workmates
     FragmentsAdapter myFragmentAdapter;
 
-    //signal for activity result and callback
+    //Signal for activity result and callback
     private static final int RC_SIGN_IN = 123;
     private static final int SIGN_OUT_TASK = 10;
     private static final int DELETE_USER_TASK = 20;
-    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
-    //list of auth provider, move to viewmodel ?
+    //list of auth provider
     List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.FacebookBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build());
-
-
-    private FusedLocationProviderClient myFusedLocationClient;
-    private LocationCallback myLocationCallback;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,11 +72,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setupTopAppBar();
         setupNavigationDrawer();
         setupBottomBAr();
-        setupViewPager(1);//optional
+        setupViewPager();
     }
 
     private void setupPermission() {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
     }
 
     private void setupViewModel() {
@@ -87,68 +86,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.myViewModel.getMyUserState().observe(this, this::onCheckSecurity);
     }
 
+    //Event after check security
     private void onCheckSecurity(Boolean aBoolean) {
         if (!aBoolean) {
-            Log.i("[THOMAS]", "Security event : request login");
             request_login();
         } else {
-            Log.i("[THOMAS]", "Security event : request user data");
             request_user_info();
         }
     }
 
-
     //called when the user is not logged ...
     private void request_login() {
-        Log.i("[THOMAS]", "Security login form show ...");
-
-        //TODO: update this part of code to remove error
-
-        //first version of login form without customization ...
-        /*  startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        //.setLogo(R.drawable.ic_logo)
-                        .setTheme(R.style.LoginTheme)
-                        .setIsSmartLockEnabled(false, true)
-                        .build(), RC_SIGN_IN
-        );
-
-       */
-
-        //customize login activity here ...
         AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
                 .Builder(R.layout.custom_layout_login)
                 .setGoogleButtonId(R.id.google_btn)
                 .setFacebookButtonId(R.id.facebook_btn)
-                //...
-                //.setTosAndPrivacyPolicyId()
                 .build();
 
-        //start activity for login here ...
-        //TODO: must be corrected
+        //TODO: must be updated corrected
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(providers)
-
-                        //added for customize layout
                         .setAuthMethodPickerLayout(customLayout)
-
                         .setLogo(R.drawable.go4lunch_sign_in)
                         .setTheme(R.style.LoginTheme)
                         .setIsSmartLockEnabled(false, true)
                         .build(), RC_SIGN_IN
         );
-
-
     }
 
-
+    //TODO: binding navigation view ?
     private void request_user_info() {
-
-        Log.i("[THOMAS]", "info user request ... update ui");
         View hv = binding.navigationView.getHeaderView(0);
         TextView name = (TextView) hv.findViewById(R.id.displayName);
         name.setText(this.myViewModel.getMyCurrentUser().getValue().getDisplayName());
@@ -161,17 +130,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .into(avatar);
     }
 
+    //TODO: update this for save user in firestore
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Log.i("[THOMAS]", "onActivityResult load ...");
         IdpResponse response = IdpResponse.fromResultIntent(data);
 
         if (requestCode == RC_SIGN_IN) {
-
-            Log.i("[THOMAS]", "RC_SIGN_IN...");
-
             if (resultCode == RESULT_OK) {
                 Log.i("[THOMAS]", "RESULT_OK SDIGN IN ...");
 
@@ -190,14 +156,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     }
-    //**********************************************************************************************
-    // End of Security UI Management
-    //**********************************************************************************************
 
-
-    //**********************************************************************************************
-    // Section for UI Tools
-    //**********************************************************************************************
     private void setupNavigationDrawer() {
         binding.navigationView.setNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
@@ -208,9 +167,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     binding.viewpager.setCurrentItem(4);
                     break;
                 case R.id.navigation_drawer_logout:
-
                     myViewModel.logOut();
-                    //request_logout();
                     break;
             }
             binding.drawerLayout.closeDrawer(START);
@@ -218,13 +175,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-    //**********************************************************************************************
-    // End of Section for UI Tools
-    //**********************************************************************************************
-
-
     private void openMyFavoriteRestaurant() {
-        Log.i("[THOMAS]", "Open favorite restaurant acitvity....");
         Intent intent = new Intent(this, DetailRestaurant.class);
         startActivity(intent);
     }
@@ -280,15 +231,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
-    private void setupViewPager(int default_view) {
-
-        myFragmentAdapter = new FragmentsAdapter(this);//FragmentsAdapter(getSuppgetSupportFragmentManager());
+    private void setupViewPager() {
+        myFragmentAdapter = new FragmentsAdapter(this);
         binding.viewpager.setAdapter(myFragmentAdapter);
-        //to setup default fragment to view
-        binding.viewpager.setCurrentItem(default_view);
+        binding.viewpager.setCurrentItem(1);
         binding.viewpager.setUserInputEnabled(false);
-
-
     }
 
     private void setupTopAppBar() {

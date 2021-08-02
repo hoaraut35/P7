@@ -34,15 +34,9 @@ import java.util.ResourceBundle;
 
 public class ListFragment extends Fragment {
 
-    //to add viewmodel
     private ViewModelGo4Lunch myViewModel;
-
-    //th elist of restaurants
     public final ArrayList<Result> allResult = new ArrayList<>();
-
-    //for add a recyclerview on this fragment
     private RecyclerView recyclerView;
-    private RecyclerViewAdapter myAdapter;
 
     public static ListFragment newInstance() {
         return new ListFragment();
@@ -59,16 +53,15 @@ public class ListFragment extends Fragment {
     private void setupViewModel() {
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
         this.myViewModel.getMyPosition().observe(getViewLifecycleOwner(), this::onUpdatePosition);
-
         this.myViewModel.getRestaurants().observe(getViewLifecycleOwner(), this::onUpdateRestaurants);
     }
 
     private void onUpdatePosition(Location location) {
-
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         this.myViewModel.UpdateLngLat(location.getLongitude(), location.getLatitude());
-
         this.myViewModel.getRestaurants().observe(getViewLifecycleOwner(), this::onUpdateRestaurants);
+
+
     }
 
     private void setupRecyclerView(View view) {
@@ -86,8 +79,5 @@ public class ListFragment extends Fragment {
         allResult.addAll(results);
         Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
     }
-
-
-
 
 }
