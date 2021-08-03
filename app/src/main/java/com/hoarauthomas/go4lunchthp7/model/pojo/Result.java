@@ -179,10 +179,4 @@ public class Result {
         this.vicinity = vicinity;
     }
 
-
-
-
-
-
-
 }

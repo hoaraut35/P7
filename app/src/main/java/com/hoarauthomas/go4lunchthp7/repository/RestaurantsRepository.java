@@ -35,7 +35,7 @@ public class RestaurantsRepository {
     //for the fisrt api query...
     private final List<Result> allRestaurants = new ArrayList<>();
     //for the second api query...
-    private final List<Result2> allRestauranntsDetails = new ArrayList<>();
+    private final List<Result2> allRestaurantsDetails = new ArrayList<>();
 
     private Double Long, Lat;
 
@@ -45,23 +45,40 @@ public class RestaurantsRepository {
         service = RetrofitRequest.getRetrofitInstance().create(GooglePlaceApi.class);
     }
 
+    //update position of user in repository
     public void UpdateLngLat(Double Long, Double Lat) {
         Log.i("[RESTAURANT]", "Repository restaurant position " + Lat + Long);
         this.Long = Long;
         this.Lat = Lat;
     }
 
+    //this is livedata to publish detail of restaurant to the viewmodel ...
+    public LiveData<Result2> getAllDetailForRestaurant(String myPlaceId) {
 
-    //this is livedata to publish detail restaurant to viewmodel
-  /*  public LiveData<List<Result2>> getAllDetailForRestaurant(){
+        final MutableLiveData<Result2> data = new MutableLiveData<>();
+
+        service.getPlaceDetails(BuildConfig.MAPS_API_KEY,myPlaceId)
+        .enqueue(new Callback<Result2>(){
+
+
+            @Override
+            public void onResponse(Call<Result2> call, Response<Result2> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Result2> call, Throwable t) {
+
+            }
+        });
+        ;
+        return data;
 
     }
 
-   */
 
     //this is livedata to publish to viewmodel
     public LiveData<List<Result>> getAllRestaurants(Double Long, Double Lat) {
-
 
         final MutableLiveData<List<Result>> data = new MutableLiveData<>();
 
@@ -69,11 +86,10 @@ public class RestaurantsRepository {
         Log.i("[RESTAURANT]", "getAllRestaurant " + this.Long + Lat);
 
 
-        String myPositionStr = Lat+","+Long;
+        String myPositionStr = Lat + "," + Long;
         Log.i("[RESTAURANT]", "myLocation" + myPositionStr);
 
         service.getNearbyPlaces(BuildConfig.MAPS_API_KEY, myPositionStr)
-        //service.getNearbyPlaces(BuildConfig.MAPS_API_KEY)
 
                 .enqueue(new Callback<Place>() {
                     @Override
