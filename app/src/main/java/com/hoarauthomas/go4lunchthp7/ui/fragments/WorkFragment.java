@@ -103,6 +103,8 @@ public class WorkFragment extends Fragment {
         return view;
     }
 
+
+
     private void setupViewModel() {
 
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);

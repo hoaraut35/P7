@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding;
 import com.hoarauthomas.go4lunchthp7.ui.adapter.RecyclerViewAdapter;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
@@ -69,7 +68,7 @@ public class DetailRestaurant extends AppCompatActivity {
 
     private void onUpdatePosition(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        this.myViewModel.UpdateLngLat(location.getLongitude(), location.getLatitude());
+        this.myViewModel.updateLngLat(location.getLongitude(), location.getLatitude());
         //replace by th elist of workmates...
         Log.i("[FIND]","onupdateposition");
         this.myViewModel.getRestaurants().observe(this, this::onUpdateRestaurants);

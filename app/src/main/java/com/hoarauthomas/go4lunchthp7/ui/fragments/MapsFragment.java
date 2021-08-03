@@ -71,7 +71,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
         Log.i("[LOCATION]", "onUpdatePosition MapsFragment ... " + location.getLatitude() + " " + location.getLongitude());
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        myViewModelGo4Lunch.UpdateLngLat(location.getLongitude(), location.getLatitude());
+        myViewModelGo4Lunch.updateLngLat(location.getLongitude(), location.getLatitude());
         if (location != null) {
             myMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             myMap.animateCamera(CameraUpdateFactory.zoomTo(10));//city zoom

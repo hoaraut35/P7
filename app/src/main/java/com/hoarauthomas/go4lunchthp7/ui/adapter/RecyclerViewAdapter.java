@@ -1,6 +1,7 @@
 package com.hoarauthomas.go4lunchthp7.ui.adapter;
 
 import android.content.Context;
+import android.location.Location;
 import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.protobuf.StringValue;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.MainActivity;
 import com.hoarauthomas.go4lunchthp7.R;
@@ -106,7 +108,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         Log.i("[MYPOS]", "Ma position " + myPosition);
 
 
-        holder.distanceOfRestaurant.setText("position");
+
+        LatLng test = new LatLng(result.getGeometry().getLocation().getLat(),result.getGeometry().getLocation().getLng());
+        int dist = Math.round(distanceBetween(myPosition,test));
+        holder.distanceOfRestaurant.setText(String.valueOf(dist)+"m");
+
+      //  holder.distanceOfRestaurant.setText(myPosition.toString());
 
 
         //show the address of restaurant
@@ -155,8 +162,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     }
 
-
-
+    public float distanceBetween(LatLng first, LatLng second) {
+        float[] distance = new float[1];
+        Location.distanceBetween(first.latitude, first.longitude, second.latitude, second.longitude, distance);
+        return distance[0];
+    }
 
 
     //to map a range to another range ... from arduino library

@@ -16,9 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.hoarauthomas.go4lunchthp7.MainActivity;
 import com.hoarauthomas.go4lunchthp7.R;
 //import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
 
@@ -30,7 +28,6 @@ import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.ResourceBundle;
 
 public class ListFragment extends Fragment {
 
@@ -41,6 +38,7 @@ public class ListFragment extends Fragment {
     private RecyclerView recyclerView;
 
     private LatLng myPositionOnMap;
+    private View myView;
 
     public static ListFragment newInstance() {
         return new ListFragment();
@@ -50,22 +48,20 @@ public class ListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_fragment, container, false);
         setupViewModel();
-        setupRecyclerView(view);
+        this.myView = view;
+
         return view;
     }
 
     private void setupViewModel() {
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
         this.myViewModel.getMyPosition().observe(getViewLifecycleOwner(), this::onUpdatePosition);
-        this.myViewModel.getRestaurants().observe(getViewLifecycleOwner(), this::onUpdateRestaurants);
     }
 
     private void onUpdatePosition(Location location) {
         //Position de l'utilisateir ici...
         myPositionOnMap = new LatLng(location.getLatitude(), location.getLongitude());
-
-        this.myViewModel.UpdateLngLat(location.getLongitude(), location.getLatitude());
-
+        this.myViewModel.updateLngLat(location.getLongitude(), location.getLatitude());
         this.myViewModel.getRestaurants().observe(getViewLifecycleOwner(), this::onUpdateRestaurants);
     }
 
@@ -74,6 +70,9 @@ public class ListFragment extends Fragment {
         allResult.clear();
         //Liste des restaurants autour de l'utilisateur...
         allResult.addAll(results);
+        Log.i("[POSITION]","Position de l'utilisateur : " + this.myViewModel.getMyLastPosition());
+
+        setupRecyclerView(myView);
         Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
     }
 
@@ -81,13 +80,9 @@ public class ListFragment extends Fragment {
         recyclerView = view.findViewWithTag("recycler_view");
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
         recyclerView.setHasFixedSize(false);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         recyclerView.addItemDecoration(itemDecoration);
-
-
-
-        recyclerView.setAdapter(new RecyclerViewAdapter(0, allResult));
+        recyclerView.setAdapter(new RecyclerViewAdapter(0, allResult,this.myViewModel.getMyLastPosition()));
     }
 
 }

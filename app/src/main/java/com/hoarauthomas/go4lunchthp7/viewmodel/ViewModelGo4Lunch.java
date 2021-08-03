@@ -117,20 +117,17 @@ public class ViewModelGo4Lunch extends ViewModel {
     }
 
     //update user position
-    public void UpdateLngLat(Double Long, Double Lat){
-        Log.i("[RESTAURANT]","Update position in restaurant request ..." + Long + " " + Lat);
+    public void updateLngLat(Double Long, Double Lat) {
+        Log.i("[RESTAURANT]", "Update position in restaurant request ..." + Long + " " + Lat);
         this.Long = Long;
         this.Lat = Lat;
         myRestaurantsSource.UpdateLngLat(Long, Lat);
         this.placesResponseLiveData = myRestaurantsSource.getAllRestaurants(Long, Lat);
     }
 
-    public LatLng getMyLastPosition(){
-        return new LatLng(this.Lat,this.Long);
+    public LatLng getMyLastPosition() {
+        return new LatLng(this.Lat, this.Long);
     }
-
-
-
 
 
     //----------------------------------------------------------------------------------------------
@@ -158,58 +155,37 @@ public class ViewModelGo4Lunch extends ViewModel {
     public LiveData<List<Result>> getRestaurants() {
 
 
-        Log.i("[RESTAURANT]","getRestaurant in ViewModelm " + this.Long + this.Lat);
+        Log.i("[RESTAURANT]", "getRestaurant in ViewModelm " + this.Long + this.Lat);
         return placesResponseLiveData;
     }
 
     public void setActualRestaurant(String tag) {
         this.myActualRestaurant = tag;
-        Log.i("[MAP]","Restaurant actuel SET: " + tag);
+        Log.i("[MAP]", "Restaurant actuel SET: " + tag);
 
     }
 
-    public String getActualRestaurant()
-    {
-        Log.i("[MAP]","Restaurant actuel gET: " + this.myActualRestaurant );
+    public String getActualRestaurant() {
+        Log.i("[MAP]", "Restaurant actuel gET: " + this.myActualRestaurant);
         return this.myActualRestaurant;
 
     }
 
 
     //----------------------------------------------------------------------------------------------
+    //FIRESTORE
 
+    //Create user to Firestore
+    public void createUser() {
+        myWorkMatesSource.createWorkMate(myUserVM.getValue().getUid());
+    }
 
-    public void addNewRestaurant(String name){
+    public void addNewRestaurant(String name) {
         this.myWorkMatesSource.addRestaurant(name);
     }
 
 
 
-    //Add user to Firestore
-    public void createuser(FirebaseUser user) {
-        if (this.myUserVM != null) {
-
-            addNewRestaurant("test");
-
-            String uid = user.getUid();
-            String username = user.getDisplayName();
-
-            //  String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ? this.getCurrentUser().getPhotoUrl().toString() : null;
-
-
-            UserHelper.createUser(uid, username, "OC Pizza").addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.i("[THOMAS]", "Erreur CREATE Firestore " + e.getMessage());
-                }
-            });
-        }
-
-
-    }
-
-
-
-    //----------------------------------------------------------------------------------------------
-
 }
+
+
