@@ -47,7 +47,7 @@
     <string name="distanceOfRestaurant">100m</string>
     <string name="openTimeOfRestaurant">Open until 7pm</string>
     <string name="titleOfRestaurant">Le Zinc</string>
-    <string name="numberOfWorkmates">10</string>
+    <string name="numberOfWorkmates">(10)</string>
     <string name="numberOfLike">3</string>
     <string name="labelForOpeningHours">\"Ouvert : \"</string>
     <string name="facebook_btn_str">Sign in with Facebook</string>

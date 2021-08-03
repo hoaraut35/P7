@@ -39,13 +39,26 @@
         app:layout_constraintRight_toLeftOf="@id/imageOfRestaurant"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:layout_constraintRight_toLeftOf="@+id/numberOfWorkmates"
+        app:layout_constraintTop_toTopOf="@+id/numberOfWorkmates"
+        app:layout_constraintBottom_toBottomOf="@+id/numberOfWorkmates"
+        android:src="@drawable/ic_baseline_person_outline_24"
+        />
+
+
+
     <TextView
         android:id="@+id/numberOfWorkmates"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:text="@string/numberOfWorkmates"
-        android:textStyle="italic"
+
+        android:textStyle="bold"
         app:layout_constraintRight_toLeftOf="@id/imageOfRestaurant"
         app:layout_constraintTop_toBottomOf="@id/distanceOfRestaurant" />
 
@@ -61,6 +74,7 @@
         android:rating="0"
         android:rotation="180"
         android:stepSize="0.1"
+        android:layout_margin="5dp"
         app:layout_constraintRight_toLeftOf="@id/imageOfRestaurant"
         app:layout_constraintTop_toBottomOf="@id/numberOfWorkmates" />
 
