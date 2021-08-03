@@ -20,6 +20,8 @@ import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Observable;
+
 //This class is for the business logic
 //We expose only Livedata
 //Do not use reference to a view or lifecycle here !!!!
@@ -188,6 +190,14 @@ public class ViewModelGo4Lunch extends ViewModel {
     }
 
     */
+
+
+    //----------------------------------------------------------------------------------------------
+    //RxJava test
+
+    public Observable<String> getObservable(){
+        return Observable.just("Test RxJava");
+    }
 
 
 }

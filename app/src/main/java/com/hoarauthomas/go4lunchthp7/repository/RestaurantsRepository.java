@@ -57,20 +57,25 @@ public class RestaurantsRepository {
 
         final MutableLiveData<Result2> data = new MutableLiveData<>();
 
-        service.getPlaceDetails(BuildConfig.MAPS_API_KEY,myPlaceId)
-        .enqueue(new Callback<Result2>(){
+        service.getPlaceDetails(BuildConfig.MAPS_API_KEY, myPlaceId)
+                .enqueue(new Callback<Result2>() {
 
 
-            @Override
-            public void onResponse(Call<Result2> call, Response<Result2> response) {
+                    @Override
+                    public void onResponse(Call<Result2> call, Response<Result2> response) {
+                        if (response.body() != null) {
 
-            }
+                            Log.i("[RESTAURANT]", "Repository Restaurants, getDetailrestaurant : " + response.body().getFormattedPhoneNumber());
+                            data.postValue(response.body());
 
-            @Override
-            public void onFailure(Call<Result2> call, Throwable t) {
+                        }
+                    }
 
-            }
-        });
+                    @Override
+                    public void onFailure(Call<Result2> call, Throwable t) {
+                        data.postValue(null);
+                    }
+                });
         ;
         return data;
 

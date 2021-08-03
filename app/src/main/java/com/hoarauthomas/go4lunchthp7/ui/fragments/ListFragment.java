@@ -35,7 +35,9 @@ import java.util.ResourceBundle;
 public class ListFragment extends Fragment {
 
     private ViewModelGo4Lunch myViewModel;
+
     public final ArrayList<Result> allResult = new ArrayList<>();
+
     private RecyclerView recyclerView;
 
     private LatLng myPositionOnMap;

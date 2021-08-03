@@ -95,5 +95,10 @@ dependencies {
 
     implementation 'com.android.support:multidex:1.0.3'
 
+    //RxJava
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
+
+    //Retrofit Adapter for RxJava
+    implementation 'com.squareup.retrofit:retrofit:2.9.0'
 
 }
