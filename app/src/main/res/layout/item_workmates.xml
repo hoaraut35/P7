@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:text="Scarlett is eating french (Le Zinc)Open until 7pm"
+        android:text="Scarlett is joining !Sc"
         android:textStyle="italic"
 
         app:layout_constraintTop_toTopOf="parent"

@@ -1,9 +1,12 @@
 package com.hoarauthomas.go4lunchthp7.viewmodel;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.util.Log;
 
 import androidx.arch.core.util.Function;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
@@ -20,7 +23,8 @@ import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 
 import java.util.List;
 
-import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.Observable;
+
 
 //This class is for the business logic
 //We expose only Livedata
@@ -78,7 +82,7 @@ public class ViewModelGo4Lunch extends ViewModel {
 
         //in progress...
         this.myRestaurantsSource = placeRepository;
-        this.placesResponseLiveData = myRestaurantsSource.getAllRestaurants(Long,Lat);
+        this.placesResponseLiveData = myRestaurantsSource.getAllRestaurants(Long, Lat);
 
 
     }
@@ -89,7 +93,7 @@ public class ViewModelGo4Lunch extends ViewModel {
 
     //publish to activity or fragment
     public LiveData<Location> getMyPosition() {
-        Log.i("[RESTAURANT]","Appel fonction ds le ViewModel... getMyPosition");
+        Log.i("[RESTAURANT]", "Appel fonction ds le ViewModel... getMyPosition");
         return myPositionVM;
     }
 
@@ -100,6 +104,7 @@ public class ViewModelGo4Lunch extends ViewModel {
         if (!myPermissionChecker.hasLocationPermission()) {
             myLocationSource.stopLocationRequest();
         } else {
+
             myLocationSource.startLocationRequest();
         }
     }

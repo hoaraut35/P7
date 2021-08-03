@@ -24,4 +24,11 @@ public interface GooglePlaceApi {
             @Query("key") String key,
             @Query("place_id") String myPlaceId);
 
+
+
+
+
+
+
+
 }

@@ -1,4 +1,4 @@
-package com.hoarauthomas.go4lunchthp7.model;
+package com.hoarauthomas.go4lunchthp7.model.firestore;
 
 import android.media.Image;
 

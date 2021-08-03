@@ -4,7 +4,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.hoarauthomas.go4lunchthp7.model.User;
+import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 
 //crud for users
 public class UserHelper {
