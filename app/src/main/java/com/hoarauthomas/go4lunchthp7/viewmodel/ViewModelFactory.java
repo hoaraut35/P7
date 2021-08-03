@@ -13,6 +13,7 @@ import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
 import com.hoarauthomas.go4lunchthp7.repository.AuthRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
+import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
 
 //TODO: erreur try to generify ?
 
@@ -27,6 +28,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final AuthRepository authRepository;
     private final PositionRepository positionRepository;
     private final RestaurantsRepository restaurantsRepository;
+    private final WorkMatesRepository workMatesRepository;
     private final PermissionChecker permissionChecker;
 
     //Get an instance of ViewModelFactory ... see pattern singleton
@@ -41,6 +43,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                             new AuthRepository(),
                             new RestaurantsRepository(),
                             new PositionRepository(LocationServices.getFusedLocationProviderClient(application)),
+                            new WorkMatesRepository(),
                             new PermissionChecker(application)
                     );
                 } else {
@@ -54,10 +57,11 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     }
 
     //constructor of ViewModelFactory ...
-    private ViewModelFactory(AuthRepository authRepository, RestaurantsRepository restaurantsRepository, PositionRepository positionRepository, PermissionChecker permissionChecker) {
+    private ViewModelFactory(AuthRepository authRepository, RestaurantsRepository restaurantsRepository, PositionRepository positionRepository, WorkMatesRepository workMatesRepository, PermissionChecker permissionChecker) {
         this.authRepository = authRepository;
         this.positionRepository = positionRepository;
         this.restaurantsRepository = restaurantsRepository;
+        this.workMatesRepository = workMatesRepository;
         this.permissionChecker = permissionChecker;
     }
 
@@ -69,6 +73,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     authRepository,
                     restaurantsRepository,
                     positionRepository,
+                    workMatesRepository,
                     permissionChecker);
         }
         throw new IllegalArgumentException("[V M F] Unknow ViewModel class");

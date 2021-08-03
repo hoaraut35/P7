@@ -6,21 +6,30 @@ import androidx.annotation.Nullable;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.List;
+
 
 //for Firestore
 public class User {
 
     private String uid;
     private String username;
-  //  private Boolean isMentor;
-    @Nullable
+
+
     private String urlPicture;
     private String favoriteRestaurant;
 
 
+    private List<String>  restaurant_liked;
     private LatLng myPos;
 
+    public List<String> getRestaurant_liked() {
+        return restaurant_liked;
+    }
 
+    public void setRestaurant_liked(List<String> restaurant_liked) {
+        this.restaurant_liked = restaurant_liked;
+    }
 
     public User() { }
 

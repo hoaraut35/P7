@@ -3,6 +3,7 @@ package com.hoarauthomas.go4lunchthp7.ui.fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -12,6 +13,8 @@ import android.view.ViewGroup;
 
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.ui.adapter.RecyclerViewAdapter;
+import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
+import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,6 +22,8 @@ import com.hoarauthomas.go4lunchthp7.ui.adapter.RecyclerViewAdapter;
  * create an instance of this fragment.
  */
 public class WorkFragment extends Fragment {
+
+    private ViewModelGo4Lunch myViewModel;
 
     private RecyclerView recyclerView;
     private RecyclerViewAdapter myAdapter;
@@ -78,6 +83,11 @@ public class WorkFragment extends Fragment {
 
         View view =inflater.inflate(R.layout.fragment_work,container,false);
 
+
+
+
+        setupViewModel();
+
         recyclerView = view.findViewWithTag("recycler_view");
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
@@ -91,5 +101,12 @@ public class WorkFragment extends Fragment {
 
 
         return view;
+    }
+
+    private void setupViewModel() {
+
+        this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
+        this.myViewModel.addNewRestaurant("test");
+
     }
 }

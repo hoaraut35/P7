@@ -27,6 +27,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
+import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.ui.activity.DetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.ui.adapter.FragmentsAdapter;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
@@ -34,6 +35,7 @@ import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static android.view.View.OnClickListener;
 import static androidx.core.view.GravityCompat.START;
@@ -119,10 +121,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //TODO: binding navigation view ?
     private void request_user_info() {
         View hv = binding.navigationView.getHeaderView(0);
+
         TextView name = (TextView) hv.findViewById(R.id.displayName);
-        name.setText(this.myViewModel.getMyCurrentUser().getValue().getDisplayName());
+        name.setText(Objects.requireNonNull(this.myViewModel.getMyCurrentUser().getValue()).getDisplayName());
+
         TextView email = (TextView) hv.findViewById(R.id.email);
         email.setText(this.myViewModel.getMyCurrentUser().getValue().getEmail());
+
         ImageView avatar = (ImageView) hv.findViewById(R.id.avatar);
         Glide.with(avatar)
                 .load(this.myViewModel.getMyCurrentUser().getValue().getPhotoUrl())
@@ -140,8 +145,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
                 Log.i("[THOMAS]", "RESULT_OK SDIGN IN ...");
-
-                //this.myViewModel.createuser();
+                this.myViewModel.getMyCurrentUser();
+               // this.myViewModel.createuser(myViewModel.getMyCurrentUser());
 
             } else {//error
 

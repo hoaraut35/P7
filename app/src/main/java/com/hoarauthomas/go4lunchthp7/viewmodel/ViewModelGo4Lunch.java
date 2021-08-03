@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.arch.core.util.Function;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.LiveData;
@@ -13,13 +14,16 @@ import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseUser;
 
+import com.hoarauthomas.go4lunchthp7.api.UserHelper;
 import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
 import com.hoarauthomas.go4lunchthp7.pojo.Result;
 import com.hoarauthomas.go4lunchthp7.repository.AuthRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
+import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
 
 import java.util.List;
 
@@ -37,6 +41,7 @@ public class ViewModelGo4Lunch extends ViewModel {
     private final AuthRepository myAuthSource;
     private final PositionRepository myLocationSource;
     private final RestaurantsRepository myRestaurantsSource;
+    private final WorkMatesRepository myWorkMatesSource;
     private final PermissionChecker myPermissionChecker;
 
     //Add livedata and mutableLiveData here...
@@ -55,6 +60,7 @@ public class ViewModelGo4Lunch extends ViewModel {
             AuthRepository authRepository,
             RestaurantsRepository placeRepository,
             PositionRepository positionRepository,
+            WorkMatesRepository workMatesRepository,
             PermissionChecker permissionChecker
     ) {
         Log.i("[THOMAS]", "[VIEWMODELGO4LUNCH INIT]");
@@ -63,6 +69,7 @@ public class ViewModelGo4Lunch extends ViewModel {
         this.myAuthSource = authRepository;
         this.myUserVM = myAuthSource.getUserLiveData();
         this.myUserStateVM = myAuthSource.getMyUserState();
+        this.myWorkMatesSource = workMatesRepository;
 
         //this is ok ...
         this.myLocationSource = positionRepository;
@@ -172,16 +179,23 @@ public class ViewModelGo4Lunch extends ViewModel {
     //----------------------------------------------------------------------------------------------
 
 
-    /*
+    public void addNewRestaurant(String name){
+        this.myWorkMatesSource.addRestaurant(name);
+    }
+
+
 
     //Add user to Firestore
-    public void createuser() {
+    public void createuser(FirebaseUser user) {
         if (this.myUserVM != null) {
 
-            String uid = this.myUserVM.getUid();
-            String username = this.getCurrentUser().getDisplayName();
-            String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ? this.getCurrentUser().getPhotoUrl().toString() : null;
-            Log.i("[THOMAS]", "Add user to Firestore ... " + uid + " " + username + " " + urlPicture);
+            addNewRestaurant("test");
+
+            String uid = user.getUid();
+            String username = user.getDisplayName();
+
+            //  String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ? this.getCurrentUser().getPhotoUrl().toString() : null;
+
 
             UserHelper.createUser(uid, username, "OC Pizza").addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -194,15 +208,8 @@ public class ViewModelGo4Lunch extends ViewModel {
 
     }
 
-    */
 
 
     //----------------------------------------------------------------------------------------------
-    //RxJava test
-
-    public Observable<String> getObservable(){
-        return Observable.just("Test RxJava");
-    }
-
 
 }
