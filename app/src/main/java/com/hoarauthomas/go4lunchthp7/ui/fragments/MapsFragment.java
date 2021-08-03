@@ -100,8 +100,11 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             markerOptions.position(latLng);
             markerOptions.title(results.get(i).getName());
 
+
             //  markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_baseline_restaurant_24));
             Marker m = myMap.addMarker(markerOptions);
+            m.setTag(results.get(i).getPlaceId());
+
 
 
             //insert tag from google nearbysearch to ...
@@ -132,10 +135,13 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(@NonNull @NotNull Marker marker) {
-                    Log.i("[MAP]", "test click" + marker.getTitle()+ marker.getTag()                        );
+                    Log.i("[MAP]", "test click" + marker.getTitle()+ "tag id : "+ marker.getTag()                        );
 
+                   // myViewModelGo4Lunch.setActualRestaurant(marker.getTag().toString());
 
                     Intent intent = new Intent(getContext(), DetailRestaurant.class);
+                    String restaurantTag = marker.getTag().toString();
+                    intent.putExtra("TAG_ID",restaurantTag );
                     startActivity(intent);
 
 

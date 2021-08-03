@@ -13,11 +13,11 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:text="@string/titleOfRestaurant"
-        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/distanceOfRestaurant"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/addressOfRestaurant"
@@ -50,20 +50,19 @@
         app:layout_constraintTop_toBottomOf="@id/distanceOfRestaurant" />
 
 
-
     <RatingBar
         android:id="@+id/rating"
+        style="@style/Widget.AppCompat.RatingBar.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:numStars="3"
-
-android:progressTint="@color/material_star"
-        style="@style/Widget.AppCompat.RatingBar.Small"
         android:isIndicator="true"
-        android:stepSize="0.1"
+        android:numStars="3"
+        android:progressTint="@color/material_star"
         android:rating="0"
+        android:rotation="180"
+        android:stepSize="0.1"
         app:layout_constraintRight_toLeftOf="@id/imageOfRestaurant"
-        app:layout_constraintTop_toBottomOf="@id/numberOfWorkmates"/>
+        app:layout_constraintTop_toBottomOf="@id/numberOfWorkmates" />
 
 
     <TextView
@@ -80,10 +79,10 @@ android:progressTint="@color/material_star"
         android:id="@+id/imageOfRestaurant"
         android:layout_width="80dp"
         android:layout_height="80dp"
+        android:contentDescription="TODO"
         android:src="@drawable/ic_baseline_food_bank_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="TODO" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

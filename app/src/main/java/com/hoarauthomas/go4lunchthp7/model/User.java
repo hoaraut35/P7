@@ -4,6 +4,8 @@ import android.media.Image;
 
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.maps.model.LatLng;
+
 
 //for Firestore
 public class User {
@@ -16,6 +18,9 @@ public class User {
     private String favoriteRestaurant;
 
 
+    private LatLng myPos;
+
+
 
     public User() { }
 
@@ -26,6 +31,12 @@ public class User {
         this.favoriteRestaurant = restaurant;
    //     this.isMentor = false;
     }
+
+
+    public LatLng getLatLongUser(){return myPos;}
+
+
+
 
     // --- GETTERS ---
     public String getUid() { return uid; }
@@ -41,6 +52,8 @@ public class User {
     public void setUid(String uid) { this.uid = uid; }
     public void setUrlPicture(String urlPicture) { this.urlPicture = urlPicture; }
     public void setFavoriteRestaurant(String favoriteRestaurant) {        this.favoriteRestaurant = favoriteRestaurant;    }
+
+    public void setLatLongUser(LatLng latLongUser){this.myPos = latLongUser;}
 
     // public void setIsMentor(Boolean mentor) { isMentor = mentor; }
 }

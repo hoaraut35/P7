@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.hoarauthomas.go4lunchthp7.OpeningHours;
+import com.hoarauthomas.go4lunchthp7.OpeningHours2;
 import com.hoarauthomas.go4lunchthp7.Photo;
 import com.hoarauthomas.go4lunchthp7.PlusCode;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Geometry;
@@ -27,7 +27,7 @@ public class Result {
     private String name;
     @SerializedName("opening_hours")
     @Expose
-    private OpeningHours openingHours;
+    private OpeningHours2 openingHours;
     @SerializedName("photos")
     @Expose
     private List<com.hoarauthomas.go4lunchthp7.Photo> photos = null;
@@ -91,11 +91,11 @@ public class Result {
         this.name = name;
     }
 
-    public OpeningHours getOpeningHours() {
+    public OpeningHours2 getOpeningHours() {
         return openingHours;
     }
 
-    public void setOpeningHours(OpeningHours openingHours) {
+    public void setOpeningHours(OpeningHours2 openingHours) {
         this.openingHours = openingHours;
     }
 
@@ -178,5 +178,11 @@ public class Result {
     public void setVicinity(String vicinity) {
         this.vicinity = vicinity;
     }
+
+
+
+
+
+
 
 }

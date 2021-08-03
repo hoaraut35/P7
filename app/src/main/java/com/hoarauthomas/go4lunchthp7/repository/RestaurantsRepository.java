@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 
+import com.hoarauthomas.go4lunchthp7.Result2;
 import com.hoarauthomas.go4lunchthp7.api.GooglePlaceApi;
 import com.hoarauthomas.go4lunchthp7.api.RetrofitRequest;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
@@ -30,8 +31,11 @@ public class RestaurantsRepository {
     //this is api service class
     private final GooglePlaceApi service;
 
-    //this is the list for add all iteration in a list to sned after in mutable
+    //this is the list for add all iteration in a list to send after in mutable
+    //for the fisrt api query...
     private final List<Result> allRestaurants = new ArrayList<>();
+    //for the second api query...
+    private final List<Result2> allRestauranntsDetails = new ArrayList<>();
 
     private Double Long, Lat;
 
@@ -41,12 +45,19 @@ public class RestaurantsRepository {
         service = RetrofitRequest.getRetrofitInstance().create(GooglePlaceApi.class);
     }
 
-
     public void UpdateLngLat(Double Long, Double Lat) {
         Log.i("[RESTAURANT]", "Repository restaurant position " + Lat + Long);
         this.Long = Long;
         this.Lat = Lat;
     }
+
+
+    //this is livedata to publish detail restaurant to viewmodel
+  /*  public LiveData<List<Result2>> getAllDetailForRestaurant(){
+
+    }
+
+   */
 
     //this is livedata to publish to viewmodel
     public LiveData<List<Result>> getAllRestaurants(Double Long, Double Lat) {

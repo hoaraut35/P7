@@ -38,6 +38,8 @@ public class ListFragment extends Fragment {
     public final ArrayList<Result> allResult = new ArrayList<>();
     private RecyclerView recyclerView;
 
+    private LatLng myPositionOnMap;
+
     public static ListFragment newInstance() {
         return new ListFragment();
     }
@@ -57,27 +59,33 @@ public class ListFragment extends Fragment {
     }
 
     private void onUpdatePosition(Location location) {
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        //Position de l'utilisateir ici...
+        myPositionOnMap = new LatLng(location.getLatitude(), location.getLongitude());
+
         this.myViewModel.UpdateLngLat(location.getLongitude(), location.getLatitude());
+
         this.myViewModel.getRestaurants().observe(getViewLifecycleOwner(), this::onUpdateRestaurants);
+    }
 
-
+    private void onUpdateRestaurants(List<Result> results) {
+        Log.i("[RESTAURANT]", "Fragment liste, onUpdateRestaurants Event " + results.size());
+        allResult.clear();
+        //Liste des restaurants autour de l'utilisateur...
+        allResult.addAll(results);
+        Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
     }
 
     private void setupRecyclerView(View view) {
         recyclerView = view.findViewWithTag("recycler_view");
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
         recyclerView.setHasFixedSize(false);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         recyclerView.addItemDecoration(itemDecoration);
-        recyclerView.setAdapter(new RecyclerViewAdapter(0, allResult));
-    }
 
-   private void onUpdateRestaurants(List<Result> results) {
-        Log.i("[RESTAURANT]", "Fragment liste, onUpdateRestaurants Event " + results.size());
-        allResult.clear();
-        allResult.addAll(results);
-        Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
+
+
+        recyclerView.setAdapter(new RecyclerViewAdapter(0, allResult));
     }
 
 }

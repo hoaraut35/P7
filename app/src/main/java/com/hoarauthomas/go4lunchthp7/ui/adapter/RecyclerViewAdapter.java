@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.MainActivity;
 import com.hoarauthomas.go4lunchthp7.R;
@@ -28,6 +29,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     //variables ...
     private int mode;
     private List<Result> mResults;
+    private LatLng myPosition;
 
 
     //interface for callback
@@ -40,6 +42,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     //the constructor
     //public RecyclerViewAdapter(int mode, List<Result> myList, Listener callback) {
+    public RecyclerViewAdapter(int mode, List<Result> myList, LatLng myLatLng) {
+        this.mResults = myList;
+        this.mode = mode;//to switch between restaurant and workmates ?
+        this.myPosition = myLatLng;
+
+        //for callabck
+        //this.callback = callback;
+    }
+
     public RecyclerViewAdapter(int mode, List<Result> myList) {
         this.mResults = myList;
         this.mode = mode;//to switch between restaurant and workmates ?
@@ -92,6 +103,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         //TODO: must to add the distance here...
 
+        Log.i("[MYPOS]", "Ma position " + myPosition);
+
+
+        holder.distanceOfRestaurant.setText("position");
+
+
         //show the address of restaurant
         holder.addressOfRestaurant.setText(mResults.get(position).getVicinity());
 
@@ -114,48 +131,36 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         //TODO: add the number of workmates
 
-        //TODO: add openinghours
-
-        //TODO: add star
-
-        //   mResults.get(position).getRating()
-        //  Log.i("'[RATING]","" + mResults.isEmpty()result.getRating());
-//        if (result.getRating())
-
-
+        //show star rating
         try {
-
-            double ratingDbl = map(result.getRating(),1.0,5.0,1.0,3.0);
+            double ratingDbl = map(result.getRating(), 1.0, 5.0, 1.0, 3.0);
             int ratingInt = (int) Math.round(ratingDbl);
-
-            Log.i("[RATING]","Convert [1.0 ... 5.0] : " + result.getRating() + " to [1.00 ... 3.0] : " + map(result.getRating(),1.0,5.0,1.0,3.0)+ "to int :" +ratingInt);
+            Log.i("[RATING]", "Convert [1.0 ... 5.0] : " + result.getRating() + " to [1.00 ... 3.0] : " + map(result.getRating(), 1.0, 5.0, 1.0, 3.0) + "to int :" + ratingInt);
 
             if (ratingInt == 1) {
                 holder.rating.setRating(1);
-            }else if (ratingInt == 2) {
+            } else if (ratingInt == 2) {
                 holder.rating.setRating(2);
-            } else if (ratingInt ==3) {
+            } else if (ratingInt == 3) {
                 holder.rating.setRating(3);
             }
 
-
-
-
-
         } catch (Exception e) {
-            Log.i("[RATING]", "Pas de notation pour ce restaurant !" );
+            Log.i("[RATING]", "Pas de notation pour ce restaurant !");
             holder.rating.setRating(0);
-
         }
-
 
         //TODO add listener
         //holder.
 
     }
 
+
+
+
+
     //to map a range to another range ... from arduino library
-    public double map(double value, double in_min, double in_max, double out_min, double out_max){
+    public double map(double value, double in_min, double in_max, double out_min, double out_max) {
         return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
 

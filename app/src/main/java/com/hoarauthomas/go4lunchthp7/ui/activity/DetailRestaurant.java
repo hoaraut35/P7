@@ -32,6 +32,11 @@ public class DetailRestaurant extends AppCompatActivity {
     public final ArrayList<com.hoarauthomas.go4lunchthp7.pojo.Result> allResult = new ArrayList<>();
     private RecyclerView recyclerView;
 
+
+    private String restaurant_id;
+
+    private com.hoarauthomas.go4lunchthp7.pojo.Result result;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,19 +45,91 @@ public class DetailRestaurant extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
+        Intent intent = getIntent();
+        restaurant_id = intent.getStringExtra("TAG_ID");
+        Log.i("[TAG]", "Tag marker is " + restaurant_id);
+
         setupRecyclerView();
         setupViewModel();
         setupButtonPhone();
         setupButtonLike();
         setupButtonWeb();
+
+
     }
+
 
     private void setupViewModel() {
 
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
+
         this.myViewModel.getMyPosition().observe(this, this::onUpdatePosition);
+        Log.i("[FIND]","setupvml... ");
     }
 
+    private void onUpdatePosition(Location location) {
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        this.myViewModel.UpdateLngLat(location.getLongitude(), location.getLatitude());
+        //replace by th elist of workmates...
+        Log.i("[FIND]","onupdateposition");
+        this.myViewModel.getRestaurants().observe(this, this::onUpdateRestaurants);
+    }
+
+    private void onUpdateRestaurants(List<com.hoarauthomas.go4lunchthp7.pojo.Result> results) {
+
+
+        //recuperer le restauirant ici ?
+
+        for (int i = 0; i < results.size(); i++) {
+
+            result = results.get(i);
+
+            Log.i("[FIND]", "Nb restaurant à scanner : " + results.size()  + " " + results.get(i).getPlaceId().toString() + " " + restaurant_id);
+
+
+            if (results.get(i).getPlaceId().toString().equals(restaurant_id)) {
+                Log.i("[FIND]", "Restaurant trouvé");
+
+                binding.restaurantTitre.setText(results.get(i).getName());
+                binding.restaurantAddress.setText(results.get(i).getVicinity());
+
+                //setupButtonPhone(result.);binding.
+
+                //show star rating
+                try {
+                    double ratingDbl = map(result.getRating(), 1.0, 5.0, 1.0, 3.0);
+                    int ratingInt = (int) Math.round(ratingDbl);
+                    Log.i("[RATING]", "Convert [1.0 ... 5.0] : " + result.getRating() + " to [1.00 ... 3.0] : " + map(result.getRating(), 1.0, 5.0, 1.0, 3.0) + "to int :" + ratingInt);
+
+                    if (ratingInt == 1) {
+                        binding.ratingbar.setRating(1);
+                    } else if (ratingInt == 2) {
+                        binding.ratingbar.setRating(2);
+                    } else if (ratingInt == 3) {
+                        binding.ratingbar.setRating(3);
+                    }
+
+                } catch (Exception e) {
+                    Log.i("[RATING]", "Pas de notation pour ce restaurant !");
+                    binding.ratingbar.setRating(0);
+                }
+
+
+
+
+            }
+
+        }
+
+        allResult.clear();
+        allResult.addAll(results);
+        Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
+    }
+
+    //to map a range to another range ... from arduino library
+    public double map(double value, double in_min, double in_max, double out_min, double out_max) {
+        return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    }
 
     private void setupRecyclerView() {
         recyclerView = binding.recyclerView;
@@ -63,22 +140,6 @@ public class DetailRestaurant extends AppCompatActivity {
         recyclerView.setAdapter(new RecyclerViewAdapter(0, allResult));
     }
 
-
-    private void onUpdatePosition(Location location) {
-
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        this.myViewModel.UpdateLngLat(location.getLongitude(), location.getLatitude());
-
-        this.myViewModel.getRestaurants().observe(this, this::onUpdateRestaurants);
-    }
-
-    private void onUpdateRestaurants(List<com.hoarauthomas.go4lunchthp7.pojo.Result> results) {
-
-
-        allResult.clear();
-        allResult.addAll(results);
-        Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
-    }
 
     private void setupButtonWeb() {
         binding.website.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +164,7 @@ public class DetailRestaurant extends AppCompatActivity {
         binding.callBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("[DETAIL]","clic sur phone");
+                Log.i("[DETAIL]", "clic sur phone");
 
                 Intent makeCall = new Intent(Intent.ACTION_DIAL);//not action_call...
                 makeCall.setData(Uri.parse("tel:" + "0781804664"));
