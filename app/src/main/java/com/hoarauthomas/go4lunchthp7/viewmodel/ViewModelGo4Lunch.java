@@ -180,9 +180,13 @@ public class ViewModelGo4Lunch extends ViewModel {
         myWorkMatesSource.createWorkMate(myUserVM.getValue().getUid());
     }
 
+
+
+
     public void addNewRestaurant(String name) {
         this.myWorkMatesSource.addRestaurant(name);
     }
+
 
 
 

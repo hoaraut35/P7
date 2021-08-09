@@ -33,7 +33,7 @@
                 android:elevation="0dp"
                 app:menu="@menu/top_main_menu"
                 app:navigationIcon="@drawable/ic_list"
-                app:title="I'm Hungry! " />
+                app:title="@string/menu_title" />
 
         </com.google.android.material.appbar.AppBarLayout>
 

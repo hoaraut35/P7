@@ -49,9 +49,9 @@ public class DetailRestaurant extends AppCompatActivity {
         Log.i("[TAG]", "Tag marker is " + restaurant_id);
 
         setupRecyclerView();
-        setupViewModel();
+       setupViewModel();
         setupButtonPhone();
-        setupButtonLike();
+       // setupButtonLike();
         setupButtonWeb();
 
 
@@ -92,7 +92,7 @@ public class DetailRestaurant extends AppCompatActivity {
                 binding.restaurantTitre.setText(results.get(i).getName());
                 binding.restaurantAddress.setText(results.get(i).getVicinity());
 
-                //setupButtonPhone(result.);binding.
+                //setupButtonPhone(result..);binding.
 
                 //show star rating
                 try {
@@ -122,7 +122,7 @@ public class DetailRestaurant extends AppCompatActivity {
 
         allResult.clear();
         allResult.addAll(results);
-        Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
+       // Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
     }
 
     //to map a range to another range ... from arduino library
