@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -48,7 +49,11 @@ public class WorkMatesRepository {
 
                     User user = new User();
 
+                    user.setUrlPicture(docs.get("urlPicture").toString());
+
                     user.setUsername(docs.get("fullName").toString());
+
+                    user.setFavoriteRestaurant((docs.get("favoriteRestaurant").toString()));
 
                     allWorkMates.add(user);
 
@@ -64,14 +69,13 @@ public class WorkMatesRepository {
     //this is livedata to publish detail of restaurant to the viewmodel ...
     public LiveData<List<User>> getAllWorkMates() {
 
-        Log.i("[WORK]", "- getAllWorkMates from rpeo " + allWorkMates.size() + "  added ..." );
+        Log.i("[WORK]", "- getAllWorkMates from rpeo " + allWorkMates.size() + "  added ...");
 
         final MutableLiveData<List<User>> data = new MutableLiveData<>();
         data.postValue(allWorkMates);
         return data;
 
     }
-
 
 
     //
@@ -106,9 +110,56 @@ public class WorkMatesRepository {
 
     }
 
-    public void createWorkMate(String uid) {
-        //   FirebaseUser user = getCurrentUser();
 
-
+    public FirebaseUser getCurrentUser() {
+        return FirebaseAuth.getInstance().getCurrentUser();
     }
+
+    public void createUser() {
+
+
+        FirebaseUser user = getCurrentUser();
+        Log.i("[FIRE]","Create user from workmates" + user.getUid() +  " "+ user.getDisplayName()  + " " + user.getPhotoUrl());
+
+        if(user!=null){
+            String urlPicture = (user.getPhotoUrl() != null ? user.getPhotoUrl().toString():null);
+            String username = user.getDisplayName();
+            String uid = user.getUid();
+
+            User userToCreate = new User(uid,username,urlPicture);
+
+            Task<DocumentSnapshot> userData = getUserData();
+
+            //if user already exist alors update data...
+            userData.addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.contains("favoriteRestaurant")){
+                    userToCreate.setFavoriteRestaurant("cool");
+
+                }
+
+                this.getUsersCollection().document(uid).set(userToCreate);
+            });
+
+
+
+
+        }
+    }
+
+    public Task<DocumentSnapshot> getUserData(){
+        String uid = this.getCurrentUserUID();
+        if(uid != null){
+            return this.getUsersCollection().document(uid).get();
+        }else
+        {
+            return null;
+        }
+    }
+
+    public String getCurrentUserUID(){
+        FirebaseUser user = getCurrentUser();
+        return (user != null) ? user.getUid() : null;
+    }
+
+
 }

@@ -22,10 +22,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:text="Scarlett is joining !Sc"
-        android:textStyle="italic"
+        android:text="Scarlett"
+        android:textStyle="bold"
 
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/image"
         app:layout_constraintLeft_toRightOf="@+id/image" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text=" is eating (Le Zinc)"
+        app:layout_constraintLeft_toRightOf="@id/workMateName"
+        app:layout_constraintTop_toTopOf="@id/workMateName"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

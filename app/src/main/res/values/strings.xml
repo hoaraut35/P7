@@ -54,5 +54,9 @@
     <string name="labelForOpeningHours">\"Ouvert : \"</string>
     <string name="facebook_btn_str">Sign in with Facebook</string>
     <string name="google_btn_str">Sign in with Google</string>
+    <string name="connection_succeed">Connexion avec succès</string>
+    <string name="error_authentification_canceled">Connexion annulée</string>
+    <string name="error_no_network">Erreur réseau</string>
+    <string name="error_unknow">Erreur inconnu</string>
 
 </resources>

@@ -21,13 +21,11 @@ import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
-import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.ui.activity.DetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.ui.adapter.FragmentsAdapter;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
@@ -58,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int DELETE_USER_TASK = 20;
 
     //list of auth provider
-    List<AuthUI.IdpConfig> providers = Arrays.asList(
+    private List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.FacebookBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build());
 
@@ -68,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-
         setupPermission();
         setupViewModel();
         setupTopAppBar();
@@ -88,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.myViewModel.getMyUserState().observe(this, this::onCheckSecurity);
     }
 
-    //Event after check security
     private void onCheckSecurity(Boolean aBoolean) {
         if (!aBoolean) {
             request_login();
@@ -97,7 +93,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    //called when the user is not logged ...
     private void request_login() {
         AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
                 .Builder(R.layout.custom_layout_login)
@@ -105,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .setFacebookButtonId(R.id.facebook_btn)
                 .build();
 
-        //TODO: must be updated corrected
+        //TODO: startActivityForResult must be updated
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
@@ -118,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         );
     }
 
-    //TODO: binding navigation view ?
+    //TODO: review binding navigation view ?
     private void request_user_info() {
         View hv = binding.navigationView.getHeaderView(0);
 
@@ -133,9 +128,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .load(this.myViewModel.getMyCurrentUser().getValue().getPhotoUrl())
                 .circleCrop()
                 .into(avatar);
+
+        //TODO:remove this in prod mode
+        showSnackBar(this.myViewModel.getMyCurrentUser().getValue().getUid());
     }
 
-    //TODO: update this for save user in firestore
+    private void showSnackBar(String message) {
+        Snackbar.make(binding.viewpager, message, Snackbar.LENGTH_SHORT).show();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -143,20 +144,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         IdpResponse response = IdpResponse.fromResultIntent(data);
 
         if (requestCode == RC_SIGN_IN) {
+            //SUCCESS
             if (resultCode == RESULT_OK) {
-                Log.i("[THOMAS]", "RESULT_OK SDIGN IN ...");
+                showSnackBar(getString(R.string.connection_succeed));
                 this.myViewModel.getMyCurrentUser();
-               // this.myViewModel.createuser(myViewModel.getMyCurrentUser());
+                //TODO: write user to firestore
+                this.myViewModel.createUser();
 
-            } else {//error
+            } else {
+                //ERRORS
 
                 if (response == null) {
-                    Log.i("THOMAS", "authentification annulée");
+                    showSnackBar(getString(R.string.error_authentification_canceled));
+
                 } else if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
-                    Log.i("THOMAS", "authentification impossible sans réseau");
+                    showSnackBar(getString(R.string.error_no_network));
 
                 } else if (response.getError().getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-                    Log.i("THOMAS", "authentification impossible erreur inconnu");
+                    showSnackBar(getString(R.string.error_unknow));
                 }
             }
         }
@@ -215,20 +220,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 switch (item.getItemId()) {
                     case R.id.action_map:
-                        //add function to pen fragment
                         binding.viewpager.setCurrentItem(1);
-                        Log.i("THOMAS", "clic sur carte");
                         break;
                     case R.id.action_list:
-                        //add function to pen fragment
                         binding.viewpager.setCurrentItem(2);
-                        Log.i("THOMAS", "clic sur liste");
                         break;
                     case R.id.action_work:
-                        //add function to pen fragment
                         binding.viewpager.setCurrentItem(3);
-                        Log.i("THOMAS", "clic sur collegues");
-                        binding.topAppBar.setTitle(R.string.topAppBar_title);
                         break;
                 }
                 return true;
@@ -247,7 +245,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding.topAppBar.setNavigationOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("THOMAS", "clic sur menu top bar");
                 binding.drawerLayout.openDrawer(START);
             }
         });
@@ -255,6 +252,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding.topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
+                //TODO: add search funciton
                 Log.i("THOMAS", "Clic sur recherche top bar app");
                 return false;
             }

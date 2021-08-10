@@ -36,11 +36,12 @@ public class AuthRepository {
         }
     }
 
-    //livedata for viewmodel
+    //publish to viewmodel...
     public MutableLiveData<FirebaseUser> getUserLiveData(){
         return myUser;
     }
 
+    //publish to viewmodel...
     public MutableLiveData<Boolean> getMyUserState(){
         return myUserState;
     }

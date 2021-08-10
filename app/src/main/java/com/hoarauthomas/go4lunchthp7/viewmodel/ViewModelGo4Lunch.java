@@ -52,6 +52,7 @@ public class ViewModelGo4Lunch extends ViewModel {
     private LiveData<List<Result>> placesResponseLiveData;
 
     private String myActualRestaurant;
+    private FirebaseUser myFUser;
 
 
     private Double Long, Lat;
@@ -66,13 +67,15 @@ public class ViewModelGo4Lunch extends ViewModel {
     ) {
         Log.i("[THOMAS]", "[VIEWMODELGO4LUNCH INIT]");
 
-        //this is ok ...
+        //for authentification...
         this.myAuthSource = authRepository;
         this.myUserVM = myAuthSource.getUserLiveData();
         this.myUserStateVM = myAuthSource.getMyUserState();
+
+        //for workmates...
         this.myWorkMatesSource = workMatesRepository;
 
-        //this is ok ...
+        //for position...
         this.myLocationSource = positionRepository;
         this.myPositionVM = Transformations.map(myLocationSource.getLocationLiveData(), new Function<Location, Location>() {
             @Override
@@ -149,6 +152,7 @@ public class ViewModelGo4Lunch extends ViewModel {
         return myUserStateVM;
     }
 
+
     //----------------------------------------------------------------------------------------------
 
 
@@ -177,28 +181,22 @@ public class ViewModelGo4Lunch extends ViewModel {
     //FIRESTORE
 
 
-
-    public LiveData<List<User>> getAllWorkMates(){
-        Log.i("[WORK]","in VM get all work mates...");
+    public LiveData<List<User>> getAllWorkMates() {
+        Log.i("[WORK]", "in VM get all work mates...");
         return myWorkMatesSource.getAllWorkMates();
 
     }
 
 
-
     //Create user to Firestore
     public void createUser() {
-        myWorkMatesSource.createWorkMate(myUserVM.getValue().getUid());
+        this.myWorkMatesSource.createUser();
     }
-
-
 
 
     public void addNewRestaurant(String name) {
         this.myWorkMatesSource.addRestaurant(name);
     }
-
-
 
 
 }
