@@ -15,6 +15,7 @@ import android.view.View;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding;
+import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.ui.adapter.RecyclerViewAdapter;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
@@ -49,9 +50,9 @@ public class DetailRestaurant extends AppCompatActivity {
         Log.i("[TAG]", "Tag marker is " + restaurant_id);
 
         setupRecyclerView();
-       setupViewModel();
+        setupViewModel();
         setupButtonPhone();
-       // setupButtonLike();
+        setupButtonLike();
         setupButtonWeb();
 
 
@@ -59,19 +60,32 @@ public class DetailRestaurant extends AppCompatActivity {
 
 
     private void setupViewModel() {
-
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
-
         this.myViewModel.getMyPosition().observe(this, this::onUpdatePosition);
-        Log.i("[FIND]","setupvml... ");
+        Log.i("[FIND]", "setupvml... ");
     }
 
     private void onUpdatePosition(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         this.myViewModel.updateLngLat(location.getLongitude(), location.getLatitude());
         //replace by th elist of workmates...
-        Log.i("[FIND]","onupdateposition");
-        this.myViewModel.getRestaurants().observe(this, this::onUpdateRestaurants);
+        Log.i("[FIND]", "onupdateposition");
+        this.myViewModel.getAllWorkMatesByRestaurant().observe(this, this::onUpdateWorkMates);
+    }
+
+    private void onUpdateWorkMates(List<User> users) {
+
+        Log.i("[WORK]","Workmates on detail activity" + users.size());
+        allResult.clear();
+        for (int i=0 ;i< users.size(); i++)
+        {
+           User myUser = users.get(i);
+
+
+
+
+        }
+
     }
 
     private void onUpdateRestaurants(List<com.hoarauthomas.go4lunchthp7.pojo.Result> results) {
@@ -83,7 +97,7 @@ public class DetailRestaurant extends AppCompatActivity {
 
             result = results.get(i);
 
-            Log.i("[FIND]", "Nb restaurant à scanner : " + results.size()  + " " + results.get(i).getPlaceId().toString() + " " + restaurant_id);
+            Log.i("[FIND]", "Nb restaurant à scanner : " + results.size() + " " + results.get(i).getPlaceId().toString() + " " + restaurant_id);
 
 
             if (results.get(i).getPlaceId().toString().equals(restaurant_id)) {
@@ -114,15 +128,13 @@ public class DetailRestaurant extends AppCompatActivity {
                 }
 
 
-
-
             }
 
         }
 
         allResult.clear();
         allResult.addAll(results);
-       // Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
+        // Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
     }
 
     //to map a range to another range ... from arduino library
@@ -157,6 +169,19 @@ public class DetailRestaurant extends AppCompatActivity {
     }
 
     private void setupButtonLike() {
+
+
+        binding.likeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("[DETAIL]", "clic sur like bouton");
+
+
+
+            }
+        });
+
+
     }
 
     private void setupButtonPhone() {

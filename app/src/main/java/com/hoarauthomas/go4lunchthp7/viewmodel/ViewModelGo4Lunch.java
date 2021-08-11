@@ -49,6 +49,8 @@ public class ViewModelGo4Lunch extends ViewModel {
     private MutableLiveData<FirebaseUser> myUserVM;
     private MutableLiveData<Boolean> myUserStateVM;
     private LiveData<Location> myPositionVM;
+
+    
     private LiveData<List<Result>> placesResponseLiveData;
 
     private String myActualRestaurant;
@@ -185,6 +187,10 @@ public class ViewModelGo4Lunch extends ViewModel {
         Log.i("[WORK]", "in VM get all work mates...");
         return myWorkMatesSource.getAllWorkMates();
 
+    }
+
+    public LiveData<List<User>> getAllWorkMatesByRestaurant(){
+        return myWorkMatesSource.getAllWorkMatesByRestaurant("id");
     }
 
 

@@ -33,11 +33,11 @@ public class User {
 
     public User() { }
 
-    public User(String uid, String username, String restaurant) {
+    public User(String uid, String username, String urlPicture) {
         this.uid = uid;
         this.username = username;
         this.urlPicture = urlPicture;
-        this.favoriteRestaurant = restaurant;
+      //  this.favoriteRestaurant = restaurant;
    //     this.isMentor = false;
     }
 

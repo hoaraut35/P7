@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
+import com.hoarauthomas.go4lunchthp7.ui.fragments.WorkFragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +26,7 @@ import java.util.List;
 
 public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.ViewHolder> {
 
-   //variables ...
+    //variables ...
     private List<User> mResults;
 
 
@@ -41,7 +42,7 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
     //public RecyclerViewAdapter(int mode, List<Result> myList, Listener callback) {
     public WorkMatesAdapter(int mode, List<User> myList, LatLng myLatLng) {
         this.mResults = myList;
-       // this.mode = mode;//to switch between restaurant and workmates ?
+        // this.mode = mode;//to switch between restaurant and workmates ?
 
         //for callabck
         //this.callback = callback;
@@ -49,7 +50,7 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
 
     public WorkMatesAdapter(int mode, List<User> myList) {
         this.mResults = myList;
-     //   this.mode = mode;//to switch between restaurant and workmates ?
+        //   this.mode = mode;//to switch between restaurant and workmates ?
 
         //for callabck
         //this.callback = callback;
@@ -75,13 +76,22 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
 
         User result = mResults.get(position);
 
+        //show avatar
+        Glide.with(holder.itemView)
+                .load(result.getUrlPicture())
+                //.load("https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50")
+             //   .load("https://www.nretnil.com/avatar/LawrenceEzekielAmos.png")
+                //.centerCrop()
+                .circleCrop()
+                .into(holder.avatar);
+
         //show the name of restaurant
         holder.nameOfWorkMate.setText(result.getUsername());
-        Log.i("[WORK]","nom binding : " + result.getUsername());
+
+
+        Log.i("[WORK]", "adapter workmates : " + result.getUrlPicture());
 
     }
-
-
 
 
     @Override
@@ -92,13 +102,15 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         //TODO: can we add binding here ? add views here...
+        private final ImageView avatar;
         private final TextView nameOfWorkMate;
-       // private final ImageView imageOfRestaurant;
+
 
         public ViewHolder(View view) {
             super(view);
+            avatar = view.findViewById(R.id.workMateAvatar);
             nameOfWorkMate = view.findViewById(R.id.workMateName);
-        //    imageOfRestaurant = view.findViewById(R.id.imageOfRestaurant);
+
         }
     }
 }

@@ -50,14 +50,6 @@ public class WorkFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment WorkFragment.
-     */
     // TODO: Rename and change types and number of parameters
     public static WorkFragment newInstance(String param1, String param2) {
         WorkFragment fragment = new WorkFragment();
@@ -74,11 +66,7 @@ public class WorkFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
-
-
         }
-
-
     }
 
     @Override
@@ -87,43 +75,24 @@ public class WorkFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_work, container, false);
         setupViewModel();
-            this.myView = view;
+        this.myView = view;
         recyclerView = view.findViewById(R.id.recycler_view_workmates);
-        //recyclerView = (RecyclerView)getView().findViewById(R.id.recycler_view_workmates);
-        //recyclerView = view.findViewById(R.layout.fragment_work).findViewWithTag("recycler_view_workmates");
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
-          recyclerView.setHasFixedSize(false);
-          recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-         recyclerView.addItemDecoration(itemDecoration);
-
-
+        recyclerView.setHasFixedSize(false);
+        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        recyclerView.addItemDecoration(itemDecoration);
         return view;
-
-        //recyclerView = view.findViewWithTag("recycler_view");
-        //recyclerView.setHasFixedSize(true);
-        //recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        // recyclerView.setAdapter(new RecyclerViewAdapter(1));
-
-
-        //        Log.i("[THOMAS]","fragment workmates ... users" + UserHelper.getUsersCollection().toString());
-
 
     }
 
-
     private void setupViewModel() {
-
-
-        Log.i("WORK", "Setup VM in fragm ...");
+        Log.i("WORK", "Setup VM in Workmates frag...");
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
         this.myViewModel.getAllWorkMates().observe(getViewLifecycleOwner(), this::onUpdateWorkMates);
-
-
     }
 
     private void onUpdateWorkMates(List<User> users) {
-        Log.i("[WORK]", "update workmatres ... in fragment");
-         recyclerView.setAdapter(new WorkMatesAdapter(0,users)  );
-
+        Log.i("[WORK]", "update workmatres ... in recyclerviex");
+        recyclerView.setAdapter(new WorkMatesAdapter(0, users));
     }
 }
