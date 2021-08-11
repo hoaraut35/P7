@@ -1,5 +1,6 @@
 package com.hoarauthomas.go4lunchthp7.ui.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -27,7 +28,7 @@ import java.util.List;
  * Use the {@link WorkFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WorkFragment extends Fragment {
+public class WorkFragment extends Fragment implements WorkMatesAdapter.ClickListener {
 
     private ViewModelGo4Lunch myViewModel;
 
@@ -71,18 +72,16 @@ public class WorkFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
 
         View view = inflater.inflate(R.layout.fragment_work, container, false);
-        setupViewModel();
-        this.myView = view;
-        recyclerView = view.findViewById(R.id.recycler_view_workmates);
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
-        recyclerView.setHasFixedSize(false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        recyclerView.addItemDecoration(itemDecoration);
-        return view;
 
+        setupViewModel();
+
+        recyclerView = view.findViewById(R.id.recycler_view_workmates);
+        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        recyclerView.setHasFixedSize(false);
+        return view;
     }
 
     private void setupViewModel() {
@@ -93,6 +92,12 @@ public class WorkFragment extends Fragment {
 
     private void onUpdateWorkMates(List<User> users) {
         Log.i("[WORK]", "update workmatres ... in recyclerviex");
-        recyclerView.setAdapter(new WorkMatesAdapter(0, users));
+        recyclerView.setAdapter(new WorkMatesAdapter(0, users, this));
+    }
+
+    //this is callback for click on recyclerview...
+    @Override
+    public void onClickDetailWorkMate(int position, View v) {
+        Log.i("", "Item cliqué : " + position);
     }
 }

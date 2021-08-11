@@ -5,15 +5,12 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragments.WorkFragment">
 
-
-
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_workmates"
-        android:tag="recycler_view"
+        android:name="com.hoarauthomas.go4lunchthp7.view.WorkFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.hoarauthomas.go4lunchthp7.view.WorkFragment"
+        android:tag="recycler_view"
         tools:listitem="@layout/item_workmates">
 
     </androidx.recyclerview.widget.RecyclerView>

@@ -2,13 +2,11 @@ package com.hoarauthomas.go4lunchthp7.ui.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.location.Location;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,12 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
-import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
-import com.hoarauthomas.go4lunchthp7.ui.fragments.WorkFragment;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -30,31 +24,29 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
     //variables ...
     private List<User> mResults;
 
-
     //interface for callback
-    public interface Listener {
-        void onClickDetailButton(int position);
+    public interface ClickListener {
+        void onClickDetailWorkMate(int position, View v);
     }
 
     //declare callbacl
-    // private final Listener callback;
+    private final ClickListener callback;
+
+
+    public void setOnItemClickListener(ClickListener clickListener){
+
+    }
 
     //the constructor
     //public RecyclerViewAdapter(int mode, List<Result> myList, Listener callback) {
-    public WorkMatesAdapter(int mode, List<User> myList, LatLng myLatLng) {
+    public WorkMatesAdapter(int mode, List<User> myList, LatLng myLatLng, ClickListener callback) {
         this.mResults = myList;
-        // this.mode = mode;//to switch between restaurant and workmates ?
-
-        //for callabck
-        //this.callback = callback;
+        this.callback = callback;
     }
 
-    public WorkMatesAdapter(int mode, List<User> myList) {
+    public WorkMatesAdapter(int mode, List<User> myList, ClickListener callback) {
         this.mResults = myList;
-        //   this.mode = mode;//to switch between restaurant and workmates ?
-
-        //for callabck
-        //this.callback = callback;
+        this.callback = callback;
     }
 
     //for holder

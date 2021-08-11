@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.hoarauthomas.go4lunchthp7.MainActivity;
 import com.hoarauthomas.go4lunchthp7.ui.fragments.ListFragment;
 import com.hoarauthomas.go4lunchthp7.ui.fragments.MapsFragment;
 import com.hoarauthomas.go4lunchthp7.ui.fragments.SettingsFragment;
@@ -31,6 +32,7 @@ public class FragmentsAdapter extends FragmentStateAdapter {
             case 2:
                 return ListFragment.newInstance();
             case 3:
+
                 return WorkFragment.newInstance("", "");
 
             case 4:
