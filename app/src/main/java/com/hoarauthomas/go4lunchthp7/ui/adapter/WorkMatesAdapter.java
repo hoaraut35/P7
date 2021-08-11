@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.snackbar.Snackbar;
+import com.hoarauthomas.go4lunchthp7.MainActivity;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 
@@ -22,30 +24,31 @@ import java.util.List;
 public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.ViewHolder> {
 
     //variables ...
-    private List<User> mResults;
+    private List<User> myUserListResults;
 
     //interface for callback
     public interface ClickListener {
-        void onClickDetailWorkMate(int position, View v);
+        void onClickDetailWorkMate(int position);
+        void popupSnack(String message);
     }
 
     //declare callbacl
     private final ClickListener callback;
 
 
-    public void setOnItemClickListener(ClickListener clickListener){
+    public void setOnItemClickListener(ClickListener clickListener) {
 
     }
 
     //the constructor
     //public RecyclerViewAdapter(int mode, List<Result> myList, Listener callback) {
     public WorkMatesAdapter(int mode, List<User> myList, LatLng myLatLng, ClickListener callback) {
-        this.mResults = myList;
+        this.myUserListResults = myList;
         this.callback = callback;
     }
 
     public WorkMatesAdapter(int mode, List<User> myList, ClickListener callback) {
-        this.mResults = myList;
+        this.myUserListResults = myList;
         this.callback = callback;
     }
 
@@ -67,24 +70,24 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
     @Override
     public void onBindViewHolder(@NonNull WorkMatesAdapter.ViewHolder holder, int position) {
 
-        User result = mResults.get(position);
+        User myUser = myUserListResults.get(position);
 
         //show avatar
         Glide.with(holder.itemView)
-                .load(result.getUrlPicture())
+                .load(myUser.getUrlPicture())
                 .circleCrop()
                 .into(holder.avatar);
 
         //show the name of restaurant
-        holder.nameOfWorkMate.setText(result.getUsername());
+        holder.nameOfWorkMate.setText(myUser.getUsername());
 
         //show restaurant selected here
 
 
-        if (result.getFavoriteRestaurant() != null && result.getFavoriteRestaurant() != "") {
-            holder.nameOfWorkMate.setTypeface(null,Typeface.BOLD);
-            holder.workMateState.setTypeface(null,Typeface.BOLD);
-            holder.workMateState.setText(" is eating (" + result.getFavoriteRestaurant() + ")");
+        if (myUser.getFavoriteRestaurant() != null && myUser.getFavoriteRestaurant() != "") {
+            holder.nameOfWorkMate.setTypeface(null, Typeface.BOLD);
+            holder.workMateState.setTypeface(null, Typeface.BOLD);
+            holder.workMateState.setText(" is eating (" + myUser.getFavoriteRestaurant() + ")");
 
         } else {
             holder.nameOfWorkMate.setTypeface(null, Typeface.ITALIC);
@@ -92,13 +95,25 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
             holder.workMateState.setText(" hasn't decided yet");
         }
 
-        Log.i("[WORK]", "adapter workmates : " + result.getUrlPicture());
+        Log.i("[WORK]", "adapter workmates : " + myUser.getUrlPicture());
+
+        if (myUser.getFavoriteRestaurant() == "") {
+            Log.i("[WORK]", "null");
+            callback.popupSnack("pas de restaurant sélectionné");
+        } else {
+            Log.i("[WORK]", "Ouverture du détail ");
+            holder.itemView.setOnClickListener((View myUserView) -> {
+                callback.onClickDetailWorkMate(position);
+
+            });
+        }
+
     }
 
 
     @Override
     public int getItemCount() {
-        return mResults.size();
+        return myUserListResults.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

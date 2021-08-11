@@ -70,7 +70,7 @@ public class DetailRestaurant extends AppCompatActivity {
         this.myViewModel.updateLngLat(location.getLongitude(), location.getLatitude());
         //replace by th elist of workmates...
         Log.i("[FIND]", "onupdateposition");
-        this.myViewModel.getAllWorkMatesByRestaurant().observe(this, this::onUpdateWorkMates);
+//        this.myViewModel.getAllWorkMatesByRestaurant().observe(this, this::onUpdateWorkMates);
     }
 
     private void onUpdateWorkMates(List<User> users) {
