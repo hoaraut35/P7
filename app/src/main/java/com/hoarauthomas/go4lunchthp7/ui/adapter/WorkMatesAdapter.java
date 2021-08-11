@@ -1,6 +1,7 @@
 package com.hoarauthomas.go4lunchthp7.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -79,18 +80,27 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
         //show avatar
         Glide.with(holder.itemView)
                 .load(result.getUrlPicture())
-                //.load("https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50")
-             //   .load("https://www.nretnil.com/avatar/LawrenceEzekielAmos.png")
-                //.centerCrop()
                 .circleCrop()
                 .into(holder.avatar);
 
         //show the name of restaurant
         holder.nameOfWorkMate.setText(result.getUsername());
 
+        //show restaurant selected here
+
+
+        if (result.getFavoriteRestaurant() != null && result.getFavoriteRestaurant() != "") {
+            holder.nameOfWorkMate.setTypeface(null,Typeface.BOLD);
+            holder.workMateState.setTypeface(null,Typeface.BOLD);
+            holder.workMateState.setText(" is eating (" + result.getFavoriteRestaurant() + ")");
+
+        } else {
+            holder.nameOfWorkMate.setTypeface(null, Typeface.ITALIC);
+            holder.workMateState.setTypeface(null, Typeface.ITALIC);
+            holder.workMateState.setText(" hasn't decided yet");
+        }
 
         Log.i("[WORK]", "adapter workmates : " + result.getUrlPicture());
-
     }
 
 
@@ -101,16 +111,15 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        //TODO: can we add binding here ? add views here...
         private final ImageView avatar;
         private final TextView nameOfWorkMate;
-
+        private final TextView workMateState;
 
         public ViewHolder(View view) {
             super(view);
             avatar = view.findViewById(R.id.workMateAvatar);
             nameOfWorkMate = view.findViewById(R.id.workMateName);
-
+            workMateState = view.findViewById(R.id.workmateState);
         }
     }
 }
