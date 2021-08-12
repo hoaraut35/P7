@@ -3,9 +3,11 @@ package com.hoarauthomas.go4lunchthp7.ui.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -14,11 +16,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.databinding.FragmentWorkBinding;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.ui.activity.DetailRestaurant;
-import com.hoarauthomas.go4lunchthp7.ui.adapter.RecyclerViewAdapter;
 import com.hoarauthomas.go4lunchthp7.ui.adapter.WorkMatesAdapter;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
@@ -26,7 +26,6 @@ import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 import java.util.List;
 
 public class WorkFragment extends Fragment implements WorkMatesAdapter.ClickListener {
-
 
     private FragmentWorkBinding binding;
     private ViewModelGo4Lunch myViewModel;
@@ -67,12 +66,9 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.ClickList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentWorkBinding.inflate(inflater,container,false);
+        binding = FragmentWorkBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-        //inflater.inflate(R.layout.fragment_work, container, false);
-
         setupViewModel();
-
         binding.recyclerViewWorkmates.setLayoutManager(new LinearLayoutManager(view.getContext()));
         binding.recyclerViewWorkmates.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         binding.recyclerViewWorkmates.setHasFixedSize(false);
@@ -92,20 +88,26 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.ClickList
 
     //this is callback for click on recyclerview...
     @Override
-    public void onClickDetailWorkMate(int position) {
-        Log.i("[WORK]", "Item cliqué : " + position);
-
+    public void onClickDetailWorkMate(String restaurantId) {
+        Log.i("[WORK]", "Item cliqué : " + restaurantId);
         Intent intent = new Intent(getContext(), DetailRestaurant.class);
+        intent.putExtra("TAG_ID", restaurantId);
         startActivity(intent);
+
     }
 
     @Override
     public void popupSnack(String message) {
-
+        Log.i("[WORK]","show " + message);
+        showSnackBar(message);
     }
 
     private void showSnackBar(String message) {
-        Snackbar.make(binding.recyclerViewWorkmates, message, Snackbar.LENGTH_SHORT).show();
+        Toast toast = new Toast(getContext());
+        toast.setText(message);
+        toast.setGravity(Gravity.CENTER_VERTICAL,0,0);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.show();
     }
 
 }

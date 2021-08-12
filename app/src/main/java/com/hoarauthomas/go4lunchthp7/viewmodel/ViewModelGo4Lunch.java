@@ -160,8 +160,6 @@ public class ViewModelGo4Lunch extends ViewModel {
 
     //these methods are published to activity or fragments ...
     public LiveData<List<Result>> getRestaurants() {
-
-
         Log.i("[RESTAURANT]", "getRestaurant in ViewModelm " + this.Long + this.Lat);
         return placesResponseLiveData;
     }

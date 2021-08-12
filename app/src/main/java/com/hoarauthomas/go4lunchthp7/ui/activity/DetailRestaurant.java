@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.snackbar.Snackbar;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.ui.adapter.RecyclerViewAdapter;
@@ -47,7 +48,7 @@ public class DetailRestaurant extends AppCompatActivity {
 
         Intent intent = getIntent();
         restaurant_id = intent.getStringExtra("TAG_ID");
-        Log.i("[TAG]", "Tag marker is " + restaurant_id);
+        showSnackBar(restaurant_id);
 
         setupRecyclerView();
         setupViewModel();
@@ -59,8 +60,10 @@ public class DetailRestaurant extends AppCompatActivity {
     }
 
 
+    //TODO: get the restaurant ...
     private void setupViewModel() {
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
+
         this.myViewModel.getMyPosition().observe(this, this::onUpdatePosition);
         Log.i("[FIND]", "setupvml... ");
     }
@@ -75,13 +78,10 @@ public class DetailRestaurant extends AppCompatActivity {
 
     private void onUpdateWorkMates(List<User> users) {
 
-        Log.i("[WORK]","Workmates on detail activity" + users.size());
+        Log.i("[WORK]", "Workmates on detail activity" + users.size());
         allResult.clear();
-        for (int i=0 ;i< users.size(); i++)
-        {
-           User myUser = users.get(i);
-
-
+        for (int i = 0; i < users.size(); i++) {
+            User myUser = users.get(i);
 
 
         }
@@ -177,7 +177,6 @@ public class DetailRestaurant extends AppCompatActivity {
                 Log.i("[DETAIL]", "clic sur like bouton");
 
 
-
             }
         });
 
@@ -196,6 +195,11 @@ public class DetailRestaurant extends AppCompatActivity {
             }
         });
 
+    }
+
+
+    private void showSnackBar(String message) {
+        Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT).show();
     }
 
 

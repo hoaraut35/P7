@@ -28,7 +28,7 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
 
     //interface for callback
     public interface ClickListener {
-        void onClickDetailWorkMate(int position);
+        void onClickDetailWorkMate(String restaurantId);
         void popupSnack(String message);
     }
 
@@ -97,13 +97,17 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
 
         Log.i("[WORK]", "adapter workmates : " + myUser.getUrlPicture());
 
-        if (myUser.getFavoriteRestaurant() == "") {
-            Log.i("[WORK]", "null");
-            callback.popupSnack("pas de restaurant sélectionné");
+        if (myUser.getFavoriteRestaurant() == "" || myUser.getFavoriteRestaurant().isEmpty()) {
+            Log.i("[WORK]", "restaurant non défini null");
+            holder.itemView.setOnClickListener((View myUserView) -> {
+                callback.popupSnack("pas de restaurant sélectionné");
+
+            });
+
         } else {
             Log.i("[WORK]", "Ouverture du détail ");
             holder.itemView.setOnClickListener((View myUserView) -> {
-                callback.onClickDetailWorkMate(position);
+                callback.onClickDetailWorkMate(myUser.getFavoriteRestaurant());
 
             });
         }
