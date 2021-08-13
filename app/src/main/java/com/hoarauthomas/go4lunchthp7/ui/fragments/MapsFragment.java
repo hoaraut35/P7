@@ -113,7 +113,12 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                 markerOptions.title(restaurants.get(i).getName());
 
                 if (restaurants.get(i).getIcon() == "red"){
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.logo_facebook));
+                    Log.i("[COMB]","rouge");
+                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                }else
+                {
+                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+
                 }
 
             //view
