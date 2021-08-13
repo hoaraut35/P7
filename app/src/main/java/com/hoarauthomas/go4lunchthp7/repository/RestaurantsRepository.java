@@ -7,13 +7,10 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
-
-import com.hoarauthomas.go4lunchthp7.Result2;
+import com.hoarauthomas.go4lunchthp7.RestaurantDetailPojo;
 import com.hoarauthomas.go4lunchthp7.api.GooglePlaceApi;
 import com.hoarauthomas.go4lunchthp7.api.RetrofitRequest;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
-import com.hoarauthomas.go4lunchthp7.pojo.Result;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,20 +29,17 @@ public class RestaurantsRepository {
     private final GooglePlaceApi service;
 
     //this is the list for add all iteration in a list to send after in mutable
-    //for the fisrt api query...
-    private final List<Result> allRestaurants = new ArrayList<>();
-    //for the second api query...
-    private final List<Result2> allRestaurantsDetails = new ArrayList<>();
+    private final List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> allRestaurants = new ArrayList<>();
+    private final List<RestaurantDetailPojo> allRestaurantsDetails = new ArrayList<>();
 
     private Double Long, Lat;
 
-    //this is the constructor for repository
+    //this is the constructor is called by factory...
     public RestaurantsRepository() {
-        Log.i("[THOMAS]", "- Appel Repository Restaurants");
         service = RetrofitRequest.getRetrofitInstance().create(GooglePlaceApi.class);
     }
 
-    //update position of user in repository
+    //update position of user in repository when a location is find
     public void UpdateLngLat(Double Long, Double Lat) {
         Log.i("[RESTAURANT]", "Repository restaurant position " + Lat + Long);
         this.Long = Long;
@@ -53,16 +47,16 @@ public class RestaurantsRepository {
     }
 
     //this is livedata to publish detail of restaurant to the viewmodel ...
-    public LiveData<Result2> getAllDetailForRestaurant(String myPlaceId) {
+    public LiveData<RestaurantDetailPojo> getAllDetailForRestaurant(String myPlaceId) {
 
-        final MutableLiveData<Result2> data = new MutableLiveData<>();
+        final MutableLiveData<RestaurantDetailPojo> data = new MutableLiveData<>();
 
         service.getPlaceDetails(BuildConfig.MAPS_API_KEY, myPlaceId)
-                .enqueue(new Callback<Result2>() {
+                .enqueue(new Callback<RestaurantDetailPojo>() {
 
 
                     @Override
-                    public void onResponse(Call<Result2> call, Response<Result2> response) {
+                    public void onResponse(Call<RestaurantDetailPojo> call, Response<RestaurantDetailPojo> response) {
                         if (response.body() != null) {
 
                             Log.i("[RESTAURANT]", "Repository Restaurants, getDetailrestaurant : " + response.body().getFormattedPhoneNumber());
@@ -72,7 +66,7 @@ public class RestaurantsRepository {
                     }
 
                     @Override
-                    public void onFailure(Call<Result2> call, Throwable t) {
+                    public void onFailure(Call<RestaurantDetailPojo> call, Throwable t) {
                         data.postValue(null);
                     }
                 });
@@ -83,9 +77,9 @@ public class RestaurantsRepository {
 
 
     //this is livedata to publish to viewmodel
-    public LiveData<List<Result>> getAllRestaurants(Double Long, Double Lat) {
+    public LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> getAllRestaurants(Double Long, Double Lat) {
 
-        final MutableLiveData<List<Result>> data = new MutableLiveData<>();
+        final MutableLiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> data = new MutableLiveData<>();
 
         //service.getNearbyPlaces(BuildConfig.MAPS_API_KEY, 1000)
         Log.i("[RESTAURANT]", "getAllRestaurant " + this.Long + Lat);

@@ -4,10 +4,10 @@ import android.location.Location;
 import android.util.Log;
 
 import androidx.arch.core.util.Function;
-import androidx.collection.ArraySet;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
@@ -16,7 +16,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
-import com.hoarauthomas.go4lunchthp7.pojo.Result;
 import com.hoarauthomas.go4lunchthp7.repository.AuthRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
@@ -24,6 +23,8 @@ import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 
 //This class is for the business logic
@@ -40,32 +41,32 @@ public class ViewModelGo4Lunch extends ViewModel {
     private final WorkMatesRepository myWorkMatesSource;
     private final PermissionChecker myPermissionChecker;
 
-    //Add livedata and mutableLiveData here...
-    private MutableLiveData<FirebaseUser> myUserVM;
-    private MutableLiveData<Boolean> myUserStateVM;
-    private LiveData<Location> myPositionVM;
+    //Add livedata and mutableLiveData mediator here...
+    private final MediatorLiveData<MainViewState> myAppMapMediator = new MediatorLiveData<>();
+
+    private final MutableLiveData<FirebaseUser> myUserVM;
+
+    private final MutableLiveData<Boolean> myUserStateVM;
+
+
+
+
+    private final LiveData<Location> myPositionVM;
+    private LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> placesResponseLiveData;
+    private LiveData<List<User>> workMatesLiveData;
 
     //list of workmates
-    private List<User> myWorkMatesList = new ArrayList<>();
-    private List<Result> myRestaurantList = new ArrayList<>();
+    private final List<User> myWorkMatesList = new ArrayList<>();
+    private final List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantList = new ArrayList<>();
 
-
-    //mediatorLiveData
-    private final MediatorLiveData<Result> myListOfRestaurantWithColour = new MediatorLiveData<>();
-
-    
-    private LiveData<List<Result>> placesResponseLiveData;
-
+    //others
     private String myActualRestaurant;
-    private FirebaseUser myFUser;
-
-
     private Double Long, Lat;
-
 
     //constructor to get one instance of each object, called by ViewModelFactory
     public ViewModelGo4Lunch(
             AuthRepository authRepository,
+
             RestaurantsRepository placeRepository,
             PositionRepository positionRepository,
             WorkMatesRepository workMatesRepository,
@@ -83,11 +84,15 @@ public class ViewModelGo4Lunch extends ViewModel {
 
         //for position...
         this.myLocationSource = positionRepository;
-        this.myPositionVM = Transformations.map(myLocationSource.getLocationLiveData(), new Function<Location, Location>() {
+
+
+        //publish to mediatorlivedata with googleplace to combine before to show on UI...
+        this.myPositionVM = Transformations.map(myLocationSource.getmyPositionFromRepo(), new Function<Location, Location>() {
             @Override
             public Location apply(Location input) {
                 if (input == null) {
                     //TODO: return a position by defaut
+
                     return null;
                 } else {
                     return input;
@@ -95,8 +100,12 @@ public class ViewModelGo4Lunch extends ViewModel {
             }
         });
 
+
+
+
         //for workmates...
         this.myWorkMatesSource = workMatesRepository;
+        this.workMatesLiveData = myWorkMatesSource.getAllWorkMates();
 
         //restaurant details ...
         this.myRestaurantsSource = placeRepository;
@@ -105,9 +114,74 @@ public class ViewModelGo4Lunch extends ViewModel {
 
 
 
+
+        myAppMapMediator.addSource(myPositionVM, new Observer<Location>() {
+            @Override
+            public void onChanged(Location location) {
+              //  myAppMapMediator.setValue(Location) location);
+            }
+        });
+
+        myAppMapMediator.addSource(placesResponseLiveData, new Observer<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>>() {
+            @Override
+            public void onChanged(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> results) {
+                combine(myPositionVM.getValue(), placesResponseLiveData.getValue());
+            }
+        });
+
+      /*  myAppMapMediator.addSource(workMatesLiveData, new Observer<List<User>>() {
+            @Override
+            public void onChanged(List<User> users) {
+                combine(myPositionVM.getValue() , placesResponseLiveData.getValue());
+            }
+        });
+
+       */
+
+
+
+
+
+    }
+
+    private void combine(@Nullable Location location, @Nullable List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> listRestaurants){
+        Log.i("[COMB]","Combine ...");
+
+        if(location == null){
+            Log.i("[COMB]","Position nulle...");
+        }
+
+        if (listRestaurants == null)
+        {
+            Log.i("[COMB]","liste restau nulle");
+        }
+
+        if (location != null && listRestaurants != null){
+
+            Log.i("[COMB]","Position" + location.getLatitude() + listRestaurants.size());
+
+
+        }
+
+
+
+
+        myAppMapMediator.setValue(
+                new MainViewState(location
+                )
+        );
+
+
+
+
     }
 
 
+
+    //to publish in UI with not authorized data modification from UI
+    public LiveData<MainViewState> getViewStateLiveData(){
+        return myAppMapMediator;
+    }
 
     //publish to activity or fragment
     public LiveData<Location> getMyPosition() {
@@ -122,7 +196,6 @@ public class ViewModelGo4Lunch extends ViewModel {
         if (!myPermissionChecker.hasLocationPermission()) {
             myLocationSource.stopLocationRequest();
         } else {
-
             myLocationSource.startLocationRequest();
         }
     }
@@ -171,7 +244,7 @@ public class ViewModelGo4Lunch extends ViewModel {
 
 
     //this method must be modified to include color of ùmarker
-    public LiveData<List<Result>> getRestaurants() {
+    public LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> getRestaurants() {
         Log.i("[RESTAURANT]", "getRestaurant in ViewModelm " + this.Long + this.Lat);
         return placesResponseLiveData;
     }
@@ -216,7 +289,7 @@ public class ViewModelGo4Lunch extends ViewModel {
     }
 
 
-    public Result getRestaurantDetail(String restaurant_id) {
+    public com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo getRestaurantDetail(String restaurant_id) {
 
 
 
@@ -254,12 +327,12 @@ public class ViewModelGo4Lunch extends ViewModel {
     }
 
     //update list of restaurant in vm
-    public void updateRestaurantList(List<Result> restaurants) {
+    public void updateRestaurantList(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
         this.myRestaurantList.clear();
         this.myRestaurantList.addAll(restaurants);
     }
 
-    public List<Result> mergeRestauWithFavRestau()
+    public List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> mergeRestauWithFavRestau()
     {
         for (int i=0; i< this.myRestaurantList.size(); i++){
             for (int y=0; y <myWorkMatesList.size();y++){

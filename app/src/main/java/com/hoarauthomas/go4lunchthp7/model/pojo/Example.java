@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.hoarauthomas.go4lunchthp7.pojo.Result;
 
 
 public class Example {
@@ -18,7 +17,7 @@ public class Example {
     private String nextPageToken;
     @SerializedName("results")
     @Expose
-    private List<Result> results = null;
+    private List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> results = null;
     @SerializedName("status")
     @Expose
     private String status;
@@ -39,11 +38,11 @@ public class Example {
         this.nextPageToken = nextPageToken;
     }
 
-    public List<Result> getResults() {
+    public List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> getResults() {
         return results;
     }
 
-    public void setResults(List<Result> results) {
+    public void setResults(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> results) {
         this.results = results;
     }
 

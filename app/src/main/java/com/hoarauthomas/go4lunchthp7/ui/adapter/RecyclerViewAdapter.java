@@ -2,7 +2,6 @@ package com.hoarauthomas.go4lunchthp7.ui.adapter;
 
 import android.content.Context;
 import android.location.Location;
-import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.protobuf.StringValue;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
-import com.hoarauthomas.go4lunchthp7.MainActivity;
 import com.hoarauthomas.go4lunchthp7.R;
-import com.hoarauthomas.go4lunchthp7.pojo.Result;
 
 //import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
 
@@ -30,7 +26,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     //variables ...
     private int mode;
-    private List<Result> mResults;
+    private List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> mResults;
     private LatLng myPosition;
 
 
@@ -44,7 +40,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     //the constructor
     //public RecyclerViewAdapter(int mode, List<Result> myList, Listener callback) {
-    public RecyclerViewAdapter(int mode, List<Result> myList, LatLng myLatLng) {
+    public RecyclerViewAdapter(int mode, List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myList, LatLng myLatLng) {
         this.mResults = myList;
         this.mode = mode;//to switch between restaurant and workmates ?
         this.myPosition = myLatLng;
@@ -53,7 +49,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         //this.callback = callback;
     }
 
-    public RecyclerViewAdapter(int mode, List<Result> myList) {
+    public RecyclerViewAdapter(int mode, List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myList) {
         this.mResults = myList;
         this.mode = mode;//to switch between restaurant and workmates ?
 
@@ -78,7 +74,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewAdapter.ViewHolder holder, int position) {
 
-        Result result = mResults.get(position);
+        com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo result = mResults.get(position);
 
         //show the name of restaurant
         holder.nameOfRestaurant.setText(mResults.get(position).getName());

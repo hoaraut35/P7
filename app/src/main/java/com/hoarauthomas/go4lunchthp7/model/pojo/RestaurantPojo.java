@@ -11,7 +11,7 @@ import com.hoarauthomas.go4lunchthp7.PlusCode;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Geometry;
 
 
-public class Result {
+public class RestaurantPojo {
 
     @SerializedName("business_status")
     @Expose

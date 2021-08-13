@@ -20,7 +20,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.R;
 //import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
 
-import com.hoarauthomas.go4lunchthp7.pojo.Result;
 import com.hoarauthomas.go4lunchthp7.ui.adapter.RecyclerViewAdapter;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
@@ -33,7 +32,7 @@ public class ListFragment extends Fragment {
 
     private ViewModelGo4Lunch myViewModel;
 
-    public final ArrayList<Result> allResult = new ArrayList<>();
+    public final ArrayList<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> allResult = new ArrayList<>();
 
     private RecyclerView recyclerView;
 
@@ -65,7 +64,7 @@ public class ListFragment extends Fragment {
         this.myViewModel.getRestaurants().observe(getViewLifecycleOwner(), this::onUpdateRestaurants);
     }
 
-    private void onUpdateRestaurants(List<Result> results) {
+    private void onUpdateRestaurants(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> results) {
         Log.i("[RESTAURANT]", "Fragment liste, onUpdateRestaurants Event " + results.size());
         allResult.clear();
         //Liste des restaurants autour de l'utilisateur...

@@ -24,7 +24,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -33,7 +32,6 @@ import com.google.android.gms.tasks.Task;
 import com.hoarauthomas.go4lunchthp7.R;
 
 //import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
-import com.hoarauthomas.go4lunchthp7.pojo.Result;
 import com.hoarauthomas.go4lunchthp7.ui.activity.DetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
@@ -85,7 +83,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
     }
 
-    private void onUpdateRestaurants(List<Result> restaurants) {
+    private void onUpdateRestaurants(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
 
         Log.i("[RESTAURANT]", "Frag map, onUpdateRestaurants : total => " + restaurants.size());
 

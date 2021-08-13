@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
@@ -33,6 +34,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 import com.hoarauthomas.go4lunchthp7.ui.activity.DetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.ui.adapter.FragmentsAdapter;
+import com.hoarauthomas.go4lunchthp7.viewmodel.MainViewState;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 
@@ -87,7 +89,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setupViewModel() {
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
+
         this.myViewModel.getMyUserState().observe(this, this::onCheckSecurity);
+
+        this.myViewModel.getViewStateLiveData().observe(this, new Observer<MainViewState>() {
+            @Override
+            public void onChanged(MainViewState mainViewState) {
+                Log.i("[STATE]","from mainactivity..." + mainViewState.getLocation().getLatitude() + " "  + mainViewState.getLocation().getLongitude());
+            }
+        });
     }
 
     private void onCheckSecurity(Boolean connected) {

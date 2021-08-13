@@ -1,5 +1,7 @@
 package com.hoarauthomas.go4lunchthp7.repository;
 
+import android.widget.Toast;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -9,9 +11,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class AuthRepository {
 
-    private FirebaseAuth myAuth;
-    private MutableLiveData<FirebaseUser> myUser = new MutableLiveData<>();
-    private MutableLiveData<Boolean> myUserState = new MutableLiveData<>();
+    private final FirebaseAuth myAuth;
+    private final MutableLiveData<FirebaseUser> myUser = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> myUserState = new MutableLiveData<>();
 
     //constructor called by factory
     public AuthRepository() {
@@ -20,10 +22,9 @@ public class AuthRepository {
     }
 
     //internal function
-    private void CheckUser()
-    {
+    private void CheckUser() {
         if (myAuth.getCurrentUser() != null) {
-            myUser.postValue(myAuth.getCurrentUser());//get actual user object
+            myUser.postValue(myAuth.getCurrentUser());//get actual user object from FirebaseAuth
             myUserState.postValue(true);//set state of login
         } else {
             myUser.postValue(null);//no user logged

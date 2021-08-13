@@ -5,7 +5,7 @@ package com.hoarauthomas.go4lunchthp7;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Result2 {
+public class RestaurantDetailPojo {
 
     @SerializedName("formatted_phone_number")
     @Expose

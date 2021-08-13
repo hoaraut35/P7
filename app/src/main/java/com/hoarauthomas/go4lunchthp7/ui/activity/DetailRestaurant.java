@@ -12,9 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.snackbar.Snackbar;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
@@ -24,20 +22,19 @@ import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class DetailRestaurant extends AppCompatActivity {
 
     private ActivityDetailRestaurantBinding binding;
     private ViewModelGo4Lunch myViewModel;
     //th elist of restaurants
-    public final ArrayList<com.hoarauthomas.go4lunchthp7.pojo.Result> allResult = new ArrayList<>();
+    public final ArrayList<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> allResult = new ArrayList<>();
     private RecyclerView recyclerView;
 
 
     private String restaurant_id,workmate_id;
 
-    private com.hoarauthomas.go4lunchthp7.pojo.Result result;
+    private com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +92,7 @@ public class DetailRestaurant extends AppCompatActivity {
 
     }
 
-    private void onUpdateRestaurants(List<com.hoarauthomas.go4lunchthp7.pojo.Result> results) {
+    private void onUpdateRestaurants(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> results) {
 
 
 

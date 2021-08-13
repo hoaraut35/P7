@@ -1,11 +1,10 @@
 package com.hoarauthomas.go4lunchthp7.model;
 
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
-import com.hoarauthomas.go4lunchthp7.pojo.Result;
 
 import java.util.List;
 
-public class appData {
+public class AppMap {
 
 
     //For local user
@@ -16,7 +15,7 @@ public class appData {
     List<User> workmatesList;
 
     //For restaurant
-    List<com.hoarauthomas.go4lunchthp7.pojo.Result> listRestaurantFromApi;
+    List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> listRestaurantFromApi;
 
 
 
@@ -43,11 +42,11 @@ public class appData {
         this.userRestaurantId = userRestaurantId;
     }
 
-    public List<Result> getListRestaurantFromApi() {
+    public List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> getListRestaurantFromApi() {
         return listRestaurantFromApi;
     }
 
-    public void setListRestaurantFromApi(List<Result> listRestaurantFromApi) {
+    public void setListRestaurantFromApi(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> listRestaurantFromApi) {
         this.listRestaurantFromApi = listRestaurantFromApi;
     }
 
