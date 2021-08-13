@@ -1,54 +1,49 @@
 package com.hoarauthomas.go4lunchthp7.repository;
 
-import android.content.Context;
-import android.util.Log;
-
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.facebook.internal.Mutable;
-import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-//Only to get data and publish it to ViewModel ...
+//Only to get data or store and publish it to ViewModel ...
+
 public class AuthRepository {
 
     private FirebaseAuth myAuth;
-    private MutableLiveData<FirebaseUser> myUser;
-    private MutableLiveData<Boolean> myUserState;
+    private MutableLiveData<FirebaseUser> myUser = new MutableLiveData<>();
+    private MutableLiveData<Boolean> myUserState = new MutableLiveData<>();
 
-    //constructor
+    //constructor called by factory
     public AuthRepository() {
-        myAuth = FirebaseAuth.getInstance();
-        myUser = new MutableLiveData<>();
-        myUserState = new MutableLiveData<>();
+        myAuth = FirebaseAuth.getInstance();//get instance of FirebaseAuth
+        CheckUser();
+    }
 
-        if (myAuth.getCurrentUser() != null){
-            Log.i("[THOMAS]", "- Appel Repository Authentification [user already logged]" );
-            myUser.postValue(myAuth.getCurrentUser());
-            myUserState.postValue(true);
-        }else
-        {
-            Log.i("[THOMAS]", "- Appel Repository Authentification [user not logged]" );
-            myUserState.postValue(false);
+    //internal function
+    private void CheckUser()
+    {
+        if (myAuth.getCurrentUser() != null) {
+            myUser.postValue(myAuth.getCurrentUser());//get actual user object
+            myUserState.postValue(true);//set state of login
+        } else {
+            myUser.postValue(null);//no user logged
+            myUserState.postValue(false);//set state of login
         }
     }
 
-    //publish to viewmodel...
-    public MutableLiveData<FirebaseUser> getUserLiveData(){
+    //publish actual user object to VM...
+    public MutableLiveData<FirebaseUser> getUserFromRepo() {
         return myUser;
     }
 
-    //publish to viewmodel...
-    public MutableLiveData<Boolean> getMyUserState(){
+    //publish actual user state to VM...
+    public MutableLiveData<Boolean> getUserStateFromRepo() {
         return myUserState;
     }
 
-    //method for viewmodel
-    public void logOut(){
+    //method called from VM to logout...
+    public void logOutFromRepo() {
         myAuth.signOut();
-        myUserState.postValue(false);
+        CheckUser();
     }
 }

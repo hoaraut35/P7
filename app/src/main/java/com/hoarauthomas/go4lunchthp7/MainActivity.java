@@ -9,6 +9,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -85,8 +90,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.myViewModel.getMyUserState().observe(this, this::onCheckSecurity);
     }
 
-    private void onCheckSecurity(Boolean aBoolean) {
-        if (!aBoolean) {
+    private void onCheckSecurity(Boolean connected) {
+        if (!connected) {
             request_login();
         } else {
             request_user_info();
@@ -101,6 +106,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .build();
 
         //TODO: startActivityForResult must be updated
+
+
+
+
+
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
@@ -112,6 +122,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .build(), RC_SIGN_IN
         );
     }
+
+
+
+
+
 
     //TODO: review binding navigation view ?
     private void request_user_info() {

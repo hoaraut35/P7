@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.snackbar.Snackbar;
@@ -34,7 +35,7 @@ public class DetailRestaurant extends AppCompatActivity {
     private RecyclerView recyclerView;
 
 
-    private String restaurant_id;
+    private String restaurant_id,workmate_id;
 
     private com.hoarauthomas.go4lunchthp7.pojo.Result result;
 
@@ -48,6 +49,7 @@ public class DetailRestaurant extends AppCompatActivity {
 
         Intent intent = getIntent();
         restaurant_id = intent.getStringExtra("TAG_ID");
+        workmate_id = intent.getStringExtra("WORKMATEID");
         showSnackBar(restaurant_id);
 
         setupRecyclerView();
@@ -57,6 +59,8 @@ public class DetailRestaurant extends AppCompatActivity {
         setupButtonWeb();
 
 
+
+
     }
 
 
@@ -64,16 +68,19 @@ public class DetailRestaurant extends AppCompatActivity {
     private void setupViewModel() {
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
 
-        this.myViewModel.getMyPosition().observe(this, this::onUpdatePosition);
+        this.myViewModel.getRestaurantDetail(restaurant_id);
+       // this.myViewModel.getMyPosition().observe(this, this::onUpdatePosition);
+
+        //this.myViewModel.getAllWorkMatesByRestaurant().observe(this, this::onUpdateWorkMates);
         Log.i("[FIND]", "setupvml... ");
     }
 
     private void onUpdatePosition(Location location) {
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        this.myViewModel.updateLngLat(location.getLongitude(), location.getLatitude());
+      //  LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+      //  this.myViewModel.updateLngLat(location.getLongitude(), location.getLatitude());
         //replace by th elist of workmates...
-        Log.i("[FIND]", "onupdateposition");
-//        this.myViewModel.getAllWorkMatesByRestaurant().observe(this, this::onUpdateWorkMates);
+      //  Log.i("[FIND]", "onupdateposition");
+//
     }
 
     private void onUpdateWorkMates(List<User> users) {
@@ -89,6 +96,7 @@ public class DetailRestaurant extends AppCompatActivity {
     }
 
     private void onUpdateRestaurants(List<com.hoarauthomas.go4lunchthp7.pojo.Result> results) {
+
 
 
         //recuperer le restauirant ici ?
@@ -152,6 +160,7 @@ public class DetailRestaurant extends AppCompatActivity {
     }
 
 
+    //TODO: set the web site from viewmodel ?
     private void setupButtonWeb() {
         binding.website.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,39 +173,32 @@ public class DetailRestaurant extends AppCompatActivity {
 
             }
         });
-
-
     }
 
     private void setupButtonLike() {
-
-
         binding.likeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("[DETAIL]", "clic sur like bouton");
-
-
+                myViewModel.onLikeClicked();
             }
         });
-
-
     }
 
+    //TODO: set the phone number to dial
     private void setupButtonPhone() {
         binding.callBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i("[DETAIL]", "clic sur phone");
 
-                Intent makeCall = new Intent(Intent.ACTION_DIAL);//not action_call...
+                Intent makeCall = new Intent(Intent.ACTION_DIAL);
                 makeCall.setData(Uri.parse("tel:" + "0781804664"));
                 startActivity(makeCall);
             }
         });
 
     }
-
 
     private void showSnackBar(String message) {
         Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT).show();

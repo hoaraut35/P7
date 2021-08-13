@@ -24,6 +24,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -72,43 +73,44 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         myViewModelGo4Lunch.updateLngLat(location.getLongitude(), location.getLatitude());
+
         if (location != null) {
             myMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             myMap.animateCamera(CameraUpdateFactory.zoomTo(10));//city zoom
         }
+
+
         myViewModelGo4Lunch.getRestaurants().observe(getViewLifecycleOwner(), this::onUpdateRestaurants);
-
-
-        //myViewModelGo4Lunch.setPosition(location.getLongitude(),location.getLatitude());
-        //myViewModelGo4Lunch.refreshPosition();
 
 
     }
 
-    private void onUpdateRestaurants(List<Result> results) {
+    private void onUpdateRestaurants(List<Result> restaurants) {
 
-        Log.i("[RESTAURANT]", "Frag map, onUpdateRestaurants : total => " + results.size());
+        Log.i("[RESTAURANT]", "Frag map, onUpdateRestaurants : total => " + restaurants.size());
+
+
+        this.myViewModelGo4Lunch.updateRestaurantList(restaurants);
 
         myMap.clear();
 
-        for (int i = 0; i < results.size(); i++) {
-            Double lat = results.get(i).getGeometry().getLocation().getLat();
-            Double lng = results.get(i).getGeometry().getLocation().getLng();
+        for (int i = 0; i < restaurants.size(); i++) {
+
+            Double lat = restaurants.get(i).getGeometry().getLocation().getLat();
+            Double lng = restaurants.get(i).getGeometry().getLocation().getLng();
+
             //String placeName = response.body().getResults().get(i).getName();
+
             MarkerOptions markerOptions = new MarkerOptions();
             LatLng latLng = new LatLng(lat, lng);
             markerOptions.position(latLng);
-            markerOptions.title(results.get(i).getName());
+            markerOptions.title(restaurants.get(i).getName() );
+            //  markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.green_restaurant_marker));
 
-
-            //  markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_baseline_restaurant_24));
             Marker m = myMap.addMarker(markerOptions);
-            m.setTag(results.get(i).getPlaceId());
+            m.setTag(restaurants.get(i).getPlaceId());
 
 
-
-            //insert tag from google nearbysearch to ...
-            //m.setTag();
         }
 
     }
@@ -135,13 +137,13 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(@NonNull @NotNull Marker marker) {
-                    Log.i("[MAP]", "test click" + marker.getTitle()+ "tag id : "+ marker.getTag()                        );
+                    Log.i("[MAP]", "test click" + marker.getTitle() + "tag id : " + marker.getTag());
 
-                   // myViewModelGo4Lunch.setActualRestaurant(marker.getTag().toString());
+                    // myViewModelGo4Lunch.setActualRestaurant(marker.getTag().toString());
 
                     Intent intent = new Intent(getContext(), DetailRestaurant.class);
                     String restaurantTag = marker.getTag().toString();
-                    intent.putExtra("TAG_ID",restaurantTag );
+                    intent.putExtra("TAG_ID", restaurantTag);
                     startActivity(intent);
 
 
@@ -153,43 +155,10 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             //To check permission
             checkPermissions();
 
-            //used by fusedLocationProviderClient to get the last position
-            //  getDeviceLocation();
-
-            //  getLocationPermission();
-            //   updateLocationUI();
-
 
         }
     };
 
-
-/*    private void getMyPosition(){
-        try {
-            Log.i("[THOMAS]","Longitude " + newPosition.getLongitude());
-            Log.i("[THOMAS]","Latitude " + newPosition.getLatitude());
-
-            MarkerOptions markerOptions2 = new MarkerOptions();
-
-            LatLng latLng = new LatLng(newPosition.getLatitude(), newPosition.getLongitude());
-            // LatLng latLng = new LatLng(48.0785146,-0.7669906);
-
-            markerOptions2.position(latLng);
-            markerOptions2.title("Ma position");
-            markerOptions2.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-            markerOptions2.snippet("kotchi").draggable(true);
-
-            Marker z = map.addMarker(markerOptions2);
-
-            map.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            map.animateCamera(CameraUpdateFactory.zoomTo(14));
-
-        } catch (Exception e) {
-            Log.i("[THOMAS]","Exception getMyPosition() : " + e.getMessage());
-        }
-    }
-
- */
 
     private void checkPermissions() {
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -203,30 +172,6 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             //         Manifest.permission.ACCESS_FINE_LOCATION, true);
         }
     }
-
-
-/*    private void updateLocationUI() {
-
-
-        if (map == null) {
-            return;
-        }
-        try {
-            if (locationPermissionGranted) {
-                map.setMyLocationEnabled(true);
-                map.getUiSettings().setMyLocationButtonEnabled(true);
-            } else {
-                map.setMyLocationEnabled(false);
-                map.getUiSettings().setMyLocationButtonEnabled(false);
-                lastKnownLocation = null;
-                //    getLocationPermission();
-            }
-        } catch (SecurityException e) {
-            //Log.e("Exception: %s", e.getMessage());
-        }
-    }
-
- */
 
 
     @SuppressLint("LongLogTag")

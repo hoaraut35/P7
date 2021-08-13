@@ -83,6 +83,12 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.ClickList
 
     private void onUpdateWorkMates(List<User> users) {
         Log.i("[WORK]", "update workmatres ... in recyclerviex");
+
+        //update list in viewmodel...
+        if (!users.isEmpty()) {
+           myViewModel.updateWorkMatesList(users);
+        }
+
         binding.recyclerViewWorkmates.setAdapter(new WorkMatesAdapter(0, users, this));
     }
 
@@ -91,22 +97,18 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.ClickList
     public void onClickDetailWorkMate(String restaurantId) {
         Log.i("[WORK]", "Item cliqué : " + restaurantId);
         Intent intent = new Intent(getContext(), DetailRestaurant.class);
-        intent.putExtra("TAG_ID", restaurantId);
+        intent.putExtra("WORKMATE_ID",restaurantId);
         startActivity(intent);
-
     }
 
+    //this is callback for show an alert message...
     @Override
     public void popupSnack(String message) {
-        Log.i("[WORK]","show " + message);
-        showSnackBar(message);
+         showToast(message);
     }
 
-    private void showSnackBar(String message) {
-        Toast toast = new Toast(getContext());
-        toast.setText(message);
-        toast.setGravity(Gravity.CENTER_VERTICAL,0,0);
-        toast.setDuration(Toast.LENGTH_SHORT);
+    private void showToast(String message) {
+        Toast toast = Toast.makeText(getContext(),message,Toast.LENGTH_SHORT);
         toast.show();
     }
 

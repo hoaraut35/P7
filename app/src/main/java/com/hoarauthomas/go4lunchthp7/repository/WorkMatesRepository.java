@@ -18,6 +18,8 @@ import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import java.util.ArrayList;
 import java.util.List;
 
+//get data from repository
+
 public class WorkMatesRepository {
 
     //Collections in Firestore...

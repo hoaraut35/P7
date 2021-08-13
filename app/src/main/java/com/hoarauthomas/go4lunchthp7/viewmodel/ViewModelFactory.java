@@ -15,10 +15,8 @@ import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
 
-//TODO: erreur try to generify ?
-
 //https://medium.com/koderlabs/viewmodel-with-viewmodelprovider-factory-the-creator-of-viewmodel-8fabfec1aa4f
-//ViewModelProvider.Factory is responsible to create the instance of ViewModels
+//ViewModelProvider.Factory is responsible to create the instance of ViewModels, one for all application
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
@@ -64,6 +62,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.workMatesRepository = workMatesRepository;
         this.permissionChecker = permissionChecker;
     }
+
 
     @NonNull
     @Override
