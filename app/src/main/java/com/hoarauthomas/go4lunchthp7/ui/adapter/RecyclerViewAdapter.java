@@ -25,7 +25,7 @@ import java.util.List;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     //variables ...
-    private int mode;
+
     private List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> mResults;
     private LatLng myPosition;
 
@@ -40,21 +40,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     //the constructor
     //public RecyclerViewAdapter(int mode, List<Result> myList, Listener callback) {
-    public RecyclerViewAdapter(int mode, List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myList, LatLng myLatLng) {
+    public RecyclerViewAdapter( List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myList, LatLng myLatLng) {
         this.mResults = myList;
-        this.mode = mode;//to switch between restaurant and workmates ?
+
         this.myPosition = myLatLng;
 
         //for callabck
         //this.callback = callback;
     }
 
-    public RecyclerViewAdapter(int mode, List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myList) {
+    public RecyclerViewAdapter( List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myList) {
         this.mResults = myList;
-        this.mode = mode;//to switch between restaurant and workmates ?
-
-        //for callabck
-        //this.callback = callback;
     }
 
     //for holder
@@ -101,13 +97,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         //TODO: must to add the distance here...
 
-        Log.i("[MYPOS]", "Ma position " + myPosition);
-
-
-
+        //work but remove wait for update
+        /*Log.i("[MYPOS]", "Ma position " + myPosition);
         LatLng test = new LatLng(result.getGeometry().getLocation().getLat(),result.getGeometry().getLocation().getLng());
         int dist = Math.round(distanceBetween(myPosition,test));
         holder.distanceOfRestaurant.setText(String.valueOf(dist)+"m");
+
+         */
 
       //  holder.distanceOfRestaurant.setText(myPosition.toString());
 

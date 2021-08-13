@@ -30,7 +30,8 @@ public class FragmentsAdapter extends FragmentStateAdapter {
                 return new MapsFragment();
 
             case 2:
-                return ListFragment.newInstance();
+
+                return new ListFragment();//.newInstance();
             case 3:
 
                 return WorkFragment.newInstance("", "");

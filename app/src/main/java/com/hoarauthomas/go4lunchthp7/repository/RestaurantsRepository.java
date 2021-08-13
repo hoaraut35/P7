@@ -15,6 +15,8 @@ import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,10 +31,16 @@ public class RestaurantsRepository {
     private final GooglePlaceApi service;
 
     //this is the list for add all iteration in a list to send after in mutable
-    private final List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> allRestaurants = new ArrayList<>();
+    private List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> allRestaurants = new ArrayList<>();
     private final List<RestaurantDetailPojo> allRestaurantsDetails = new ArrayList<>();
 
+
+    final MutableLiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> data = new MutableLiveData<>();
+
+
     private Double Long, Lat;
+
+
 
     //this is the constructor is called by factory...
     public RestaurantsRepository() {
@@ -44,6 +52,7 @@ public class RestaurantsRepository {
         Log.i("[RESTAURANT]", "Repository restaurant position " + Lat + Long);
         this.Long = Long;
         this.Lat = Lat;
+        data.setValue(getAllRestaurants(Long,Lat).getValue());
     }
 
     //this is livedata to publish detail of restaurant to the viewmodel ...
@@ -77,9 +86,9 @@ public class RestaurantsRepository {
 
 
     //this is livedata to publish to viewmodel
-    public LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> getAllRestaurants(Double Long, Double Lat) {
+    public LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> getAllRestaurants(@Nullable Double Long, @Nullable Double Lat) {
 
-        final MutableLiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> data = new MutableLiveData<>();
+
 
         //service.getNearbyPlaces(BuildConfig.MAPS_API_KEY, 1000)
         Log.i("[RESTAURANT]", "getAllRestaurant " + this.Long + Lat);

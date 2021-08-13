@@ -55,7 +55,6 @@ public class PositionRepository {
                         //TODO:add default location if no result from fragment parameter by sample
                         Log.i("[LOCATION]", "position introuvable donc par défaut");
                     } else {
-                        Log.i("[LOCATION]", "position trouvée");
                         locationMutableLiveData.setValue(location);
                     }
                 }

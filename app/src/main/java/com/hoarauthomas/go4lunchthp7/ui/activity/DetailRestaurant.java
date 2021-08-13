@@ -153,7 +153,7 @@ public class DetailRestaurant extends AppCompatActivity {
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(itemDecoration);
-        recyclerView.setAdapter(new RecyclerViewAdapter(0, allResult));
+        recyclerView.setAdapter(new RecyclerViewAdapter( allResult));
     }
 
 

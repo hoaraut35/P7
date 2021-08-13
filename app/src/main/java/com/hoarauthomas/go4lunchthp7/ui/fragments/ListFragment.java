@@ -21,16 +21,18 @@ import com.hoarauthomas.go4lunchthp7.R;
 //import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
 
 import com.hoarauthomas.go4lunchthp7.ui.adapter.RecyclerViewAdapter;
+import com.hoarauthomas.go4lunchthp7.viewmodel.MainViewState;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Observer;
 
 public class ListFragment extends Fragment {
 
-    private ViewModelGo4Lunch myViewModel;
+    private ViewModelGo4Lunch myViewModelGo4Lunch;
 
     public final ArrayList<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> allResult = new ArrayList<>();
 
@@ -53,15 +55,48 @@ public class ListFragment extends Fragment {
     }
 
     private void setupViewModel() {
-        this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
-        this.myViewModel.getMyPosition().observe(getViewLifecycleOwner(), this::onUpdatePosition);
+        myViewModelGo4Lunch = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
+        myViewModelGo4Lunch.getViewStateLiveData().observe(getViewLifecycleOwner(), new androidx.lifecycle.Observer<MainViewState>() {
+            @Override
+            public void onChanged(MainViewState mainViewState) {
+                Log.i("[media]","list restau frag changed.... update");
+                showRestaurant(mainViewState.getMyRestaurantsList());
+
+            }
+        });
+
+
+
+
+       // this.myViewModel.getMyPosition().observe(getViewLifecycleOwner(), this::onUpdatePosition);
     }
+
+
+    private void showRestaurant(List <com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants){
+
+        if (restaurants == null)
+        {
+            Log.i("[media]","Liste restau vide");
+            return;
+        }else
+        {
+            Log.i("[media]","media size" + restaurants.size() );
+            allResult.clear();
+            allResult.addAll(restaurants);
+
+            setupRecyclerView(myView);
+           Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
+
+        }
+
+    }
+
 
     private void onUpdatePosition(Location location) {
         //Position de l'utilisateir ici...
         myPositionOnMap = new LatLng(location.getLatitude(), location.getLongitude());
-        this.myViewModel.updateLngLat(location.getLongitude(), location.getLatitude());
-        this.myViewModel.getRestaurants().observe(getViewLifecycleOwner(), this::onUpdateRestaurants);
+      //  this.myViewModel.updateLngLat(location.getLongitude(), location.getLatitude());
+      //  this.myViewModel.getRestaurants().observe(getViewLifecycleOwner(), this::onUpdateRestaurants);
     }
 
     private void onUpdateRestaurants(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> results) {
@@ -69,7 +104,7 @@ public class ListFragment extends Fragment {
         allResult.clear();
         //Liste des restaurants autour de l'utilisateur...
         allResult.addAll(results);
-        Log.i("[POSITION]","Position de l'utilisateur : " + this.myViewModel.getMyLastPosition());
+        //Log.i("[POSITION]","Position de l'utilisateur : " + this.myViewModel.getMyLastPosition());
 
         setupRecyclerView(myView);
         Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
@@ -81,7 +116,7 @@ public class ListFragment extends Fragment {
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         recyclerView.addItemDecoration(itemDecoration);
-        recyclerView.setAdapter(new RecyclerViewAdapter(0, allResult,this.myViewModel.getMyLastPosition()));
+        recyclerView.setAdapter(new RecyclerViewAdapter( allResult));
     }
 
 }
