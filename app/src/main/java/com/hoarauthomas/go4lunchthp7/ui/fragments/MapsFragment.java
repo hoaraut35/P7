@@ -85,7 +85,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
     private void showRestaurant(List <com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
 
-        myMap.clear();
+       // myMap.clear();
 
 
 

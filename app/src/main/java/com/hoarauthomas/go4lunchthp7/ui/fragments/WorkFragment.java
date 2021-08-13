@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,10 +21,12 @@ import com.hoarauthomas.go4lunchthp7.databinding.FragmentWorkBinding;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.ui.activity.DetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.ui.adapter.WorkMatesAdapter;
+import com.hoarauthomas.go4lunchthp7.viewmodel.MainViewState;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 
 import java.util.List;
+import java.util.Objects;
 
 public class WorkFragment extends Fragment implements WorkMatesAdapter.ClickListener {
 
@@ -76,20 +79,27 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.ClickList
     }
 
     private void setupViewModel() {
-        Log.i("WORK", "Setup VM in Workmates frag...");
+
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
-        this.myViewModel.getAllWorkMates().observe(getViewLifecycleOwner(), this::onUpdateWorkMates);
+        this.myViewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), new Observer<MainViewState>() {
+            @Override
+            public void onChanged(MainViewState mainViewState) {
+                showWorkMates(mainViewState.getMyWorkMatesList());
+            }
+        });
     }
 
-    private void onUpdateWorkMates(List<User> users) {
-        Log.i("[WORK]", "update workmatres ... in recyclerviex");
+    private void showWorkMates(List<User> myWorkMatesList) {
 
-        //update list in viewmodel...
-        if (!users.isEmpty()) {
-           myViewModel.updateWorkMatesList(users);
+        if (myWorkMatesList == null)
+        {
+            Log.i("[media]","Liste workmates null ");
+            return;
+        }else
+        {
+            Log.i("[media]","media size" + myWorkMatesList.size() );
+            binding.recyclerViewWorkmates.setAdapter(new WorkMatesAdapter(0, myWorkMatesList, this));
         }
-
-        binding.recyclerViewWorkmates.setAdapter(new WorkMatesAdapter(0, users, this));
     }
 
     //this is callback for click on recyclerview...

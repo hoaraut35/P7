@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.myViewModel.getViewStateLiveData().observe(this, new Observer<MainViewState>() {
             @Override
             public void onChanged(MainViewState mainViewState) {
-                Log.i("[STATE]","from mainactivity..." + mainViewState.getLocation().getLatitude() + " "  + mainViewState.getLocation().getLongitude());
+              //  Log.i("[STATE]","from mainactivity..." + mainViewState.getLocation().getLatitude() + " "  + mainViewState.getLocation().getLongitude());
             }
         });
     }

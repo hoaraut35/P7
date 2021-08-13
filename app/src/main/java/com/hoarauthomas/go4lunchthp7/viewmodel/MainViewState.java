@@ -3,6 +3,7 @@ package com.hoarauthomas.go4lunchthp7.viewmodel;
 import android.location.Location;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
 
 import java.util.List;
@@ -14,6 +15,15 @@ public class MainViewState {
     private Location myLocation;
     private FirebaseUser myActualUser;
     private List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantsList;
+    private List<User> myWorkMatesList;
+
+    public List<User> getMyWorkMatesList() {
+        return myWorkMatesList;
+    }
+
+    public void setMyWorkMatesList(List<User> myWorkMatesList) {
+        this.myWorkMatesList = myWorkMatesList;
+    }
 
     public Location getMyLocation() {
         return myLocation;
@@ -31,10 +41,11 @@ public class MainViewState {
         this.myRestaurantsList = myRestaurantsList;
     }
 
-    public MainViewState(@Nullable Location myLocation, @Nullable List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantPojoList){
+    public MainViewState(@Nullable Location myLocation, @Nullable List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantPojoList,@Nullable List<User> myWorkMatesList){
 
         this.myLocation = myLocation;
         this.myRestaurantsList = myRestaurantPojoList;
+        this.myWorkMatesList = myWorkMatesList;
     }
 
     public Location getLocation() {

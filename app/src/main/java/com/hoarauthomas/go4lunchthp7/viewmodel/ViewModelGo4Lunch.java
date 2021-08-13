@@ -46,7 +46,6 @@ public class ViewModelGo4Lunch extends ViewModel {
 
     private LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantVM;
 
-
     private final List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantList = new ArrayList<>();
 
     private LiveData<List<User>> workMatesLiveData;
@@ -94,24 +93,19 @@ public class ViewModelGo4Lunch extends ViewModel {
             }
         });
 
-        //restaurant details ...
+        //for restaurants
         this.myRestaurantsSource = restaurantsRepository;
         this.myRestaurantVM = myRestaurantsSource.getAllRestaurants(Long, Lat);
-
-//        Log.i("[media]","restau just after repo" + this.myRestaurantsSource.getAllRestaurants(Long,Lat).getValue().size());
 
         //for workmates...
         this.myWorkMatesSource = workMatesRepository;
         this.workMatesLiveData = myWorkMatesSource.getAllWorkMates();
 
-
-
-
         //update the position in ViewState for UI
         myAppMapMediator.addSource(myPositionVM, new Observer<Location>() {
             @Override
             public void onChanged(Location position) {
-                myAppMapMediator.setValue(new MainViewState(position, null));
+                myAppMapMediator.setValue(new MainViewState(position, null,null));
                 myRestaurantsSource.UpdateLngLat(position.getLongitude(),position.getLatitude());
             }
         });
@@ -121,10 +115,19 @@ public class ViewModelGo4Lunch extends ViewModel {
             @Override
             public void onChanged(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
              //   Log.i("[media]","resta" + restaurants.size());
-                myAppMapMediator.setValue(new MainViewState(myPositionVM.getValue(), restaurants));
+                myAppMapMediator.setValue(new MainViewState(myPositionVM.getValue(), restaurants,null));
 
             }
         });
+
+        //update the workmates list in ViewState for UI
+        myAppMapMediator.addSource(workMatesLiveData, new Observer<List<User>>() {
+            @Override
+            public void onChanged(List<User> users) {
+                myAppMapMediator.setValue((new MainViewState(myPositionVM.getValue(),myRestaurantList,users)));
+            }
+        });
+
 
 
 
