@@ -11,8 +11,10 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseUser;
+import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
 import com.hoarauthomas.go4lunchthp7.repository.AuthRepository;
@@ -22,6 +24,8 @@ import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 
 //This class is for the business logic
@@ -34,7 +38,7 @@ public class ViewModelGo4Lunch extends ViewModel {
     //Add repository here...
     private final AuthRepository myAuthSource;
     private final PositionRepository myLocationSource;
-    private  RestaurantsRepository myRestaurantsSource;
+    private RestaurantsRepository myRestaurantsSource;
     private final WorkMatesRepository myWorkMatesSource;
     private final PermissionChecker myPermissionChecker;
 
@@ -60,7 +64,6 @@ public class ViewModelGo4Lunch extends ViewModel {
     //constructor to get one instance of each object, called by ViewModelFactory
     public ViewModelGo4Lunch(
             AuthRepository authRepository,
-
             RestaurantsRepository restaurantsRepository,
             PositionRepository positionRepository,
             WorkMatesRepository workMatesRepository,
@@ -105,8 +108,9 @@ public class ViewModelGo4Lunch extends ViewModel {
         myAppMapMediator.addSource(myPositionVM, new Observer<Location>() {
             @Override
             public void onChanged(Location position) {
-                myAppMapMediator.setValue(new MainViewState(position, null,null));
-                myRestaurantsSource.UpdateLngLat(position.getLongitude(),position.getLatitude());
+                //combine(position,null,null);
+                myAppMapMediator.setValue(new MainViewState(position, null, null));
+                myRestaurantsSource.UpdateLngLat(position.getLongitude(), position.getLatitude());
             }
         });
 
@@ -114,39 +118,47 @@ public class ViewModelGo4Lunch extends ViewModel {
         myAppMapMediator.addSource(myRestaurantVM, new Observer<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>>() {
             @Override
             public void onChanged(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
-             //   Log.i("[media]","resta" + restaurants.size());
-                myAppMapMediator.setValue(new MainViewState(myPositionVM.getValue(), restaurants,null));
+                //combine(myPositionVM.getValue(),restaurants,null);
 
+                myAppMapMediator.setValue(new MainViewState(myPositionVM.getValue(), restaurants, workMatesLiveData.getValue()));
             }
         });
 
         //update the workmates list in ViewState for UI
         myAppMapMediator.addSource(workMatesLiveData, new Observer<List<User>>() {
             @Override
-            public void onChanged(List<User> users) {
-                myAppMapMediator.setValue((new MainViewState(myPositionVM.getValue(),myRestaurantList,users)));
+            public void onChanged(List<User> workMatesList) {
+                combine(null, myRestaurantVM.getValue(), workMatesList);
+                myAppMapMediator.setValue((new MainViewState(myPositionVM.getValue(), myRestaurantList, workMatesList)));
             }
         });
+    }
 
+    private void combine(@Nullable Location location, @Nullable List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restau, @Nullable List<User> workUser) {
 
+        // Log.i("[COMB]","Combinaison");
 
+        if (location != null) {
+            Log.i("[COMB]", "Position utilisateur : " + location.getLongitude() + " " + location.getLatitude());
+        }
+        if (restau != null && workUser != null) {
+            Log.i("[COMB]", "Nombre de restaurant à traiter : " + restau.size() + "avec " + workUser.size() + " colègues");
 
-      /*  myAppMapMediator.addSource(workMatesLiveData, new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> users) {
-                myAppMapMediator.setValue();combine(myPositionVM.getValue() , placesResponseLiveData.getValue());
+            for (int i = 0; i < restau.size(); i++) {
+                Log.i("[COMB]","" + restau.get(i).getPlaceId());
+                for (int z = 0; z < workUser.size(); z++) {
+                    if (restau.get(i).getPlaceId().equals(workUser.get(z).getFavoriteRestaurant())) {
+                        Log.i("[COMB]","Un collegues est renseigné sur le restaurant " + restau.get(i).getName());
+                        restau.get(i).setIcon("red");
+                    }
+                }
             }
-        });
-
-       */
 
 
-
-
+        }
 
 
     }
-
 
 
     //to publish in UI with not authorized data modification from UI

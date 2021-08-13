@@ -25,6 +25,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -61,6 +62,9 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_maps, container, false);
+
         myViewModelGo4Lunch = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
         myViewModelGo4Lunch.getViewStateLiveData().observe(getViewLifecycleOwner(), new Observer<MainViewState>() {
             @Override
@@ -72,7 +76,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             }
         });
 
-        return inflater.inflate(R.layout.fragment_maps, container, false);
+        return view;
     }
 
     private void showMapWithPosition(Location position) {
@@ -107,6 +111,10 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                 LatLng latLng = new LatLng(lat, lng);
                 markerOptions.position(latLng);
                 markerOptions.title(restaurants.get(i).getName());
+
+                if (restaurants.get(i).getIcon() == "red"){
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.logo_facebook));
+                }
 
             //view
             Marker m = myMap.addMarker(markerOptions);
