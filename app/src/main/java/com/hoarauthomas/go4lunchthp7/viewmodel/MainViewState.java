@@ -4,6 +4,7 @@ import android.location.Location;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
+import com.hoarauthomas.go4lunchthp7.model.placedetails2.MyDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
 
 import java.util.List;
@@ -18,10 +19,11 @@ public class MainViewState {
     private List<User> myWorkMatesList;
 
 
+    private MyDetailRestaurant myDetailRestaurant;
 
 
 
-
+    //**********************************************************************************************
 
 
     public List<User> getMyWorkMatesList() {
@@ -53,6 +55,19 @@ public class MainViewState {
         this.myLocation = myLocation;
         this.myRestaurantsList = myRestaurantPojoList;
         this.myWorkMatesList = myWorkMatesList;
+    }
+
+
+    public MainViewState(MyDetailRestaurant monrestau){
+        this.myDetailRestaurant = monrestau;
+    }
+
+    public MyDetailRestaurant getMyDetailRestaurant() {
+        return myDetailRestaurant;
+    }
+
+    public void setMyDetailRestaurant(MyDetailRestaurant myDetailRestaurant) {
+        this.myDetailRestaurant = myDetailRestaurant;
     }
 
     public Location getLocation() {

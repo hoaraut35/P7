@@ -1,5 +1,7 @@
 package com.hoarauthomas.go4lunchthp7;
 
+import com.hoarauthomas.go4lunchthp7.api.RetrofitRequest;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -14,4 +16,13 @@ public class ExampleUnitTest {
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);
     }
+
+
+
+
+
+
+
+
+
 }

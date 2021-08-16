@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.RestaurantDetailPojo;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.MyDetailRestaurant;
+import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
 import com.hoarauthomas.go4lunchthp7.repository.AuthRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
@@ -284,11 +285,19 @@ public class ViewModelGo4Lunch extends ViewModel {
 
 
     //called by UI
-    public LiveData<MyDetailRestaurant> getRestaurantDetail(String restaurant_id) {
+    public LiveData<ResultDetailRestaurant> getRestaurantDetail(String restaurant_id) {
         Log.i("[DETAIL]","VM DETAIL " + restaurant_id);
-        //retrieve data from repository...
         return this.myRestaurantsSource.getRestaurantById(restaurant_id);
     }
+
+    //called by UI
+    public ResultDetailRestaurant getRestaurantDetail2(String restaurant_id) {
+        Log.i("[DETAIL]","VM DETAIL " +this.myRestaurantsSource.getRestaurantById2(restaurant_id).getFormattedPhoneNumber());
+
+        return this.myRestaurantsSource.getRestaurantById2(restaurant_id);
+    }
+
+
 
     //Event from UI when user click on like
     public void onLikeClicked() {

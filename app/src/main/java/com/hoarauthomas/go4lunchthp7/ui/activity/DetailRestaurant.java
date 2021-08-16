@@ -1,11 +1,5 @@
 package com.hoarauthomas.go4lunchthp7.ui.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
@@ -13,9 +7,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.snackbar.Snackbar;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
+import com.hoarauthomas.go4lunchthp7.model.placedetails2.MyDetailRestaurant;
+import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.ui.adapter.RecyclerViewAdapter;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
@@ -32,8 +34,10 @@ public class DetailRestaurant extends AppCompatActivity {
     private RecyclerView recyclerView;
 
 
-    private String restaurant_id,workmate_id;
+    private String restaurant_id, workmate_id;
+    private ResultDetailRestaurant monRestauDetail;
 
+    private String phone, url;
     private com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo result;
 
     @Override
@@ -46,17 +50,23 @@ public class DetailRestaurant extends AppCompatActivity {
 
         Intent intent = getIntent();
         restaurant_id = intent.getStringExtra("TAG_ID");
-        Log.i("[DETAIL]","id restaurant " + restaurant_id);
+        Log.i("[DETAIL]", "id restaurant " + restaurant_id);
         workmate_id = intent.getStringExtra("WORKMATEID");
+
+        if (intent.getStringExtra("TAG_ID") != null) {
+
+            Log.i("[DETAIL]", "TAG MODE");
+        } else if (intent.getStringExtra("WORKMATEID") != null) {
+            Log.i("[DETAIL]", "WORKMATE");
+        }
+
         //showSnackBar(restaurant_id);
 
         setupRecyclerView();
-     //   setupViewModel();
+        setupViewModel();
         setupButtonPhone();
         setupButtonLike();
         setupButtonWeb();
-
-
 
 
     }
@@ -66,18 +76,37 @@ public class DetailRestaurant extends AppCompatActivity {
     private void setupViewModel() {
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
 
-        this.myViewModel.getRestaurantDetail(restaurant_id);
+        //   this.myViewModel.getRestaurantDetail(restaurant_id).observe(this,this::onUpdateDetail);
 
-       // this.myViewModel.getMyPosition().observe(this, this::onUpdatePosition);
+      //  monRestauDetail = this.myViewModel.getRestaurantDetail2(restaurant_id);
+        //test = this.myViewModel.getRestaurantDetail(restaurant_id);
+
+
+        //   binding.restaurantTitre.setText(results.get(i).getName());
+        // binding.restaurantAddress.setText(results.get(i).getVicinity());
+        // this.myViewModel.getMyPosition().observe(this, this::onUpdatePosition);
         //this.myViewModel.getAllWorkMatesByRestaurant().observe(this, this::onUpdateWorkMates);
 
     }
 
+    private void onUpdateDetail2(MyDetailRestaurant myDetailRestaurant) {
+        Log.i("[DETAIL]", "detail sur activity" + myDetailRestaurant.getResult().getUrl());
+
+        this.phone = myDetailRestaurant.getResult().getFormattedPhoneNumber();
+        this.url = myDetailRestaurant.getResult().getUrl();
+
+    }
+
+    private void onUpdateDetail(ResultDetailRestaurant resultDetailRestaurant) {
+
+        Log.i("[DETAIL]", "detail sur activity" + resultDetailRestaurant.getFormattedPhoneNumber());
+    }
+
     private void onUpdatePosition(Location location) {
-      //  LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-      //  this.myViewModel.updateLngLat(location.getLongitude(), location.getLatitude());
+        //  LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        //  this.myViewModel.updateLngLat(location.getLongitude(), location.getLatitude());
         //replace by th elist of workmates...
-      //  Log.i("[FIND]", "onupdateposition");
+        //  Log.i("[FIND]", "onupdateposition");
 //
     }
 
@@ -94,7 +123,6 @@ public class DetailRestaurant extends AppCompatActivity {
     }
 
     private void onUpdateRestaurants(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> results) {
-
 
 
         //recuperer le restauirant ici ?
@@ -154,7 +182,7 @@ public class DetailRestaurant extends AppCompatActivity {
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(itemDecoration);
-        recyclerView.setAdapter(new RecyclerViewAdapter( allResult));
+        recyclerView.setAdapter(new RecyclerViewAdapter(allResult));
     }
 
 
@@ -164,10 +192,13 @@ public class DetailRestaurant extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String url = "http://www.google.fr";
-                Intent makeURLBrowser = new Intent(Intent.ACTION_VIEW);
-                makeURLBrowser.setData(Uri.parse(url));
-                startActivity(makeURLBrowser);
+
+                if (url != null) {
+                    Intent makeURLBrowser = new Intent(Intent.ACTION_VIEW);
+                    makeURLBrowser.setData(Uri.parse(url));
+                    startActivity(makeURLBrowser);
+                }
+
 
             }
         });
@@ -190,9 +221,10 @@ public class DetailRestaurant extends AppCompatActivity {
             public void onClick(View v) {
                 Log.i("[DETAIL]", "clic sur phone");
 
-                Intent makeCall = new Intent(Intent.ACTION_DIAL);
-                makeCall.setData(Uri.parse("tel:" + "0781804664"));
-                startActivity(makeCall);
+                showSnackBar(phone);
+                //     Intent makeCall = new Intent(Intent.ACTION_DIAL);
+                //   makeCall.setData(Uri.parse("tel:" + phone));
+                // startActivity(makeCall);
             }
         });
 

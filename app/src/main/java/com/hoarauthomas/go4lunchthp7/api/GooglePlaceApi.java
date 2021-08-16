@@ -3,6 +3,7 @@ package com.hoarauthomas.go4lunchthp7.api;
 
 import com.hoarauthomas.go4lunchthp7.RestaurantDetailPojo;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.MyDetailRestaurant;
+import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
 
 import io.reactivex.Observable;
@@ -22,13 +23,13 @@ public interface GooglePlaceApi {
 
     //for restaurant details ...
     @GET("place/details/json?fields=formatted_phone_number,url,rating,opening_hours")
-    Call<RestaurantDetailPojo> getPlaceDetails(
+    Call<ResultDetailRestaurant> getPlaceDetails(
             @Query("key") String key,
             @Query("place_id") String myPlaceId);
 
     //for restaurant details ...
     @GET("place/details/json?fields=formatted_phone_number,url,rating,opening_hours")
-    Call<MyDetailRestaurant> getRestaurantDetails(
+    Call<MyDetailRestaurant> getPlaceDetails2(
             @Query("key") String key,
             @Query("place_id") String myPlaceId);
 

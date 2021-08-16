@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .into(avatar);
 
         //TODO:remove this in prod mode
-        showSnackBar(this.myViewModel.getMyCurrentUser().getValue().getUid());
+        //showSnackBar(this.myViewModel.getMyCurrentUser().getValue().getUid());
     }
 
     private void showSnackBar(String message) {
