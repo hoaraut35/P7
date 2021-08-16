@@ -118,7 +118,7 @@ public class ViewModelGo4Lunch extends ViewModel {
         myAppMapMediator.addSource(myRestaurantVM, new Observer<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>>() {
             @Override
             public void onChanged(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
-                //combine(myPositionVM.getValue(),restaurants,null);
+                combine(myPositionVM.getValue(),restaurants,null);
 
                 myAppMapMediator.setValue(new MainViewState(myPositionVM.getValue(), restaurants, workMatesLiveData.getValue()));
             }
@@ -145,14 +145,29 @@ public class ViewModelGo4Lunch extends ViewModel {
             Log.i("[COMB]", "Nombre de restaurant à traiter : " + restau.size() + "avec " + workUser.size() + " colègues");
 
             for (int i = 0; i < restau.size(); i++) {
-                Log.i("[COMB]","" + restau.get(i).getPlaceId());
+                //Log.i("[COMB]","" + restau.get(i).getPlaceId());
                 for (int z = 0; z < workUser.size(); z++) {
-                    if (restau.get(i).getPlaceId().equals(workUser.get(z).getFavoriteRestaurant())) {
+
+                    Log.i("[COMB1]","Equivalent  :" + restau.get(i).getPlaceId() + " " + workUser.get(z).getFavoriteRestaurant());
+
+                   if (restau.get(i).getPlaceId().equals(workUser.get(z).getFavoriteRestaurant())) {
                         Log.i("[COMB]","Un collegues est renseigné sur le restaurant " + restau.get(i).getName());
-                        restau.get(i).setIcon("red");
+
+                        restau.get(i).getGeometry().getLocation().setFavorite(true);
+                        //restau.get(i).setMyFavLike(true);
+
+                    }else
+                    {
+                        restau.get(i).getGeometry().getLocation().setFavorite(false);
+                        //restau.get(i).setMyFavLike(false);
                     }
+
+                    Log.i("[COMB]","setup fav in viewmodel " + restau.get(i).getMyFavLike());
                 }
             }
+
+
+           myAppMapMediator.setValue(new MainViewState(location,restau ,workUser  ));
 
 
         }

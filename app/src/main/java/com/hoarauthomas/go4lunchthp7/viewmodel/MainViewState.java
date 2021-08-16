@@ -17,6 +17,13 @@ public class MainViewState {
     private List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantsList;
     private List<User> myWorkMatesList;
 
+
+
+
+
+
+
+
     public List<User> getMyWorkMatesList() {
         return myWorkMatesList;
     }

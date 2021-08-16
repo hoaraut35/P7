@@ -15,6 +15,16 @@ public class Location {
     @Expose
     private Double lng;
 
+
+
+    @SerializedName("favorite")
+    @Expose
+    private Boolean favorite;
+
+    public Boolean getFavorite() { return favorite; }
+
+    public void setFavorite(Boolean favorite) { this.favorite = favorite; }
+
     public Double getLat() {
         return lat;
     }

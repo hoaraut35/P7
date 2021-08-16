@@ -32,7 +32,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.hoarauthomas.go4lunchthp7.R;
-import com.hoarauthomas.go4lunchthp7.RestaurantsDetails;
+import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.ui.activity.DetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.viewmodel.MainViewState;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
@@ -40,6 +40,7 @@ import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MapsFragment extends Fragment implements OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener {
@@ -57,24 +58,14 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     private FusedLocationProviderClient fusedLocationProviderClient;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private GoogleMap myMap;
+    private List<Marker> markerMap = new ArrayList<>();
     public LatLng myPosition;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
-
         myViewModelGo4Lunch = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
-        myViewModelGo4Lunch.getViewStateLiveData().observe(getViewLifecycleOwner(), new Observer<MainViewState>() {
-            @Override
-            public void onChanged(MainViewState mainViewState) {
-                Log.i("[MAP]","Changement dans le ViewState ... Mise à jour");
-                showMapWithPosition(mainViewState.getLocation());
-                showRestaurant(mainViewState.getMyRestaurantsList());
-
-            }
-        });
 
         return view;
     }
@@ -87,74 +78,70 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
         }
     }
 
-    private void showRestaurant(List <com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
+    private void showRestaurant(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants, List<User> myWorkMates ) {
 
-       // myMap.clear();
+        // myMap.clear();
 
 
+        for (int i = 0; i < markerMap.size(); i++) {
+            markerMap.remove(i);
+        }
 
-        if (restaurants == null)
-        {
-            Log.i("[MAP]","Liste restau vide");
+
+        if (restaurants == null) {
+            Log.i("[MAP]", "Liste restau vide");
             return;
-        }else
-        {
-            Log.i("[MAP]","" + restaurants.size() );
+        } else {
+            Log.i("[MAP]", "" + restaurants.size());
         }
 
-        for(int i =0 ; i< restaurants.size(); i++){
-            Double lat = restaurants.get(i).getGeometry().getLocation().getLat();
-            Double lng = restaurants.get(i).getGeometry().getLocation().getLng();
-
-            //Options
-            MarkerOptions markerOptions = new MarkerOptions();
-                LatLng latLng = new LatLng(lat, lng);
-                markerOptions.position(latLng);
-                markerOptions.title(restaurants.get(i).getName());
-
-                if (restaurants.get(i).getIcon() == "red"){
-                    Log.i("[COMB]","rouge");
-                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                }else
-                {
-                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-
-                }
-
-            //view
-            Marker m = myMap.addMarker(markerOptions);
-            m.setTag(restaurants.get(i).getPlaceId());
-        }
-
-    }
-
-    private void onUpdateRestaurants(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
-
-        Log.i("[RESTAURANT]", "Frag map, onUpdateRestaurants : total => " + restaurants.size());
-
-
-        this.myViewModelGo4Lunch.updateRestaurantList(restaurants);
 
         myMap.clear();
+        markerMap.clear();
 
         for (int i = 0; i < restaurants.size(); i++) {
 
             Double lat = restaurants.get(i).getGeometry().getLocation().getLat();
             Double lng = restaurants.get(i).getGeometry().getLocation().getLng();
 
-            //String placeName = response.body().getResults().get(i).getName();
-
+            //Options
             MarkerOptions markerOptions = new MarkerOptions();
             LatLng latLng = new LatLng(lat, lng);
             markerOptions.position(latLng);
             markerOptions.title(restaurants.get(i).getName());
-            //  markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.green_restaurant_marker));
 
-            Marker m = myMap.addMarker(markerOptions);
-            m.setTag(restaurants.get(i).getPlaceId());
+            for (int z=0; z<myWorkMates.size();z++){
+
+                Log.i("[COMP]","Comparaison ; " + restaurants.get(i).getPlaceId() + " " + myWorkMates.get(z).getFavoriteRestaurant());
+
+                if (!restaurants.get(i).getPlaceId().equals(myWorkMates.get(z).getFavoriteRestaurant())) {
+                    Log.i("[MAP]","pas identique");
 
 
+
+                    //markerOptions.icon(BitmapDescriptorFactory.fromResource(R.id).defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.logo_google));
+
+                } else if (restaurants.get(i).getPlaceId().equals(myWorkMates.get(z).getFavoriteRestaurant())){
+                    Log.i("[COMP]","*****************************************identique");
+                    markerOptions.rotation(190.0f);
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.logo_facebook));
+                   // markerOptions.icon(BitmapDescriptorFactory.HUE_AZURE);
+
+
+                }
+                //view
+
+              //  markerMap.add(markerForMap);
+               // markerForMap.setTag(restaurants.get(i).getPlaceId());
+
+            }
+
+            Marker markerForMap = myMap.addMarker(markerOptions);
         }
+
+
+        Log.i("[MAP]", "nombre de marqueurs" + markerMap.size());
 
     }
 
@@ -167,12 +154,17 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             //to get an instance
             myMap = map;
 
+
+            myMap.clear();
+            Log.i("[MAP]", "onMapReady");
+
             //we must use location object with fused location provider
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
             myViewModelGo4Lunch.refreshPosition();
 
             //Setup Google Map
             map.getUiSettings().setZoomControlsEnabled(true);
+
             map.setMinZoomPreference(1);
 
 
@@ -197,6 +189,16 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             //TODO: update permissions control , add to resume
             //To check permission
             checkPermissions();
+
+
+            myViewModelGo4Lunch.getViewStateLiveData().observe(getViewLifecycleOwner(), new Observer<MainViewState>() {
+                @Override
+                public void onChanged(MainViewState mainViewState) {
+                    Log.i("[MAP]", "Changement dans le ViewState ... Mise à jour");
+                    showMapWithPosition(mainViewState.getLocation());
+                    showRestaurant(mainViewState.getMyRestaurantsList(),mainViewState.getMyWorkMatesList());
+                }
+            });
 
 
         }

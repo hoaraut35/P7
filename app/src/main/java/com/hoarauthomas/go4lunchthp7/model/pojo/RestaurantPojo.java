@@ -8,17 +8,30 @@ import com.google.gson.annotations.SerializedName;
 import com.hoarauthomas.go4lunchthp7.OpeningHours2;
 import com.hoarauthomas.go4lunchthp7.Photo;
 import com.hoarauthomas.go4lunchthp7.PlusCode;
+import com.hoarauthomas.go4lunchthp7.model.pojo.FavLike;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Geometry;
 
 
 public class RestaurantPojo {
 
+    private Boolean myFavLike;
+
+    public Boolean getMyFavLike() {
+        return myFavLike;
+    }
+
+    public void setMyFavLike(Boolean myFavLike) {
+        this.myFavLike = myFavLike;
+    }
+
     @SerializedName("business_status")
     @Expose
     private String businessStatus;
+
     @SerializedName("geometry")
     @Expose
     private Geometry geometry;
+
     @SerializedName("icon")
     @Expose
     private String icon;
@@ -59,6 +72,14 @@ public class RestaurantPojo {
     @Expose
     private String vicinity;
 
+    public RestaurantPojo() {
+    }
+
+
+
+
+
+
     public String getBusinessStatus() {
         return businessStatus;
     }
@@ -78,6 +99,10 @@ public class RestaurantPojo {
     public String getIcon() {
         return icon;
     }
+
+
+
+
 
     public void setIcon(String icon) {
         this.icon = icon;
@@ -178,5 +203,6 @@ public class RestaurantPojo {
     public void setVicinity(String vicinity) {
         this.vicinity = vicinity;
     }
+
 
 }

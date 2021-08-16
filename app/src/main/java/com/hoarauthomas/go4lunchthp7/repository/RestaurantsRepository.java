@@ -105,12 +105,17 @@ public class RestaurantsRepository {
 
                         if (response.body() != null) {
 
+                            allRestaurants.clear();
+
                             //iterate all results ...
                             for (int i = 0; i < response.body().getResults().size(); i++) {
                                 Log.i("[RESTAURANT]", "Repository Restaurants, getAllRestaurants : " + response.body().getResults().size());
 
+
                                 allRestaurants.add(response.body().getResults().get(i));
+
                                 data.postValue(allRestaurants);
+
                             }
                         }
                     }
