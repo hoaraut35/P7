@@ -6,7 +6,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitRequest {
 
-    //without rxjava
     private static Retrofit retrofit;
     public static Retrofit getRetrofitInstance() {
         if (retrofit == null) {
@@ -17,23 +16,4 @@ public class RetrofitRequest {
         }
         return retrofit;
     }
-
-    //**********************************************************************************************
-
-    //with rxjava for test
-    private static Retrofit retrofitRx;
-    public static Retrofit getRetrofitInstanceRx() {
-        if (retrofitRx == null) {
-            retrofitRx = new Retrofit.Builder()
-                    .baseUrl("https://maps.googleapis.com/maps/api/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    //Added for Rxjava
-                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                    .build();
-        }
-        return retrofitRx;
-    }
-
-
-
 }

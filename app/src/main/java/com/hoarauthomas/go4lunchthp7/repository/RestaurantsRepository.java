@@ -10,6 +10,7 @@ import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.RestaurantDetailPojo;
 import com.hoarauthomas.go4lunchthp7.api.GooglePlaceApi;
 import com.hoarauthomas.go4lunchthp7.api.RetrofitRequest;
+import com.hoarauthomas.go4lunchthp7.model.placedetails2.MyDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
 
 import java.util.ArrayList;
@@ -56,8 +57,12 @@ public class RestaurantsRepository {
         data.setValue(getAllRestaurants(Long,Lat).getValue());
     }
 
-    //this is livedata to publish detail of restaurant to the viewmodel ...
-    public LiveData<RestaurantDetailPojo> getAllDetailForRestaurant(String myPlaceId) {
+
+
+
+
+ /*   //this is livedata to publish detail of restaurant to the viewmodel ...
+    public LiveData<MyDetailRestaurant> getAllDetailForRestaurant(String myPlaceId) {
 
         final MutableLiveData<RestaurantDetailPojo> data = new MutableLiveData<>();
 
@@ -85,16 +90,16 @@ public class RestaurantsRepository {
 
     }
 
+  */
+
+
+
 
     //this is livedata to publish to viewmodel
     public LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> getAllRestaurants(@Nullable Double Long, @Nullable Double Lat) {
 
-        //service.getNearbyPlaces(BuildConfig.MAPS_API_KEY, 1000)
-        Log.i("[RESTAURANT]", "getAllRestaurant " + this.Long + Lat);
-
-
         String myPositionStr = Lat + "," + Long;
-        Log.i("[RESTAURANT]", "myLocation" + myPositionStr);
+        Log.i("[RESTAURANT]", "[REPOSITORY RESTAURANT : Ma position : " + myPositionStr);
 
         service.getNearbyPlaces(BuildConfig.MAPS_API_KEY, myPositionStr)
 
@@ -121,7 +126,7 @@ public class RestaurantsRepository {
 
                     @Override
                     public void onFailure(Call<Place> call, Throwable t) {
-                        Log.i("[RESTAURANT]", "[REPOSITORY FAIL] Erreur repository place ! ");
+                        Log.i("[RESTAURANT]", "[REPOSITORY FAIL] Erreur repository place ! " + t.getMessage());
                         data.postValue(null);
                     }
                 });
@@ -130,8 +135,8 @@ public class RestaurantsRepository {
     }
 
 
-    //this is livedata to publish to viewmodel
-    public LiveData <RestaurantDetailPojo> getRestaurantById(String restaurant_id) {
+   //this is livedata to publish to viewmodel
+    public LiveData <MyDetailRestaurant> getRestaurantById(String restaurant_id) {
 
         Log.i("[DETAIL]","restaurant_id restaur from repo " + restaurant_id);
 
@@ -140,7 +145,54 @@ public class RestaurantsRepository {
                @Override
                public void onResponse(Call<RestaurantDetailPojo> call, Response<RestaurantDetailPojo> response) {
 
-                   Log.i("[DETAIL]","DETAIL " + response.body().getOpeningHours());
+               }
+
+               @Override
+               public void onFailure(Call<RestaurantDetailPojo> call, Throwable t) {
+
+               }
+           });
+
+        /*new Callback<MyDetailRestaurant>() {
+               @Override
+               public void onResponse(Call<MyDetailRestaurant> call, Response<MyDetailRestaurant> response) {
+                    Log.i("[DETAIL"," " + response.body().getResult().getFormattedPhoneNumber());
+               }
+
+               @Override
+               public void onFailure(Call<MyDetailRestaurant> call, Throwable t) {
+
+               }
+           });
+
+
+        /*new Callback<MyDetailRestaurant>) {
+               @Override
+               public void onResponse(Call<MyDetailRestaurant> call, Response<MyDetailRestaurant> response) {
+
+                   //for (int i = 0; i < response.body().getResult()
+
+                     //   getResults().size(); i++) {
+
+                  // }
+
+
+                   Log.i("[DETAIL]","DETAIL name : " +    response.body().getResult().getFormattedPhoneNumber());
+               }
+
+               @Override
+               public void onFailure(Call<RestaurantDetailPojo> call, Throwable t) {
+
+               }
+           });
+
+         */
+
+        /*new Callback<MyDetailRestaurant>() {
+               @Override
+               public void onResponse(Call<MyDetailRestaurant> call, Response<MyDetailRestaurant> response) {
+
+                   Log.i("[DETAIL]","DETAIL " + response.body().getResult().getFormattedPhoneNumber());
                }
 
                @Override
@@ -148,6 +200,8 @@ public class RestaurantsRepository {
                    Log.i("[DETAIL]","DETAIL ERROR ");
                }
            });
+
+         */
 
 
            /*new Callback<RestaurantDetailPojo>() {
@@ -195,6 +249,7 @@ public class RestaurantsRepository {
 
         return null;
     }
+
 
 
 }

@@ -51,7 +51,7 @@ public class DetailRestaurant extends AppCompatActivity {
         //showSnackBar(restaurant_id);
 
         setupRecyclerView();
-        setupViewModel();
+     //   setupViewModel();
         setupButtonPhone();
         setupButtonLike();
         setupButtonWeb();
