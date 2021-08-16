@@ -46,8 +46,9 @@ public class DetailRestaurant extends AppCompatActivity {
 
         Intent intent = getIntent();
         restaurant_id = intent.getStringExtra("TAG_ID");
+        Log.i("[DETAIL]","id restaurant " + restaurant_id);
         workmate_id = intent.getStringExtra("WORKMATEID");
-        showSnackBar(restaurant_id);
+        //showSnackBar(restaurant_id);
 
         setupRecyclerView();
         setupViewModel();
@@ -66,10 +67,10 @@ public class DetailRestaurant extends AppCompatActivity {
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
 
         this.myViewModel.getRestaurantDetail(restaurant_id);
-       // this.myViewModel.getMyPosition().observe(this, this::onUpdatePosition);
 
+       // this.myViewModel.getMyPosition().observe(this, this::onUpdatePosition);
         //this.myViewModel.getAllWorkMatesByRestaurant().observe(this, this::onUpdateWorkMates);
-        Log.i("[FIND]", "setupvml... ");
+
     }
 
     private void onUpdatePosition(Location location) {

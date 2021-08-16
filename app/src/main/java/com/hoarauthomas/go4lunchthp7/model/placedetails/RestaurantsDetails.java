@@ -14,7 +14,7 @@ public class RestaurantsDetails {
     private List<Object> htmlAttributions = null;
     @SerializedName("result")
     @Expose
-    private RestaurantDetailPojo result;
+    private com.hoarauthomas.go4lunchthp7.RestaurantDetailPojo result;
     @SerializedName("status")
     @Expose
     private String status;
@@ -27,11 +27,11 @@ public class RestaurantsDetails {
         this.htmlAttributions = htmlAttributions;
     }
 
-    public RestaurantDetailPojo getResult() {
+    public com.hoarauthomas.go4lunchthp7.RestaurantDetailPojo getResult() {
         return result;
     }
 
-    public void setResult(RestaurantDetailPojo result) {
+    public void setResult(com.hoarauthomas.go4lunchthp7.RestaurantDetailPojo result) {
         this.result = result;
     }
 

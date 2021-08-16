@@ -78,15 +78,11 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
         }
     }
 
-    private void showRestaurant(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants, List<User> myWorkMates ) {
-
-        // myMap.clear();
-
+    private void showRestaurant(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants, List<User> myWorkMates) {
 
         for (int i = 0; i < markerMap.size(); i++) {
             markerMap.remove(i);
         }
-
 
         if (restaurants == null) {
             Log.i("[MAP]", "Liste restau vide");
@@ -94,7 +90,6 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
         } else {
             Log.i("[MAP]", "" + restaurants.size());
         }
-
 
         myMap.clear();
         markerMap.clear();
@@ -110,34 +105,25 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             markerOptions.position(latLng);
             markerOptions.title(restaurants.get(i).getName());
 
-            for (int z=0; z<myWorkMates.size();z++){
+            for (int z = 0; z < myWorkMates.size(); z++) {
 
-                Log.i("[COMP]","Comparaison ; " + restaurants.get(i).getPlaceId() + " " + myWorkMates.get(z).getFavoriteRestaurant());
+                Log.i("[COMP]", "Comparaison ; " + restaurants.get(i).getPlaceId() + " " + myWorkMates.get(z).getFavoriteRestaurant());
 
                 if (!restaurants.get(i).getPlaceId().equals(myWorkMates.get(z).getFavoriteRestaurant())) {
-                    Log.i("[MAP]","pas identique");
 
-
-
-                    //markerOptions.icon(BitmapDescriptorFactory.fromResource(R.id).defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.logo_google));
-
-                } else if (restaurants.get(i).getPlaceId().equals(myWorkMates.get(z).getFavoriteRestaurant())){
-                    Log.i("[COMP]","*****************************************identique");
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.red_icon));
+                } else if (restaurants.get(i).getPlaceId().equals(myWorkMates.get(z).getFavoriteRestaurant())) {
                     markerOptions.rotation(190.0f);
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.logo_facebook));
-                   // markerOptions.icon(BitmapDescriptorFactory.HUE_AZURE);
-
-
+                    //     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.green_icon));
                 }
-                //view
 
-              //  markerMap.add(markerForMap);
-               // markerForMap.setTag(restaurants.get(i).getPlaceId());
+                //  markerMap.add(markerForMap);
+
 
             }
 
             Marker markerForMap = myMap.addMarker(markerOptions);
+            markerForMap.setTag(restaurants.get(i).getPlaceId());
         }
 
 
@@ -196,7 +182,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                 public void onChanged(MainViewState mainViewState) {
                     Log.i("[MAP]", "Changement dans le ViewState ... Mise à jour");
                     showMapWithPosition(mainViewState.getLocation());
-                    showRestaurant(mainViewState.getMyRestaurantsList(),mainViewState.getMyWorkMatesList());
+                    showRestaurant(mainViewState.getMyRestaurantsList(), mainViewState.getMyWorkMatesList());
                 }
             });
 

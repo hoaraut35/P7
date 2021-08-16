@@ -11,10 +11,9 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseUser;
-import com.hoarauthomas.go4lunchthp7.R;
+import com.hoarauthomas.go4lunchthp7.RestaurantDetailPojo;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
 import com.hoarauthomas.go4lunchthp7.repository.AuthRepository;
@@ -283,11 +282,11 @@ public class ViewModelGo4Lunch extends ViewModel {
     }
 
 
-    public com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo getRestaurantDetail(String restaurant_id) {
-
-
-        return null;
-
+    //called by UI
+    public LiveData<RestaurantDetailPojo> getRestaurantDetail(String restaurant_id) {
+        Log.i("[DETAIL]","VM DETAIL " + restaurant_id);
+        //retrieve data from repository...
+        return this.myRestaurantsSource.getRestaurantById(restaurant_id);
     }
 
     //Event from UI when user click on like

@@ -32,6 +32,7 @@ public class RestaurantsRepository {
 
     //this is the list for add all iteration in a list to send after in mutable
     private List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> allRestaurants = new ArrayList<>();
+    private com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo myRestaurantDetail;
     private final List<RestaurantDetailPojo> allRestaurantsDetails = new ArrayList<>();
 
 
@@ -88,8 +89,6 @@ public class RestaurantsRepository {
     //this is livedata to publish to viewmodel
     public LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> getAllRestaurants(@Nullable Double Long, @Nullable Double Lat) {
 
-
-
         //service.getNearbyPlaces(BuildConfig.MAPS_API_KEY, 1000)
         Log.i("[RESTAURANT]", "getAllRestaurant " + this.Long + Lat);
 
@@ -129,5 +128,73 @@ public class RestaurantsRepository {
 
         return data;
     }
+
+
+    //this is livedata to publish to viewmodel
+    public LiveData <RestaurantDetailPojo> getRestaurantById(String restaurant_id) {
+
+        Log.i("[DETAIL]","restaurant_id restaur from repo " + restaurant_id);
+
+        service.getPlaceDetails(BuildConfig.MAPS_API_KEY,restaurant_id)
+           .enqueue(new Callback<RestaurantDetailPojo>() {
+               @Override
+               public void onResponse(Call<RestaurantDetailPojo> call, Response<RestaurantDetailPojo> response) {
+
+                   Log.i("[DETAIL]","DETAIL " + response.body().getOpeningHours());
+               }
+
+               @Override
+               public void onFailure(Call<RestaurantDetailPojo> call, Throwable t) {
+                   Log.i("[DETAIL]","DETAIL ERROR ");
+               }
+           });
+
+
+           /*new Callback<RestaurantDetailPojo>() {
+                    @Override
+                    public void onResponse(Call<RestaurantDetailPojo> call, Response<RestaurantDetailPojo> response) {
+
+                        if (response.body()!=null){
+                            Log.i("[DETAIL]","DETAIL " + response.body().getName());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<RestaurantDetailPojo> call, Throwable t) {
+                        Log.i("[DETAIL]", "DETAIL IRRECUPERABLE ! ");
+                    }
+                });
+
+            */
+
+
+                /*
+
+
+
+                        if (response.body() != null) {
+
+                            allRestaurants.clear();
+
+                            //iterate all results ...
+                            for (int i = 0; i < response.body().getResults().size(); i++) {
+                                Log.i("[RESTAURANT]", "Repository Restaurants, getAllRestaurants : " + response.body().getResults().size());
+
+
+                                allRestaurants.add(response.body().getResults().get(i));
+
+                                data.postValue(allRestaurants);
+
+                            }
+                        }
+                    }
+
+
+
+                 */
+
+        return null;
+    }
+
 
 }
