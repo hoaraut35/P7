@@ -49,6 +49,7 @@ public class DetailRestaurant extends AppCompatActivity {
         setContentView(view);
 
         Intent intent = getIntent();
+
         restaurant_id = intent.getStringExtra("TAG_ID");
         Log.i("[DETAIL]", "id restaurant " + restaurant_id);
         workmate_id = intent.getStringExtra("WORKMATEID");
@@ -64,9 +65,9 @@ public class DetailRestaurant extends AppCompatActivity {
 
         setupRecyclerView();
         setupViewModel();
-        setupButtonPhone();
+        //setupButtonPhone();
         setupButtonLike();
-        setupButtonWeb();
+        // setupButtonWeb();
 
 
     }
@@ -76,9 +77,11 @@ public class DetailRestaurant extends AppCompatActivity {
     private void setupViewModel() {
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
 
-        //   this.myViewModel.getRestaurantDetail(restaurant_id).observe(this,this::onUpdateDetail);
+        this.myViewModel.getRestaurantDetail2(restaurant_id).observe(this, this::onUpdateDetail);
 
-      //  monRestauDetail = this.myViewModel.getRestaurantDetail2(restaurant_id);
+//        binding.restaurantTitre.setText(monRestauDetail.getFormattedPhoneNumber());
+
+        //  monRestauDetail = this.myViewModel.getRestaurantDetail2(restaurant_id);
         //test = this.myViewModel.getRestaurantDetail(restaurant_id);
 
 
@@ -99,7 +102,10 @@ public class DetailRestaurant extends AppCompatActivity {
 
     private void onUpdateDetail(ResultDetailRestaurant resultDetailRestaurant) {
 
-        Log.i("[DETAIL]", "detail sur activity" + resultDetailRestaurant.getFormattedPhoneNumber());
+        setupButtonPhone(resultDetailRestaurant.getFormattedPhoneNumber());
+        setupButtonWeb(resultDetailRestaurant.getUrl());
+
+        Log.i("[DETAIL]", "detail sur activity" + resultDetailRestaurant.getFormattedPhoneNumber() + resultDetailRestaurant.getUrl());
     }
 
     private void onUpdatePosition(Location location) {
@@ -187,18 +193,17 @@ public class DetailRestaurant extends AppCompatActivity {
 
 
     //TODO: set the web site from viewmodel ?
-    private void setupButtonWeb() {
+    private void setupButtonWeb(String url) {
         binding.website.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 if (url != null) {
                     Intent makeURLBrowser = new Intent(Intent.ACTION_VIEW);
                     makeURLBrowser.setData(Uri.parse(url));
                     startActivity(makeURLBrowser);
+                } else {
+                    showSnackBar("Pas de site renseigné!");
                 }
-
 
             }
         });
@@ -215,16 +220,17 @@ public class DetailRestaurant extends AppCompatActivity {
     }
 
     //TODO: set the phone number to dial
-    private void setupButtonPhone() {
+    private void setupButtonPhone(String number) {
         binding.callBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("[DETAIL]", "clic sur phone");
-
-                showSnackBar(phone);
-                //     Intent makeCall = new Intent(Intent.ACTION_DIAL);
-                //   makeCall.setData(Uri.parse("tel:" + phone));
-                // startActivity(makeCall);
+                if (number != null) {
+                    Intent makeCall = new Intent(Intent.ACTION_DIAL);
+                    makeCall.setData(Uri.parse("tel:" + number));
+                    startActivity(makeCall);
+                } else {
+                    showSnackBar("Pas de téléphone renseigné!");
+                }
             }
         });
 

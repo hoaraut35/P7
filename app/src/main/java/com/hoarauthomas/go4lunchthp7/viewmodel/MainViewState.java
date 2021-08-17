@@ -17,14 +17,9 @@ public class MainViewState {
     private FirebaseUser myActualUser;
     private List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantsList;
     private List<User> myWorkMatesList;
-
-
     private MyDetailRestaurant myDetailRestaurant;
 
-
-
     //**********************************************************************************************
-
 
     public List<User> getMyWorkMatesList() {
         return myWorkMatesList;
@@ -50,15 +45,14 @@ public class MainViewState {
         this.myRestaurantsList = myRestaurantsList;
     }
 
-    public MainViewState(@Nullable Location myLocation, @Nullable List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantPojoList,@Nullable List<User> myWorkMatesList){
+    public MainViewState(@Nullable Location myLocation, @Nullable List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantPojoList, @Nullable List<User> myWorkMatesList) {
 
         this.myLocation = myLocation;
         this.myRestaurantsList = myRestaurantPojoList;
         this.myWorkMatesList = myWorkMatesList;
     }
 
-
-    public MainViewState(MyDetailRestaurant monrestau){
+    public MainViewState(MyDetailRestaurant monrestau) {
         this.myDetailRestaurant = monrestau;
     }
 

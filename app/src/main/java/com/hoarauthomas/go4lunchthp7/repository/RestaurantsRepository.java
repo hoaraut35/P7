@@ -32,16 +32,16 @@ public class RestaurantsRepository {
     private final GooglePlaceApi service;
 
     //this is the list for add all iteration in a list to send after in mutable
-    private List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> allRestaurants = new ArrayList<>();
-    final MutableLiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> listOfRestaurantWithLongLat = new MutableLiveData<>();
-    private final MutableLiveData<ResultDetailRestaurant> restauDetailObj = new MutableLiveData<>();
-    private ResultDetailRestaurant monDetailRestau = new ResultDetailRestaurant();
-    private final MutableLiveData<MyDetailRestaurant> restauDetailObj2 = new MutableLiveData<>();
+    private final List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> allRestaurants = new ArrayList<>();
 
-    //**********************************************************************************************
+    private final MutableLiveData<ResultDetailRestaurant> monDetailRestau = new MutableLiveData<>();
+    private final MutableLiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> listOfRestaurantWithLongLat = new MutableLiveData<>();
+    private final MutableLiveData<ResultDetailRestaurant> restauDetailObj = new MutableLiveData<>();
+    private final MutableLiveData<MyDetailRestaurant> restauDetailObj2 = new MutableLiveData<>();
 
     //this is the constructor is called by factory...
     public RestaurantsRepository() {
+        Log.i("[RESTAURANT]", "Repository restaurant starting singleton...");
         service = RetrofitRequest.getRetrofitInstance().create(GooglePlaceApi.class);
     }
 
@@ -70,13 +70,16 @@ public class RestaurantsRepository {
                         if (response.body() != null) {
 
                             allRestaurants.clear();
+                            listOfRestaurantWithLongLat.postValue(null);
 
                             //iterate all results ...
                             for (int i = 0; i < response.body().getResults().size(); i++) {
-                                Log.i("[RESTAURANT]", "Repository Restaurants, getAllRestaurants : " + response.body().getResults().size());
                                 allRestaurants.add(response.body().getResults().get(i));
-                                listOfRestaurantWithLongLat.postValue(allRestaurants);
                             }
+
+                            Log.i("[RESTAURANT]", "[REPOSITORY RESTAURANT OK] Récupérationb de la liste" + allRestaurants.size());
+
+                            listOfRestaurantWithLongLat.postValue(allRestaurants);
                         }
                     }
 
@@ -92,45 +95,24 @@ public class RestaurantsRepository {
 
     //**********************************************************************************************
 
-    //this livedata is publish to viewmodel...
-    public LiveData<ResultDetailRestaurant> getRestaurantById(String restaurant_id) {
+    //this livedata is publish to viewmodel... v2
+    public LiveData<ResultDetailRestaurant> getRestaurantById2(String restaurant_id) {
 
-        Log.i("[DETAIL]", "restaurant_id restaur from repo " + restaurant_id);
 
-        service.getPlaceDetails(BuildConfig.MAPS_API_KEY, restaurant_id)
-                .enqueue(new Callback<ResultDetailRestaurant>() {
-                    @Override
-                    public void onResponse(Call<ResultDetailRestaurant> call, Response<ResultDetailRestaurant> response) {
-
-                        Log.i("[DETAIL]", "DETAIL REPO : " + response.body().getUrl() + response.body().getFormattedPhoneNumber() + response.body());
-                        restauDetailObj.setValue(response.body());
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResultDetailRestaurant> call, Throwable t) {
-
-                    }
-                });
-
-        return restauDetailObj;
-    }
-
-    //**********************************************************************************************
-
-    //this livedata is publish to viewmodel...
-    public ResultDetailRestaurant getRestaurantById2(String restaurant_id) {
-
-        Log.i("[DETAIL]", "restaurant_id restaur from repo " + restaurant_id);
+        Log.i("[RESTAURANT]", "detail restaurant avec id " + restaurant_id);
 
         service.getPlaceDetails2(BuildConfig.MAPS_API_KEY, restaurant_id)
                 .enqueue(new Callback<MyDetailRestaurant>() {
                     @Override
                     public void onResponse(Call<MyDetailRestaurant> call, Response<MyDetailRestaurant> response) {
-                        Log.i("[DETAIL]", "DETAIL REPOSITORY : " +
+                        assert response.body() != null;
+
+                        Log.i("[RESTAURANT]", "DETAIL REPOSITORY : " +
+                                "\n téléphone : " +
                                 response.body().getResult().getFormattedPhoneNumber() +
-                                " url : " +
+                                "\n url : " +
                                 response.body().getResult().getUrl() + response.body().getResult());
-                        monDetailRestau = response.body().getResult();
+                        monDetailRestau.setValue(response.body().getResult());
 
                     }
 

@@ -13,9 +13,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseUser;
-import com.hoarauthomas.go4lunchthp7.RestaurantDetailPojo;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
-import com.hoarauthomas.go4lunchthp7.model.placedetails2.MyDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
 import com.hoarauthomas.go4lunchthp7.repository.AuthRepository;
@@ -39,7 +37,7 @@ public class ViewModelGo4Lunch extends ViewModel {
     //Add repository here...
     private final AuthRepository myAuthSource;
     private final PositionRepository myLocationSource;
-    private RestaurantsRepository myRestaurantsSource;
+    private final RestaurantsRepository myRestaurantsSource;
     private final WorkMatesRepository myWorkMatesSource;
     private final PermissionChecker myPermissionChecker;
 
@@ -119,7 +117,7 @@ public class ViewModelGo4Lunch extends ViewModel {
         myAppMapMediator.addSource(myRestaurantVM, new Observer<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>>() {
             @Override
             public void onChanged(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
-                combine(myPositionVM.getValue(),restaurants,null);
+                combine(myPositionVM.getValue(), restaurants, null);
 
                 myAppMapMediator.setValue(new MainViewState(myPositionVM.getValue(), restaurants, workMatesLiveData.getValue()));
             }
@@ -149,30 +147,26 @@ public class ViewModelGo4Lunch extends ViewModel {
                 //Log.i("[COMB]","" + restau.get(i).getPlaceId());
                 for (int z = 0; z < workUser.size(); z++) {
 
-                    Log.i("[COMB1]","Equivalent  :" + restau.get(i).getPlaceId() + " " + workUser.get(z).getFavoriteRestaurant());
+                    Log.i("[COMB1]", "Equivalent  :" + restau.get(i).getPlaceId() + " " + workUser.get(z).getFavoriteRestaurant());
 
-                   if (restau.get(i).getPlaceId().equals(workUser.get(z).getFavoriteRestaurant())) {
-                        Log.i("[COMB]","Un collegues est renseigné sur le restaurant " + restau.get(i).getName());
+                    if (restau.get(i).getPlaceId().equals(workUser.get(z).getFavoriteRestaurant())) {
+                        Log.i("[COMB]", "Un collegues est renseigné sur le restaurant " + restau.get(i).getName());
 
                         restau.get(i).getGeometry().getLocation().setFavorite(true);
                         //restau.get(i).setMyFavLike(true);
 
-                    }else
-                    {
+                    } else {
                         restau.get(i).getGeometry().getLocation().setFavorite(false);
                         //restau.get(i).setMyFavLike(false);
                     }
 
-                    Log.i("[COMB]","setup fav in viewmodel " + restau.get(i).getMyFavLike());
+                    Log.i("[COMB]", "setup fav in viewmodel " + restau.get(i).getMyFavLike());
                 }
             }
 
-
-           myAppMapMediator.setValue(new MainViewState(location,restau ,workUser  ));
-
+            myAppMapMediator.setValue(new MainViewState(location, restau, workUser));
 
         }
-
 
     }
 
@@ -187,7 +181,6 @@ public class ViewModelGo4Lunch extends ViewModel {
         Log.i("[RESTAURANT]", "Appel fonction ds le ViewModel... getMyPosition");
         return myPositionVM;
     }
-
 
     //publish this method to activity for updat eposition...
     public void refreshPosition() {
@@ -284,19 +277,14 @@ public class ViewModelGo4Lunch extends ViewModel {
     }
 
 
-    //called by UI
-    public LiveData<ResultDetailRestaurant> getRestaurantDetail(String restaurant_id) {
-        Log.i("[DETAIL]","VM DETAIL " + restaurant_id);
-        return this.myRestaurantsSource.getRestaurantById(restaurant_id);
-    }
+
 
     //called by UI
-    public ResultDetailRestaurant getRestaurantDetail2(String restaurant_id) {
-        Log.i("[DETAIL]","VM DETAIL " +this.myRestaurantsSource.getRestaurantById2(restaurant_id).getFormattedPhoneNumber());
+    public LiveData<ResultDetailRestaurant> getRestaurantDetail2(String restaurant_id) {
+        //Log.i("[DETAIL]", "VM DETAIL " + this.myRestaurantsSource.getRestaurantById2(restaurant_id).getFormattedPhoneNumber());
 
         return this.myRestaurantsSource.getRestaurantById2(restaurant_id);
     }
-
 
 
     //Event from UI when user click on like
