@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,6 +20,7 @@ import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.MyDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.ui.adapter.RecyclerViewAdapter;
+import com.hoarauthomas.go4lunchthp7.viewmodel.MainViewState;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 
@@ -34,7 +36,7 @@ public class DetailRestaurant extends AppCompatActivity {
     private RecyclerView recyclerView;
 
 
-    private String restaurant_id, workmate_id;
+    private String restaurant_id, workmate_id, my_restaurant_id;
     private ResultDetailRestaurant monRestauDetail;
 
     private String phone, url;
@@ -54,17 +56,21 @@ public class DetailRestaurant extends AppCompatActivity {
         Log.i("[DETAIL]", "id restaurant " + restaurant_id);
         workmate_id = intent.getStringExtra("WORKMATEID");
 
-        if (intent.getStringExtra("TAG_ID") != null) {
+        my_restaurant_id = intent.getStringExtra("MYRESTAURANT");
 
+
+
+
+        if (intent.getStringExtra("TAG_ID") != null && intent.getStringExtra("WORKMATEID_ID") != null && intent.getStringExtra("MYRESTAURANT_ID") != null) {
             Log.i("[DETAIL]", "TAG MODE");
-        } else if (intent.getStringExtra("WORKMATEID") != null) {
-            Log.i("[DETAIL]", "WORKMATE");
-        }
+        } else {
 
+
+        }
+        setupViewModel();
         //showSnackBar(restaurant_id);
 
         setupRecyclerView();
-        setupViewModel();
         //setupButtonPhone();
         setupButtonLike();
         // setupButtonWeb();
@@ -76,6 +82,26 @@ public class DetailRestaurant extends AppCompatActivity {
     //TODO: get the restaurant ...
     private void setupViewModel() {
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
+
+
+        this.myViewModel.getViewStateLiveData().observe(this, new Observer<MainViewState>() {
+            @Override
+            public void onChanged(MainViewState mainViewState) {
+
+
+              /*r (int i=0; i< mainViewState.getMyRestaurantsList().size();i++){
+
+                    if (mainViewState.getMyRestaurantsList().get(i).getPlaceId().equals(restaurant_id)){
+                        binding.restaurantTitre.setText(mainViewState.getMyRestaurantsList().get(i).getName());
+                    }
+
+                }
+
+               */
+           }
+        });
+
+
 
         this.myViewModel.getRestaurantDetail2(restaurant_id).observe(this, this::onUpdateDetail);
 
@@ -101,6 +127,9 @@ public class DetailRestaurant extends AppCompatActivity {
     }
 
     private void onUpdateDetail(ResultDetailRestaurant resultDetailRestaurant) {
+
+   //     for (int i =0; i< )
+
 
         setupButtonPhone(resultDetailRestaurant.getFormattedPhoneNumber());
         setupButtonWeb(resultDetailRestaurant.getUrl());

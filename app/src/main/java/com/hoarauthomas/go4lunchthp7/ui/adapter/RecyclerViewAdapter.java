@@ -1,7 +1,6 @@
 package com.hoarauthomas.go4lunchthp7.ui.adapter;
 
 import android.content.Context;
-import android.location.Location;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +16,6 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.R;
-
-//import com.hoarauthomas.go4lunchthp7.model.pojo.Result;
 
 import java.util.List;
 
@@ -40,7 +37,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     //the constructor
     //public RecyclerViewAdapter(int mode, List<Result> myList, Listener callback) {
-    public RecyclerViewAdapter( List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myList, LatLng myLatLng) {
+    public RecyclerViewAdapter(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myList, LatLng myLatLng) {
         this.mResults = myList;
 
         this.myPosition = myLatLng;
@@ -49,7 +46,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         //this.callback = callback;
     }
 
-    public RecyclerViewAdapter( List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myList) {
+    public RecyclerViewAdapter(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myList) {
         this.mResults = myList;
     }
 
@@ -97,15 +94,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         //TODO: must to add the distance here...
 
-        //work but remove wait for update
-        /*Log.i("[MYPOS]", "Ma position " + myPosition);
-        LatLng test = new LatLng(result.getGeometry().getLocation().getLat(),result.getGeometry().getLocation().getLng());
-        int dist = Math.round(distanceBetween(myPosition,test));
-        holder.distanceOfRestaurant.setText(String.valueOf(dist)+"m");
+        Log.i("[DISTANCE]","" + mResults.get(position).getGeometry().getMyPosition());
 
-         */
+        try{
+            holder.distanceOfRestaurant.setText(mResults.get(position).getGeometry().getMyPosition());
 
-      //  holder.distanceOfRestaurant.setText(myPosition.toString());
+        }
+        catch (Exception e){
+            holder.distanceOfRestaurant.setText("erreur");
+        }
+
+
+
 
 
         //show the address of restaurant
@@ -152,12 +152,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         //TODO add listener
         //holder.
 
-    }
-
-    public float distanceBetween(LatLng first, LatLng second) {
-        float[] distance = new float[1];
-        Location.distanceBetween(first.latitude, first.longitude, second.latitude, second.longitude, distance);
-        return distance[0];
     }
 
 

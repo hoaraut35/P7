@@ -94,7 +94,7 @@
                     android:src="@drawable/ic_baseline_call_24"
                     app:layout_constraintBottom_toTopOf="@+id/call_txt"
                     app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@+id/like" />
+                    app:layout_constraintRight_toLeftOf="@+id/like_btn" />
 
                 <TextView
                     android:id="@+id/call_txt"
@@ -113,18 +113,19 @@
                     app:layout_constraintRight_toLeftOf="@+id/website" />
 
                 <TextView
+                    android:id="@+id/like"
                     style="@style/Restaurant_detail_txt"
                     android:text="LIKE"
 
-                    app:layout_constraintLeft_toLeftOf="@id/like"
-                    app:layout_constraintRight_toRightOf="@id/like"
-                    app:layout_constraintTop_toBottomOf="@id/like"/>
+                    app:layout_constraintLeft_toLeftOf="@id/like_btn"
+                    app:layout_constraintRight_toRightOf="@id/like_btn"
+                    app:layout_constraintTop_toBottomOf="@id/like_btn"/>
 
                 <ImageView
                     android:id="@+id/website"
                     style="@style/Restaurant_detail_img"
                     android:src="@drawable/ic_baseline_account_balance_24"
-                    app:layout_constraintLeft_toRightOf="@id/like"
+                    app:layout_constraintLeft_toRightOf="@id/like_btn"
                     app:layout_constraintRight_toRightOf="parent" />
 
                 <TextView
@@ -156,7 +157,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:listitem="@layout/item_restaurant">
+                tools:listitem="@layout/item_workmates">
 
             </androidx.recyclerview.widget.RecyclerView>
 

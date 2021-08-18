@@ -127,24 +127,43 @@ public class ViewModelGo4Lunch extends ViewModel {
         myAppMapMediator.addSource(workMatesLiveData, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> workMatesList) {
-                combine(null, myRestaurantVM.getValue(), workMatesList);
+                combine(myPositionVM.getValue(), myRestaurantVM.getValue(), workMatesList);
                 myAppMapMediator.setValue((new MainViewState(myPositionVM.getValue(), myRestaurantList, workMatesList)));
             }
         });
     }
 
+    public float distanceBetween(LatLng first, LatLng second) {
+        float[] distance = new float[1];
+        Location.distanceBetween(first.latitude, first.longitude, second.latitude, second.longitude, distance);
+        return distance[0];
+    }
+
     private void combine(@Nullable Location location, @Nullable List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restau, @Nullable List<User> workUser) {
 
-        // Log.i("[COMB]","Combinaison");
-
-        if (location != null) {
-            Log.i("[COMB]", "Position utilisateur : " + location.getLongitude() + " " + location.getLatitude());
+        if(location != null){
+            myAppMapMediator.setValue(new MainViewState(location));
         }
-        if (restau != null && workUser != null) {
+
+        if (location != null && restau != null && workUser != null) {
+
             Log.i("[COMB]", "Nombre de restaurant à traiter : " + restau.size() + "avec " + workUser.size() + " colègues");
 
             for (int i = 0; i < restau.size(); i++) {
                 //Log.i("[COMB]","" + restau.get(i).getPlaceId());
+
+
+                //TODO:calcul position
+                LatLng restauPos = new LatLng(restau.get(i).getGeometry().getLocation().getLng(),restau.get(i).getGeometry().getLocation().getLat());
+                LatLng userPos = new LatLng(location.getLongitude(),location.getLatitude());
+
+                int distance = Math.round((distanceBetween(userPos,restauPos)));
+                restau.get(i).getGeometry().setMyPosition(distance);
+                Log.i("[DISTANCE]","La distance en tre utilisateur et restaurant : " + restau.get(i).getGeometry().getMyPosition());
+                //restau.get(i).setMyFavLike(true);
+
+
+
                 for (int z = 0; z < workUser.size(); z++) {
 
                     Log.i("[COMB1]", "Equivalent  :" + restau.get(i).getPlaceId() + " " + workUser.get(z).getFavoriteRestaurant());
@@ -153,7 +172,9 @@ public class ViewModelGo4Lunch extends ViewModel {
                         Log.i("[COMB]", "Un collegues est renseigné sur le restaurant " + restau.get(i).getName());
 
                         restau.get(i).getGeometry().getLocation().setFavorite(true);
-                        //restau.get(i).setMyFavLike(true);
+
+
+
 
                     } else {
                         restau.get(i).getGeometry().getLocation().setFavorite(false);
@@ -275,8 +296,6 @@ public class ViewModelGo4Lunch extends ViewModel {
     public void addNewRestaurant(String name) {
         this.myWorkMatesSource.addRestaurant(name);
     }
-
-
 
 
     //called by UI

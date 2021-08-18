@@ -56,6 +56,13 @@ public class MainViewState {
         this.myDetailRestaurant = monrestau;
     }
 
+    public MainViewState(Location MyLocation) {
+        this.myLocation = MyLocation;
+    }
+
+
+
+
     public MyDetailRestaurant getMyDetailRestaurant() {
         return myDetailRestaurant;
     }
