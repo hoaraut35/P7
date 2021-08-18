@@ -9,11 +9,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,8 +27,8 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
-import com.hoarauthomas.go4lunchthp7.ui.activity.DetailRestaurant;
-import com.hoarauthomas.go4lunchthp7.ui.adapter.FragmentsAdapter;
+import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
+import com.hoarauthomas.go4lunchthp7.ui.FragmentsAdapter;
 import com.hoarauthomas.go4lunchthp7.viewmodel.MainViewState;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
@@ -211,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void openMyFavoriteRestaurant() {
-        Intent intent = new Intent(this, DetailRestaurant.class);
+        Intent intent = new Intent(this, DetailActivity.class);
         startActivity(intent);
     }
 

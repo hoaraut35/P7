@@ -1,4 +1,4 @@
-package com.hoarauthomas.go4lunchthp7.ui.fragments;
+package com.hoarauthomas.go4lunchthp7.ui.settings;
 
 import android.os.Bundle;
 

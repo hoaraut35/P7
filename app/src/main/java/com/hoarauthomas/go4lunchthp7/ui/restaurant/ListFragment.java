@@ -1,4 +1,4 @@
-package com.hoarauthomas.go4lunchthp7.ui.fragments;
+package com.hoarauthomas.go4lunchthp7.ui.restaurant;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.R;
-import com.hoarauthomas.go4lunchthp7.ui.adapter.RecyclerViewAdapter;
 import com.hoarauthomas.go4lunchthp7.viewmodel.MainViewState;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
@@ -51,6 +50,7 @@ public class ListFragment extends Fragment {
 
     private void setupViewModel() {
         myViewModelGo4Lunch = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
+
         myViewModelGo4Lunch.getViewStateLiveData().observe(getViewLifecycleOwner(), new androidx.lifecycle.Observer<MainViewState>() {
             @Override
             public void onChanged(MainViewState mainViewState) {
@@ -69,6 +69,7 @@ public class ListFragment extends Fragment {
     private void showRestaurant(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
 
         if (restaurants == null) {
+
             Log.i("[media]", "Liste restau vide");
             return;
         } else {

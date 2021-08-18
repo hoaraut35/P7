@@ -1,4 +1,4 @@
-package com.hoarauthomas.go4lunchthp7.ui.adapter;
+package com.hoarauthomas.go4lunchthp7.ui.restaurant;
 
 import android.content.Context;
 import android.util.Log;

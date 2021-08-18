@@ -1,6 +1,7 @@
 package com.hoarauthomas.go4lunchthp7.viewmodel;
 
 import android.location.Location;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
@@ -50,6 +51,8 @@ public class MainViewState {
         this.myLocation = myLocation;
         this.myRestaurantsList = myRestaurantPojoList;
         this.myWorkMatesList = myWorkMatesList;
+
+
     }
 
     public MainViewState(MyDetailRestaurant monrestau) {

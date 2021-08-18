@@ -14,6 +14,9 @@ import com.hoarauthomas.go4lunchthp7.repository.AuthRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
+import com.hoarauthomas.go4lunchthp7.ui.detail.ViewModelDetail;
+import com.hoarauthomas.go4lunchthp7.ui.map.ViewModelMap;
+import com.hoarauthomas.go4lunchthp7.ui.restaurant.ViewModelRestaurant;
 
 //https://medium.com/koderlabs/viewmodel-with-viewmodelprovider-factory-the-creator-of-viewmodel-8fabfec1aa4f
 //ViewModelProvider.Factory is responsible to create the instance of ViewModels, one for all application
@@ -67,6 +70,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+
         if (modelClass.isAssignableFrom(ViewModelGo4Lunch.class)) {
             return (T) new ViewModelGo4Lunch(
                     authRepository,
@@ -75,6 +79,25 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     workMatesRepository,
                     permissionChecker);
         }
+
+        if(modelClass.isAssignableFrom(ViewModelMap.class)){
+            return(T) new ViewModelMap(
+                    positionRepository,
+                    restaurantsRepository
+
+            );
+
+        }
+
+        if(modelClass.isAssignableFrom(ViewModelDetail.class)){
+
+        }
+        if(modelClass.isAssignableFrom(ViewModelRestaurant.class)){
+
+        }
+
+
+
         throw new IllegalArgumentException("[V M F] Unknow ViewModel class");
     }
 }

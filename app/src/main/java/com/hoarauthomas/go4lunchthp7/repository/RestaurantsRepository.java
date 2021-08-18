@@ -47,6 +47,10 @@ public class RestaurantsRepository {
 
     //**********************************************************************************************
 
+    public LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> getMyRestaurantsList(){
+        return listOfRestaurantWithLongLat;
+    }
+
     //update position of user in repository when a location is find
     public void UpdateLngLat(Double Long, Double Lat) {
         Log.i("[RESTAURANT]", "Repository restaurant position " + Lat + Long);

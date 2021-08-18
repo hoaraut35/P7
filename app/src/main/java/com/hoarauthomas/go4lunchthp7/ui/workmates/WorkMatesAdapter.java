@@ -1,4 +1,4 @@
-package com.hoarauthomas.go4lunchthp7.ui.adapter;
+package com.hoarauthomas.go4lunchthp7.ui.workmates;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -14,8 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.material.snackbar.Snackbar;
-import com.hoarauthomas.go4lunchthp7.MainActivity;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 

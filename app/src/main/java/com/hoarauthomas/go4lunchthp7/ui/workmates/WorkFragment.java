@@ -1,9 +1,8 @@
-package com.hoarauthomas.go4lunchthp7.ui.fragments;
+package com.hoarauthomas.go4lunchthp7.ui.workmates;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,17 +15,14 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.hoarauthomas.go4lunchthp7.databinding.FragmentWorkBinding;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
-import com.hoarauthomas.go4lunchthp7.ui.activity.DetailRestaurant;
-import com.hoarauthomas.go4lunchthp7.ui.adapter.WorkMatesAdapter;
+import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 import com.hoarauthomas.go4lunchthp7.viewmodel.MainViewState;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 
 import java.util.List;
-import java.util.Objects;
 
 public class WorkFragment extends Fragment implements WorkMatesAdapter.ClickListener {
 
@@ -106,7 +102,7 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.ClickList
     @Override
     public void onClickDetailWorkMate(String restaurantId) {
         Log.i("[WORK]", "Item cliqué : " + restaurantId);
-        Intent intent = new Intent(getContext(), DetailRestaurant.class);
+        Intent intent = new Intent(getContext(), DetailActivity.class);
         intent.putExtra("WORKMATE_ID",restaurantId);
         startActivity(intent);
     }

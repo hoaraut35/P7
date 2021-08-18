@@ -1,4 +1,4 @@
-package com.hoarauthomas.go4lunchthp7.ui.activity;
+package com.hoarauthomas.go4lunchthp7.ui.detail;
 
 import android.content.Intent;
 import android.location.Location;
@@ -19,7 +19,7 @@ import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.MyDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
-import com.hoarauthomas.go4lunchthp7.ui.adapter.RecyclerViewAdapter;
+import com.hoarauthomas.go4lunchthp7.ui.restaurant.RecyclerViewAdapter;
 import com.hoarauthomas.go4lunchthp7.viewmodel.MainViewState;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
@@ -27,7 +27,7 @@ import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DetailRestaurant extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity {
 
     private ActivityDetailRestaurantBinding binding;
     private ViewModelGo4Lunch myViewModel;
@@ -59,8 +59,6 @@ public class DetailRestaurant extends AppCompatActivity {
         my_restaurant_id = intent.getStringExtra("MYRESTAURANT");
 
 
-
-
         if (intent.getStringExtra("TAG_ID") != null && intent.getStringExtra("WORKMATEID_ID") != null && intent.getStringExtra("MYRESTAURANT_ID") != null) {
             Log.i("[DETAIL]", "TAG MODE");
         } else {
@@ -89,18 +87,23 @@ public class DetailRestaurant extends AppCompatActivity {
             public void onChanged(MainViewState mainViewState) {
 
 
-              /*r (int i=0; i< mainViewState.getMyRestaurantsList().size();i++){
+                if (mainViewState.getMyRestaurantsList() != null) {
+                    showSnackBar("Restaurants : " + mainViewState.getMyRestaurantsList().size() + " " + restaurant_id);
 
-                    if (mainViewState.getMyRestaurantsList().get(i).getPlaceId().equals(restaurant_id)){
-                        binding.restaurantTitre.setText(mainViewState.getMyRestaurantsList().get(i).getName());
+
+                    for (int i = 0; i < mainViewState.getMyRestaurantsList().size(); i++) {
+
+                        if (mainViewState.getMyRestaurantsList().get(i).getPlaceId().equals(restaurant_id)) {
+                            binding.restaurantTitre.setText(mainViewState.getMyRestaurantsList().get(i).getName());
+                            binding.restaurantAddress.setText(mainViewState.getMyRestaurantsList().get(i).getVicinity());
+                        }
+
                     }
 
                 }
 
-               */
-           }
+            }
         });
-
 
 
         this.myViewModel.getRestaurantDetail2(restaurant_id).observe(this, this::onUpdateDetail);
@@ -128,7 +131,7 @@ public class DetailRestaurant extends AppCompatActivity {
 
     private void onUpdateDetail(ResultDetailRestaurant resultDetailRestaurant) {
 
-   //     for (int i =0; i< )
+        //     for (int i =0; i< )
 
 
         setupButtonPhone(resultDetailRestaurant.getFormattedPhoneNumber());
@@ -242,7 +245,7 @@ public class DetailRestaurant extends AppCompatActivity {
         binding.likeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("[DETAIL]", "clic sur like bouton");
+               showSnackBar("Enregistrer le restaurant : " + binding.restaurantTitre.getText());
                 myViewModel.onLikeClicked();
             }
         });

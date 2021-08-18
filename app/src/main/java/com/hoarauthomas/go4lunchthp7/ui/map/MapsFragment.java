@@ -1,4 +1,4 @@
-package com.hoarauthomas.go4lunchthp7.ui.fragments;
+package com.hoarauthomas.go4lunchthp7.ui.map;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -20,7 +20,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -33,7 +32,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
-import com.hoarauthomas.go4lunchthp7.ui.activity.DetailRestaurant;
+import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 import com.hoarauthomas.go4lunchthp7.viewmodel.MainViewState;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
@@ -67,6 +66,8 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
         myViewModelGo4Lunch = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
 
+
+
         return view;
     }
 
@@ -80,8 +81,10 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
     private void showRestaurant(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants, List<User> myWorkMates) {
 
-        for (int i = 0; i < markerMap.size(); i++) {
-            markerMap.remove(i);
+
+
+        for (int h = 0; h < markerMap.size(); h++) {
+            markerMap.remove(h);
         }
 
         if (restaurants == null) {
@@ -92,43 +95,61 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
         }
 
         myMap.clear();
-        markerMap.clear();
 
-        for (int i = 0; i < restaurants.size(); i++) {
+        int i, z;
 
+        for (i = 0; i < restaurants.size(); i++) {
+
+            //Log.i("[SAME]","Nombre de restaurants à traiter : " + restaurants.get(i).getName()+ " " + restaurants.get(i).getPlaceId());
+            Log.i("[COMPAR]", "i =  " + i);
+
+            //genereic
             Double lat = restaurants.get(i).getGeometry().getLocation().getLat();
             Double lng = restaurants.get(i).getGeometry().getLocation().getLng();
+            LatLng latLng = new LatLng(lat, lng);
 
             //Options
-            MarkerOptions markerOptions = new MarkerOptions();
-            LatLng latLng = new LatLng(lat, lng);
-            markerOptions.position(latLng);
-            markerOptions.title(restaurants.get(i).getName());
 
-            for (int z = 0; z < myWorkMates.size(); z++) {
+       //     markerMap.clear();
 
-                Log.i("[COMP]", "Comparaison ; " + restaurants.get(i).getPlaceId() + " " + myWorkMates.get(z).getFavoriteRestaurant());
+            //check if identique
+            for (z = 0; z < myWorkMates.size(); z++) {
 
-                if (!restaurants.get(i).getPlaceId().equals(myWorkMates.get(z).getFavoriteRestaurant())) {
 
-                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.red_icon));
-                } else if (restaurants.get(i).getPlaceId().equals(myWorkMates.get(z).getFavoriteRestaurant())) {
-                    markerOptions.rotation(190.0f);
-                    //     markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.green_icon));
+
+                //ok work fine
+                if (restaurants.get(i).getPlaceId().equals(myWorkMates.get(z).getFavoriteRestaurant())) {
+
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(latLng);
+                    markerOptions.title(restaurants.get(i).getName());
+                    markerOptions.rotation(180.0f);
+                    markerOptions.title(restaurants.get(i).getName());
+                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                    Marker markerForMap = myMap.addMarker(markerOptions);
+                    markerForMap.setTag(restaurants.get(i).getPlaceId());
+
+                } else if (!restaurants.get(i).getPlaceId().equals(myWorkMates.get(z).getFavoriteRestaurant())){
+                    MarkerOptions markerOptions2 = new MarkerOptions();
+                    markerOptions2.position(latLng);
+                    markerOptions2.title(restaurants.get(i).getName());
+
+                    markerOptions2.title(restaurants.get(i).getName());
+
+                    markerOptions2.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                    Marker markerForMap = myMap.addMarker(markerOptions2);
+                    markerForMap.setTag(restaurants.get(i).getPlaceId());
                 }
-
-                //  markerMap.add(markerForMap);
 
 
             }
 
-            Marker markerForMap = myMap.addMarker(markerOptions);
-            markerForMap.setTag(restaurants.get(i).getPlaceId());
+            //Marker markerForMap = myMap.addMarker(markerOptions);
+
+
+            //markerForMap.setTag(restaurants.get(i).getPlaceId());
+
         }
-
-
-        Log.i("[MAP]", "nombre de marqueurs" + markerMap.size());
-
     }
 
 
@@ -145,7 +166,9 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             Log.i("[MAP]", "onMapReady");
 
             //we must use location object with fused location provider
-            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
+
+
+            //  fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
             myViewModelGo4Lunch.refreshPosition();
 
             //Setup Google Map
@@ -162,7 +185,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
                     // myViewModelGo4Lunch.setActualRestaurant(marker.getTag().toString());
 
-                    Intent intent = new Intent(getContext(), DetailRestaurant.class);
+                    Intent intent = new Intent(getContext(), DetailActivity.class);
                     String restaurantTag = marker.getTag().toString();
                     intent.putExtra("TAG_ID", restaurantTag);
                     startActivity(intent);

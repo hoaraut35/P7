@@ -117,7 +117,7 @@ public class ViewModelGo4Lunch extends ViewModel {
         myAppMapMediator.addSource(myRestaurantVM, new Observer<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>>() {
             @Override
             public void onChanged(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
-                combine(myPositionVM.getValue(), restaurants, null);
+                combine(myPositionVM.getValue(), restaurants, workMatesLiveData.getValue());
 
                 myAppMapMediator.setValue(new MainViewState(myPositionVM.getValue(), restaurants, workMatesLiveData.getValue()));
             }
@@ -147,26 +147,28 @@ public class ViewModelGo4Lunch extends ViewModel {
 
         if (location != null && restau != null && workUser != null) {
 
-            Log.i("[COMB]", "Nombre de restaurant à traiter : " + restau.size() + "avec " + workUser.size() + " colègues");
+            Log.i("[COMB]", "Nombre de restaurant à traiter : " + restau.size() + "avec " + workUser.size() + " colègues"+ " position : "+ location.getLatitude() + " " +location.getLongitude());
 
             for (int i = 0; i < restau.size(); i++) {
+
+
                 //Log.i("[COMB]","" + restau.get(i).getPlaceId());
 
-
-                //TODO:calcul position
+                //TODO:mise à jour distance entre restau et utilisateur dans la classe pojo ne fonctionne pas
                 LatLng restauPos = new LatLng(restau.get(i).getGeometry().getLocation().getLng(),restau.get(i).getGeometry().getLocation().getLat());
                 LatLng userPos = new LatLng(location.getLongitude(),location.getLatitude());
 
                 int distance = Math.round((distanceBetween(userPos,restauPos)));
+
                 restau.get(i).getGeometry().setMyPosition(distance);
-                Log.i("[DISTANCE]","La distance en tre utilisateur et restaurant : " + restau.get(i).getGeometry().getMyPosition());
-                //restau.get(i).setMyFavLike(true);
+
+                Log.i("[COMB]","La distance en tre utilisateur et restaurant : " + restau.get(i).getGeometry().getMyPosition());
 
 
 
                 for (int z = 0; z < workUser.size(); z++) {
 
-                    Log.i("[COMB1]", "Equivalent  :" + restau.get(i).getPlaceId() + " " + workUser.get(z).getFavoriteRestaurant());
+                  //  Log.i("[COMB]", "Equivalent  :" + restau.get(i).getPlaceId() + " " + workUser.get(z).getFavoriteRestaurant());
 
                     if (restau.get(i).getPlaceId().equals(workUser.get(z).getFavoriteRestaurant())) {
                         Log.i("[COMB]", "Un collegues est renseigné sur le restaurant " + restau.get(i).getName());
@@ -185,6 +187,7 @@ public class ViewModelGo4Lunch extends ViewModel {
                 }
             }
 
+
             myAppMapMediator.setValue(new MainViewState(location, restau, workUser));
 
         }
@@ -197,11 +200,7 @@ public class ViewModelGo4Lunch extends ViewModel {
         return myAppMapMediator;
     }
 
-    //publish to activity or fragment
-    public LiveData<Location> getMyPosition() {
-        Log.i("[RESTAURANT]", "Appel fonction ds le ViewModel... getMyPosition");
-        return myPositionVM;
-    }
+
 
     //publish this method to activity for updat eposition...
     public void refreshPosition() {

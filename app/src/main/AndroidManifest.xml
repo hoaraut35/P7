@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Go4Lunch">
 
-        <activity android:name=".ui.activity.DetailRestaurant">
+        <activity android:name=".ui.detail.DetailActivity">
 
             android:theme="@style/Theme.Go4LunchWithTool">
 
