@@ -116,7 +116,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             }else
             {
                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.red_icon));
-                markerOptions.rotation(180);
+            //    markerOptions.rotation(180);
             }
 
 
