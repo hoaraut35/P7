@@ -86,9 +86,9 @@ public class ViewModelMap extends ViewModel {
     //**********************************************************************************************
     private void logicWork(@Nullable Location position, @Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates) {
 
-        //Log.i("[MAP]", "View logic run ...");
+        Log.i("[MAP]", "Appel View logic run ...");
 
-        if (position == null) {
+        if (position == null && restaurants == null && workmates == null) {
             //Log.i("[MAP]", "Attente position avant logique ...");
             return;
         } else {
@@ -96,7 +96,7 @@ public class ViewModelMap extends ViewModel {
             if (restaurants == null) {
                // Log.i("[MAP]", "Mise à jour query restaurant");
                 //myRestaurantRepository.UpdateLngLat(position.getLatitude(),position.getLongitude());
-            } else if (restaurants != null && workmates != null) {
+            } else if (position != null && restaurants != null && workmates != null) {
 
                 for (int i = 0; i < restaurants.size(); i++) {
 
@@ -115,42 +115,15 @@ public class ViewModelMap extends ViewModel {
             //            Log.i("[MAP]", "restaurant identique prevoir modif pojo");
 
                     }
+                    Log.i("[MAP]", "Restaurant " + restaurants.get(i).getName() + restaurants.get(i).getIcon());
                 }
 
 
-                Log.i("[MAP]", "Liste restaurant = " + restaurants.size());
                 myViewStateMapMediator.setValue(new ViewStateMap(position, restaurants));
             }
 
 
         }
-
-
-        /*    if ()
-            myRestaurantRepository.getAllRestaurants(position.getLongitude(),position.getLatitude());
-
-            if (restaurants == null){
-                Log.i("[MAP]", "Arrêt car restaurant null");
-            }else{
-
-                Log.i("[MAP]", "Position : " + position.getLatitude() + position.getLongitude());
-
-
-            }
-
-         */
-
-
-
-
-        /*yRestaurantRepository.getAllRestaurants(position.getLongitude(), position.getLatitude());
-        Log.i("[MAP]", "Update position and restaurants");
-        if (position != null && restaurants != null) {
-            Log.i("[MAP]", "Update position and restaurants");
-
-        }
-
-         */
 
     }
     //**********************************************************************************************

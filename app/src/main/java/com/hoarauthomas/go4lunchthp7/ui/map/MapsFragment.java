@@ -122,7 +122,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
             if (restaurants.get(i).getIcon().toString() ==  "rouge"){
                 markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.green_icon));
-
+                markerOptions.rotation(180);
 
             }else
             {
