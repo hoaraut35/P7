@@ -89,8 +89,12 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
         }
 
 
+        myMap.clear();
+
+
         for (int i = 0; i < restaurants.size(); i++) {
 
+            Log.i("[MAP]","Restaurant traité " + restaurants.get(i).getName() +" | " + restaurants.get(i).getPlaceId()+ " | "  + restaurants.get(i).getIcon());
 
             //get position marker
             Double lat = restaurants.get(i).getGeometry().getLocation().getLat();
@@ -101,7 +105,21 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             markerOptions.position(latLng);
             markerOptions.title(restaurants.get(i).getName());
 //            markerOptions.rotation(180.0f);
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+
+
+            Log.i("[MAP]",""+ restaurants.get(i).getIcon().toString());
+
+            if (restaurants.get(i).getIcon().toString() ==  "rouge"){
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.green_icon));
+
+
+            }else
+            {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.red_icon));
+                markerOptions.rotation(180);
+            }
+
+
 
             Marker markerForMap = myMap.addMarker(markerOptions);
             markerForMap.setTag(restaurants.get(i).getPlaceId());

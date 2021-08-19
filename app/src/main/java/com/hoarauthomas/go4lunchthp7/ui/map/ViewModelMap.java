@@ -62,7 +62,7 @@ public class ViewModelMap extends ViewModel {
                 Log.i("[MAP]", "Event restaurants");
                 if (restaurantPojos != null) {
                     Log.i("[MAP]", "Liste restaura" + restaurantPojos.size());
-                    logicWork(myPosition.getValue(), restaurantPojos,myWorkMatesList.getValue());
+                    logicWork(myPosition.getValue(), restaurantPojos, myWorkMatesList.getValue());
                 }
 
             }
@@ -86,43 +86,44 @@ public class ViewModelMap extends ViewModel {
     //**********************************************************************************************
     private void logicWork(@Nullable Location position, @Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates) {
 
-        Log.i("[MAP]", "View logic run ...");
+        //Log.i("[MAP]", "View logic run ...");
 
         if (position == null) {
-            Log.i("[MAP]", "Attente position avant logique ...");
+            //Log.i("[MAP]", "Attente position avant logique ...");
             return;
         } else {
+
             if (restaurants == null) {
-                Log.i("[MAP]", "Mise à jour query restaurant");
+               // Log.i("[MAP]", "Mise à jour query restaurant");
                 //myRestaurantRepository.UpdateLngLat(position.getLatitude(),position.getLongitude());
             } else if (restaurants != null && workmates != null) {
 
-                for (int i=0; i<restaurants.size();i++){
+                for (int i = 0; i < restaurants.size(); i++) {
 
-                    for (int z=0;z<workmates.size();z++){
+                    restaurants.get(i).setIcon("rouge");
+                    for (int z = 0; z < workmates.size(); z++) {
+
+          //              Log.i("[MAP]", "" + restaurants.get(i).getPlaceId() + " | " + workmates.get(z).getFavoriteRestaurant());
 
                         //Log.i()
-                        if (restaurants.get(i).getPlaceId().equals(workmates.get(z).getFavoriteRestaurant())){
-                            Log.i("[MAP]","restaurant identique prevoir modif pojo");
-                        }
+                        if (restaurants.get(i).getPlaceId().equals(workmates.get(z).getFavoriteRestaurant())) {
+
+                            restaurants.get(i).setIcon("vert");
+
+
+
+            //            Log.i("[MAP]", "restaurant identique prevoir modif pojo");
 
                     }
-
-
                 }
 
 
-
-                Log.i("[MAP]", "Liste restaurant = " + restaurants.size());
+              //  Log.i("[MAP]", "Liste restaurant = " + restaurants.size());
             }
 
-
-
-
-
-
+            myViewStateMapMediator.setValue(new ViewStateMap(position, restaurants));
         }
-        myViewStateMapMediator.setValue(new ViewStateMap(position, restaurants));
+
 
         /*    if ()
             myRestaurantRepository.getAllRestaurants(position.getLongitude(),position.getLatitude());
