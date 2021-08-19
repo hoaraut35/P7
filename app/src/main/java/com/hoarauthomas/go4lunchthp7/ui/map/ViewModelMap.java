@@ -108,7 +108,7 @@ public class ViewModelMap extends ViewModel {
                         //Log.i()
                         if (restaurants.get(i).getPlaceId().equals(workmates.get(z).getFavoriteRestaurant())) {
 
-                            restaurants.get(i).setIcon("vert");
+                            restaurants.get(i).setIcon("vert");}
 
 
 
@@ -118,10 +118,11 @@ public class ViewModelMap extends ViewModel {
                 }
 
 
-              //  Log.i("[MAP]", "Liste restaurant = " + restaurants.size());
+                Log.i("[MAP]", "Liste restaurant = " + restaurants.size());
+                myViewStateMapMediator.setValue(new ViewStateMap(position, restaurants));
             }
 
-            myViewStateMapMediator.setValue(new ViewStateMap(position, restaurants));
+
         }
 
 
