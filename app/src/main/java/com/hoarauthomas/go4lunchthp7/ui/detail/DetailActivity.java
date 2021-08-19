@@ -19,6 +19,8 @@ import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.MyDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
+import com.hoarauthomas.go4lunchthp7.ui.map.ViewModelMap;
+import com.hoarauthomas.go4lunchthp7.ui.map.ViewStateMap;
 import com.hoarauthomas.go4lunchthp7.ui.restaurant.RecyclerViewAdapter;
 import com.hoarauthomas.go4lunchthp7.viewmodel.MainViewState;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
@@ -30,7 +32,16 @@ import java.util.List;
 public class DetailActivity extends AppCompatActivity {
 
     private ActivityDetailRestaurantBinding binding;
-    private ViewModelGo4Lunch myViewModel;
+
+    private ViewModelDetail myViewModelDetail;
+
+
+//    private ViewModelGo4Lunch myViewModel;
+
+
+
+
+
     //th elist of restaurants
     public final ArrayList<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> allResult = new ArrayList<>();
     private RecyclerView recyclerView;
@@ -65,12 +76,15 @@ public class DetailActivity extends AppCompatActivity {
 
 
         }
+
+
+
         setupViewModel();
         //showSnackBar(restaurant_id);
 
-        setupRecyclerView();
+  //      setupRecyclerView();
         //setupButtonPhone();
-        setupButtonLike();
+    //    setupButtonLike();
         // setupButtonWeb();
 
 
@@ -79,7 +93,39 @@ public class DetailActivity extends AppCompatActivity {
 
     //TODO: get the restaurant ...
     private void setupViewModel() {
-        this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
+
+        myViewModelDetail = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelDetail.class);
+        myViewModelDetail.getMediatorLiveData().observe(this, new Observer<ViewStateDetail>() {
+            @Override
+            public void onChanged(ViewStateDetail viewStateDetail) {
+
+            }
+        });
+
+        /*myViewModelDetail.getMediatorLiveData().observe(this, new Observer<ViewStateDetail>() {
+            @Override
+            public void onChanged(ViewStateDetail viewStateDetail) {
+                Log.i("[DETAIL]", "Event ViewDetail Event");
+
+            }
+        } );
+
+         */
+        /*new Observer<ViewStateMap>() {
+            @Override
+            public void onChanged(ViewStateMap viewStateMap) {
+
+
+                showMapWithPosition(viewStateMap.myPosition);
+
+                showRestaurant2(viewStateMap.myRestaurantsList);
+            }
+        });
+
+         */
+
+
+     /*   this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
 
 
         this.myViewModel.getViewStateLiveData().observe(this, new Observer<MainViewState>() {
@@ -105,8 +151,10 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
+      */
 
-        this.myViewModel.getRestaurantDetail2(restaurant_id).observe(this, this::onUpdateDetail);
+
+        //this.myViewModel.getRestaurantDetail2(restaurant_id).observe(this, this::onUpdateDetail);
 
 //        binding.restaurantTitre.setText(monRestauDetail.getFormattedPhoneNumber());
 
@@ -246,7 +294,7 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                showSnackBar("Enregistrer le restaurant : " + binding.restaurantTitre.getText());
-                myViewModel.onLikeClicked();
+           //     myViewModel.onLikeClicked();
             }
         });
     }

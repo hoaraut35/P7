@@ -69,7 +69,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             @NonNull RestaurantsRepository restaurantsRepository,
             PositionRepository positionRepository,
             WorkMatesRepository workMatesRepository
-            ) {
+    ) {
         this.permissionChecker = permissionChecker;
         this.authRepository = authRepository;
         this.positionRepository = positionRepository;
@@ -98,13 +98,14 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     positionRepository,
                     restaurantsRepository,
                     workMatesRepository
-
-
             );
 
         }
 
         if (modelClass.isAssignableFrom(ViewModelDetail.class)) {
+            return (T) new ViewModelDetail(
+                    restaurantsRepository,
+                    workMatesRepository);
 
         }
         if (modelClass.isAssignableFrom(ViewModelRestaurant.class)) {

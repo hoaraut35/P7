@@ -41,10 +41,7 @@ import java.util.List;
 
 public class MapsFragment extends Fragment implements OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener {
 
-    // private ViewModelGo4Lunch myViewModelGo4Lunch;
-
     private ViewModelMap myViewModelMap;
-
 
     private static final int DEFAULT_ZOOM = 10;
     private final LatLng defaultLocation = new LatLng(-33.8523341, 151.2106085);
@@ -106,30 +103,27 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
         LatLng myMarkerPosition;
         MarkerOptions myMarkerOptions;
+        Marker myMarker;
 
         for (int i = 0; i < restaurants.size(); i++) {
-
 
             myMarkerPosition = new LatLng(restaurants.get(i).getGeometry().getLocation().getLat(),restaurants.get(i).getGeometry().getLocation().getLng());
             myMarkerOptions = new MarkerOptions();
 
             myMarkerOptions.position(myMarkerPosition);
+
             if (restaurants.get(i).getIcon().toString().contains("rouge")){
                 myMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
             }else {
                 myMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
             }
 
-            myMap.addMarker(myMarkerOptions);
+            myMarker = myMap.addMarker(myMarkerOptions);
+            myMarker.setTag(restaurants.get(i).getPlaceId());
 
             Log.i("[MAP]", "nombre dappel " + i);
 
-
         }
-
-
-
-
     }
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
@@ -144,17 +138,10 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             myMap.clear();
             Log.i("[MAP]", "onMapReady");
 
-            //we must use location object with fused location provider
-
-
-            //  fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-//            myViewModelGo4Lunch.refreshPosition();
-
             //Setup Google Map
             map.getUiSettings().setZoomControlsEnabled(true);
 
-            map.setMinZoomPreference(1);
-
+            map.setMinZoomPreference(DEFAULT_ZOOM);
 
             //to open detail restaurant...
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -176,32 +163,11 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
             });
 
-            LatLng sydney = new LatLng(-33.852, 151.211);
-            map.addMarker(new MarkerOptions()
-                    .position(sydney)
-                    .title("Marker in Sydney"));
-            map.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
 
             //TODO: update permissions control , add to resume
             //To check permission
             checkPermissions();
-
-
-          /*  myViewModelGo4Lunch.getViewStateLiveData().observe(getViewLifecycleOwner(), new Observer<MainViewState>() {
-                @Override
-                public void onChanged(MainViewState mainViewState) {
-                    Log.i("[MAP]", "Changement dans le ViewState ... Mise à jour");
-                    showMapWithPosition(mainViewState.getLocation());
-                    showRestaurant(mainViewState.getMyRestaurantsList(), mainViewState.getMyWorkMatesList());
-                }
-            });
-
-           */
-
-
-            //TODO: where to place this?
-
 
         }
     };
