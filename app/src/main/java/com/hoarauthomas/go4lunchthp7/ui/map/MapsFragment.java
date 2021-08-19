@@ -65,6 +65,17 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
         myViewModelMap = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMap.class);
 
+        myViewModelMap.refresh();
+        myViewModelMap.getMediatorLiveData().observe(getViewLifecycleOwner(), new Observer<ViewStateMap>() {
+            @Override
+            public void onChanged(ViewStateMap viewStateMap) {
+                Log.i("[MAP]", "Event ViewStateMap");
+
+                showMapWithPosition(viewStateMap.myPosition);
+
+                showRestaurant2(viewStateMap.myRestaurantsList);
+            }
+        });
 
         return view;
     }
@@ -128,88 +139,6 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
         }
     }
 
-
-    /*private void showRestaurant(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants, List<User> myWorkMates) {*/
-
-    private void showRestaurant(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
-
-
-        for (int h = 0; h < markerMap.size(); h++) {
-            markerMap.remove(h);
-        }
-
-        if (restaurants == null) {
-            Log.i("[MAP]", "Liste restau vide");
-            return;
-        } else {
-            Log.i("[MAP]", "" + restaurants.size());
-        }
-
-        myMap.clear();
-
-        int i, z;
-
-        for (i = 0; i < restaurants.size(); i++) {
-
-            //Log.i("[SAME]","Nombre de restaurants à traiter : " + restaurants.get(i).getName()+ " " + restaurants.get(i).getPlaceId());
-            Log.i("[COMPAR]", "i =  " + i);
-
-            //genereic
-            Double lat = restaurants.get(i).getGeometry().getLocation().getLat();
-            Double lng = restaurants.get(i).getGeometry().getLocation().getLng();
-            LatLng latLng = new LatLng(lat, lng);
-
-            //Options
-
-            //     markerMap.clear();
-
-            //check if identique
-
-
-            /*
-            for (z = 0; z < myWorkMates.size(); z++) {
-
-
-                //ok work fine
-                if (restaurants.get(i).getPlaceId().equals(myWorkMates.get(z).getFavoriteRestaurant())) {
-
-                    MarkerOptions markerOptions = new MarkerOptions();
-                    markerOptions.position(latLng);
-                    markerOptions.title(restaurants.get(i).getName());
-                    markerOptions.rotation(180.0f);
-                    markerOptions.title(restaurants.get(i).getName());
-                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                    Marker markerForMap = myMap.addMarker(markerOptions);
-                    markerForMap.setTag(restaurants.get(i).getPlaceId());
-
-                } else if (!restaurants.get(i).getPlaceId().equals(myWorkMates.get(z).getFavoriteRestaurant())) {
-                    MarkerOptions markerOptions2 = new MarkerOptions();
-                    markerOptions2.position(latLng);
-                    markerOptions2.title(restaurants.get(i).getName());
-
-                    markerOptions2.title(restaurants.get(i).getName());
-
-                    markerOptions2.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-                    Marker markerForMap = myMap.addMarker(markerOptions2);
-                    markerForMap.setTag(restaurants.get(i).getPlaceId());
-                }
-
-
-            }
-
-             */
-
-            //Marker markerForMap = myMap.addMarker(markerOptions);
-
-
-            //markerForMap.setTag(restaurants.get(i).getPlaceId());
-
-        }
-    }
-
-
-
-
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
         @Override
@@ -270,17 +199,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
 
             //TODO: where to place this?
-            myViewModelMap.refresh();
-            myViewModelMap.getMediatorLiveData().observe(getViewLifecycleOwner(), new Observer<ViewStateMap>() {
-                @Override
-                public void onChanged(ViewStateMap viewStateMap) {
-                    Log.i("[MAP]", "Event ViewStateMap");
 
-                    showMapWithPosition(viewStateMap.myPosition);
-
-                    showRestaurant2(viewStateMap.myRestaurantsList);
-                }
-            });
 
 
         }
@@ -358,6 +277,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     public void onResume() {
         super.onResume();
         checkPermissions();
+        myViewModelMap.refresh();
     }
 
 
@@ -373,10 +293,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
     @Override
     public boolean onMarkerClick(@NonNull @NotNull Marker marker) {
-
-
         Log.i("[MAP]", "clic marqueur");
-
         return false;
     }
 }
