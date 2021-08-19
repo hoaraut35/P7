@@ -49,7 +49,8 @@ public class ListFragment extends Fragment {
     }
 
     private void setupViewModel() {
-        myViewModelGo4Lunch = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
+
+   /*     myViewModelGo4Lunch = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
 
         myViewModelGo4Lunch.getViewStateLiveData().observe(getViewLifecycleOwner(), new androidx.lifecycle.Observer<MainViewState>() {
             @Override
@@ -60,6 +61,8 @@ public class ListFragment extends Fragment {
 
             }
         });
+
+    */
 
 
         // this.myViewModel.getMyPosition().observe(getViewLifecycleOwner(), this::onUpdatePosition);

@@ -16,66 +16,57 @@ import com.google.android.gms.location.LocationResult;
 
 import org.jetbrains.annotations.NotNull;
 
-//Only to get data and publish it to ViewModel ...
-
 public class PositionRepository {
 
-    //setting for position request
     private static final int LOCATION_REQUEST_INTERVAL_MS = 10_000;
     private static final float SMALLEST_DISPLACEMENT_THRESHOLD_METER = 25;
-    //
+
+    @NonNull
     private final FusedLocationProviderClient fusedLocationProviderClient;
-    private LocationCallback myCallback;
 
-    //Mutable Livedat...
-    private final MutableLiveData<Location> locationMutableLiveData = new MutableLiveData<>();
+    @NonNull
+    private final MutableLiveData<Location> locationMutableLiveData = new MutableLiveData<>(null);
 
-    //constructor called by factory
+    private LocationCallback callback;
+
     public PositionRepository(@NonNull FusedLocationProviderClient fusedLocationProviderClient) {
+        Log.i("[MAP]","Repository position ...");
         this.fusedLocationProviderClient = fusedLocationProviderClient;
     }
 
-    //publish to VM...
-    public LiveData<Location> getmyPositionFromRepo() {
+    public LiveData<Location> getLocationLiveData() {
         return locationMutableLiveData;
     }
 
     @RequiresPermission(anyOf = {"android.permission.ACCESS_COARSE_LOCATION", "android.permission.ACCESS_FINE_LOCATION"})
     public void startLocationRequest() {
-        if (myCallback == null) {
-            myCallback = new LocationCallback() {
-
+        if (callback == null) {
+            callback = new LocationCallback() {
                 @Override
-                public void onLocationResult(@NonNull @NotNull LocationResult locationResult) {
-                    super.onLocationResult(locationResult);
-
+                public void onLocationResult(@NonNull LocationResult locationResult) {
                     Location location = locationResult.getLastLocation();
 
-                    if (location == null) {
-                        //TODO:add default location if no result from fragment parameter by sample
-                        Log.i("[LOCATION]", "position introuvable donc par défaut");
-                    } else {
-                        locationMutableLiveData.setValue(location);
-                    }
+                    locationMutableLiveData.setValue(location);
                 }
             };
         }
 
-        fusedLocationProviderClient.removeLocationUpdates(myCallback);
+        fusedLocationProviderClient.removeLocationUpdates(callback);
 
-        fusedLocationProviderClient.requestLocationUpdates(LocationRequest.create()
+        fusedLocationProviderClient.requestLocationUpdates(
+                LocationRequest.create()
                         .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                         .setSmallestDisplacement(SMALLEST_DISPLACEMENT_THRESHOLD_METER)
                         .setInterval(LOCATION_REQUEST_INTERVAL_MS),
-                myCallback,
-                Looper.getMainLooper());
+                callback,
+                Looper.getMainLooper()
+        );
     }
 
     public void stopLocationRequest() {
-        if (myCallback != null) {
-            fusedLocationProviderClient.removeLocationUpdates(myCallback);
+        if (callback != null) {
+            fusedLocationProviderClient.removeLocationUpdates(callback);
         }
     }
-
 }
 

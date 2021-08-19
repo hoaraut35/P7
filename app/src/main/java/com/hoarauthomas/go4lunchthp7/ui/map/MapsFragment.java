@@ -31,11 +31,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.hoarauthomas.go4lunchthp7.R;
-import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
-import com.hoarauthomas.go4lunchthp7.viewmodel.MainViewState;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
-import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -44,7 +41,9 @@ import java.util.List;
 
 public class MapsFragment extends Fragment implements OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener {
 
-    private ViewModelGo4Lunch myViewModelGo4Lunch;
+    // private ViewModelGo4Lunch myViewModelGo4Lunch;
+
+    private ViewModelMap myViewModelMap;
 
 
     private static final int DEFAULT_ZOOM = 10;
@@ -64,23 +63,57 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
-        myViewModelGo4Lunch = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
-
+        myViewModelMap = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMap.class);
 
 
         return view;
     }
 
-    private void showMapWithPosition(Location position) {
-        if (position != null) {
+    private void showMapWithPosition(@NonNull Location position) {
+        if (position == null) {
+
+            return;
+        } else {
+            Log.i("[MAP]", "Modifier position carte ..." + position.getLongitude() + " " + position.getLatitude());
             LatLng latLng = new LatLng(position.getLatitude(), position.getLongitude());
             myMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             myMap.animateCamera(CameraUpdateFactory.zoomTo(10));//city zoom
         }
     }
 
-    private void showRestaurant(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants, List<User> myWorkMates) {
 
+    private void showRestaurant2(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
+
+        if (restaurants == null) {
+            Log.i("[MAP]", "liste restauy à zero ds le fragment");
+        }
+
+
+        for (int i = 0; i < restaurants.size(); i++) {
+
+
+            //get position marker
+            Double lat = restaurants.get(i).getGeometry().getLocation().getLat();
+            Double lng = restaurants.get(i).getGeometry().getLocation().getLng();
+            LatLng latLng = new LatLng(lat, lng);
+
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLng);
+            markerOptions.title(restaurants.get(i).getName());
+//            markerOptions.rotation(180.0f);
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+
+            Marker markerForMap = myMap.addMarker(markerOptions);
+            markerForMap.setTag(restaurants.get(i).getPlaceId());
+
+
+        }
+    }
+
+
+    /*private void showRestaurant(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants, List<User> myWorkMates) {*/
+
+    private void showRestaurant(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
 
 
         for (int h = 0; h < markerMap.size(); h++) {
@@ -110,11 +143,13 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
             //Options
 
-       //     markerMap.clear();
+            //     markerMap.clear();
 
             //check if identique
-            for (z = 0; z < myWorkMates.size(); z++) {
 
+
+            /*
+            for (z = 0; z < myWorkMates.size(); z++) {
 
 
                 //ok work fine
@@ -129,7 +164,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                     Marker markerForMap = myMap.addMarker(markerOptions);
                     markerForMap.setTag(restaurants.get(i).getPlaceId());
 
-                } else if (!restaurants.get(i).getPlaceId().equals(myWorkMates.get(z).getFavoriteRestaurant())){
+                } else if (!restaurants.get(i).getPlaceId().equals(myWorkMates.get(z).getFavoriteRestaurant())) {
                     MarkerOptions markerOptions2 = new MarkerOptions();
                     markerOptions2.position(latLng);
                     markerOptions2.title(restaurants.get(i).getName());
@@ -144,6 +179,8 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
             }
 
+             */
+
             //Marker markerForMap = myMap.addMarker(markerOptions);
 
 
@@ -151,6 +188,8 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
         }
     }
+
+
 
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
@@ -169,7 +208,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
 
             //  fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-            myViewModelGo4Lunch.refreshPosition();
+//            myViewModelGo4Lunch.refreshPosition();
 
             //Setup Google Map
             map.getUiSettings().setZoomControlsEnabled(true);
@@ -200,12 +239,28 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             checkPermissions();
 
 
-            myViewModelGo4Lunch.getViewStateLiveData().observe(getViewLifecycleOwner(), new Observer<MainViewState>() {
+          /*  myViewModelGo4Lunch.getViewStateLiveData().observe(getViewLifecycleOwner(), new Observer<MainViewState>() {
                 @Override
                 public void onChanged(MainViewState mainViewState) {
                     Log.i("[MAP]", "Changement dans le ViewState ... Mise à jour");
                     showMapWithPosition(mainViewState.getLocation());
                     showRestaurant(mainViewState.getMyRestaurantsList(), mainViewState.getMyWorkMatesList());
+                }
+            });
+
+           */
+
+
+            //TODO: where to place this?
+            myViewModelMap.refresh();
+            myViewModelMap.getMediatorLiveData().observe(getViewLifecycleOwner(), new Observer<ViewStateMap>() {
+                @Override
+                public void onChanged(ViewStateMap viewStateMap) {
+                    Log.i("[MAP]", "Event ViewStateMap");
+
+                    showMapWithPosition(viewStateMap.myPosition);
+
+                    showRestaurant2(viewStateMap.myRestaurantsList);
                 }
             });
 

@@ -41,8 +41,11 @@ public class RestaurantsRepository {
 
     //this is the constructor is called by factory...
     public RestaurantsRepository() {
-        Log.i("[RESTAURANT]", "Repository restaurant starting singleton...");
+        Log.i("[MAP]", "Repository restaurant starting singleton...");
         service = RetrofitRequest.getRetrofitInstance().create(GooglePlaceApi.class);
+
+
+
     }
 
     //**********************************************************************************************
@@ -53,7 +56,7 @@ public class RestaurantsRepository {
 
     //update position of user in repository when a location is find
     public void UpdateLngLat(Double Long, Double Lat) {
-        Log.i("[RESTAURANT]", "Repository restaurant position " + Lat + Long);
+        Log.i("[MAP]", "Repository restaurant position " + Lat + Long);
         listOfRestaurantWithLongLat.setValue(getAllRestaurants(Long, Lat).getValue());
     }
 
@@ -63,7 +66,7 @@ public class RestaurantsRepository {
     public LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> getAllRestaurants(@Nullable Double Long, @Nullable Double Lat) {
 
         String myPositionStr = Lat + "," + Long;
-        Log.i("[RESTAURANT]", "[REPOSITORY RESTAURANT : Ma position : " + myPositionStr);
+        Log.i("[MAP]", "[REPOSITORY RESTAURANT] : Ma position : " + myPositionStr);
 
         service.getNearbyPlaces(BuildConfig.MAPS_API_KEY, myPositionStr)
 

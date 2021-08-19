@@ -29,6 +29,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 import com.hoarauthomas.go4lunchthp7.ui.FragmentsAdapter;
+import com.hoarauthomas.go4lunchthp7.ui.map.ViewModelMap;
 import com.hoarauthomas.go4lunchthp7.viewmodel.MainViewState;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
@@ -49,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //ViewModel
     public ViewModelGo4Lunch myViewModel;
 
+    private ViewModelMap myViewModelMap;
+
     //Manage fragments map, list and workmates
     FragmentsAdapter myFragmentAdapter;
 
@@ -62,12 +65,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             new AuthUI.IdpConfig.FacebookBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build());
 
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
+
         setupPermission();
         setupViewModel();
         setupTopAppBar();
@@ -93,6 +104,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
               //  Log.i("[STATE]","from mainactivity..." + mainViewState.getLocation().getLatitude() + " "  + mainViewState.getLocation().getLongitude());
             }
         });
+
+
+
+
+
+
     }
 
     private void onCheckSecurity(Boolean connected) {

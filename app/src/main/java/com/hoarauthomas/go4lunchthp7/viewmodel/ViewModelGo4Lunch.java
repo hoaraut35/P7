@@ -45,7 +45,7 @@ public class ViewModelGo4Lunch extends ViewModel {
     private final MediatorLiveData<MainViewState> myAppMapMediator = new MediatorLiveData<>();
     private final MutableLiveData<FirebaseUser> myUserVM;
     private final MutableLiveData<Boolean> myUserStateVM;
-    private final LiveData<Location> myPositionVM;
+    private final LiveData<Location> myPositionVM = null;
 
     private LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantVM;
 
@@ -82,7 +82,7 @@ public class ViewModelGo4Lunch extends ViewModel {
         this.myLocationSource = positionRepository;
 
         //publish to mediatorlivedata with googleplace to combine before to show on UI...
-        this.myPositionVM = Transformations.map(myLocationSource.getmyPositionFromRepo(), new Function<Location, Location>() {
+       /* this.myPositionVM = Transformations.map(myLocationSource.getmyPositionFromRepo(), new Function<Location, Location>() {
             @Override
             public Location apply(Location input) {
                 if (input == null) {
@@ -95,6 +95,8 @@ public class ViewModelGo4Lunch extends ViewModel {
             }
         });
 
+        */
+
         //for restaurants
         this.myRestaurantsSource = restaurantsRepository;
         this.myRestaurantVM = myRestaurantsSource.getAllRestaurants(Long, Lat);
@@ -104,33 +106,39 @@ public class ViewModelGo4Lunch extends ViewModel {
         this.workMatesLiveData = myWorkMatesSource.getAllWorkMates();
 
         //update the position in ViewState for UI
-        myAppMapMediator.addSource(myPositionVM, new Observer<Location>() {
+        /*myAppMapMediator.addSource(myPositionVM, new Observer<Location>() {
             @Override
             public void onChanged(Location position) {
                 //combine(position,null,null);
-                myAppMapMediator.setValue(new MainViewState(position, null, null));
-                myRestaurantsSource.UpdateLngLat(position.getLongitude(), position.getLatitude());
+                myAppMapMediator.setValue(new MainViewState(null, null, null));
+                //myRestaurantsSource.UpdateLngLat(position.getLongitude(), position.getLatitude());
             }
         });
+
+         */
+
+
 
         //update the restaurant list in ViewState for UI
         myAppMapMediator.addSource(myRestaurantVM, new Observer<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>>() {
             @Override
             public void onChanged(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
-                combine(myPositionVM.getValue(), restaurants, workMatesLiveData.getValue());
+//                combine(myPositionVM.getValue(), restaurants, workMatesLiveData.getValue());
 
-                myAppMapMediator.setValue(new MainViewState(myPositionVM.getValue(), restaurants, workMatesLiveData.getValue()));
+//                myAppMapMediator.setValue(new MainViewState(myPositionVM.getValue(), restaurants, workMatesLiveData.getValue()));
             }
         });
 
         //update the workmates list in ViewState for UI
-        myAppMapMediator.addSource(workMatesLiveData, new Observer<List<User>>() {
+    /*    myAppMapMediator.addSource(workMatesLiveData, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> workMatesList) {
                 combine(myPositionVM.getValue(), myRestaurantVM.getValue(), workMatesList);
                 myAppMapMediator.setValue((new MainViewState(myPositionVM.getValue(), myRestaurantList, workMatesList)));
             }
         });
+
+     */
     }
 
     public float distanceBetween(LatLng first, LatLng second) {

@@ -28,8 +28,12 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     //Add repository here...
     private final AuthRepository authRepository;
     private final PositionRepository positionRepository;
+
+    @NonNull
     private final RestaurantsRepository restaurantsRepository;
     private final WorkMatesRepository workMatesRepository;
+
+    @NonNull
     private final PermissionChecker permissionChecker;
 
     //Get an instance of ViewModelFactory ... see pattern singleton
@@ -41,11 +45,12 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     Log.i("[THOMAS]", "[VIEWMODELFACTORY NEW OBJECT]");
                     Application application = MainApplication.getApplication();
                     myViewModelFactory = new ViewModelFactory(
+                            new PermissionChecker(application),
                             new AuthRepository(),
                             new RestaurantsRepository(),
                             new PositionRepository(LocationServices.getFusedLocationProviderClient(application)),
-                            new WorkMatesRepository(),
-                            new PermissionChecker(application)
+                            new WorkMatesRepository()
+
                     );
                 } else {
                     Log.i("[THOMAS]", "[VIEWMODELFACTORY OBJECT ALREADY EXIST]");
@@ -58,12 +63,19 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     }
 
     //constructor of ViewModelFactory ...
-    private ViewModelFactory(AuthRepository authRepository, RestaurantsRepository restaurantsRepository, PositionRepository positionRepository, WorkMatesRepository workMatesRepository, PermissionChecker permissionChecker) {
+    private ViewModelFactory(
+            @NonNull PermissionChecker permissionChecker,
+            AuthRepository authRepository,
+            @NonNull RestaurantsRepository restaurantsRepository,
+            PositionRepository positionRepository,
+            WorkMatesRepository workMatesRepository
+            ) {
+        this.permissionChecker = permissionChecker;
         this.authRepository = authRepository;
         this.positionRepository = positionRepository;
         this.restaurantsRepository = restaurantsRepository;
         this.workMatesRepository = workMatesRepository;
-        this.permissionChecker = permissionChecker;
+
     }
 
 
@@ -80,8 +92,9 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     permissionChecker);
         }
 
-        if(modelClass.isAssignableFrom(ViewModelMap.class)){
-            return(T) new ViewModelMap(
+        if (modelClass.isAssignableFrom(ViewModelMap.class)) {
+            return (T) new ViewModelMap(
+                    permissionChecker,
                     positionRepository,
                     restaurantsRepository
 
@@ -89,13 +102,12 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
 
         }
 
-        if(modelClass.isAssignableFrom(ViewModelDetail.class)){
+        if (modelClass.isAssignableFrom(ViewModelDetail.class)) {
 
         }
-        if(modelClass.isAssignableFrom(ViewModelRestaurant.class)){
+        if (modelClass.isAssignableFrom(ViewModelRestaurant.class)) {
 
         }
-
 
 
         throw new IllegalArgumentException("[V M F] Unknow ViewModel class");
