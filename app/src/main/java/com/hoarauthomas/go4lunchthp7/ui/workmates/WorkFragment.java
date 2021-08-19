@@ -67,10 +67,10 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.ClickList
 
         binding = FragmentWorkBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-        setupViewModel();
-        binding.recyclerViewWorkmates.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        binding.recyclerViewWorkmates.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-        binding.recyclerViewWorkmates.setHasFixedSize(false);
+       // setupViewModel();
+       // binding.recyclerViewWorkmates.setLayoutManager(new LinearLayoutManager(view.getContext()));
+       // binding.recyclerViewWorkmates.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+       // binding.recyclerViewWorkmates.setHasFixedSize(false);
         return view;
     }
 

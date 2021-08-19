@@ -88,31 +88,29 @@ public class ViewModelMap extends ViewModel {
 
         Log.i("[MAP]", "Appel View logic run ...");
 
-        if (position == null && restaurants == null && workmates == null) {
+        if (position == null || restaurants.isEmpty() || workmates.isEmpty()) {
             //Log.i("[MAP]", "Attente position avant logique ...");
             return;
         } else {
 
-            if (restaurants == null) {
-               // Log.i("[MAP]", "Mise à jour query restaurant");
-                //myRestaurantRepository.UpdateLngLat(position.getLatitude(),position.getLongitude());
-            } else if (position != null && restaurants != null && workmates != null) {
+
+            if (position != null && !restaurants.isEmpty()  && !workmates.isEmpty()) {
 
                 for (int i = 0; i < restaurants.size(); i++) {
 
                     restaurants.get(i).setIcon("rouge");
                     for (int z = 0; z < workmates.size(); z++) {
 
-          //              Log.i("[MAP]", "" + restaurants.get(i).getPlaceId() + " | " + workmates.get(z).getFavoriteRestaurant());
+                        //              Log.i("[MAP]", "" + restaurants.get(i).getPlaceId() + " | " + workmates.get(z).getFavoriteRestaurant());
 
                         //Log.i()
                         if (restaurants.get(i).getPlaceId().equals(workmates.get(z).getFavoriteRestaurant())) {
 
-                            restaurants.get(i).setIcon("vert");}
+                            restaurants.get(i).setIcon("vert");
+                        }
 
 
-
-            //            Log.i("[MAP]", "restaurant identique prevoir modif pojo");
+                        //            Log.i("[MAP]", "restaurant identique prevoir modif pojo");
 
                     }
                     Log.i("[MAP]", "Restaurant " + restaurants.get(i).getName() + restaurants.get(i).getIcon());

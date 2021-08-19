@@ -42,7 +42,7 @@ public class ListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_fragment, container, false);
-        setupViewModel();
+      //  setupViewModel();
         this.myView = view;
 
         return view;

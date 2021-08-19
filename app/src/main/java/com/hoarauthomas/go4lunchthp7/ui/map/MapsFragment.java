@@ -95,6 +95,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
     private void showRestaurant2(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
 
+        Log.i("[MAP]","nombre dappel ");
         if (restaurants == null) {
             Log.i("[MAP]", "liste restauy à zero ds le fragment");
         }
