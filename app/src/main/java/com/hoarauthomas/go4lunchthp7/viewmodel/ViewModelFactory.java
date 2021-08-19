@@ -96,7 +96,9 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new ViewModelMap(
                     permissionChecker,
                     positionRepository,
-                    restaurantsRepository
+                    restaurantsRepository,
+                    workMatesRepository
+
 
             );
 

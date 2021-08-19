@@ -43,7 +43,7 @@ public class WorkMatesRepository {
     //init data on startup viewmodelfactory
     public WorkMatesRepository() {
 
-        Log.i("[WORK]", "- Appel du repository WorkMates ...");
+        Log.i("[MAP]", "- Appel du repository WorkMates ...");
 
         getUsersCollection().get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -54,15 +54,15 @@ public class WorkMatesRepository {
                     User myUser = new User();
 
                     if (docs.get("urlPicture").toString() != null) {
-                        Log.i("[WORK]", "Avatar : " + docs.get("urlPicture").toString());
+                        Log.i("[MAP]", "Avatar : " + docs.get("urlPicture").toString());
                         myUser.setUrlPicture(docs.get("urlPicture").toString());
                     }
                     if (docs.get("username").toString() != null) {
-                        Log.i("[WORK]", "Nom complet : " + docs.get("username").toString());
+                        Log.i("[MAP]", "Nom complet : " + docs.get("username").toString());
                         myUser.setUsername(docs.get("username").toString());
                     }
                     if (docs.get("favoriteRestaurant").toString() != null) {
-                        Log.i("[WORK]", "Restaurant favoris : " + docs.get("favoriteRestaurant").toString());
+                        Log.i("[MAP]", "Restaurant favoris : " + docs.get("favoriteRestaurant").toString());
                         myUser.setFavoriteRestaurant(docs.get("favoriteRestaurant").toString());
                     }
 

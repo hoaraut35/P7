@@ -43,9 +43,6 @@ public class RestaurantsRepository {
     public RestaurantsRepository() {
         Log.i("[MAP]", "Repository restaurant starting singleton...");
         service = RetrofitRequest.getRetrofitInstance().create(GooglePlaceApi.class);
-
-
-
     }
 
     //**********************************************************************************************
