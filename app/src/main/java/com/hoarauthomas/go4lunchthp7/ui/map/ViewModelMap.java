@@ -89,11 +89,8 @@ public class ViewModelMap extends ViewModel {
         Log.i("[MAP]", "Appel View logic run ...");
 
         if (position == null || restaurants.isEmpty() || workmates.isEmpty()) {
-            //Log.i("[MAP]", "Attente position avant logique ...");
-            return;
+           return;
         } else {
-
-
             if (position != null && !restaurants.isEmpty()  && !workmates.isEmpty()) {
 
                 for (int i = 0; i < restaurants.size(); i++) {

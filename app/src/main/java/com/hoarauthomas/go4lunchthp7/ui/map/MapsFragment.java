@@ -95,49 +95,41 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
     private void showRestaurant2(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
 
-        Log.i("[MAP]","nombre dappel ");
-        if (restaurants == null) {
-            Log.i("[MAP]", "liste restauy à zero ds le fragment");
-        }
+        Log.i("[MAP]", "nombre dappel ");
 
+        if (restaurants.isEmpty()) {
+            Log.i("[MAP]", "liste restauy à zero ds le fragment");
+            return;
+        }
 
         myMap.clear();
 
+        LatLng myMarkerPosition;
+        MarkerOptions myMarkerOptions;
 
         for (int i = 0; i < restaurants.size(); i++) {
 
-            Log.i("[MAP]","Restaurant traité " + restaurants.get(i).getName() +" | " + restaurants.get(i).getPlaceId()+ " | "  + restaurants.get(i).getIcon());
 
-            //get position marker
-            Double lat = restaurants.get(i).getGeometry().getLocation().getLat();
-            Double lng = restaurants.get(i).getGeometry().getLocation().getLng();
-            LatLng latLng = new LatLng(lat, lng);
+            myMarkerPosition = new LatLng(restaurants.get(i).getGeometry().getLocation().getLat(),restaurants.get(i).getGeometry().getLocation().getLng());
+            myMarkerOptions = new MarkerOptions();
 
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(latLng);
-            markerOptions.title(restaurants.get(i).getName());
-//            markerOptions.rotation(180.0f);
-
-
-            Log.i("[MAP]",""+ restaurants.get(i).getIcon().toString());
-
-            if (restaurants.get(i).getIcon().toString() ==  "rouge"){
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.green_icon));
-                markerOptions.rotation(180);
-
-            }else
-            {
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.red_icon));
-            //    markerOptions.rotation(180);
+            myMarkerOptions.position(myMarkerPosition);
+            if (restaurants.get(i).getIcon().toString().contains("rouge")){
+                myMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            }else {
+                myMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
             }
 
+            myMap.addMarker(myMarkerOptions);
 
-
-            Marker markerForMap = myMap.addMarker(markerOptions);
-            markerForMap.setTag(restaurants.get(i).getPlaceId());
+            Log.i("[MAP]", "nombre dappel " + i);
 
 
         }
+
+
+
+
     }
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
@@ -180,7 +172,16 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
                     return false;
                 }
+
+
             });
+
+            LatLng sydney = new LatLng(-33.852, 151.211);
+            map.addMarker(new MarkerOptions()
+                    .position(sydney)
+                    .title("Marker in Sydney"));
+            map.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
 
             //TODO: update permissions control , add to resume
             //To check permission
@@ -200,7 +201,6 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
 
             //TODO: where to place this?
-
 
 
         }
