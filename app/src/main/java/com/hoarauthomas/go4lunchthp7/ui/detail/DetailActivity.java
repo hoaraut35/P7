@@ -96,6 +96,7 @@ public class DetailActivity extends AppCompatActivity {
             public void onChanged(ViewStateDetail viewStateDetail) {
                 Log.i("[MONDETAIL]","detail demandé activity");
                 binding.restaurantTitre.setText(viewStateDetail.getMyTitle());
+                binding.restaurantAddress.setText(viewStateDetail.getAdresse());
             }
         });
 

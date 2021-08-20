@@ -47,7 +47,7 @@ public class RestaurantsRepository {
 
     //**********************************************************************************************
 
-    public LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> getMyRestaurantsList(){
+    public LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> getMyRestaurantsList() {
         return listOfRestaurantWithLongLat;
     }
 
@@ -102,6 +102,10 @@ public class RestaurantsRepository {
     //this livedata is publish to viewmodel... v2
     public LiveData<ResultDetailRestaurant> getRestaurantById2(String restaurant_id) {
 
+        if (restaurant_id == null || restaurant_id.isEmpty()) {
+            monDetailRestau.setValue(null);
+        }
+
 
         Log.i("[RESTAURANT]", "detail restaurant avec id " + restaurant_id);
 
@@ -111,11 +115,13 @@ public class RestaurantsRepository {
                     public void onResponse(Call<MyDetailRestaurant> call, Response<MyDetailRestaurant> response) {
                         assert response.body() != null;
 
-                        Log.i("[RESTAURANT]", "DETAIL REPOSITORY : " +
+                     /*   Log.i("[RESTAURANT]", "DETAIL REPOSITORY : " +
                                 "\n téléphone : " +
                                 response.body().getResult().getFormattedPhoneNumber() +
                                 "\n url : " +
                                 response.body().getResult().getUrl() + response.body().getResult());
+
+                      */
                         monDetailRestau.setValue(response.body().getResult());
 
                     }

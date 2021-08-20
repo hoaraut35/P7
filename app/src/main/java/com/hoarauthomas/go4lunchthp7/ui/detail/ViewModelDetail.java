@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.hoarauthomas.go4lunchthp7.RestaurantDetailPojo;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
+import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
@@ -38,15 +39,14 @@ public class ViewModelDetail extends ViewModel {
         this.myWorkMatesRepository = myWorkMatesRepository;
 
         LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
+        LiveData<ResultDetailRestaurant> myDetail = this.myRestaurantRepository.getRestaurantById2(myPlaceId.getValue());
         LiveData<List<User>> myWorkMatesList = this.myWorkMatesRepository.getAllWorkMates();
-
-
 
         myViewStateDetailMediator.addSource(myRestaurantsList, new Observer<List<RestaurantPojo>>() {
             @Override
             public void onChanged(List<RestaurantPojo> restaurantPojos) {
                 Log.i("[DETAIL]", "Event Detail liste restaurantr");
-                logicWork(null, restaurantPojos,myWorkMatesList.getValue(),myPlaceId.getValue());
+                logicWork(null, restaurantPojos,myWorkMatesList.getValue(),myPlaceId.getValue(),myDetail.getValue());
             }
         });
 
@@ -54,7 +54,7 @@ public class ViewModelDetail extends ViewModel {
             @Override
             public void onChanged(List<User> users) {
                 Log.i("[DETAIL]", "Event Detail liste workmates");
-                logicWork(null,myRestaurantsList.getValue(),users,myPlaceId.getValue());
+                logicWork(null,myRestaurantsList.getValue(),users,myPlaceId.getValue(),myDetail.getValue());
             }
         });
 
@@ -64,9 +64,17 @@ public class ViewModelDetail extends ViewModel {
             public void onChanged(String s) {
 
                 Log.i("[MONDETAIL]", "Event Detail placeifd"+ s);
-                logicWork(null,myRestaurantsList.getValue(),myWorkMatesList.getValue(),s);
+                logicWork(null,myRestaurantsList.getValue(),myWorkMatesList.getValue(),s,myDetail.getValue());
             }
         });
+
+        myViewStateDetailMediator.addSource(myDetail, new Observer<ResultDetailRestaurant>() {
+            @Override
+            public void onChanged(ResultDetailRestaurant resultDetailRestaurant) {
+                logicWork(null,myRestaurantsList.getValue(),myWorkMatesList.getValue(),myPlaceId.getValue(), resultDetailRestaurant);
+            }
+        });
+
 
 
 
@@ -75,7 +83,7 @@ public class ViewModelDetail extends ViewModel {
     //**********************************************************************************************
     // Logic work
     //**********************************************************************************************
-    private void logicWork(@Nullable Location position, @Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates, @Nullable String placeId) {
+    private void logicWork(@Nullable Location position, @Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates, @Nullable String placeId, @Nullable ResultDetailRestaurant detail) {
         List<User> workMatesTag = new ArrayList<>();
 
         RestaurantPojo newRestau;
