@@ -35,13 +35,6 @@ public class DetailActivity extends AppCompatActivity {
 
     private ViewModelDetail myViewModelDetail;
 
-
-//    private ViewModelGo4Lunch myViewModel;
-
-
-
-
-
     //th elist of restaurants
     public final ArrayList<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> allResult = new ArrayList<>();
     private RecyclerView recyclerView;
@@ -64,10 +57,10 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         restaurant_id = intent.getStringExtra("TAG_ID");
-        Log.i("[DETAIL]", "id restaurant " + restaurant_id);
-        workmate_id = intent.getStringExtra("WORKMATEID");
+       // Log.i("[DETAIL]", "id restaurant " + restaurant_id);
+     //   workmate_id = intent.getStringExtra("WORKMATEID");
 
-        my_restaurant_id = intent.getStringExtra("MYRESTAURANT");
+       // my_restaurant_id = intent.getStringExtra("MYRESTAURANT");
 
 
         if (intent.getStringExtra("TAG_ID") != null && intent.getStringExtra("WORKMATEID_ID") != null && intent.getStringExtra("MYRESTAURANT_ID") != null) {
@@ -95,10 +88,14 @@ public class DetailActivity extends AppCompatActivity {
     private void setupViewModel() {
 
         myViewModelDetail = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelDetail.class);
+
+        myViewModelDetail.setPlaceId(restaurant_id);
+
         myViewModelDetail.getMediatorLiveData().observe(this, new Observer<ViewStateDetail>() {
             @Override
             public void onChanged(ViewStateDetail viewStateDetail) {
-
+                Log.i("[MONDETAIL]","detail demandé activity");
+                binding.restaurantTitre.setText(viewStateDetail.getMyTitle());
             }
         });
 
