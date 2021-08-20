@@ -1,6 +1,9 @@
 package com.hoarauthomas.go4lunchthp7.ui.detail;
 
+import com.hoarauthomas.go4lunchthp7.RestaurantDetailPojo;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
+import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
+import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +12,29 @@ import javax.annotation.Nullable;
 
 public class ViewStateDetail {
 
+    com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo myRestaurantObject;
+    ResultDetailRestaurant myRestaurantDetailObject;
+
     String myTitle;
+
+    public RestaurantPojo getMyRestaurantObject() {
+        return myRestaurantObject;
+    }
+
+    public void setMyRestaurantObject(RestaurantPojo myRestaurantObject) {
+        this.myRestaurantObject = myRestaurantObject;
+    }
+
+    public ResultDetailRestaurant getMyRestaurantDetailObject() {
+        return myRestaurantDetailObject;
+    }
+
+    public void setMyRestaurantDetailObject(ResultDetailRestaurant myRestaurantDetailObject) {
+        this.myRestaurantDetailObject = myRestaurantDetailObject;
+    }
+
+
+
     String Adresse;
     String telephone;
     String website;
@@ -17,7 +42,7 @@ public class ViewStateDetail {
     Boolean Favoris;
     List<User> myWorkMatesTag = new ArrayList<>();
 
-    public ViewStateDetail(String myTitle, String adresse, String telephone, String website, Boolean like, Boolean favoris, List<User> myWorkMatesTag) {
+    public ViewStateDetail(RestaurantPojo myRestaurant, ResultDetailRestaurant myDetailRestaurant, String myTitle, String adresse, String telephone, String website, Boolean like, Boolean favoris, List<User> myWorkMatesTag) {
         this.myTitle = myTitle;
         Adresse = adresse;
         this.telephone = telephone;
@@ -25,6 +50,10 @@ public class ViewStateDetail {
         this.like = like;
         Favoris = favoris;
         this.myWorkMatesTag = myWorkMatesTag;
+
+        this.myRestaurantObject = myRestaurant;
+        this.myRestaurantDetailObject = myDetailRestaurant;
+
     }
 
     public List<User> getMyWorkMatesTag() {

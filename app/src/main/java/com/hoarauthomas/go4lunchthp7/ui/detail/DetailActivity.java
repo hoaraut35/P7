@@ -19,12 +19,8 @@ import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.MyDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
-import com.hoarauthomas.go4lunchthp7.ui.map.ViewModelMap;
-import com.hoarauthomas.go4lunchthp7.ui.map.ViewStateMap;
 import com.hoarauthomas.go4lunchthp7.ui.restaurant.RecyclerViewAdapter;
-import com.hoarauthomas.go4lunchthp7.viewmodel.MainViewState;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
-import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +39,7 @@ public class DetailActivity extends AppCompatActivity {
     private String restaurant_id, workmate_id, my_restaurant_id;
     private ResultDetailRestaurant monRestauDetail;
 
-    private String phone, url;
+
     private com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo result;
 
     @Override
@@ -57,10 +53,10 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         restaurant_id = intent.getStringExtra("TAG_ID");
-       // Log.i("[DETAIL]", "id restaurant " + restaurant_id);
-     //   workmate_id = intent.getStringExtra("WORKMATEID");
+        // Log.i("[DETAIL]", "id restaurant " + restaurant_id);
+        //   workmate_id = intent.getStringExtra("WORKMATEID");
 
-       // my_restaurant_id = intent.getStringExtra("MYRESTAURANT");
+        // my_restaurant_id = intent.getStringExtra("MYRESTAURANT");
 
 
         if (intent.getStringExtra("TAG_ID") != null && intent.getStringExtra("WORKMATEID_ID") != null && intent.getStringExtra("MYRESTAURANT_ID") != null) {
@@ -70,15 +66,9 @@ public class DetailActivity extends AppCompatActivity {
 
         }
 
-
-
         setupViewModel();
-        //showSnackBar(restaurant_id);
 
-  //      setupRecyclerView();
-        //setupButtonPhone();
-    //    setupButtonLike();
-        // setupButtonWeb();
+        //    setupButtonLike();
 
 
     }
@@ -94,86 +84,46 @@ public class DetailActivity extends AppCompatActivity {
         myViewModelDetail.getMediatorLiveData().observe(this, new Observer<ViewStateDetail>() {
             @Override
             public void onChanged(ViewStateDetail viewStateDetail) {
-                Log.i("[MONDETAIL]","detail demandé activity");
+                Log.i("[MONDETAIL]", "detail demandé activity");
+
+                //titre retaurant
                 binding.restaurantTitre.setText(viewStateDetail.getMyTitle());
-                binding.restaurantAddress.setText(viewStateDetail.getAdresse());
-            }
-        });
 
-        /*myViewModelDetail.getMediatorLiveData().observe(this, new Observer<ViewStateDetail>() {
-            @Override
-            public void onChanged(ViewStateDetail viewStateDetail) {
-                Log.i("[DETAIL]", "Event ViewDetail Event");
+                //adresse restaurant
+                binding.restaurantAddress.setText(viewStateDetail.myRestaurantObject.getVicinity());
 
-            }
-        } );
+                //show star rating
+                try {
+                    double ratingDbl = map(viewStateDetail.myRestaurantObject.getRating(), 1.0, 5.0, 1.0, 3.0);
 
-         */
-        /*new Observer<ViewStateMap>() {
-            @Override
-            public void onChanged(ViewStateMap viewStateMap) {
+                    int ratingInt = (int) Math.round(ratingDbl);
 
+                    //Log.i("[RATING]", "Convert [1.0 ... 5.0] : " + result.getRating() + " to [1.00 ... 3.0] : " + map(result.getRating(), 1.0, 5.0, 1.0, 3.0) + "to int :" + ratingInt);
 
-                showMapWithPosition(viewStateMap.myPosition);
-
-                showRestaurant2(viewStateMap.myRestaurantsList);
-            }
-        });
-
-         */
-
-
-     /*   this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
-
-
-        this.myViewModel.getViewStateLiveData().observe(this, new Observer<MainViewState>() {
-            @Override
-            public void onChanged(MainViewState mainViewState) {
-
-
-                if (mainViewState.getMyRestaurantsList() != null) {
-                    showSnackBar("Restaurants : " + mainViewState.getMyRestaurantsList().size() + " " + restaurant_id);
-
-
-                    for (int i = 0; i < mainViewState.getMyRestaurantsList().size(); i++) {
-
-                        if (mainViewState.getMyRestaurantsList().get(i).getPlaceId().equals(restaurant_id)) {
-                            binding.restaurantTitre.setText(mainViewState.getMyRestaurantsList().get(i).getName());
-                            binding.restaurantAddress.setText(mainViewState.getMyRestaurantsList().get(i).getVicinity());
-                        }
-
+                    if (ratingInt == 1) {
+                        binding.ratingbar.setRating(1);
+                    } else if (ratingInt == 2) {
+                        binding.ratingbar.setRating(2);
+                    } else if (ratingInt == 3) {
+                        binding.ratingbar.setRating(3);
                     }
 
+                } catch (Exception e) {
+                    Log.i("[RATING]", "Pas de notation pour ce restaurant !");
+                    binding.ratingbar.setRating(0);
                 }
 
+                //setupButtonWeb(viewStateDetail.getMyRestaurantDetailObject().getUrl());
+
+                //setupButtonPhone(viewStateDetail.getMyRestaurantDetailObject().getFormattedPhoneNumber());
+
+                setupRecyclerView(viewStateDetail.getMyWorkMatesTag());
             }
         });
 
-      */
-
-
-        //this.myViewModel.getRestaurantDetail2(restaurant_id).observe(this, this::onUpdateDetail);
-
-//        binding.restaurantTitre.setText(monRestauDetail.getFormattedPhoneNumber());
-
-        //  monRestauDetail = this.myViewModel.getRestaurantDetail2(restaurant_id);
-        //test = this.myViewModel.getRestaurantDetail(restaurant_id);
-
-
-        //   binding.restaurantTitre.setText(results.get(i).getName());
-        // binding.restaurantAddress.setText(results.get(i).getVicinity());
-        // this.myViewModel.getMyPosition().observe(this, this::onUpdatePosition);
-        //this.myViewModel.getAllWorkMatesByRestaurant().observe(this, this::onUpdateWorkMates);
 
     }
 
-    private void onUpdateDetail2(MyDetailRestaurant myDetailRestaurant) {
-        Log.i("[DETAIL]", "detail sur activity" + myDetailRestaurant.getResult().getUrl());
-
-        this.phone = myDetailRestaurant.getResult().getFormattedPhoneNumber();
-        this.url = myDetailRestaurant.getResult().getUrl();
-
-    }
 
     private void onUpdateDetail(ResultDetailRestaurant resultDetailRestaurant) {
 
@@ -226,25 +176,6 @@ public class DetailActivity extends AppCompatActivity {
 
                 //setupButtonPhone(result..);binding.
 
-                //show star rating
-                try {
-                    double ratingDbl = map(result.getRating(), 1.0, 5.0, 1.0, 3.0);
-                    int ratingInt = (int) Math.round(ratingDbl);
-                    Log.i("[RATING]", "Convert [1.0 ... 5.0] : " + result.getRating() + " to [1.00 ... 3.0] : " + map(result.getRating(), 1.0, 5.0, 1.0, 3.0) + "to int :" + ratingInt);
-
-                    if (ratingInt == 1) {
-                        binding.ratingbar.setRating(1);
-                    } else if (ratingInt == 2) {
-                        binding.ratingbar.setRating(2);
-                    } else if (ratingInt == 3) {
-                        binding.ratingbar.setRating(3);
-                    }
-
-                } catch (Exception e) {
-                    Log.i("[RATING]", "Pas de notation pour ce restaurant !");
-                    binding.ratingbar.setRating(0);
-                }
-
 
             }
 
@@ -260,13 +191,13 @@ public class DetailActivity extends AppCompatActivity {
         return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
 
-    private void setupRecyclerView() {
+    private void setupRecyclerView(List<User> myWorkmatesList) {
         recyclerView = binding.recyclerView;
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(itemDecoration);
-        recyclerView.setAdapter(new RecyclerViewAdapter(allResult));
+        recyclerView.setAdapter(new RecyclerViewAdapterDetail(myWorkmatesList));
     }
 
 
@@ -291,8 +222,8 @@ public class DetailActivity extends AppCompatActivity {
         binding.likeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               showSnackBar("Enregistrer le restaurant : " + binding.restaurantTitre.getText());
-           //     myViewModel.onLikeClicked();
+                showSnackBar("Enregistrer le restaurant : " + binding.restaurantTitre.getText());
+                //     myViewModel.onLikeClicked();
             }
         });
     }

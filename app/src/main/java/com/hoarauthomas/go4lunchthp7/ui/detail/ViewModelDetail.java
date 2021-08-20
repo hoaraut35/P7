@@ -35,6 +35,7 @@ public class ViewModelDetail extends ViewModel {
 
     //constructor
     public ViewModelDetail(RestaurantsRepository myRestaurantRepository,WorkMatesRepository myWorkMatesRepository){
+
         this.myRestaurantRepository = myRestaurantRepository;
         this.myWorkMatesRepository = myWorkMatesRepository;
 
@@ -71,6 +72,7 @@ public class ViewModelDetail extends ViewModel {
         myViewStateDetailMediator.addSource(myDetail, new Observer<ResultDetailRestaurant>() {
             @Override
             public void onChanged(ResultDetailRestaurant resultDetailRestaurant) {
+                Log.i("[MONDETAIL]", "Event Detail api");
                 logicWork(null,myRestaurantsList.getValue(),myWorkMatesList.getValue(),myPlaceId.getValue(), resultDetailRestaurant);
             }
         });
@@ -87,21 +89,30 @@ public class ViewModelDetail extends ViewModel {
         List<User> workMatesTag = new ArrayList<>();
 
         RestaurantPojo newRestau;
+        ResultDetailRestaurant newDetailRestau = null;
 
-        //selection restaurant
+        //l'objet placeId existe
         if (placeId != null){
 
-            //verification id
+            //un restaurant est choisi
             if (!placeId.isEmpty()){
+                Log.i("[MONDETAIL]","Un restaurant est sélectionné ...");
 
-                if (restaurants != null){
+                //si on a la liste des restaurant on peut récupéré le début des infos
+                if (restaurants != null && !restaurants.isEmpty()){
 
                     for (int i =0; i<restaurants.size();i++){
 
                         //restaurant trouvé
                         if (restaurants.get(i).getPlaceId().equals(placeId)){
                             newRestau = restaurants.get(i);
-                            myViewStateDetailMediator.setValue(new ViewStateDetail(newRestau.getName(),"test","","",true,true,workMatesTag));
+
+                            if (detail != null){
+                                newDetailRestau  = detail;
+                            }
+
+
+                            myViewStateDetailMediator.setValue(new ViewStateDetail(newRestau,newDetailRestau ,newRestau.getName(),"test","","",true,true,workMatesTag));
                         }
 
                     /*for (int z=0;z<workmates.size();z++){
@@ -153,7 +164,7 @@ public class ViewModelDetail extends ViewModel {
 
         }else
         {
-            myViewStateDetailMediator.setValue(new ViewStateDetail("null","test","","",true,true,workMatesTag));
+        //    myViewStateDetailMediator.setValue(new ViewStateDetail("null","test","","",true,true,workMatesTag));
         }
 
 
