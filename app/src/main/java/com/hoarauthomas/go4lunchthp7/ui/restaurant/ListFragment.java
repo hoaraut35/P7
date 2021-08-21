@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.R;
+import com.hoarauthomas.go4lunchthp7.ui.map.ViewModelMap;
 import com.hoarauthomas.go4lunchthp7.viewmodel.MainViewState;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
@@ -26,7 +28,9 @@ import java.util.Objects;
 
 public class ListFragment extends Fragment {
 
-    private ViewModelGo4Lunch myViewModelGo4Lunch;
+    private ViewModelRestaurant myViewModelRestaurant;
+
+
 
     public final ArrayList<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> allResult = new ArrayList<>();
 
@@ -42,13 +46,27 @@ public class ListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_fragment, container, false);
-      //  setupViewModel();
+        setupViewModel();
         this.myView = view;
 
         return view;
     }
 
     private void setupViewModel() {
+
+        myViewModelRestaurant = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelRestaurant.class);
+
+        myViewModelRestaurant.getMediatorLiveData().observe(getViewLifecycleOwner(), new Observer<ViewStateRestaurant>() {
+            @Override
+            public void onChanged(ViewStateRestaurant viewStateRestaurant) {
+
+                showRestaurant(viewStateRestaurant.getMyRestaurantList());
+            }
+        });
+
+
+
+
 
    /*     myViewModelGo4Lunch = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
 

@@ -109,6 +109,10 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
 
         }
         if (modelClass.isAssignableFrom(ViewModelRestaurant.class)) {
+            return (T) new ViewModelRestaurant(
+                    positionRepository,
+                    restaurantsRepository,
+                    workMatesRepository);
 
         }
 

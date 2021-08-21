@@ -12,10 +12,20 @@ import javax.annotation.Nullable;
 
 public class ViewStateDetail {
 
+
+
+    String Adresse;
+    String telephone;
+    String website;
+    Boolean like;
+    Boolean Favoris;
+    List<User> myWorkMatesTag = new ArrayList<>();
+
+
     com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo myRestaurantObject;
     ResultDetailRestaurant myRestaurantDetailObject;
 
-    String myTitle;
+
 
     public RestaurantPojo getMyRestaurantObject() {
         return myRestaurantObject;
@@ -35,24 +45,20 @@ public class ViewStateDetail {
 
 
 
-    String Adresse;
-    String telephone;
-    String website;
-    Boolean like;
-    Boolean Favoris;
-    List<User> myWorkMatesTag = new ArrayList<>();
+    public ViewStateDetail(
+            RestaurantPojo myRestaurant,
+            ResultDetailRestaurant myDetailRestaurant,
+            Boolean like,
+            Boolean favoris,
+            List<User> myWorkMatesTag) {
 
-    public ViewStateDetail(RestaurantPojo myRestaurant, ResultDetailRestaurant myDetailRestaurant, Boolean like, Boolean favoris, List<User> myWorkMatesTag) {
-        //this.myTitle = myTitle;
-        //Adresse = adresse;
-        //this.telephone = telephone;
-        //this.website = website;
         this.like = like;
-        Favoris = favoris;
-        this.myWorkMatesTag = myWorkMatesTag;
-
+        this.Favoris = favoris;
         this.myRestaurantObject = myRestaurant;
         this.myRestaurantDetailObject = myDetailRestaurant;
+        this.myWorkMatesTag = myWorkMatesTag;
+
+
 
     }
 
@@ -64,21 +70,9 @@ public class ViewStateDetail {
         this.myWorkMatesTag = myWorkMatesTag;
     }
 
-    public String getMyTitle() {
-        return myTitle;
-    }
 
-    public void setMyTitle(String myTitle) {
-        this.myTitle = myTitle;
-    }
 
-    public String getAdresse() {
-        return Adresse;
-    }
 
-    public void setAdresse(String adresse) {
-        Adresse = adresse;
-    }
 
     public String getTelephone() {
         return telephone;

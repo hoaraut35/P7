@@ -39,6 +39,9 @@ public class RestaurantsRepository {
     private final MutableLiveData<ResultDetailRestaurant> restauDetailObj = new MutableLiveData<>();
     private final MutableLiveData<MyDetailRestaurant> restauDetailObj2 = new MutableLiveData<>();
 
+    private final MutableLiveData<String> placeId = new MutableLiveData<String>();
+
+
     //this is the constructor is called by factory...
     public RestaurantsRepository() {
         Log.i("[MAP]", "Repository restaurant starting singleton...");
@@ -103,18 +106,18 @@ public class RestaurantsRepository {
     public LiveData<ResultDetailRestaurant> getRestaurantById2(String restaurant_id) {
 
         if (restaurant_id == null || restaurant_id.isEmpty()) {
+            Log.i("[MONDETAIL]","id null opu vide");
             monDetailRestau.setValue(null);
-        }
+        }else{
+            Log.i("[RESTAURANT]", "detail restaurant avec id " + restaurant_id);
 
+            service.getPlaceDetails2(BuildConfig.MAPS_API_KEY, restaurant_id)
+                    .enqueue(new Callback<MyDetailRestaurant>() {
+                        @Override
+                        public void onResponse(Call<MyDetailRestaurant> call, Response<MyDetailRestaurant> response) {
+                            assert response.body() != null;
 
-        Log.i("[RESTAURANT]", "detail restaurant avec id " + restaurant_id);
-
-        service.getPlaceDetails2(BuildConfig.MAPS_API_KEY, restaurant_id)
-                .enqueue(new Callback<MyDetailRestaurant>() {
-                    @Override
-                    public void onResponse(Call<MyDetailRestaurant> call, Response<MyDetailRestaurant> response) {
-                        assert response.body() != null;
-
+                            Log.i("[MONDETAIL]","recup detail... repository");
                      /*   Log.i("[RESTAURANT]", "DETAIL REPOSITORY : " +
                                 "\n téléphone : " +
                                 response.body().getResult().getFormattedPhoneNumber() +
@@ -122,17 +125,29 @@ public class RestaurantsRepository {
                                 response.body().getResult().getUrl() + response.body().getResult());
 
                       */
-                        monDetailRestau.setValue(response.body().getResult());
+                            monDetailRestau.setValue(response.body().getResult());
 
-                    }
+                        }
 
-                    @Override
-                    public void onFailure(Call<MyDetailRestaurant> call, Throwable t) {
+                        @Override
+                        public void onFailure(Call<MyDetailRestaurant> call, Throwable t) {
+                            Log.i("[MONDETAIL]","Erreur sur le detail... repository");
+                        }
+                    });
 
-                    }
-                });
 
+
+        }
         return monDetailRestau;
 
+
     }
+
+    public void setupPlaceId(String id){
+
+
+    }
+
+
+
 }

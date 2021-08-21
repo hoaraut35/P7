@@ -1,7 +1,6 @@
 package com.hoarauthomas.go4lunchthp7.ui.detail;
 
 import android.content.Intent;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,13 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
-import com.hoarauthomas.go4lunchthp7.model.placedetails2.MyDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
-import com.hoarauthomas.go4lunchthp7.ui.restaurant.RecyclerViewAdapter;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -87,7 +86,7 @@ public class DetailActivity extends AppCompatActivity {
                 Log.i("[MONDETAIL]", "detail demandé activity");
 
                 //titre retaurant
-                binding.restaurantTitre.setText(viewStateDetail.getMyTitle());
+                binding.restaurantTitre.setText(viewStateDetail.myRestaurantObject.getName());
 
                 //adresse restaurant
                 binding.restaurantAddress.setText(viewStateDetail.myRestaurantObject.getVicinity());
@@ -113,9 +112,25 @@ public class DetailActivity extends AppCompatActivity {
                     binding.ratingbar.setRating(0);
                 }
 
-                //setupButtonWeb(viewStateDetail.getMyRestaurantDetailObject().getUrl());
 
-                //setupButtonPhone(viewStateDetail.getMyRestaurantDetailObject().getFormattedPhoneNumber());
+                if (viewStateDetail.myRestaurantDetailObject.getUrl() == null){
+                    showSnackBar("PAs de lien internet");
+                    return;
+
+                }else
+                {
+                    setupButtonWeb(viewStateDetail.getMyRestaurantDetailObject().getUrl());
+
+                }
+
+
+               /* if (viewStateDetail.getMyRestaurantDetailObject().getFormattedPhoneNumber()!=null){
+                    setupButtonPhone(viewStateDetail.getMyRestaurantDetailObject().getFormattedPhoneNumber());
+                }
+
+                */
+
+
 
                 setupRecyclerView(viewStateDetail.getMyWorkMatesTag());
             }
@@ -127,78 +142,48 @@ public class DetailActivity extends AppCompatActivity {
 
 
 
-
-
-    private void onUpdateRestaurants(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> results) {
-
-
-        //recuperer le restauirant ici ?
-
-        for (int i = 0; i < results.size(); i++) {
-
-            result = results.get(i);
-
-            Log.i("[FIND]", "Nb restaurant à scanner : " + results.size() + " " + results.get(i).getPlaceId().toString() + " " + restaurant_id);
-
-
-            if (results.get(i).getPlaceId().toString().equals(restaurant_id)) {
-                Log.i("[FIND]", "Restaurant trouvé");
-
-                binding.restaurantTitre.setText(results.get(i).getName());
-                binding.restaurantAddress.setText(results.get(i).getVicinity());
-
-                //setupButtonPhone(result..);binding.
-
-
-            }
-
-        }
-
-        allResult.clear();
-        allResult.addAll(results);
-        // Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
-    }
-
     //to map a range to another range ... from arduino library
     public double map(double value, double in_min, double in_max, double out_min, double out_max) {
         return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
 
     private void setupRecyclerView(List<User> myWorkmatesList) {
-        if (myWorkmatesList == null)
-        {
-            Log.i("[MONDETAIL]","liste user nulle ou vide");
+        if (myWorkmatesList == null) {
+            Log.i("[MONDETAIL]", "liste user nulle ou vide");
             return;
-        }else
-            if (!myWorkmatesList.isEmpty()){
-                Log.i("[MONDETAIL]","liste user ok");
-                recyclerView = binding.recyclerView;
-                RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
-                recyclerView.setHasFixedSize(false);
-                recyclerView.setLayoutManager(new LinearLayoutManager(this));
-                recyclerView.addItemDecoration(itemDecoration);
-                recyclerView.setAdapter(new RecyclerViewAdapterDetail(myWorkmatesList));
-            }else
-            {
-                Log.i("[MONDETAIL]","liste user vide");
-            }
+        } else if (!myWorkmatesList.isEmpty()) {
+            Log.i("[MONDETAIL]", "liste user ok");
+            recyclerView = binding.recyclerView;
+            RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+            recyclerView.setHasFixedSize(false);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.addItemDecoration(itemDecoration);
+            recyclerView.setAdapter(new RecyclerViewAdapterDetail(myWorkmatesList));
+        } else {
+            Log.i("[MONDETAIL]", "liste user vide");
+        }
     }
 
 
     //TODO: set the web site from viewmodel ?
-    private void setupButtonWeb(String url) {
+    private void setupButtonWeb(@Nullable String url) {
+
         binding.website.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (url != null) {
-                    Intent makeURLBrowser = new Intent(Intent.ACTION_VIEW);
-                    makeURLBrowser.setData(Uri.parse(url));
-                    startActivity(makeURLBrowser);
-                } else {
-                    showSnackBar("Pas de site renseigné!");
-                }
 
+                    if (!url.isEmpty()) {
+                        Intent makeURLBrowser = new Intent(Intent.ACTION_VIEW);
+                        makeURLBrowser.setData(Uri.parse(url));
+                        startActivity(makeURLBrowser);
+                    } else {
+                        showSnackBar("Pas de site renseigné!");
+                    }
+
+                }
             }
+
         });
     }
 
@@ -213,7 +198,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     //TODO: set the phone number to dial
-    private void setupButtonPhone(String number) {
+    private void setupButtonPhone(@Nullable String number) {
         binding.callBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

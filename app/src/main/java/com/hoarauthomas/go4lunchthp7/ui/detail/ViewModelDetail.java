@@ -13,6 +13,7 @@ import com.hoarauthomas.go4lunchthp7.RestaurantDetailPojo;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
+import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
 import com.hoarauthomas.go4lunchthp7.ui.map.ViewStateMap;
@@ -34,7 +35,8 @@ public class ViewModelDetail extends ViewModel {
     private MutableLiveData<String> myPlaceId =  new MutableLiveData<>();
 
     //constructor
-    public ViewModelDetail(RestaurantsRepository myRestaurantRepository,WorkMatesRepository myWorkMatesRepository){
+    public ViewModelDetail( RestaurantsRepository myRestaurantRepository, WorkMatesRepository myWorkMatesRepository){
+
 
         this.myRestaurantRepository = myRestaurantRepository;
         this.myWorkMatesRepository = myWorkMatesRepository;
@@ -43,37 +45,52 @@ public class ViewModelDetail extends ViewModel {
         LiveData<ResultDetailRestaurant> myDetail = this.myRestaurantRepository.getRestaurantById2(myPlaceId.getValue());
         LiveData<List<User>> myWorkMatesList = this.myWorkMatesRepository.getAllWorkMates();
 
+        //ok
         myViewStateDetailMediator.addSource(myRestaurantsList, new Observer<List<RestaurantPojo>>() {
             @Override
             public void onChanged(List<RestaurantPojo> restaurantPojos) {
-                Log.i("[DETAIL]", "Event Detail liste restaurantr");
-                logicWork(null, restaurantPojos,myWorkMatesList.getValue(),myPlaceId.getValue(),myDetail.getValue());
+                Log.i("[MONDETAIL]", "Event récupération de la liste restaurants : " + restaurantPojos.size());
+                logicWork( restaurantPojos,myWorkMatesList.getValue(),myPlaceId.getValue(),myDetail.getValue());
             }
         });
 
+        //ok
         myViewStateDetailMediator.addSource(myWorkMatesList, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
-                Log.i("[DETAIL]", "Event Detail liste workmates");
-                logicWork(null,myRestaurantsList.getValue(),users,myPlaceId.getValue(),myDetail.getValue());
+                Log.i("[MONDETAIL]", "Event récupération liste collègues : "+ users.size());
+                logicWork(myRestaurantsList.getValue(),users,myPlaceId.getValue(),myDetail.getValue());
             }
         });
 
 
+        //ok
         myViewStateDetailMediator.addSource(myPlaceId, new Observer<String>() {
             @Override
             public void onChanged(String s) {
 
-                Log.i("[MONDETAIL]", "Event Detail placeifd"+ s);
-                logicWork(null,myRestaurantsList.getValue(),myWorkMatesList.getValue(),s,myDetail.getValue());
+                if (myPlaceId != null){
+                    //myRestaurantRepository.setupPlaceId(myPlaceId.getValue());
+                }
+
+                Log.i("[MONDETAIL]", "Event récupération du restaurant à afficher : "+ s);
+                logicWork(myRestaurantsList.getValue(),myWorkMatesList.getValue(),s,myDetail.getValue());
             }
         });
 
+        //
         myViewStateDetailMediator.addSource(myDetail, new Observer<ResultDetailRestaurant>() {
             @Override
             public void onChanged(ResultDetailRestaurant resultDetailRestaurant) {
-                Log.i("[MONDETAIL]", "Event Detail api");
-                logicWork(null,myRestaurantsList.getValue(),myWorkMatesList.getValue(),myPlaceId.getValue(), resultDetailRestaurant);
+
+                if (resultDetailRestaurant == null){
+                    Log.i("[MONDETAIL]", "Event récupération détail retour null");
+                }else
+                {
+                    Log.i("[MONDETAIL]", "Event récupération du détail du restaurant");
+                    logicWork(myRestaurantsList.getValue(),myWorkMatesList.getValue(),myPlaceId.getValue(), resultDetailRestaurant);
+                }
+
             }
         });
 
@@ -85,18 +102,41 @@ public class ViewModelDetail extends ViewModel {
     //**********************************************************************************************
     // Logic work
     //**********************************************************************************************
-    private void logicWork(@Nullable Location position, @Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates, @Nullable String placeId, @Nullable ResultDetailRestaurant detail) {
+    private void logicWork(@Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates, @Nullable String placeId, @Nullable ResultDetailRestaurant detail) {
         List<User> workMatesTag = new ArrayList<>();
 
         RestaurantPojo newRestau;
         ResultDetailRestaurant newDetailRestau = null;
 
+
+
+
+
+     /*   if (restaurants == null || workmates == null || placeId == null){
+            return;
+        }
+
+      */
+
+
+
         //l'objet placeId existe
         if (placeId != null){
+
+            Log.i("[MONDETAIL]","Un identifiant restaurant est créé ...");
+
+
 
             //un restaurant est choisi
             if (!placeId.isEmpty()){
                 Log.i("[MONDETAIL]","Un restaurant est sélectionné ...");
+
+                if (detail == null){
+                    Log.i("[MONDETAIL]","demande detail en asynchrone..." + placeId);
+                  //  setPlaceId(placeId);
+                    return;
+                }
+
 
                 //si on a la liste des restaurant on peut récupéré le début des infos
                 if (restaurants != null && !restaurants.isEmpty()){
@@ -107,6 +147,14 @@ public class ViewModelDetail extends ViewModel {
                         if (restaurants.get(i).getPlaceId().equals(placeId)){
                             newRestau = restaurants.get(i);
 
+                            if (workmates != null){
+                                for (int y=0; y<workmates.size();y++){
+                                    if (workmates.get(y).getFavoriteRestaurant().equals(placeId)){
+                                        workMatesTag.add(workmates.get(y));
+                                    }
+                                }
+
+                            }
 
 
                             if (detail != null){
@@ -114,7 +162,7 @@ public class ViewModelDetail extends ViewModel {
                             }
 
 
-                            myViewStateDetailMediator.setValue(new ViewStateDetail(newRestau,newDetailRestau ,true,true,workmates));
+                            myViewStateDetailMediator.setValue(new ViewStateDetail(newRestau,newDetailRestau ,true,true,workMatesTag));
                         }
 
                     /*for (int z=0;z<workmates.size();z++){
@@ -133,41 +181,17 @@ public class ViewModelDetail extends ViewModel {
 
 
             }
-        }
-
-
-
-        if (restaurants == null || workmates == null){
+        }else
+        {
+            Log.i("[MONDETAIL]","Pas de restaurant identifié donc en attente ...");
             return;
         }
 
 
-        if (!restaurants.isEmpty() && !workmates.isEmpty()){
-
-            if (placeId != null ){
-
-
-                Log.i("[MONDETAIL]","Identification du restaurant : " + placeId);
-
-                //check all restaurant
-
-
-
-            }
-
-
-            int i;
-            int z;
 
 
 
 
-
-
-        }else
-        {
-        //    myViewStateDetailMediator.setValue(new ViewStateDetail("null","test","","",true,true,workMatesTag));
-        }
 
 
     }
