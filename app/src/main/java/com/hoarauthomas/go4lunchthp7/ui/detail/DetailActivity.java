@@ -125,36 +125,9 @@ public class DetailActivity extends AppCompatActivity {
     }
 
 
-    private void onUpdateDetail(ResultDetailRestaurant resultDetailRestaurant) {
-
-        //     for (int i =0; i< )
 
 
-        setupButtonPhone(resultDetailRestaurant.getFormattedPhoneNumber());
-        setupButtonWeb(resultDetailRestaurant.getUrl());
 
-        Log.i("[DETAIL]", "detail sur activity" + resultDetailRestaurant.getFormattedPhoneNumber() + resultDetailRestaurant.getUrl());
-    }
-
-    private void onUpdatePosition(Location location) {
-        //  LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        //  this.myViewModel.updateLngLat(location.getLongitude(), location.getLatitude());
-        //replace by th elist of workmates...
-        //  Log.i("[FIND]", "onupdateposition");
-//
-    }
-
-    private void onUpdateWorkMates(List<User> users) {
-
-        Log.i("[WORK]", "Workmates on detail activity" + users.size());
-        allResult.clear();
-        for (int i = 0; i < users.size(); i++) {
-            User myUser = users.get(i);
-
-
-        }
-
-    }
 
     private void onUpdateRestaurants(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> results) {
 
@@ -192,12 +165,23 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView(List<User> myWorkmatesList) {
-        recyclerView = binding.recyclerView;
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
-        recyclerView.setHasFixedSize(false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.addItemDecoration(itemDecoration);
-        recyclerView.setAdapter(new RecyclerViewAdapterDetail(myWorkmatesList));
+        if (myWorkmatesList == null)
+        {
+            Log.i("[MONDETAIL]","liste user nulle ou vide");
+            return;
+        }else
+            if (!myWorkmatesList.isEmpty()){
+                Log.i("[MONDETAIL]","liste user ok");
+                recyclerView = binding.recyclerView;
+                RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+                recyclerView.setHasFixedSize(false);
+                recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                recyclerView.addItemDecoration(itemDecoration);
+                recyclerView.setAdapter(new RecyclerViewAdapterDetail(myWorkmatesList));
+            }else
+            {
+                Log.i("[MONDETAIL]","liste user vide");
+            }
     }
 
 

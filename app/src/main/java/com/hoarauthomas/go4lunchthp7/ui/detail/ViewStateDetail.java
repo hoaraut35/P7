@@ -42,11 +42,11 @@ public class ViewStateDetail {
     Boolean Favoris;
     List<User> myWorkMatesTag = new ArrayList<>();
 
-    public ViewStateDetail(RestaurantPojo myRestaurant, ResultDetailRestaurant myDetailRestaurant, String myTitle, String adresse, String telephone, String website, Boolean like, Boolean favoris, List<User> myWorkMatesTag) {
-        this.myTitle = myTitle;
-        Adresse = adresse;
-        this.telephone = telephone;
-        this.website = website;
+    public ViewStateDetail(RestaurantPojo myRestaurant, ResultDetailRestaurant myDetailRestaurant, Boolean like, Boolean favoris, List<User> myWorkMatesTag) {
+        //this.myTitle = myTitle;
+        //Adresse = adresse;
+        //this.telephone = telephone;
+        //this.website = website;
         this.like = like;
         Favoris = favoris;
         this.myWorkMatesTag = myWorkMatesTag;

@@ -107,12 +107,14 @@ public class ViewModelDetail extends ViewModel {
                         if (restaurants.get(i).getPlaceId().equals(placeId)){
                             newRestau = restaurants.get(i);
 
+
+
                             if (detail != null){
                                 newDetailRestau  = detail;
                             }
 
 
-                            myViewStateDetailMediator.setValue(new ViewStateDetail(newRestau,newDetailRestau ,newRestau.getName(),"test","","",true,true,workMatesTag));
+                            myViewStateDetailMediator.setValue(new ViewStateDetail(newRestau,newDetailRestau ,true,true,workmates));
                         }
 
                     /*for (int z=0;z<workmates.size();z++){
