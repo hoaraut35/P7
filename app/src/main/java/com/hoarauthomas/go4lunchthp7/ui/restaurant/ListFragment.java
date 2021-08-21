@@ -64,25 +64,6 @@ public class ListFragment extends Fragment {
             }
         });
 
-
-
-
-
-   /*     myViewModelGo4Lunch = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
-
-        myViewModelGo4Lunch.getViewStateLiveData().observe(getViewLifecycleOwner(), new androidx.lifecycle.Observer<MainViewState>() {
-            @Override
-            public void onChanged(MainViewState mainViewState) {
-                Log.i("[media]", "list restau frag changed.... update");
-
-                showRestaurant(mainViewState.getMyRestaurantsList());
-
-            }
-        });
-
-    */
-
-
         // this.myViewModel.getMyPosition().observe(getViewLifecycleOwner(), this::onUpdatePosition);
     }
 

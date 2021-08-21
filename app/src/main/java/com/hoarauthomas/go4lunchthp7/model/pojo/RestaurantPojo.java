@@ -14,6 +14,18 @@ import com.hoarauthomas.go4lunchthp7.model.pojo.Geometry;
 
 public class RestaurantPojo {
 
+
+
+    public String myDistance;
+
+    public String getMyDistance() {
+        return myDistance;
+    }
+
+    public void setMyDistance(String myDistance) {
+        this.myDistance = myDistance;
+    }
+
     private Boolean myFavLike;
 
     public Boolean getMyFavLike() {

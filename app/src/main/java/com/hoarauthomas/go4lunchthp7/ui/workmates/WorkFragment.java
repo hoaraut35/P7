@@ -18,17 +18,29 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.hoarauthomas.go4lunchthp7.databinding.FragmentWorkBinding;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
+import com.hoarauthomas.go4lunchthp7.ui.map.ViewModelMap;
+import com.hoarauthomas.go4lunchthp7.ui.restaurant.RecyclerViewAdapter;
 import com.hoarauthomas.go4lunchthp7.viewmodel.MainViewState;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class WorkFragment extends Fragment implements WorkMatesAdapter.ClickListener {
 
+    //Binding
     private FragmentWorkBinding binding;
-    private ViewModelGo4Lunch myViewModel;
+
+    //ViewModel
+    private ViewModelWorkMates myViewModelWorkMates;
+    private View myView;
+
     private RecyclerView recyclerView;
+
+    public final List<User> allResult = new ArrayList<>();
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -67,7 +79,9 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.ClickList
 
         binding = FragmentWorkBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-       // setupViewModel();
+
+        setupViewModel();
+        this.myView = view;
        // binding.recyclerViewWorkmates.setLayoutManager(new LinearLayoutManager(view.getContext()));
        // binding.recyclerViewWorkmates.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
        // binding.recyclerViewWorkmates.setHasFixedSize(false);
@@ -76,25 +90,47 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.ClickList
 
     private void setupViewModel() {
 
-        this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
-        this.myViewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), new Observer<MainViewState>() {
+        this.myViewModelWorkMates = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelWorkMates.class);
+        this.myViewModelWorkMates.getMediatorLiveData().observe(getViewLifecycleOwner(), new Observer<ViewStateWorkMates>() {
             @Override
-            public void onChanged(MainViewState mainViewState) {
-                showWorkMates(mainViewState.getMyWorkMatesList());
+            public void onChanged(ViewStateWorkMates viewStateWorkMates) {
+
+                showWorkMates(viewStateWorkMates.myWorkMatesList);
+
             }
         });
+    }
+
+    private void setupRecyclerView(View view) {
+
+        recyclerView = binding.recyclerViewWorkmates;
+        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+        recyclerView.setHasFixedSize(false);
+        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+        recyclerView.addItemDecoration(itemDecoration);
+        recyclerView.setAdapter(new WorkMatesAdapter(0,allResult,this));
     }
 
     private void showWorkMates(List<User> myWorkMatesList) {
 
         if (myWorkMatesList == null)
         {
-            Log.i("[media]","Liste workmates null ");
+            Log.i("[WORKM]","Liste workmates null ");
             return;
         }else
         {
-            Log.i("[media]","media size" + myWorkMatesList.size() );
-            binding.recyclerViewWorkmates.setAdapter(new WorkMatesAdapter(0, myWorkMatesList, this));
+            Log.i("[WORKM]","media size" + myWorkMatesList.size() );
+
+
+            allResult.clear();
+            allResult.addAll(myWorkMatesList);
+
+
+            setupRecyclerView(myView);
+            Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
+
+
+
         }
     }
 

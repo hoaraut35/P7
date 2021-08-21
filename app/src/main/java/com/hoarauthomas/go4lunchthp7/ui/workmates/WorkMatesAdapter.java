@@ -46,6 +46,7 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
     }
 
     public WorkMatesAdapter(int mode, List<User> myList, ClickListener callback) {
+        Log.i("","");
         this.myUserListResults = myList;
         this.callback = callback;
     }

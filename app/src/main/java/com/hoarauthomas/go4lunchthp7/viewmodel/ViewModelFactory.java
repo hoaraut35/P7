@@ -17,6 +17,7 @@ import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
 import com.hoarauthomas.go4lunchthp7.ui.detail.ViewModelDetail;
 import com.hoarauthomas.go4lunchthp7.ui.map.ViewModelMap;
 import com.hoarauthomas.go4lunchthp7.ui.restaurant.ViewModelRestaurant;
+import com.hoarauthomas.go4lunchthp7.ui.workmates.ViewModelWorkMates;
 
 //https://medium.com/koderlabs/viewmodel-with-viewmodelprovider-factory-the-creator-of-viewmodel-8fabfec1aa4f
 //ViewModelProvider.Factory is responsible to create the instance of ViewModels, one for all application
@@ -115,6 +116,16 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     workMatesRepository);
 
         }
+
+        if (modelClass.isAssignableFrom(ViewModelWorkMates.class)) {
+            return (T) new ViewModelWorkMates(
+
+                    workMatesRepository);
+
+
+
+        }
+
 
 
         throw new IllegalArgumentException("[V M F] Unknow ViewModel class");
