@@ -85,7 +85,7 @@ public class ViewModelMap extends ViewModel {
     //**********************************************************************************************
     private void logicWork(@Nullable Location position, @Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates) {
 
-        if (position == null || restaurants.isEmpty() || workmates.isEmpty()) {
+        if (position == null || restaurants == null || workmates== null || restaurants.isEmpty() || workmates.isEmpty()) {
             return;
         } else {
 

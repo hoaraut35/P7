@@ -9,12 +9,14 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.protobuf.StringValue;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
+import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
-import com.hoarauthomas.go4lunchthp7.ui.map.ViewStateMap;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -27,6 +29,8 @@ public class ViewModelRestaurant extends ViewModel {
     private WorkMatesRepository myWorkMatesRepository;
 
     private LiveData<Location> myPosition;
+
+
 
     private final MediatorLiveData<ViewStateRestaurant> myViewStateRestaurantMediator = new MediatorLiveData<>();
 
@@ -48,7 +52,7 @@ public class ViewModelRestaurant extends ViewModel {
                     Log.i("[LIST]", "Position trouvée" + position.getLatitude() + position.getLongitude());
                     myRestaurantRepository.UpdateLngLat(position.getLongitude(), position.getLatitude());
                 }
-                logicWork(myRestaurantsList.getValue(),myWorkMatesList.getValue(),position);
+                logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), position);
             }
         });
 
@@ -58,7 +62,7 @@ public class ViewModelRestaurant extends ViewModel {
                 Log.i("LIST]", "Event restaurants");
                 if (restaurantPojos != null) {
                     Log.i("[LIST]", "Liste restaura" + restaurantPojos.size());
-                        logicWork( restaurantPojos,myWorkMatesList.getValue(),myPosition.getValue());
+                    logicWork(restaurantPojos, myWorkMatesList.getValue(), myPosition.getValue());
                 }
 
             }
@@ -70,7 +74,7 @@ public class ViewModelRestaurant extends ViewModel {
                 Log.i("[LIST]", "Event workmates list...");
                 if (users != null) {
                     Log.i("[LIST]", "Liste workmates" + users.size());
-                    logicWork(myRestaurantsList.getValue(), users,myPosition.getValue() );
+                    logicWork(myRestaurantsList.getValue(), users, myPosition.getValue());
                 }
 
             }
@@ -78,42 +82,46 @@ public class ViewModelRestaurant extends ViewModel {
 
     }
 
-    private void logicWork(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants, List<User> workMates, @Nullable Location myPosition){
+    private void logicWork(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants, List<User> workMates, @Nullable Location myPosition) {
 
 
 
+        if (restaurants != null && myPosition != null) {
 
-        if(restaurants != null)
-        {
-
-            if (myPosition != null){
-
-                for (int i =0 ; i<restaurants.size();i++){
-
-                    //modifier la distance du restaurant dans le pojo
-                    LatLng restauPos = new LatLng(restaurants.get(i).getGeometry().getLocation().getLng(),restaurants.get(i).getGeometry().getLocation().getLat());
-                    LatLng userPos = new LatLng(myPosition.getLongitude(),myPosition.getLatitude());
-
-                    int distance;
-
-                    //float getdistance;
-                    //getdistance = distanceBetween(restauPos, userPos);
-                    //restaurants.get(i).setMyDistance();
-                    //int distance = Math.round((distanceBetween(userPos,restauPos)));
-
-                }
+            List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> newList = new ArrayList<>();
+            RestaurantPojo myRestau;
 
 
+            //calculer distance
+            for (int i = 0; i < restaurants.size(); i++) {
+
+
+                myRestau = new RestaurantPojo();
+                myRestau = restaurants.get(i);
+
+
+                //modifier la distance du restaurant dans le pojo
+                LatLng restauPos = new LatLng(restaurants.get(i).getGeometry().getLocation().getLat(), restaurants.get(i).getGeometry().getLocation().getLng());
+                LatLng userPos = new LatLng(myPosition.getLatitude(), myPosition.getLongitude());
+
+                float getDistance;
+                getDistance = distanceBetween(restauPos, userPos);
+
+                int distance = Math.round(getDistance);
+
+                myRestau.setMyDistance(Integer.toString(distance));
+
+                //restaurants.get(i).setMyDistance(Integer.toString(distance));
+
+                Log.i("[DISTANCE]","Distabce " + Integer.toString(distance) );
+
+                newList.add(myRestau);
             }
 
 
-
-            myViewStateRestaurantMediator.setValue(new ViewStateRestaurant(restaurants));
+            //myViewStateRestaurantMediator.setValue(new ViewStateRestaurant(restaurants));
+            myViewStateRestaurantMediator.setValue(new ViewStateRestaurant(newList));
         }
-
-
-
-
 
 
     }
@@ -128,5 +136,7 @@ public class ViewModelRestaurant extends ViewModel {
     public LiveData<ViewStateRestaurant> getMediatorLiveData() {
         return myViewStateRestaurantMediator;
     }
+
+
 
 }

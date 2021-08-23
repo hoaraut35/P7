@@ -16,9 +16,8 @@ public class User {
     private String username;
     private String urlPicture;
     private String favoriteRestaurant;
-
-
     private List<String>  restaurant_liked;
+
     private LatLng myPos;
 
     public List<String> getRestaurant_liked() {
@@ -31,19 +30,15 @@ public class User {
 
     public User() { }
 
-    public User(String uid, String username, String urlPicture) {
+    public User(String uid, String username, String urlPicture,@Nullable String favoriteRestaurant) {
         this.uid = uid;
         this.username = username;
         this.urlPicture = urlPicture;
-      //  this.favoriteRestaurant = restaurant;
-   //     this.isMentor = false;
+        this.favoriteRestaurant = favoriteRestaurant;
+
     }
 
-
     public LatLng getLatLongUser(){return myPos;}
-
-
-
 
     // --- GETTERS ---
     public String getUid() { return uid; }

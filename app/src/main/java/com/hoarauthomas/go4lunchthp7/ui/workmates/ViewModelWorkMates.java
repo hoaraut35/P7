@@ -77,24 +77,21 @@ public class ViewModelWorkMates extends ViewModel {
 
                 for (int z = 0; z < myRestaurant.size(); z++) {
 
-                    if (myList.get(i).getFavoriteRestaurant().equals(myRestaurant.get(z).getPlaceId())) {
-                        myWorkMates.nameOfRestaurant = myRestaurant.get(z).getName();
-                        myWorkMates.placeId = myRestaurant.get(z).getPlaceId();
-                    //    Log.i("[NEW]","identique" + myWorkMates.getNameOfRestaurant() + myWorkMates.getPlaceId());
 
-                    } else {
-                    //    myWorkMates.nameOfRestaurant = "";
-                      //  myWorkMates.placeId = "";
-                       // Log.i("[NEW]","identique" + myWorkMates.getNameOfRestaurant() + myWorkMates.getPlaceId());
+                    if (myRestaurant.get(z).getPlaceId() != null) {
+                        if (myList.get(i).getFavoriteRestaurant().equals(myRestaurant.get(z).getPlaceId())) {
+                            myWorkMates.nameOfRestaurant = myRestaurant.get(z).getName();
+                            myWorkMates.placeId = myRestaurant.get(z).getPlaceId();
+                        }
                     }
 
                 }
 
                 mySpecialWorkMatesList.add(myWorkMates);
-                Log.i("[NEW]","" + mySpecialWorkMatesList.get(i).toString());
+                Log.i("[NEW]", "" + mySpecialWorkMatesList.get(i).toString());
             }
 
-            myViewStateWorkMatesMediator.setValue(new ViewStateWorkMates( mySpecialWorkMatesList));
+            myViewStateWorkMatesMediator.setValue(new ViewStateWorkMates(mySpecialWorkMatesList));
         }
 
     }

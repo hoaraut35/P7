@@ -53,15 +53,18 @@ public class WorkMatesRepository {
 
                     User myUser = new User();
 
-                    if (docs.get("urlPicture").toString() != null) {
+
+
+
+                    if (docs.get("urlPicture") != null) {
                         Log.i("[MAP]", "Avatar : " + docs.get("urlPicture").toString());
                         myUser.setUrlPicture(docs.get("urlPicture").toString());
                     }
-                    if (docs.get("username").toString() != null) {
+                    if (docs.get("username") != null) {
                         Log.i("[MAP]", "Nom complet : " + docs.get("username").toString());
                         myUser.setUsername(docs.get("username").toString());
                     }
-                    if (docs.get("favoriteRestaurant").toString() != null) {
+                    if (docs.get("favoriteRestaurant") != null) {
                         Log.i("[MAP]", "Restaurant favoris : " + docs.get("favoriteRestaurant").toString());
                         myUser.setFavoriteRestaurant(docs.get("favoriteRestaurant").toString());
                     }
@@ -127,8 +130,10 @@ public class WorkMatesRepository {
             String urlPicture = (user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null);
             String username = (user.getDisplayName() != null ? user.getDisplayName().toString() : null);
             String uid = (user.getUid() != null ? user.getUid().toString() : null);
+            String restaurant = "";
 
-            User userToCreate = new User(uid, username, urlPicture);
+
+            User userToCreate = new User(uid, username, urlPicture, restaurant);
 
             Task<DocumentSnapshot> userData = getUserData();
 
@@ -136,7 +141,7 @@ public class WorkMatesRepository {
             userData.addOnSuccessListener(documentSnapshot -> {
 
                 if (documentSnapshot.contains("favoriteRestaurant")) {
-                    userToCreate.setFavoriteRestaurant("cool");
+                    userToCreate.setFavoriteRestaurant(restaurant);
 
                 } else if (documentSnapshot.contains("urlPicture")) {
                     userToCreate.setUrlPicture(urlPicture);

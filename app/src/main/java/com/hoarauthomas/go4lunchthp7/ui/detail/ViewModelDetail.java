@@ -174,6 +174,16 @@ public class ViewModelDetail extends ViewModel {
         placeIdGen = myRestaurantRepository.setPlaceId(placeId);
     }
 
+    public String getPlaceId() {
+        return placeIdGen;
+    }
+
+
+
+    public void setFavRestaurant(String restaurant){
+       // myWorkMatesRepository.getCurrentUser().
+    }
+
 
     //public livedata to publish in viexwstate
     public LiveData<ViewStateDetail> getMediatorLiveData() {

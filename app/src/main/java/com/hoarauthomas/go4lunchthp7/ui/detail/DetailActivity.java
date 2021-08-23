@@ -102,9 +102,32 @@ public class DetailActivity extends AppCompatActivity {
                 }
 
                 setupRecyclerView(viewStateDetail.getMyWorkMatesTag());
+
+
+                setupButtonChoice();
+
             }
         });
 
+
+    }
+
+    private void setupButtonChoice() {
+
+
+       binding.choiceBtn.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+
+
+               Log.i("[CLIC]","Clic sur choix restaurant ...");
+
+
+               myViewModelDetail.setFavRestaurant(myViewModelDetail.getPlaceId());
+
+
+           }
+       });
 
     }
 

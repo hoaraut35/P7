@@ -106,7 +106,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             if (restaurants.get(i).getIcon().toString().contains("rouge")) {
                 myMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
             } else {
-                myMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                myMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
             }
 
             myMarker = myMap.addMarker(myMarkerOptions);

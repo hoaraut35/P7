@@ -95,13 +95,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             Log.i("[THOMAS]", "Exception : " + e.getMessage());
         }
 
-
-        //TODO: must to add the distance here...
-
-        Log.i("[DISTANCE]", "" + mResults.get(position).getGeometry().getMyPosition());
-
+        //show the distance...
         try {
-            holder.distanceOfRestaurant.setText(mResults.get(position).getGeometry().getMyPosition());
+            holder.distanceOfRestaurant.setText(mResults.get(position).getMyDistance() + "m");
 
         } catch (Exception e) {
             holder.distanceOfRestaurant.setText("erreur");
