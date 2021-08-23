@@ -44,7 +44,7 @@ public class ViewModelDetail extends ViewModel {
         myViewStateDetailMediator.addSource(myRestaurantsList, new Observer<List<RestaurantPojo>>() {
             @Override
             public void onChanged(List<RestaurantPojo> restaurantPojos) {
-                Log.i("[MONDETAIL]", "Event récupération de la liste restaurants : " + restaurantPojos.size());
+               // Log.i("[MONDETAIL]", "Event récupération de la liste restaurants : " + restaurantPojos.size());
                 logicWork(restaurantPojos, myWorkMatesList.getValue(), myDetail.getValue());
             }
         });
@@ -53,7 +53,7 @@ public class ViewModelDetail extends ViewModel {
         myViewStateDetailMediator.addSource(myWorkMatesList, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
-                Log.i("[MONDETAIL]", "Event récupération liste collègues : " + users.size());
+               // Log.i("[MONDETAIL]", "Event récupération liste collègues : " + users.size());
                 logicWork(myRestaurantsList.getValue(), users, myDetail.getValue());
             }
         });
