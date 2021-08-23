@@ -76,7 +76,6 @@ public class ViewModelMap extends ViewModel {
                     Log.i("[MAP]", "Liste workmates" + users.size());
                     logicWork(myPosition.getValue(), myRestaurantsList.getValue(), users);
                 }
-
             }
         });
     }
@@ -86,37 +85,24 @@ public class ViewModelMap extends ViewModel {
     //**********************************************************************************************
     private void logicWork(@Nullable Location position, @Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates) {
 
-        Log.i("[MAP]", "Appel View logic run ...");
-
         if (position == null || restaurants.isEmpty() || workmates.isEmpty()) {
-           return;
+            return;
         } else {
-            if (position != null && !restaurants.isEmpty()  && !workmates.isEmpty()) {
 
-                for (int i = 0; i < restaurants.size(); i++) {
+            for (int i = 0; i < restaurants.size(); i++) {
 
-                    restaurants.get(i).setIcon("rouge");
-                    for (int z = 0; z < workmates.size(); z++) {
+                for (int z = 0; z < workmates.size(); z++) {
 
-                        //              Log.i("[MAP]", "" + restaurants.get(i).getPlaceId() + " | " + workmates.get(z).getFavoriteRestaurant());
-
-                        //Log.i()
-                        if (restaurants.get(i).getPlaceId().equals(workmates.get(z).getFavoriteRestaurant())) {
-
-                            restaurants.get(i).setIcon("vert");
-                        }
-
-
-                        //            Log.i("[MAP]", "restaurant identique prevoir modif pojo");
-
+                    if (restaurants.get(i).getPlaceId().equals(workmates.get(z).getFavoriteRestaurant())) {
+                        restaurants.get(i).setIcon("vert");
+                    } else {
+                        restaurants.get(i).setIcon("rouge");
                     }
-                    Log.i("[MAP]", "Restaurant " + restaurants.get(i).getName() + restaurants.get(i).getIcon());
+
                 }
-
-
-                myViewStateMapMediator.setValue(new ViewStateMap(position, restaurants));
             }
 
+            myViewStateMapMediator.setValue(new ViewStateMap(position, restaurants));
 
         }
 
@@ -124,7 +110,6 @@ public class ViewModelMap extends ViewModel {
     //**********************************************************************************************
     // End of logic work
     //**********************************************************************************************
-
 
     @SuppressLint("MissingPermission")
     public void refresh() {
@@ -139,6 +124,5 @@ public class ViewModelMap extends ViewModel {
     public LiveData<ViewStateMap> getMediatorLiveData() {
         return myViewStateMapMediator;
     }
-
 
 }

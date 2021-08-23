@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
+import com.hoarauthomas.go4lunchthp7.RestaurantDetailPojo;
 import com.hoarauthomas.go4lunchthp7.api.GooglePlaceApi;
 import com.hoarauthomas.go4lunchthp7.api.RetrofitRequest;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.MyDetailRestaurant;
@@ -35,8 +36,15 @@ public class RestaurantsRepository {
     private final List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> allRestaurants = new ArrayList<>();
 
     private final MutableLiveData<ResultDetailRestaurant> monDetailRestau = new MutableLiveData<>();
+
     private final MutableLiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> listOfRestaurantWithLongLat = new MutableLiveData<>();
+
+
+
     private final MutableLiveData<ResultDetailRestaurant> restauDetailObj = new MutableLiveData<>();
+
+
+
     private final MutableLiveData<MyDetailRestaurant> restauDetailObj2 = new MutableLiveData<>();
 
     private final MutableLiveData<String> placeId = new MutableLiveData<String>();
@@ -103,7 +111,7 @@ public class RestaurantsRepository {
     //**********************************************************************************************
 
     //this livedata is publish to viewmodel... v2
-    public LiveData<ResultDetailRestaurant> getRestaurantById2(String restaurant_id) {
+    public LiveData<ResultDetailRestaurant> getRestaurantById(String restaurant_id) {
 
         if (restaurant_id == null || restaurant_id.isEmpty()) {
             Log.i("[MONDETAIL]","id null opu vide");
@@ -143,11 +151,15 @@ public class RestaurantsRepository {
 
     }
 
-    public void setupPlaceId(String id){
+    public String setPlaceId(String id){
 
-
+        getRestaurantById(id);
+        return id;
     }
 
+    public LiveData<ResultDetailRestaurant> getMyRestaurantDetail() {
+        return monDetailRestau;
+    }
 
 
 }

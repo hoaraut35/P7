@@ -3,12 +3,10 @@ package com.hoarauthomas.go4lunchthp7.viewmodel;
 import android.location.Location;
 import android.util.Log;
 
-import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -309,7 +307,7 @@ public class ViewModelGo4Lunch extends ViewModel {
     public LiveData<ResultDetailRestaurant> getRestaurantDetail2(String restaurant_id) {
         //Log.i("[DETAIL]", "VM DETAIL " + this.myRestaurantsSource.getRestaurantById2(restaurant_id).getFormattedPhoneNumber());
 
-        return this.myRestaurantsSource.getRestaurantById2(restaurant_id);
+        return this.myRestaurantsSource.getRestaurantById(restaurant_id);
     }
 
 

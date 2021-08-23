@@ -27,12 +27,13 @@ import javax.annotation.Nullable;
 public class DetailActivity extends AppCompatActivity {
 
     private ActivityDetailRestaurantBinding binding;
-
     private ViewModelDetail myViewModelDetail;
+    private RecyclerView recyclerView;
+
+
 
     //th elist of restaurants
     public final ArrayList<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> allResult = new ArrayList<>();
-    private RecyclerView recyclerView;
 
 
     private String restaurant_id, workmate_id, my_restaurant_id;
@@ -49,36 +50,54 @@ public class DetailActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
-        Intent intent = getIntent();
-
-        restaurant_id = intent.getStringExtra("TAG_ID");
-        // Log.i("[DETAIL]", "id restaurant " + restaurant_id);
-        //   workmate_id = intent.getStringExtra("WORKMATEID");
-
-        // my_restaurant_id = intent.getStringExtra("MYRESTAURANT");
-
-
-        if (intent.getStringExtra("TAG_ID") != null && intent.getStringExtra("WORKMATEID_ID") != null && intent.getStringExtra("MYRESTAURANT_ID") != null) {
-            Log.i("[DETAIL]", "TAG MODE");
-        } else {
-
-
-        }
-
         setupViewModel();
+        setupIntent();
+
+
+       // setupPlaceId(setupIntent());
+
+
+
+
+
+
+        //setupPlaceId(restaurant_id);
+        //  myViewModelDetail.setPlaceId(restaurant_id);
 
         //    setupButtonLike();
 
 
     }
 
+    private void setupIntent() {
+
+        Intent intent = getIntent();
+
+        if (intent.getStringExtra("TAG_ID") != null){
+            this.restaurant_id = intent.getStringExtra("TAG_ID");
+            Log.i("[MONDETAIL]", "TAG MODE" + restaurant_id);
+            myViewModelDetail.setPlaceId(restaurant_id);
+
+        } else {
+            restaurant_id = "";
+            Log.i("[MONDETAIL]", "Pas de restaurant sélectionné : [" + restaurant_id + "]");
+        }
+    }
+
+    private void setupPlaceId(String restaurant_id) {
+        if (restaurant_id != null && !restaurant_id.isEmpty()){
+
+                myViewModelDetail.setPlaceId(restaurant_id);
+
+        }else
+            return;
+        }
+
 
     //TODO: get the restaurant ...
     private void setupViewModel() {
 
         myViewModelDetail = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelDetail.class);
-
-        myViewModelDetail.setPlaceId(restaurant_id);
 
         myViewModelDetail.getMediatorLiveData().observe(this, new Observer<ViewStateDetail>() {
             @Override

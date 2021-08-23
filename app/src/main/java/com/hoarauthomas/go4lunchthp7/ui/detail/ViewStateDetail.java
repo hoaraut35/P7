@@ -48,12 +48,11 @@ public class ViewStateDetail {
     public ViewStateDetail(
             RestaurantPojo myRestaurant,
             ResultDetailRestaurant myDetailRestaurant,
-            Boolean like,
-            Boolean favoris,
+
             List<User> myWorkMatesTag) {
 
-        this.like = like;
-        this.Favoris = favoris;
+    //    this.like = like;
+     //   this.Favoris = favoris;
         this.myRestaurantObject = myRestaurant;
         this.myRestaurantDetailObject = myDetailRestaurant;
         this.myWorkMatesTag = myWorkMatesTag;

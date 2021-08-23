@@ -18,11 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.hoarauthomas.go4lunchthp7.databinding.FragmentWorkBinding;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
-import com.hoarauthomas.go4lunchthp7.ui.map.ViewModelMap;
-import com.hoarauthomas.go4lunchthp7.ui.restaurant.RecyclerViewAdapter;
-import com.hoarauthomas.go4lunchthp7.viewmodel.MainViewState;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
-import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 
 import java.util.ArrayList;
 import java.util.List;

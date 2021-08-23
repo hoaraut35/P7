@@ -16,11 +16,6 @@ public class ViewStateMap {
         myRestaurantsList = restaurants;
     }
 
-    public ViewStateMap(Location position) {
-        myPosition = position;
-
-    }
-
     public List<RestaurantPojo> getMyRestaurantsList() {
         return myRestaurantsList;
     }
