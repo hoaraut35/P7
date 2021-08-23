@@ -119,14 +119,9 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
 
         if (modelClass.isAssignableFrom(ViewModelWorkMates.class)) {
             return (T) new ViewModelWorkMates(
-
+                    restaurantsRepository,
                     workMatesRepository);
-
-
-
         }
-
-
 
         throw new IllegalArgumentException("[V M F] Unknow ViewModel class");
     }

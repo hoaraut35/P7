@@ -1,10 +1,12 @@
 package com.hoarauthomas.go4lunchthp7.ui.restaurant;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,29 +19,38 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.R;
+import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ListFragment extends Fragment {
+public class ListFragment extends Fragment implements RecyclerViewAdapter.RestaurantListener {
 
     private ViewModelRestaurant myViewModelRestaurant;
-
-
-
     public final ArrayList<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> allResult = new ArrayList<>();
-
     private RecyclerView recyclerView;
-
     private LatLng myPositionOnMap;
     private View myView;
+
+    @Override
+    public void onClickDetailRestaurant(String restaurantId) {
+        Log.i("[WORK]", "Item cliqué : " + restaurantId);
+        Intent intent = new Intent(getContext(), DetailActivity.class);
+        intent.putExtra("TAG_ID", restaurantId);
+        startActivity(intent);
+    }
+
+    @Override
+    public void popupSnack(String message) {
+        Toast toast = Toast.makeText(getContext(), message, Toast.LENGTH_SHORT);
+        toast.show();
+    }
 
     public static ListFragment newInstance() {
         return new ListFragment();
     }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_fragment, container, false);
@@ -52,7 +63,6 @@ public class ListFragment extends Fragment {
     private void setupViewModel() {
 
         myViewModelRestaurant = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelRestaurant.class);
-
         myViewModelRestaurant.getMediatorLiveData().observe(getViewLifecycleOwner(), new Observer<ViewStateRestaurant>() {
             @Override
             public void onChanged(ViewStateRestaurant viewStateRestaurant) {
@@ -60,10 +70,7 @@ public class ListFragment extends Fragment {
                 showRestaurant(viewStateRestaurant.getMyRestaurantList());
             }
         });
-
-        // this.myViewModel.getMyPosition().observe(getViewLifecycleOwner(), this::onUpdatePosition);
     }
-
 
     private void showRestaurant(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
 
@@ -75,12 +82,9 @@ public class ListFragment extends Fragment {
             Log.i("[media]", "media size" + restaurants.size());
             allResult.clear();
             allResult.addAll(restaurants);
-
             setupRecyclerView(myView);
             Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
-
         }
-
     }
 
     private void setupRecyclerView(View view) {
@@ -89,7 +93,7 @@ public class ListFragment extends Fragment {
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         recyclerView.addItemDecoration(itemDecoration);
-        recyclerView.setAdapter(new RecyclerViewAdapter(allResult));
+        recyclerView.setAdapter(new RecyclerViewAdapter(allResult, this));
     }
 
 }

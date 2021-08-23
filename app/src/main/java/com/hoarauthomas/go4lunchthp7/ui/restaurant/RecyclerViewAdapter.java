@@ -16,7 +16,6 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.R;
-import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 
 import java.util.List;
 
@@ -29,25 +28,29 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
     //interface for callback
-    public interface Listener {
-        void onClickDetailButton(int position);
+    public interface RestaurantListener {
+        void onClickDetailRestaurant(String restaurantId);
+
+        void popupSnack(String message);
     }
 
     //declare callbacl
-    // private final Listener callback;
+    private final RestaurantListener callback;
+
 
     //the constructor
     //public RecyclerViewAdapter(int mode, List<Result> myList, Listener callback) {
-    public RecyclerViewAdapter(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myList, LatLng myLatLng) {
+    public RecyclerViewAdapter(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myList, LatLng myLatLng, RestaurantListener callback) {
         this.mResults = myList;
 
         this.myPosition = myLatLng;
 
         //for callabck
-        //this.callback = callback;
+        this.callback = callback;
     }
 
-    public RecyclerViewAdapter(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myList) {
+    public RecyclerViewAdapter(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myList, RestaurantListener callback) {
+        this.callback = callback;
         this.mResults = myList;
     }
 
@@ -95,18 +98,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         //TODO: must to add the distance here...
 
-        Log.i("[DISTANCE]","" + mResults.get(position).getGeometry().getMyPosition());
+        Log.i("[DISTANCE]", "" + mResults.get(position).getGeometry().getMyPosition());
 
-        try{
+        try {
             holder.distanceOfRestaurant.setText(mResults.get(position).getGeometry().getMyPosition());
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             holder.distanceOfRestaurant.setText("erreur");
         }
-
-
-
 
 
         //show the address of restaurant
@@ -151,7 +150,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
 
         //TODO add listener
-        //holder.
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callback.onClickDetailRestaurant(result.getPlaceId());
+            }
+        });
 
     }
 

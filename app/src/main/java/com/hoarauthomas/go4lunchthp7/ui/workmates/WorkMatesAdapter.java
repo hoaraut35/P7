@@ -13,80 +13,69 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.R;
-import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 
 import java.util.List;
 
 public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.ViewHolder> {
 
-    //variables ...
-    private List<User> myUserListResults;
+    private final List<ViewModelWorkMates.SpecialWorkMate> myWorkMatesToShow;
 
-    //interface for callback
-    public interface ClickListener {
-        void onClickDetailWorkMate(String restaurantId);
+    public interface WorkMatesListener {
+        void onClickWorkMatesRestaurant(String restaurantId);
         void popupSnack(String message);
     }
 
-    //declare callbacl
-    private final ClickListener callback;
-
-
-    public void setOnItemClickListener(ClickListener clickListener) {
-
-    }
+    private final WorkMatesListener callback;
 
     //the constructor
     //public RecyclerViewAdapter(int mode, List<Result> myList, Listener callback) {
-    public WorkMatesAdapter(int mode, List<User> myList, LatLng myLatLng, ClickListener callback) {
-        this.myUserListResults = myList;
-        this.callback = callback;
-    }
+    // public WorkMatesAdapter(int mode, List<User> myList, LatLng myLatLng, WorkMatesListener callback) {
+    //   this.myWorkMatesToShow = myList;
+    // this.callback = callback;
+    // }
 
-    public WorkMatesAdapter(int mode, List<User> myList, ClickListener callback) {
+    /*
+    //good but disable to check my special listr
+    public WorkMatesAdapter(int mode, List<User> myList, WorkMatesListener callback) {
         Log.i("","");
         this.myUserListResults = myList;
         this.callback = callback;
     }
 
-    //for holder
+     */
+
+    public WorkMatesAdapter( List<ViewModelWorkMates.SpecialWorkMate> myList, WorkMatesListener callback) {
+        this.myWorkMatesToShow = myList;
+        this.callback = callback;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-
         View view = inflater.inflate(R.layout.item_workmates, parent, false);
-
-        //return null;
         return new ViewHolder(view);
     }
 
-    //binding data to holder
     @Override
     public void onBindViewHolder(@NonNull WorkMatesAdapter.ViewHolder holder, int position) {
 
-        User myUser = myUserListResults.get(position);
+        ViewModelWorkMates.SpecialWorkMate myWorkMates = myWorkMatesToShow.get(position);
 
-        //show avatar
         Glide.with(holder.itemView)
-                .load(myUser.getUrlPicture())
+                .load(myWorkMates.getAvatar())
                 .circleCrop()
                 .into(holder.avatar);
 
-        //show the name of restaurant
-        holder.nameOfWorkMate.setText(myUser.getUsername());
+        holder.nameOfWorkMate.setText(myWorkMates.getNameOfWorkMates());
 
-        //show restaurant selected here
-
-
-        if (myUser.getFavoriteRestaurant() != null && myUser.getFavoriteRestaurant() != "") {
+        Log.i("[NEW]","" + myWorkMates.getNameOfRestaurant());
+        if (myWorkMates.getNameOfRestaurant() != null && myWorkMates.getNameOfRestaurant() != "") {
             holder.nameOfWorkMate.setTypeface(null, Typeface.BOLD);
             holder.workMateState.setTypeface(null, Typeface.BOLD);
-            holder.workMateState.setText(" is eating (" + myUser.getFavoriteRestaurant() + ")");
+            holder.workMateState.setText(" is eating (" + myWorkMates.getNameOfRestaurant() + ")");
 
         } else {
             holder.nameOfWorkMate.setTypeface(null, Typeface.ITALIC);
@@ -94,20 +83,25 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
             holder.workMateState.setText(" hasn't decided yet");
         }
 
-        Log.i("[WORK]", "adapter workmates : " + myUser.getUrlPicture());
 
-        if (myUser.getFavoriteRestaurant() == "" || myUser.getFavoriteRestaurant().isEmpty()) {
+
+
+        //Log.i("[WORK]", "adapter workmates : " + myWorkMates.getUrlPicture());
+
+        if (myWorkMates.getNameOfRestaurant() == null || myWorkMates.getNameOfRestaurant().isEmpty()) {
             Log.i("[WORK]", "restaurant non défini null");
             holder.itemView.setOnClickListener((View myUserView) -> {
                 callback.popupSnack("pas de restaurant sélectionné");
-
             });
 
         } else {
             Log.i("[WORK]", "Ouverture du détail ");
-            holder.itemView.setOnClickListener((View myUserView) -> {
-                callback.onClickDetailWorkMate(myUser.getFavoriteRestaurant());
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View myUserView) {
+                    callback.onClickWorkMatesRestaurant(myWorkMates.getPlaceId());
 
+                }
             });
         }
 
@@ -116,7 +110,7 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
 
     @Override
     public int getItemCount() {
-        return myUserListResults.size();
+        return myWorkMatesToShow.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

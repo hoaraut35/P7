@@ -18,7 +18,6 @@ import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -26,8 +25,8 @@ import javax.annotation.Nullable;
 public class DetailActivity extends AppCompatActivity {
 
     private ActivityDetailRestaurantBinding binding;
+
     private ViewModelDetail myViewModelDetail;
-    public final ArrayList<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> allResult = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,27 +35,21 @@ public class DetailActivity extends AppCompatActivity {
         binding = ActivityDetailRestaurantBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-
         setupViewModel();
         setupIntent();
-
-
     }
 
     private void setupIntent() {
 
         Intent intent = getIntent();
 
-        String restaurant_id;
-
         if (intent.getStringExtra("TAG_ID") != null) {
-            restaurant_id = intent.getStringExtra("TAG_ID");
-            Log.i("[MONDETAIL]", "TAG MODE" + restaurant_id);
-            myViewModelDetail.setPlaceId(restaurant_id);
-
+            //Log.i("[MONDETAIL]", "TAG MODE" + restaurant_id);
+            myViewModelDetail.setPlaceId(intent.getStringExtra("TAG_ID"));
+            showSnackBar(intent.getStringExtra("TAG_ID"));
         } else {
-            restaurant_id = "";
-            Log.i("[MONDETAIL]", "Pas de restaurant sélectionné : [" + restaurant_id + "]");
+            //restaurant_id = "";
+           // Log.i("[MONDETAIL]", "Pas de restaurant sélectionné : [" + restaurant_id + "]");
         }
     }
 
@@ -104,11 +97,9 @@ public class DetailActivity extends AppCompatActivity {
 
                 }
 
-                if (viewStateDetail.getMyRestaurantDetailObject().getFormattedPhoneNumber()!=null){
+                if (viewStateDetail.getMyRestaurantDetailObject().getFormattedPhoneNumber() != null) {
                     setupButtonPhone(viewStateDetail.getMyRestaurantDetailObject().getFormattedPhoneNumber());
                 }
-
-
 
                 setupRecyclerView(viewStateDetail.getMyWorkMatesTag());
             }
@@ -193,6 +184,5 @@ public class DetailActivity extends AppCompatActivity {
     private void showSnackBar(String message) {
         Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT).show();
     }
-
 
 }

@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class WorkFragment extends Fragment implements WorkMatesAdapter.ClickListener {
+public class WorkFragment extends Fragment implements WorkMatesAdapter.WorkMatesListener {
 
     //Binding
     private FragmentWorkBinding binding;
@@ -35,7 +35,8 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.ClickList
 
     private RecyclerView recyclerView;
 
-    public final List<User> allResult = new ArrayList<>();
+    //public final List<User> allResult = new ArrayList<>();
+    public final List<ViewModelWorkMates.SpecialWorkMate> resultToShow = new ArrayList<>();
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -72,15 +73,10 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.ClickList
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         binding = FragmentWorkBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-
         setupViewModel();
         this.myView = view;
-       // binding.recyclerViewWorkmates.setLayoutManager(new LinearLayoutManager(view.getContext()));
-       // binding.recyclerViewWorkmates.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-       // binding.recyclerViewWorkmates.setHasFixedSize(false);
         return view;
     }
 
@@ -90,9 +86,7 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.ClickList
         this.myViewModelWorkMates.getMediatorLiveData().observe(getViewLifecycleOwner(), new Observer<ViewStateWorkMates>() {
             @Override
             public void onChanged(ViewStateWorkMates viewStateWorkMates) {
-
-                showWorkMates(viewStateWorkMates.myWorkMatesList);
-
+                showWorkMates(viewStateWorkMates.getMySpecialWorkMAtes());
             }
         });
     }
@@ -104,42 +98,33 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.ClickList
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         recyclerView.addItemDecoration(itemDecoration);
-        recyclerView.setAdapter(new WorkMatesAdapter(0,allResult,this));
+        recyclerView.setAdapter(new WorkMatesAdapter(resultToShow,this));
     }
 
-    private void showWorkMates(List<User> myWorkMatesList) {
+    private void showWorkMates(List<ViewModelWorkMates.SpecialWorkMate> mySpecial) {
 
-        if (myWorkMatesList == null)
+        if (mySpecial == null)
         {
             Log.i("[WORKM]","Liste workmates null ");
-            return;
         }else
         {
-            Log.i("[WORKM]","media size" + myWorkMatesList.size() );
-
-
-            allResult.clear();
-            allResult.addAll(myWorkMatesList);
-
-
+            Log.i("[WORKM]","List des workmates a aficher :" + mySpecial.size() );
+            resultToShow.clear();
+            resultToShow.addAll(mySpecial);
             setupRecyclerView(myView);
             Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
-
-
-
         }
     }
 
-    //this is callback for click on recyclerview...
     @Override
-    public void onClickDetailWorkMate(String restaurantId) {
+    public void onClickWorkMatesRestaurant(String restaurantId) {
         Log.i("[WORK]", "Item cliqué : " + restaurantId);
         Intent intent = new Intent(getContext(), DetailActivity.class);
-        intent.putExtra("WORKMATE_ID",restaurantId);
+        intent.putExtra("TAG_ID", restaurantId);
         startActivity(intent);
     }
 
-    //this is callback for show an alert message...
+
     @Override
     public void popupSnack(String message) {
          showToast(message);

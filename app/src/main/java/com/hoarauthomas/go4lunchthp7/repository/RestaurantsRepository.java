@@ -124,15 +124,7 @@ public class RestaurantsRepository {
                         @Override
                         public void onResponse(Call<MyDetailRestaurant> call, Response<MyDetailRestaurant> response) {
                             assert response.body() != null;
-
                             Log.i("[MONDETAIL]","recup detail... repository");
-                     /*   Log.i("[RESTAURANT]", "DETAIL REPOSITORY : " +
-                                "\n téléphone : " +
-                                response.body().getResult().getFormattedPhoneNumber() +
-                                "\n url : " +
-                                response.body().getResult().getUrl() + response.body().getResult());
-
-                      */
                             monDetailRestau.setValue(response.body().getResult());
 
                         }

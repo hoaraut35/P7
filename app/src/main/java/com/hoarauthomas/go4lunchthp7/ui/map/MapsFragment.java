@@ -61,7 +61,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             public void onChanged(ViewStateMap viewStateMap) {
                 Log.i("[MAP]", "Event ViewStateMap");
                 showMapWithPosition(viewStateMap.myPosition);
-                showRestaurant2(viewStateMap.myRestaurantsList);
+                showRestaurant(viewStateMap.myRestaurantsList);
             }
         });
 
@@ -81,7 +81,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
     //**********************************************************************************************
 
-    private void showRestaurant2(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
+    private void showRestaurant(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
 
         Log.i("[MAP]", "nombre dappel ");
 
