@@ -98,15 +98,14 @@ public class ViewModelDetail extends ViewModel {
         ResultDetailRestaurant resultDetailRestaurant = null;
 
 
-        if (restaurants != null && workmates != null && detail != null && placeIdGen!=null) {
+        if (restaurants != null && workmates != null && detail != null && placeIdGen != null) {
 
             for (int i = 0; i < restaurants.size(); i++) {
 
-               if (restaurants.get(i).getPlaceId().equals(placeIdGen)) {
-                    //on enregistre le restau
+                if (restaurants.get(i).getPlaceId().equals(placeIdGen)) {
+
                     resultRestaurant = restaurants.get(i);
 
-                    //on cherche les collegues qui sont enregistre sur ce restaurant
                     for (int z = 0; z < workmates.size(); z++) {
 
                         if (workmates.get(z).getFavoriteRestaurant().equals(placeIdGen)) {
@@ -115,26 +114,14 @@ public class ViewModelDetail extends ViewModel {
 
                     }
 
-                    //on recupere le detail du restau
-                    if (detail != null) {
-                        resultDetailRestaurant = detail;
-                    }
-
-
-                    //end for
 
                 }//end if
 
 
             }//end for
 
-            if (resultRestaurant != null && resultDetailRestaurant != null) {
-                //update viewstate
-                myViewStateDetailMediator.setValue(new ViewStateDetail(resultRestaurant, resultDetailRestaurant, resultWorkMAtes));
+            myViewStateDetailMediator.setValue(new ViewStateDetail(resultRestaurant, detail, resultWorkMAtes));
 
-            }
-
-            //   }//fin si
 
         }
         //**********************************************************************************

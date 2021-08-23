@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.snackbar.Snackbar;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
-import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 
 import java.util.ArrayList;
@@ -28,19 +27,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private ActivityDetailRestaurantBinding binding;
     private ViewModelDetail myViewModelDetail;
-    private RecyclerView recyclerView;
-
-
-
-    //th elist of restaurants
     public final ArrayList<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> allResult = new ArrayList<>();
-
-
-    private String restaurant_id, workmate_id, my_restaurant_id;
-    private ResultDetailRestaurant monRestauDetail;
-
-
-    private com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,27 +41,16 @@ public class DetailActivity extends AppCompatActivity {
         setupIntent();
 
 
-       // setupPlaceId(setupIntent());
-
-
-
-
-
-
-        //setupPlaceId(restaurant_id);
-        //  myViewModelDetail.setPlaceId(restaurant_id);
-
-        //    setupButtonLike();
-
-
     }
 
     private void setupIntent() {
 
         Intent intent = getIntent();
 
-        if (intent.getStringExtra("TAG_ID") != null){
-            this.restaurant_id = intent.getStringExtra("TAG_ID");
+        String restaurant_id;
+
+        if (intent.getStringExtra("TAG_ID") != null) {
+            restaurant_id = intent.getStringExtra("TAG_ID");
             Log.i("[MONDETAIL]", "TAG MODE" + restaurant_id);
             myViewModelDetail.setPlaceId(restaurant_id);
 
@@ -84,21 +60,9 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
-    private void setupPlaceId(String restaurant_id) {
-        if (restaurant_id != null && !restaurant_id.isEmpty()){
-
-                myViewModelDetail.setPlaceId(restaurant_id);
-
-        }else
-            return;
-        }
-
-
-    //TODO: get the restaurant ...
     private void setupViewModel() {
 
         myViewModelDetail = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelDetail.class);
-
         myViewModelDetail.getMediatorLiveData().observe(this, new Observer<ViewStateDetail>() {
             @Override
             public void onChanged(ViewStateDetail viewStateDetail) {
@@ -131,23 +95,18 @@ public class DetailActivity extends AppCompatActivity {
                     binding.ratingbar.setRating(0);
                 }
 
-
-                if (viewStateDetail.myRestaurantDetailObject.getUrl() == null){
+                //TODO:or null ?
+                if (viewStateDetail.myRestaurantDetailObject.getUrl().isEmpty()) {
                     showSnackBar("PAs de lien internet");
                     return;
-
-                }else
-                {
+                } else {
                     setupButtonWeb(viewStateDetail.getMyRestaurantDetailObject().getUrl());
 
                 }
 
-
-               /* if (viewStateDetail.getMyRestaurantDetailObject().getFormattedPhoneNumber()!=null){
+                if (viewStateDetail.getMyRestaurantDetailObject().getFormattedPhoneNumber()!=null){
                     setupButtonPhone(viewStateDetail.getMyRestaurantDetailObject().getFormattedPhoneNumber());
                 }
-
-                */
 
 
 
@@ -157,8 +116,6 @@ public class DetailActivity extends AppCompatActivity {
 
 
     }
-
-
 
 
     //to map a range to another range ... from arduino library
@@ -172,7 +129,7 @@ public class DetailActivity extends AppCompatActivity {
             return;
         } else if (!myWorkmatesList.isEmpty()) {
             Log.i("[MONDETAIL]", "liste user ok");
-            recyclerView = binding.recyclerView;
+            RecyclerView recyclerView = binding.recyclerView;
             RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
             recyclerView.setHasFixedSize(false);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
