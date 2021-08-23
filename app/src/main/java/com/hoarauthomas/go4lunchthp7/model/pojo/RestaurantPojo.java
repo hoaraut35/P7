@@ -26,6 +26,17 @@ public class RestaurantPojo {
         this.myDistance = myDistance;
     }
 
+
+    public int myNumberOfWorkmates;
+
+    public int getMyNumberOfWorkmates() {
+        return myNumberOfWorkmates;
+    }
+
+    public void setMyNumberOfWorkmates(int myNumberOfWorkmates) {
+        this.myNumberOfWorkmates = myNumberOfWorkmates;
+    }
+
     private Boolean myFavLike;
 
     public Boolean getMyFavLike() {

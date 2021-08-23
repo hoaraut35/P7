@@ -103,6 +103,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.distanceOfRestaurant.setText("erreur");
         }
 
+        //number of workmates
+
+        try{
+            holder.numberOfWorkmates.setText(mResults.get(position).getMyNumberOfWorkmates());
+        }catch (Exception e)
+        {
+            holder.numberOfWorkmates.setText("?");
+        }
+
+
 
         //show the address of restaurant
         holder.addressOfRestaurant.setText(mResults.get(position).getVicinity());

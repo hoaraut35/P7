@@ -86,10 +86,12 @@ public class ViewModelRestaurant extends ViewModel {
 
 
 
-        if (restaurants != null && myPosition != null) {
+        if (restaurants != null && myPosition != null && workMates != null) {
 
             List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> newList = new ArrayList<>();
             RestaurantPojo myRestau;
+
+            int compteur = 0;
 
 
             //calculer distance
@@ -114,6 +116,29 @@ public class ViewModelRestaurant extends ViewModel {
                 //restaurants.get(i).setMyDistance(Integer.toString(distance));
 
                 Log.i("[DISTANCE]","Distabce " + Integer.toString(distance) );
+
+
+                //workmates number for an restaurant
+
+
+
+                for (int j=0; j<workMates.size();j++){
+
+                    if (restaurants.get(i).getPlaceId().equals(workMates.get(j).getFavoriteRestaurant())){
+                        Log.i("[compteur]","compteur = " + compteur);
+
+
+                        compteur += compteur;
+                    }else
+                    {
+                        Log.i("[compteur]","compteur = " + restaurants.get(i).getPlaceId() + " " + workMates.get(j).getFavoriteRestaurant());
+                    }
+
+
+
+                }
+
+                myRestau.setMyNumberOfWorkmates(compteur);
 
                 newList.add(myRestau);
             }
