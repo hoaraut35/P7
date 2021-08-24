@@ -42,7 +42,7 @@
     <string name="attachment_title">Download incoming attachments</string>
     <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
-    <string name="google_maps_key">AIzaSyCKxZQFg6PZiBL9kHASYdFWt6A0Ai2mAZw</string>
+
     <string name="langage_mode">Langue de retour places : fr</string>
     <string name="topAppBar_title">Collègues</string>
     <string name="nameOfRestaurant">French - 12 rue du Faubourg Poissonière</string>

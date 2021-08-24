@@ -92,7 +92,7 @@ public class RestaurantsRepository {
                                 allRestaurants.add(response.body().getResults().get(i));
                             }
 
-                            Log.i("[RESTAURANT]", "[REPOSITORY RESTAURANT OK] Récupérationb de la liste" + allRestaurants.size());
+                            Log.i("[RESTAURANT]", "[REPOSITORY RESTAURANT OK] Récupérationb de la liste" + allRestaurants.size() + response.body().getResults());
 
                             listOfRestaurantWithLongLat.postValue(allRestaurants);
                         }
