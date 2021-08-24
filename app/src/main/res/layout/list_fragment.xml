@@ -6,15 +6,12 @@
     android:orientation="vertical"
     tools:context=".ui.restaurant.ListFragment">
 
-
-
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
-        android:tag="recycler_view"
+        android:name="com.hoarauthomas.go4lunchthp7.view.ListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.hoarauthomas.go4lunchthp7.view.ListFragment"
+        android:tag="recycler_view"
         tools:listitem="@layout/item_restaurant">
 
     </androidx.recyclerview.widget.RecyclerView>

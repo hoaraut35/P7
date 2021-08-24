@@ -9,11 +9,12 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
+import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
@@ -49,7 +50,7 @@ public class DetailActivity extends AppCompatActivity {
             showSnackBar(intent.getStringExtra("TAG_ID"));
         } else {
             //restaurant_id = "";
-           // Log.i("[MONDETAIL]", "Pas de restaurant sélectionné : [" + restaurant_id + "]");
+            // Log.i("[MONDETAIL]", "Pas de restaurant sélectionné : [" + restaurant_id + "]");
         }
     }
 
@@ -60,6 +61,24 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onChanged(ViewStateDetail viewStateDetail) {
                 Log.i("[MONDETAIL]", "detail demandé activity");
+
+                //show image of restaurant if exist
+                try {
+                    String base = "https://maps.googleapis.com/maps/api/place/photo?";
+                    String key = "key=" + BuildConfig.MAPS_API_KEY;
+                    String reference = "&photoreference=" + viewStateDetail.myRestaurantObject.getPhotos().get(0).getPhotoReference();
+                    String maxH = "&maxheight=157";
+                    String maxW = "&maxwidth=157";
+                    String query = base + key + reference + maxH + maxW;
+
+                    Glide.with(binding.backgroundImage)
+                            .load(query)
+                            .centerCrop()
+                            .into(binding.backgroundImage);
+
+                } catch (Exception e) {
+                    Log.i("[IMAGE]", "Exception : " + e.getMessage());
+                }
 
                 //titre retaurant
                 binding.restaurantTitre.setText(viewStateDetail.myRestaurantObject.getName());
@@ -115,19 +134,19 @@ public class DetailActivity extends AppCompatActivity {
     private void setupButtonChoice() {
 
 
-       binding.choiceBtn.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
+        binding.choiceBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
 
-               Log.i("[CLIC]","Clic sur choix restaurant ...");
+                Log.i("[CLIC]", "Clic sur choix restaurant ...");
 
 
-               myViewModelDetail.setFavRestaurant(myViewModelDetail.getPlaceId());
+                myViewModelDetail.setFavRestaurant(myViewModelDetail.getPlaceId());
 
 
-           }
-       });
+            }
+        });
 
     }
 
@@ -144,10 +163,10 @@ public class DetailActivity extends AppCompatActivity {
         } else if (!myWorkmatesList.isEmpty()) {
             Log.i("[MONDETAIL]", "liste user ok");
             RecyclerView recyclerView = binding.recyclerView;
-            RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+            //     RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
             recyclerView.setHasFixedSize(false);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            recyclerView.addItemDecoration(itemDecoration);
+            //   recyclerView.addItemDecoration(itemDecoration);
             recyclerView.setAdapter(new RecyclerViewAdapterDetail(myWorkmatesList));
         } else {
             Log.i("[MONDETAIL]", "liste user vide");

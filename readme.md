@@ -19,6 +19,8 @@ Executez la commande ``telnet mapscii.me`` pour commencer ensuite [...]
 
 * [Google Maps SDK for Android](https://developers.google.com/maps/documentation/android-sdk/start?hl=fr) - Google Maps Platform
 * [Google Places PAI](https://cloud.google.com/maps-platform/places?hl=fr) - Google Places
+* [Google Place Autocomplete](https://developers.google.com/maps/documentation/places/android-sdk/autocomplete#get_place_predictions_programmatically) - Place Autocomplete
+
 
 ## Auteurs
 
