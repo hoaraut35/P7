@@ -23,7 +23,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     //variables ...
 
-    private List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> mResults;
+    private List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantResult;
     private LatLng myPosition;
 
 
@@ -37,21 +37,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     //declare callbacl
     private final RestaurantListener callback;
 
-
-    //the constructor
-    //public RecyclerViewAdapter(int mode, List<Result> myList, Listener callback) {
-    public RecyclerViewAdapter(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myList, LatLng myLatLng, RestaurantListener callback) {
-        this.mResults = myList;
-
-        this.myPosition = myLatLng;
-
-        //for callabck
-        this.callback = callback;
-    }
-
     public RecyclerViewAdapter(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myList, RestaurantListener callback) {
         this.callback = callback;
-        this.mResults = myList;
+        this.myRestaurantResult = myList;
     }
 
     //for holder
@@ -71,17 +59,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewAdapter.ViewHolder holder, int position) {
 
-        com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo result = mResults.get(position);
+        com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo result = myRestaurantResult.get(position);
 
         //show the name of restaurant
-        holder.nameOfRestaurant.setText(mResults.get(position).getName());
+        holder.nameOfRestaurant.setText(myRestaurantResult.get(position).getName());
 
         //show the image of restaurant
         try {
-            //  Log.i("[THOMAS]", "Get photo [" + position + "] " + mResults.get(position).getPhotos().get(0).getPhotoReference());
             String base = "https://maps.googleapis.com/maps/api/place/photo?";
             String key = "key=" + BuildConfig.MAPS_API_KEY;
-            String reference = "&photoreference=" + mResults.get(position).getPhotos().get(0).getPhotoReference();
+            String reference = "&photoreference=" + myRestaurantResult.get(position).getPhotos().get(0).getPhotoReference();
             String maxH = "&maxheight=157";
             String maxW = "&maxwidth=157";
             String query = base + key + reference + maxH + maxW;
@@ -97,16 +84,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         //show the distance...
         try {
-            holder.distanceOfRestaurant.setText(mResults.get(position).getMyDistance() + "m");
+            holder.distanceOfRestaurant.setText(myRestaurantResult.get(position).getMyDistance() + "m");
 
         } catch (Exception e) {
             holder.distanceOfRestaurant.setText("erreur");
         }
 
-        //number of workmates
-
+        //TODO:workmates number don't work
         try{
-            holder.numberOfWorkmates.setText(mResults.get(position).getMyNumberOfWorkmates());
+            holder.numberOfWorkmates.setText(myRestaurantResult.get(position).getMyNumberOfWorkmates());
         }catch (Exception e)
         {
             holder.numberOfWorkmates.setText("?");
@@ -115,7 +101,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
         //show the address of restaurant
-        holder.addressOfRestaurant.setText(mResults.get(position).getVicinity());
+        holder.addressOfRestaurant.setText(myRestaurantResult.get(position).getVicinity());
 
         try {
             switch (result.getOpeningHours().getOpenNow().toString()) {
@@ -134,7 +120,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.openingHours.setText("Inconnu");
         }
 
-        //TODO: add the number of workmates
 
         //show star rating
         try {
@@ -173,7 +158,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public int getItemCount() {
-        return mResults.size();
+        return myRestaurantResult.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

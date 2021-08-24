@@ -8,30 +8,20 @@ L’application Go4Lunch est une application collaborative utilisée par tous le
 
 Les étapes pour installer votre programme....
 
-Dites ce qu'il faut faire...
-
-_exemple_: Executez la commande ``telnet mapscii.me`` pour commencer ensuite [...]
-
-
-Ensuite vous pouvez montrer ce que vous obtenez au final...
-
-## Démarrage
-
-Dites comment faire pour lancer votre projet
+Executez la commande ``telnet mapscii.me`` pour commencer ensuite [...]
 
 ## Développé avec
 
-* [Retrofit] (https://square.github.io/retrofit/) - Retrofit client for Android and Java
-
 * [Retrofit for Android](https://square.github.io/retrofit/) - Retrofit for Android
+
 * [Firebase Authentification](https://firebase.google.com/) - Framework CSS (front-end)
 * [Firebase Database](https://firebase.google.com/) - Base de donnée 
-* [GoogleMap](https://developers.google.com/maps/documentation/android-sdk/overview?hl=fr) - Editeur de textes
-* [Google Maps SDK for Android](https://atom.io/) - Editeur de textes
-* [Google Places PAI](https://developers.google.com/maps/documentation/places/web-service/overview) - API de détails
+
+* [Google Maps SDK for Android](https://developers.google.com/maps/documentation/android-sdk/start?hl=fr) - Google Maps Platform
+* [Google Places PAI](https://cloud.google.com/maps-platform/places?hl=fr) - Google Places
 
 ## Auteurs
-Listez le(s) auteur(s) du projet ici !
-* **Thomas HOARAU** _alias_ [@outout14](https://github.com/outout14)
+
+* **Thomas HOARAU** 
 
 

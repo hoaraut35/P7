@@ -86,12 +86,11 @@ public class ViewModelRestaurant extends ViewModel {
 
 
 
-        if (restaurants != null && myPosition != null && workMates != null) {
+        if (restaurants != null && myPosition != null && workMates != null && !restaurants.isEmpty() && !workMates.isEmpty()) {
 
             List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> newList = new ArrayList<>();
             RestaurantPojo myRestau;
 
-            int compteur = 0;
 
 
             //calculer distance
@@ -113,38 +112,27 @@ public class ViewModelRestaurant extends ViewModel {
 
                 myRestau.setMyDistance(Integer.toString(distance));
 
-                //restaurants.get(i).setMyDistance(Integer.toString(distance));
-
-                Log.i("[DISTANCE]","Distabce " + Integer.toString(distance) );
-
+                int compteur = 0;
 
                 //workmates number for an restaurant
-
-
-
                 for (int j=0; j<workMates.size();j++){
 
                     if (restaurants.get(i).getPlaceId().equals(workMates.get(j).getFavoriteRestaurant())){
-                        Log.i("[compteur]","compteur = " + compteur);
+                        Log.i("[compteur]","un collegue sur le restaur " + workMates.get(j).getUsername() + " " + restaurants.get(i).getName());
 
-
-                        compteur += compteur;
+                        compteur = compteur + 1;
                     }else
                     {
                         Log.i("[compteur]","compteur = " + restaurants.get(i).getPlaceId() + " " + workMates.get(j).getFavoriteRestaurant());
                     }
-
-
-
                 }
 
-                myRestau.setMyNumberOfWorkmates(compteur);
+
+                myRestau.setMyNumberOfWorkmates(Integer.toString(compteur));
 
                 newList.add(myRestau);
             }
 
-
-            //myViewStateRestaurantMediator.setValue(new ViewStateRestaurant(restaurants));
             myViewStateRestaurantMediator.setValue(new ViewStateRestaurant(newList));
         }
 

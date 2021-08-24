@@ -8,8 +8,8 @@ import java.util.List;
 public class ViewStateRestaurant {
 
 
-    List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantList;
-    List<User> myWorkMatesList;
+    private List<RestaurantPojo> myRestaurantList;
+    private List<User> myWorkMatesList;
 
     public ViewStateRestaurant(List<RestaurantPojo> myRestaurantList) {
         this.myRestaurantList = myRestaurantList;

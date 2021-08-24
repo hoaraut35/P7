@@ -2,6 +2,7 @@ package com.hoarauthomas.go4lunchthp7.repository;
 
 
 import android.util.Log;
+import android.util.LruCache;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -34,21 +35,14 @@ public class RestaurantsRepository {
 
     //this is the list for add all iteration in a list to send after in mutable
     private final List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> allRestaurants = new ArrayList<>();
-
     private final MutableLiveData<ResultDetailRestaurant> monDetailRestau = new MutableLiveData<>();
-
     private final MutableLiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> listOfRestaurantWithLongLat = new MutableLiveData<>();
-
-
-
     private final MutableLiveData<ResultDetailRestaurant> restauDetailObj = new MutableLiveData<>();
-
-
-
     private final MutableLiveData<MyDetailRestaurant> restauDetailObj2 = new MutableLiveData<>();
-
     private final MutableLiveData<String> placeId = new MutableLiveData<String>();
 
+    //test for caching data
+    private final LruCache<String, RestaurantDetailPojo> myCache = new LruCache<>(2_000);
 
     //this is the constructor is called by factory...
     public RestaurantsRepository() {
@@ -75,6 +69,10 @@ public class RestaurantsRepository {
 
         String myPositionStr = Lat + "," + Long;
         Log.i("[MAP]", "[REPOSITORY RESTAURANT] : Ma position : " + myPositionStr);
+
+
+
+
 
         service.getNearbyPlaces(BuildConfig.MAPS_API_KEY, myPositionStr)
 
@@ -112,6 +110,11 @@ public class RestaurantsRepository {
 
     //this livedata is publish to viewmodel... v2
     public LiveData<ResultDetailRestaurant> getRestaurantById(String restaurant_id) {
+
+
+
+
+
 
         if (restaurant_id == null || restaurant_id.isEmpty()) {
             Log.i("[MONDETAIL]","id null opu vide");

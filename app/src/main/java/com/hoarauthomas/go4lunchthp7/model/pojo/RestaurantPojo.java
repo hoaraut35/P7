@@ -27,13 +27,11 @@ public class RestaurantPojo {
     }
 
 
-    public int myNumberOfWorkmates;
+    public String myNumberOfWorkmates;
 
-    public int getMyNumberOfWorkmates() {
-        return myNumberOfWorkmates;
-    }
+    public String getMyNumberOfWorkmates() {return myNumberOfWorkmates;}
 
-    public void setMyNumberOfWorkmates(int myNumberOfWorkmates) {
+    public void setMyNumberOfWorkmates(String myNumberOfWorkmates) {
         this.myNumberOfWorkmates = myNumberOfWorkmates;
     }
 

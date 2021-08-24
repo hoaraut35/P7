@@ -29,7 +29,7 @@ import java.util.Objects;
 public class ListFragment extends Fragment implements RecyclerViewAdapter.RestaurantListener {
 
     private ViewModelRestaurant myViewModelRestaurant;
-    public final ArrayList<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> allResult = new ArrayList<>();
+    public ArrayList<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> allResult = new ArrayList<>();
     private RecyclerView recyclerView;
     private LatLng myPositionOnMap;
     private View myView;
