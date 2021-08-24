@@ -19,11 +19,11 @@ Ensuite vous pouvez montrer ce que vous obtenez au final...
 
 Dites comment faire pour lancer votre projet
 
-## Fabriqué avec
+## Développé avec
 
-Entrez les programmes/logiciels/ressources que vous avez utilisé pour développer votre projet
+* [Retrofit] (https://square.github.io/retrofit/) - Retrofit client for Android and Java
 
-_exemples :_
+* [Retrofit for Android](https://square.github.io/retrofit/) - Retrofit for Android
 * [Firebase Authentification](https://firebase.google.com/) - Framework CSS (front-end)
 * [Firebase Database](https://firebase.google.com/) - Base de donnée 
 * [GoogleMap](https://developers.google.com/maps/documentation/android-sdk/overview?hl=fr) - Editeur de textes
