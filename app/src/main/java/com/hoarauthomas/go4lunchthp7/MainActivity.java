@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,18 +39,39 @@ import static androidx.core.view.GravityCompat.START;
 //for user interaction with ui only ....
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    //View Binding
     public ActivityMainBinding binding;
 
-    //ViewModel
+    //TODO: must deleted
     public ViewModelGo4Lunch myViewModel;
-
 
     //Manage fragments map, list and workmates
     FragmentsAdapter myFragmentAdapter;
 
     //Signal for activity result and callback
     private static final int RC_SIGN_IN = 123;
+
+    //new launcher for activity result
+    ActivityResultLauncher<Intent> openFirebaseAuthForResult = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+
+                if (result.getResultCode() == RC_SIGN_IN) {
+                   // if (result.getResultCode() == RESULT_OK) {
+                     //   showSnackBar(getString(R.string.connection_succeed));
+
+                   // }
+                } else {
+
+                    if (result.getResultCode() == ErrorCodes.NO_NETWORK) {
+                        showSnackBar(getString(R.string.error_no_network));
+                    } else if (result.getResultCode() == ErrorCodes.UNKNOWN_ERROR) {
+                        showSnackBar(getString(R.string.error_unknow));
+                    }
+
+                }
+
+
+            });
 
     //list of auth provider
     private final List<AuthUI.IdpConfig> providers = Arrays.asList(
@@ -57,18 +80,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             new AuthUI.IdpConfig.GoogleBuilder().build());
 
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
-
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-
         setupPermission();
         setupViewModel();
         setupTopAppBar();
@@ -85,13 +101,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setupViewModel() {
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
-
         this.myViewModel.getMyUserState().observe(this, this::onCheckSecurity);
-
         this.myViewModel.getViewStateLiveData().observe(this, mainViewState -> {
             //  Log.i("[STATE]","from main activity..." + mainViewState.getLocation().getLatitude() + " "  + mainViewState.getLocation().getLongitude());
         });
-
     }
 
     private void onCheckSecurity(Boolean connected) {
@@ -110,10 +123,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .setFacebookButtonId(R.id.facebook_btn)
                 .build();
 
-        //TODO: startActivityForResult must be updated
-
-
-        startActivityForResult(
+        openFirebaseAuthForResult.launch(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setAvailableProviders(providers)
@@ -121,10 +131,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .setLogo(R.drawable.go4lunch_sign_in)
                         .setTheme(R.style.LoginTheme)
                         .setIsSmartLockEnabled(false, true)
-                        .build(), RC_SIGN_IN
+                        .build()
         );
-    }
 
+    }
 
     //TODO: review binding navigation view ?
     private void request_user_info() {
@@ -142,8 +152,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .circleCrop()
                 .into(avatar);
 
-        //TODO:remove this in prod mode
-        //showSnackBar(this.myViewModel.getMyCurrentUser().getValue().getUid());
     }
 
     private void showSnackBar(String message) {
