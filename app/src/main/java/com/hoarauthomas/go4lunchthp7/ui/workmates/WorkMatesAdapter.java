@@ -64,10 +64,21 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
 
         ViewModelWorkMates.SpecialWorkMate myWorkMates = myWorkMatesToShow.get(position);
 
+        String avatar = "";
+        if (myWorkMates.getAvatar().isEmpty()){
+            avatar = "https://eu.ui-avatars.com/api/?name="+ "DE"  + "+" + "MO";
+        }else
+        {
+            avatar = myWorkMates.getAvatar();
+        }
+
         Glide.with(holder.itemView)
-                .load(myWorkMates.getAvatar())
+                .load(avatar)
                 .circleCrop()
                 .into(holder.avatar);
+
+
+
 
         holder.nameOfWorkMate.setText(myWorkMates.getNameOfWorkMates());
 

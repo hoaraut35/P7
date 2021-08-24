@@ -7,8 +7,8 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.hoarauthomas.go4lunchthp7.api.UserHelper;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
@@ -41,7 +41,6 @@ public class ViewModelDetail extends ViewModel {
     public ViewModelDetail(RestaurantsRepository myRestaurantRepository, WorkMatesRepository myWorkMatesRepository) {
 
 
-
         this.myRestaurantRepository = myRestaurantRepository;
         this.myWorkMatesRepository = myWorkMatesRepository;
 
@@ -53,7 +52,7 @@ public class ViewModelDetail extends ViewModel {
         myViewStateDetailMediator.addSource(myRestaurantsList, new Observer<List<RestaurantPojo>>() {
             @Override
             public void onChanged(List<RestaurantPojo> restaurantPojos) {
-               // Log.i("[MONDETAIL]", "Event récupération de la liste restaurants : " + restaurantPojos.size());
+                // Log.i("[MONDETAIL]", "Event récupération de la liste restaurants : " + restaurantPojos.size());
                 logicWork(restaurantPojos, myWorkMatesList.getValue(), myDetail.getValue());
             }
         });
@@ -62,7 +61,7 @@ public class ViewModelDetail extends ViewModel {
         myViewStateDetailMediator.addSource(myWorkMatesList, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
-               // Log.i("[MONDETAIL]", "Event récupération liste collègues : " + users.size());
+                // Log.i("[MONDETAIL]", "Event récupération liste collègues : " + users.size());
                 logicWork(myRestaurantsList.getValue(), users, myDetail.getValue());
             }
         });
@@ -188,27 +187,28 @@ public class ViewModelDetail extends ViewModel {
     }
 
 
+    public void setFavRestaurant(String uid, String placeId) {
 
-    public void setFavRestaurant(String uid,String placeId){
-
-        UserHelper.updateFavRestaurant(uid,placeId);
-       // myWorkMatesRepository.getCurrentUser().
+        UserHelper.updateFavRestaurant(uid, placeId);
+        // myWorkMatesRepository.getCurrentUser().
     }
 
 
-    public void adLikedRestaurant(String uid, String myPlaces){
+    public void adLikedRestaurant(String uid, String myPlaces) {
 
         UserHelper.getUser(uid);
 
         DocumentReference mySnapShot = UserHelper.getUsersCollection().document();
 
-      //  DocumentSnapshot document = mySnapShot.get();
+        //  DocumentSnapshot document = mySnapShot.get();
 
 
         UserHelper.addLikedRestaurant(uid, myPlaces);
     }
 
-
+    public FirebaseUser getCurrentUser() {
+        return myWorkMatesRepository.getCurrentUser();
+    }
 
     //public livedata to publish in viexwstate
     public LiveData<ViewStateDetail> getMediatorLiveData() {

@@ -109,21 +109,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
-                        Log.i("[LOGIN]","" + result.getIdpResponse().getIdpToken());
+                        //authentification ok
+                        if (result.getResultCode() == -1){
+                            Log.i("[LOGIN]","login ok " + result.getResultCode());
+                            myViewModel.getMyCurrentUser();
+                            myViewModel.createUser();
+                         } else {
 
-
-                        //TODO: bug ici
-                     //   IdpResponse response = IdpResponse.fromResultIntent(LOGINresult);
-
-                      //  Log.i("[LOGIN]", "Loginb " + response.getEmail());
-
-                        myViewModel.createUser();
-                        if (Objects.equals(result.getIdpResponse(), RC_SIGN_IN)) {
-                            if (result.getIdpResponse().equals(RC_SIGN_OK)) {
-                                myViewModel.getMyCurrentUser();
-                                myViewModel.createUser();
-                            }
-                        } else {
+                            Log.i("[LOGIN]","Erreur login");
                             if (result.getIdpResponse() == null) {
                                 MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_no_network));
                             } else if (result.getIdpResponse().equals(ErrorCodes.NO_NETWORK)) {
@@ -180,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Snackbar.make(binding.viewpager, message, Snackbar.LENGTH_SHORT).show();
     }
 
-    @Override
+  /*  @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -209,6 +202,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+   */
+
     private void setupNavigationDrawer() {
 
         binding.navigationView.setNavigationItemSelectedListener(item -> {
@@ -230,6 +225,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void openMyFavoriteRestaurant() {
+
+        //TODO: add favorite restaurant from viewmodel ?
+
         Intent intent = new Intent(this, DetailActivity.class);
         startActivity(intent);
     }

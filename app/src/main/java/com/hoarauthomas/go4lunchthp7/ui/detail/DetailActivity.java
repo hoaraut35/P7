@@ -142,8 +142,8 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Log.i("[CLIC]", "Clic sur choix restaurant ..." + myViewModelDetail.getPlaceId());
-                myViewModelDetail.setFavRestaurant("X94e0eWaE1hxG9AFu1MSLxqExnp1", myViewModelDetail.getPlaceId());
+                Log.i("[CLIC]", "Clic sur choix restaurant ..." + myViewModelDetail.getPlaceId() + myViewModelDetail.getCurrentUser().getUid());
+                myViewModelDetail.setFavRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
             }
         });
 
