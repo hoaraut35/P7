@@ -121,19 +121,17 @@ public class WorkMatesRepository {
 
     public void createUser() {
 
-
         FirebaseUser user = getCurrentUser();
-        Log.i("[FIRE]", "Create user from workmates > " + user.getUid() + " " + user.getDisplayName() + " " + user.getPhotoUrl());
 
         if (user != null) {
 
             String urlPicture = (user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null);
-            String username = (user.getDisplayName() != null ? user.getDisplayName().toString() : null);
-            String uid = (user.getUid() != null ? user.getUid().toString() : null);
+            String username = (user.getDisplayName() != null ? user.getDisplayName() : null);
+            String uid = (user.getUid() != null ? user.getUid() : null);
             String restaurant = "";
+            List<String> restaurant_liked = new ArrayList<>();
 
-
-            User userToCreate = new User(uid, username, urlPicture, restaurant);
+            User userToCreate = new User(uid, username, urlPicture, restaurant, restaurant_liked);
 
             Task<DocumentSnapshot> userData = getUserData();
 
@@ -148,7 +146,10 @@ public class WorkMatesRepository {
 
                 } else if (documentSnapshot.contains("username")) {
                     userToCreate.setUsername(username);
+                } else if (documentSnapshot.contains("restaurant_liked")){
+                    userToCreate.setRestaurant_liked(restaurant_liked);
                 }
+
 
                 this.getUsersCollection().document(uid).set(userToCreate);
             });

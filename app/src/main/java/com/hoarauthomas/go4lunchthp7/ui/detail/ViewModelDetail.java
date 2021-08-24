@@ -7,6 +7,9 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.hoarauthomas.go4lunchthp7.api.UserHelper;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
@@ -21,8 +24,12 @@ import javax.annotation.Nullable;
 public class ViewModelDetail extends ViewModel {
 
     //declare repo here...
-    private RestaurantsRepository myRestaurantRepository;
-    private WorkMatesRepository myWorkMatesRepository;
+    private final RestaurantsRepository myRestaurantRepository;
+    private final WorkMatesRepository myWorkMatesRepository;
+
+
+    private final UserHelper myUserHelper = new UserHelper();
+
 
     //to publish data in ViewState
     private final MediatorLiveData<ViewStateDetail> myViewStateDetailMediator = new MediatorLiveData<>();
@@ -32,6 +39,8 @@ public class ViewModelDetail extends ViewModel {
 
     //constructor
     public ViewModelDetail(RestaurantsRepository myRestaurantRepository, WorkMatesRepository myWorkMatesRepository) {
+
+
 
         this.myRestaurantRepository = myRestaurantRepository;
         this.myWorkMatesRepository = myWorkMatesRepository;
@@ -180,9 +189,25 @@ public class ViewModelDetail extends ViewModel {
 
 
 
-    public void setFavRestaurant(String restaurant){
+    public void setFavRestaurant(String uid,String placeId){
+
+        UserHelper.updateFavRestaurant(uid,placeId);
        // myWorkMatesRepository.getCurrentUser().
     }
+
+
+    public void adLikedRestaurant(String uid, String myPlaces){
+
+        UserHelper.getUser(uid);
+
+        DocumentReference mySnapShot = UserHelper.getUsersCollection().document();
+
+      //  DocumentSnapshot document = mySnapShot.get();
+
+
+        UserHelper.addLikedRestaurant(uid, myPlaces);
+    }
+
 
 
     //public livedata to publish in viexwstate

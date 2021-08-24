@@ -2,7 +2,6 @@ package com.hoarauthomas.go4lunchthp7.api;
 
 
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.MyDetailRestaurant;
-import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
 
 import retrofit2.Call;

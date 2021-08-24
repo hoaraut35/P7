@@ -30,11 +30,12 @@ public class User {
 
     public User() { }
 
-    public User(String uid, String username, String urlPicture,@Nullable String favoriteRestaurant) {
+    public User(String uid, String username, String urlPicture,@Nullable String favoriteRestaurant, List<String> restaurant_liked) {
         this.uid = uid;
         this.username = username;
         this.urlPicture = urlPicture;
         this.favoriteRestaurant = favoriteRestaurant;
+        this.restaurant_liked = restaurant_liked;
 
     }
 

@@ -87,10 +87,11 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(ViewModelGo4Lunch.class)) {
             return (T) new ViewModelGo4Lunch(
                     authRepository,
-                    restaurantsRepository,
-                    positionRepository,
-                    workMatesRepository,
-                    permissionChecker);
+                 //   restaurantsRepository,
+                 //   positionRepository,
+                    workMatesRepository
+                //    permissionChecker
+                    );
         }
 
         if (modelClass.isAssignableFrom(ViewModelMap.class)) {

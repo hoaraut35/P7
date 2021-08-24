@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,7 +21,9 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.IdpResponse;
+import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
@@ -43,35 +45,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //TODO: must deleted
     public ViewModelGo4Lunch myViewModel;
+    private ActivityResultLauncher<Intent> openFirebaseAuthForResult;
 
     //Manage fragments map, list and workmates
     FragmentsAdapter myFragmentAdapter;
 
     //Signal for activity result and callback
     private static final int RC_SIGN_IN = 123;
+    private static final int RC_SIGN_OK = -1;
 
-    //new launcher for activity result
-    ActivityResultLauncher<Intent> openFirebaseAuthForResult = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-
-                if (result.getResultCode() == RC_SIGN_IN) {
-                   // if (result.getResultCode() == RESULT_OK) {
-                     //   showSnackBar(getString(R.string.connection_succeed));
-
-                   // }
-                } else {
-
-                    if (result.getResultCode() == ErrorCodes.NO_NETWORK) {
-                        showSnackBar(getString(R.string.error_no_network));
-                    } else if (result.getResultCode() == ErrorCodes.UNKNOWN_ERROR) {
-                        showSnackBar(getString(R.string.error_unknow));
-                    }
-
-                }
-
-
-            });
 
     //list of auth provider
     private final List<AuthUI.IdpConfig> providers = Arrays.asList(
@@ -85,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
+
+        setupIntent();
         setupPermission();
         setupViewModel();
         setupTopAppBar();
@@ -100,11 +84,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setupViewModel() {
+        //TODO: remove this afdter
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
         this.myViewModel.getMyUserState().observe(this, this::onCheckSecurity);
-        this.myViewModel.getViewStateLiveData().observe(this, mainViewState -> {
-            //  Log.i("[STATE]","from main activity..." + mainViewState.getLocation().getLatitude() + " "  + mainViewState.getLocation().getLongitude());
-        });
     }
 
     private void onCheckSecurity(Boolean connected) {
@@ -115,7 +97,47 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+
+    private void setupIntent() {
+
+        openFirebaseAuthForResult = registerForActivityResult(
+                new FirebaseAuthUIActivityResultContract(),
+                new ActivityResultCallback<FirebaseAuthUIAuthenticationResult>() {
+
+                    @Override
+                    public void onActivityResult(FirebaseAuthUIAuthenticationResult result) {
+
+
+
+                        Log.i("[LOGIN]","" + result.getIdpResponse().getIdpToken());
+
+
+                        //TODO: bug ici
+                     //   IdpResponse response = IdpResponse.fromResultIntent(LOGINresult);
+
+                      //  Log.i("[LOGIN]", "Loginb " + response.getEmail());
+
+                        myViewModel.createUser();
+                        if (Objects.equals(result.getIdpResponse(), RC_SIGN_IN)) {
+                            if (result.getIdpResponse().equals(RC_SIGN_OK)) {
+                                myViewModel.getMyCurrentUser();
+                                myViewModel.createUser();
+                            }
+                        } else {
+                            if (result.getIdpResponse() == null) {
+                                MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_no_network));
+                            } else if (result.getIdpResponse().equals(ErrorCodes.NO_NETWORK)) {
+                                MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_no_network));
+                            } else if (result.getIdpResponse().equals(ErrorCodes.UNKNOWN_ERROR)) {
+                                MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_unknow));
+                            }
+                        }
+                    }
+                });
+    }
+
     private void request_login() {
+        //setup layout
         AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
                 .Builder(R.layout.custom_layout_login)
                 .setEmailButtonId(R.id.email_button)

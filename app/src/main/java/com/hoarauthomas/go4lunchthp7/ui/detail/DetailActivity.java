@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
+import com.hoarauthomas.go4lunchthp7.api.GooglePlaceApi;
+import com.hoarauthomas.go4lunchthp7.api.UserHelper;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
@@ -28,6 +30,8 @@ public class DetailActivity extends AppCompatActivity {
     private ActivityDetailRestaurantBinding binding;
 
     private ViewModelDetail myViewModelDetail;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +128,7 @@ public class DetailActivity extends AppCompatActivity {
 
 
                 setupButtonChoice();
+                setupButtonLike();
 
             }
         });
@@ -133,18 +138,12 @@ public class DetailActivity extends AppCompatActivity {
 
     private void setupButtonChoice() {
 
-
         binding.choiceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-
-                Log.i("[CLIC]", "Clic sur choix restaurant ...");
-
-
-                myViewModelDetail.setFavRestaurant(myViewModelDetail.getPlaceId());
-
-
+                Log.i("[CLIC]", "Clic sur choix restaurant ..." + myViewModelDetail.getPlaceId());
+                myViewModelDetail.setFavRestaurant("X94e0eWaE1hxG9AFu1MSLxqExnp1", myViewModelDetail.getPlaceId());
             }
         });
 
@@ -201,7 +200,8 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showSnackBar("Enregistrer le restaurant : " + binding.restaurantTitre.getText());
-                //     myViewModel.onLikeClicked();
+
+                    myViewModelDetail.adLikedRestaurant("X94e0eWaE1hxG9AFu1MSLxqExnp1", "test");
             }
         });
     }
