@@ -23,6 +23,7 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
 
     public interface WorkMatesListener {
         void onClickWorkMatesRestaurant(String restaurantId);
+
         void popupSnack(String message);
     }
 
@@ -45,7 +46,7 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
 
      */
 
-    public WorkMatesAdapter( List<ViewModelWorkMates.SpecialWorkMate> myList, WorkMatesListener callback) {
+    public WorkMatesAdapter(List<ViewModelWorkMates.SpecialWorkMate> myList, WorkMatesListener callback) {
         this.myWorkMatesToShow = myList;
         this.callback = callback;
     }
@@ -65,25 +66,24 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
         ViewModelWorkMates.SpecialWorkMate myWorkMates = myWorkMatesToShow.get(position);
 
 
-    String avatar = "";
+        String avatar = "";
 
-        if (myWorkMates.getAvatar().isEmpty()){
+        if (myWorkMates.getAvatar().isEmpty()) {
 
             String nom = myWorkMates.getNameOfWorkMates();
 
-            String [] parts =  nom.split(" ",2);
+            String[] parts = nom.split(" ", 2);
 
             String z = "";
 
-            for (int i=0; i< parts.length;i++){
-                z =   parts[i]+ z;
+            for (int i = 0; i < parts.length; i++) {
+                z = parts[i].charAt(0) + z;
 
             }
-            Log.i("[LOGIN]",""+ z);
+            Log.i("[LOGIN]", "" + z);
 
-            avatar = "https://eu.ui-avatars.com/api/?name="+ z;
-        }else
-        {
+            avatar = "https://eu.ui-avatars.com/api/?name=" + z;
+        } else {
             avatar = myWorkMates.getAvatar();
 
 
@@ -95,11 +95,9 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
                 .into(holder.avatar);
 
 
-
-
         holder.nameOfWorkMate.setText(myWorkMates.getNameOfWorkMates());
 
-        Log.i("[NEW]","" + myWorkMates.getNameOfRestaurant());
+        Log.i("[NEW]", "" + myWorkMates.getNameOfRestaurant());
         if (myWorkMates.getNameOfRestaurant() != null && myWorkMates.getNameOfRestaurant() != "") {
             holder.nameOfWorkMate.setTypeface(null, Typeface.BOLD);
             holder.workMateState.setTypeface(null, Typeface.BOLD);
@@ -110,8 +108,6 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
             holder.workMateState.setTypeface(null, Typeface.ITALIC);
             holder.workMateState.setText(" hasn't decided yet");
         }
-
-
 
 
         //Log.i("[WORK]", "adapter workmates : " + myWorkMates.getUrlPicture());
