@@ -71,12 +71,8 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     //**********************************************************************************************
 
     private void showMapWithPosition(@NonNull LatLng position) {
-
-      //  Log.i("[MAP]", "Modifier position carte ..." + position.getLongitude() + " " + position.getLatitude());
-        //LatLng latLng = new LatLng(position.getLatitude(), position.getLongitude());
         myMap.moveCamera(CameraUpdateFactory.newLatLng(position));
         myMap.animateCamera(CameraUpdateFactory.zoomTo(10));//city zoom
-
     }
 
     //**********************************************************************************************
