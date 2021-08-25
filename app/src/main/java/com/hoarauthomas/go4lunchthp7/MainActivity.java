@@ -57,9 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private final List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.EmailBuilder().build(),
             new AuthUI.IdpConfig.FacebookBuilder().build(),
-            new AuthUI.IdpConfig.GoogleBuilder().build()),
-        new AuthUI.IdpConfig.TwitterBuilder().b
-    ;
+            new AuthUI.IdpConfig.GoogleBuilder().build());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
