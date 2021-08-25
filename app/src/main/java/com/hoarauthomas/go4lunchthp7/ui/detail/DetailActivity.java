@@ -201,7 +201,10 @@ public class DetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 showSnackBar("Enregistrer le restaurant : " + binding.restaurantTitre.getText());
 
-                    myViewModelDetail.adLikedRestaurant("X94e0eWaE1hxG9AFu1MSLxqExnp1", "test");
+                    //myViewModelDetail.getCurrentUser().
+
+
+                    myViewModelDetail.adLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
             }
         });
     }

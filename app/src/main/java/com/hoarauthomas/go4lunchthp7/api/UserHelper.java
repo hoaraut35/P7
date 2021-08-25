@@ -1,8 +1,12 @@
 package com.hoarauthomas.go4lunchthp7.api;
 
+import android.util.Log;
+
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 
@@ -52,8 +56,35 @@ public class UserHelper {
     //TODO : tableau favoris
     public static Task<Void> addLikedRestaurant(String uid, String placeId) {
 
+        Task<DocumentSnapshot> myDoc = getUsersCollection().document(uid).get();
 
-        return UserHelper.getUsersCollection().document(uid).update("restaurant_liked", placeId);
+        myDoc.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                List<String> temp= (List<String>) myDoc.getResult().get("restaurant_liked");
+
+                temp.add(placeId);
+
+                Log.i("[LOGIN]","restaura liké" +myDoc.getResult().get("restaurant_liked") + temp.size());
+
+
+                //UserHelper.getUsersCollection().document(uid).collection("restaurant_liked").add(temp);
+
+            }
+
+
+        });
+
+
+
+
+        //List<String> myTab = (List<String>) myDoc.getResult("restaurant_liked");
+
+
+
+        return UserHelper.getUsersCollection().document(uid).update("restaurant_liked", FieldValue.arrayUnion(placeId));
+    //    return null;
     }
 
     public static Task<Void> getLikedRestaurant(String uid) {

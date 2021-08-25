@@ -24,15 +24,11 @@ public class ViewModelGo4Lunch extends ViewModel {
 
     //constructor to get one instance of each object, called by ViewModelFactory
     public ViewModelGo4Lunch(AuthRepository authRepository, WorkMatesRepository workMatesRepository) {
-
-
         this.myAuthSource = authRepository;
         this.myUserVM = myAuthSource.getUserFromRepo();
-
         this.myUserStateVM = myAuthSource.getUserStateFromRepo();
         this.myWorkMatesSource = workMatesRepository;
         this.workMatesLiveData = myWorkMatesSource.getAllWorkMates();
-
     }
 
     //publish method to activity for

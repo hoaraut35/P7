@@ -51,12 +51,10 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                             new RestaurantsRepository(),
                             new PositionRepository(LocationServices.getFusedLocationProviderClient(application)),
                             new WorkMatesRepository()
-
                     );
                 } else {
                     Log.i("[THOMAS]", "[VIEWMODELFACTORY OBJECT ALREADY EXIST]");
                 }
-
             }
         }
 
@@ -87,11 +85,11 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(ViewModelGo4Lunch.class)) {
             return (T) new ViewModelGo4Lunch(
                     authRepository,
-                 //   restaurantsRepository,
-                 //   positionRepository,
+                    //   restaurantsRepository,
+                    //   positionRepository,
                     workMatesRepository
-                //    permissionChecker
-                    );
+                    //    permissionChecker
+            );
         }
 
         if (modelClass.isAssignableFrom(ViewModelMap.class)) {

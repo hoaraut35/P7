@@ -21,6 +21,7 @@ import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
+import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -95,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (!connected) {
             request_login();
         } else {
+            Log.i("[LOGIN]","user is connected " + myViewModel.getMyCurrentUser().getValue().getDisplayName());
             request_user_info();
         }
     }
@@ -108,7 +110,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     @Override
                     public void onActivityResult(FirebaseAuthUIAuthenticationResult result) {
-
 
                         //authentification ok
                         if (result.getResultCode() == -1) {

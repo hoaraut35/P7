@@ -68,7 +68,7 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
 
         String avatar = "";
 
-        if (myWorkMates.getAvatar().isEmpty()) {
+        if (myWorkMates.getAvatar() == null) {
 
             String nom = myWorkMates.getNameOfWorkMates();
             String[] parts = nom.split(" ", 2);

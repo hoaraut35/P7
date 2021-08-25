@@ -196,10 +196,11 @@ public class ViewModelDetail extends ViewModel {
 
     public void adLikedRestaurant(String uid, String myPlaces) {
 
-        UserHelper.getUser(uid);
+        //UserHelper.getUser(uid);
 
-        DocumentReference mySnapShot = UserHelper.getUsersCollection().document();
+      //  DocumentReference mySnapShot = UserHelper.getUsersCollection().document();
 
+        //List<String> myTab = (List<String>) mySnapShot.get("restaurant_liked");
         //  DocumentSnapshot document = mySnapShot.get();
 
 
