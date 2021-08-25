@@ -1,17 +1,13 @@
 package com.hoarauthomas.go4lunchthp7.ui.detail;
 
-import com.hoarauthomas.go4lunchthp7.RestaurantDetailPojo;
-import com.hoarauthomas.go4lunchthp7.model.firestore.User;
+import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 public class ViewStateDetail {
-
 
 
     String Adresse;
@@ -19,12 +15,12 @@ public class ViewStateDetail {
     String website;
     Boolean like;
     Boolean Favoris;
-    List<User> myWorkMatesTag = new ArrayList<>();
+    List<SpecialWorkMates> myWorkMatesTag;
+    //= new ArrayList<>();
 
 
     com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo myRestaurantObject;
     ResultDetailRestaurant myRestaurantDetailObject;
-
 
 
     public RestaurantPojo getMyRestaurantObject() {
@@ -44,33 +40,19 @@ public class ViewStateDetail {
     }
 
 
-
-    public ViewStateDetail(
-            RestaurantPojo myRestaurant,
-            ResultDetailRestaurant myDetailRestaurant,
-
-            List<User> myWorkMatesTag) {
-
-    //    this.like = like;
-     //   this.Favoris = favoris;
+    public ViewStateDetail(RestaurantPojo myRestaurant, ResultDetailRestaurant myDetailRestaurant, List<SpecialWorkMates> myWorkMatesTag) {
         this.myRestaurantObject = myRestaurant;
         this.myRestaurantDetailObject = myDetailRestaurant;
         this.myWorkMatesTag = myWorkMatesTag;
-
-
-
     }
 
-    public List<User> getMyWorkMatesTag() {
+    public List<SpecialWorkMates> getMyWorkMatesTag() {
         return myWorkMatesTag;
     }
 
-    public void setMyWorkMatesTag(List<User> myWorkMatesTag) {
+    public void setMyWorkMatesTag(List<SpecialWorkMates> myWorkMatesTag) {
         this.myWorkMatesTag = myWorkMatesTag;
     }
-
-
-
 
 
     public String getTelephone() {
@@ -104,10 +86,6 @@ public class ViewStateDetail {
     public void setFavoris(Boolean favoris) {
         Favoris = favoris;
     }
-
-
-
-
 
 
 }

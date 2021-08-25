@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.hoarauthomas.go4lunchthp7.api.UserHelper;
+import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
@@ -26,6 +27,7 @@ public class ViewModelDetail extends ViewModel {
     //declare repo here...
     private final RestaurantsRepository myRestaurantRepository;
     private final WorkMatesRepository myWorkMatesRepository;
+    private List<SpecialWorkMates> mySpecialWorkMatesList = new ArrayList<>();
 
 
     private final UserHelper myUserHelper = new UserHelper();
@@ -106,9 +108,14 @@ public class ViewModelDetail extends ViewModel {
         ResultDetailRestaurant resultDetailRestaurant = null;
 
 
+        SpecialWorkMates myWorkMates = new SpecialWorkMates();
+
+
         if (restaurants != null && workmates != null && detail != null && placeIdGen != null) {
 
             for (int i = 0; i < restaurants.size(); i++) {
+
+
 
                 if (restaurants.get(i).getPlaceId().equals(placeIdGen)) {
 
@@ -116,11 +123,19 @@ public class ViewModelDetail extends ViewModel {
 
                     for (int z = 0; z < workmates.size(); z++) {
 
+                        myWorkMates.setAvatar(workmates.get(z).getUrlPicture());
+                        myWorkMates.setNameOfWorkMates(workmates.get(z).getUsername());
+
                         if (workmates.get(z).getFavoriteRestaurant().equals(placeIdGen)) {
                             resultWorkMAtes.add(workmates.get(z));
+
+                            myWorkMates.setNameOfRestaurant( restaurants.get(i).getName());
+                            myWorkMates.setPlaceId(restaurants.get(i).getPlaceId());
                         }
 
                     }
+                    mySpecialWorkMatesList.add(myWorkMates);
+
 
 
                 }//end if
@@ -128,7 +143,7 @@ public class ViewModelDetail extends ViewModel {
 
             }//end for
 
-            myViewStateDetailMediator.setValue(new ViewStateDetail(resultRestaurant, detail, resultWorkMAtes));
+            myViewStateDetailMediator.setValue(new ViewStateDetail(resultRestaurant, detail, mySpecialWorkMatesList));
 
 
         }

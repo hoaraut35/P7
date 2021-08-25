@@ -60,7 +60,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             @Override
             public void onChanged(ViewStateMap viewStateMap) {
                 Log.i("[MAP]", "Event ViewStateMap");
-                showMapWithPosition(viewStateMap.myPosition);
+                showMapWithPosition(viewStateMap.getMyLatLng());
                 showRestaurant(viewStateMap.myRestaurantsList);
             }
         });
@@ -70,11 +70,11 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
     //**********************************************************************************************
 
-    private void showMapWithPosition(@NonNull Location position) {
+    private void showMapWithPosition(@NonNull LatLng position) {
 
-        Log.i("[MAP]", "Modifier position carte ..." + position.getLongitude() + " " + position.getLatitude());
-        LatLng latLng = new LatLng(position.getLatitude(), position.getLongitude());
-        myMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+      //  Log.i("[MAP]", "Modifier position carte ..." + position.getLongitude() + " " + position.getLatitude());
+        //LatLng latLng = new LatLng(position.getLatitude(), position.getLongitude());
+        myMap.moveCamera(CameraUpdateFactory.newLatLng(position));
         myMap.animateCamera(CameraUpdateFactory.zoomTo(10));//city zoom
 
     }

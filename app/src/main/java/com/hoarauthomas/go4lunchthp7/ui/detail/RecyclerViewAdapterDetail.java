@@ -1,6 +1,8 @@
 package com.hoarauthomas.go4lunchthp7.ui.detail;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.R;
+import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 
 import java.util.List;
@@ -21,7 +24,7 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
 
     //variables ...
 
-    private List<User> mResults;
+    private List<SpecialWorkMates> mResults;
     private LatLng myPosition;
 
 
@@ -35,7 +38,7 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
 
     //the constructor
     //public RecyclerViewAdapter(int mode, List<Result> myList, Listener callback) {
-    public RecyclerViewAdapterDetail(List<User> myList, LatLng myLatLng) {
+    public RecyclerViewAdapterDetail(List<SpecialWorkMates> myList, LatLng myLatLng) {
         this.mResults = myList;
 
         this.myPosition = myLatLng;
@@ -44,7 +47,7 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
         //this.callback = callback;
     }
 
-    public RecyclerViewAdapterDetail(List<User> myList) {
+    public RecyclerViewAdapterDetail(List<SpecialWorkMates> myList) {
         this.mResults = myList;
     }
 
@@ -65,16 +68,29 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewAdapterDetail.ViewHolder holder, int position) {
 
-        User result = mResults.get(position);
+        SpecialWorkMates result = mResults.get(position);
 
         //show the name of restaurant
-        holder.nameOfWorkMate.setText(mResults.get(position).getUsername());
+        holder.nameOfWorkMate.setText(mResults.get(position).getNameOfWorkMates());
 
         //show avatar
         Glide.with(holder.itemView)
-                .load(result.getUrlPicture())
+                .load(result.getAvatar())
                 .circleCrop()
                 .into(holder.avatar);
+
+
+
+        if (result.getNameOfRestaurant() != null && result.getNameOfRestaurant() != "") {
+            holder.nameOfWorkMate.setTypeface(null, Typeface.BOLD);
+            holder.workMateState.setTypeface(null, Typeface.BOLD);
+            holder.workMateState.setText(" is eating (" + result.getNameOfRestaurant() + ")");
+
+        } else {
+            holder.nameOfWorkMate.setTypeface(null, Typeface.ITALIC);
+            holder.workMateState.setTypeface(null, Typeface.ITALIC);
+            holder.workMateState.setText(" hasn't decided yet");
+        }
 
 
     }

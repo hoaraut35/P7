@@ -18,6 +18,7 @@ import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.api.GooglePlaceApi;
 import com.hoarauthomas.go4lunchthp7.api.UserHelper;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding;
+import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 
@@ -155,7 +156,7 @@ public class DetailActivity extends AppCompatActivity {
         return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
 
-    private void setupRecyclerView(List<User> myWorkmatesList) {
+    private void setupRecyclerView(List<SpecialWorkMates> myWorkmatesList) {
         if (myWorkmatesList == null) {
             Log.i("[MONDETAIL]", "liste user nulle ou vide");
             return;
