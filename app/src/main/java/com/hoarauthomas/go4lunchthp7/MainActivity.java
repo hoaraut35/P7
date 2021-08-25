@@ -12,7 +12,6 @@ import android.widget.TextView;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
@@ -22,7 +21,6 @@ import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
-import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -59,7 +57,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private final List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.EmailBuilder().build(),
             new AuthUI.IdpConfig.FacebookBuilder().build(),
-            new AuthUI.IdpConfig.GoogleBuilder().build());
+            new AuthUI.IdpConfig.GoogleBuilder().build()),
+        new AuthUI.IdpConfig.TwitterBuilder().b
+    ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,15 +108,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void onActivityResult(FirebaseAuthUIAuthenticationResult result) {
 
 
-
                         //authentification ok
-                        if (result.getResultCode() == -1){
-                            Log.i("[LOGIN]","login ok " + result.getResultCode());
+                        if (result.getResultCode() == -1) {
+                            Log.i("[LOGIN]", "login ok " + result.getResultCode());
                             myViewModel.getMyCurrentUser();
                             myViewModel.createUser();
-                         } else {
+                        } else {
 
-                            Log.i("[LOGIN]","Erreur login");
+                            Log.i("[LOGIN]", "Erreur login");
                             if (result.getIdpResponse() == null) {
                                 MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_no_network));
                             } else if (result.getIdpResponse().equals(ErrorCodes.NO_NETWORK)) {
@@ -162,10 +161,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         email.setText(this.myViewModel.getMyCurrentUser().getValue().getEmail());
 
         ImageView avatar = (ImageView) hv.findViewById(R.id.avatar);
-        Glide.with(avatar)
-                .load(this.myViewModel.getMyCurrentUser().getValue().getPhotoUrl())
-                .circleCrop()
-                .into(avatar);
+
+        if (myViewModel.getMyCurrentUser().getValue().getPhotoUrl() == null) {
+            Log.i("[LOGIN]", "Pas d'avatar");
+
+
+
+        } else {
+
+            Glide.with(avatar)
+                    .load(this.myViewModel.getMyCurrentUser().getValue().getPhotoUrl())
+                    .circleCrop()
+                    .into(avatar);
+        }
 
     }
 
