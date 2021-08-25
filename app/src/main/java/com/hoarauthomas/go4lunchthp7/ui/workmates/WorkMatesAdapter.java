@@ -14,12 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.hoarauthomas.go4lunchthp7.R;
+import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
 
 import java.util.List;
 
 public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.ViewHolder> {
 
-    private final List<ViewModelWorkMates.SpecialWorkMate> myWorkMatesToShow;
+    private final List<SpecialWorkMates> myWorkMatesToShow;
 
     public interface WorkMatesListener {
         void onClickWorkMatesRestaurant(String restaurantId);
@@ -46,7 +47,7 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
 
      */
 
-    public WorkMatesAdapter(List<ViewModelWorkMates.SpecialWorkMate> myList, WorkMatesListener callback) {
+    public WorkMatesAdapter(List<SpecialWorkMates> myList, WorkMatesListener callback) {
         this.myWorkMatesToShow = myList;
         this.callback = callback;
     }
@@ -63,7 +64,7 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
     @Override
     public void onBindViewHolder(@NonNull WorkMatesAdapter.ViewHolder holder, int position) {
 
-        ViewModelWorkMates.SpecialWorkMate myWorkMates = myWorkMatesToShow.get(position);
+        SpecialWorkMates myWorkMates = myWorkMatesToShow.get(position);
 
 
         String avatar = "";

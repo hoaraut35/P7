@@ -21,7 +21,6 @@ import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
-import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -38,30 +37,20 @@ import java.util.Objects;
 
 import static androidx.core.view.GravityCompat.START;
 
-//for user interaction with ui only ....
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public ActivityMainBinding binding;
 
-    //TODO: must deleted
     public ViewModelGo4Lunch myViewModel;
+
     private ActivityResultLauncher<Intent> openFirebaseAuthForResult;
 
-    //Manage fragments map, list and workmates
-    FragmentsAdapter myFragmentAdapter;
-
-    //Signal for activity result and callback
-    private static final int RC_SIGN_IN = 123;
-    private static final int RC_SIGN_OK = -1;
-
-
-    //list of auth provider
     private final List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.EmailBuilder().build(),
             new AuthUI.IdpConfig.FacebookBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build());
 
-    //for twitter auth
+    //TODO: must be developed
     private final OAuthProvider.Builder provider = OAuthProvider.newBuilder("twitter.com");
 
     @Override
@@ -70,9 +59,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-
-        setupIntent();
         setupPermission();
+        setupIntent();
         setupViewModel();
         setupTopAppBar();
         setupNavigationDrawer();
@@ -87,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setupViewModel() {
-        //TODO: remove this afdter
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
         this.myViewModel.getMyUserState().observe(this, this::onCheckSecurity);
     }
@@ -96,11 +83,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (!connected) {
             request_login();
         } else {
-            Log.i("[LOGIN]","user is connected " + myViewModel.getMyCurrentUser().getValue().getDisplayName());
+            Log.i("[LOGIN]", "user is connected " + myViewModel.getMyCurrentUser().getValue().getDisplayName());
             request_user_info();
         }
     }
-
 
     private void setupIntent() {
 
@@ -167,9 +153,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (myViewModel.getMyCurrentUser().getValue().getPhotoUrl() == null) {
             Log.i("[LOGIN]", "Pas d'avatar");
-
-
-
         } else {
 
             Glide.with(avatar)
@@ -183,37 +166,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void showSnackBar(String message) {
         Snackbar.make(binding.viewpager, message, Snackbar.LENGTH_SHORT).show();
     }
-
-  /*  @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        IdpResponse response = IdpResponse.fromResultIntent(data);
-
-        if (requestCode == RC_SIGN_IN) {
-            //SUCCESS
-            if (resultCode == RESULT_OK) {
-                showSnackBar(getString(R.string.connection_succeed));
-
-                this.myViewModel.createUser();
-
-            } else {
-                //ERRORS
-
-                if (response == null) {
-                    showSnackBar(getString(R.string.error_authentification_canceled));
-
-                } else if (Objects.requireNonNull(response.getError()).getErrorCode() == ErrorCodes.NO_NETWORK) {
-                    showSnackBar(getString(R.string.error_no_network));
-
-                } else if (response.getError().getErrorCode() == ErrorCodes.UNKNOWN_ERROR) {
-                    showSnackBar(getString(R.string.error_unknow));
-                }
-            }
-        }
-    }
-
-   */
 
     private void setupNavigationDrawer() {
 
@@ -260,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setupViewPager() {
-        myFragmentAdapter = new FragmentsAdapter(this);
+        FragmentsAdapter myFragmentAdapter = new FragmentsAdapter(this);
         binding.viewpager.setAdapter(myFragmentAdapter);
         binding.viewpager.setCurrentItem(1);
         binding.viewpager.setUserInputEnabled(false);

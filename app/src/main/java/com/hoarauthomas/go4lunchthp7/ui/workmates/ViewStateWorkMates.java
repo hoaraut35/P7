@@ -1,5 +1,6 @@
 package com.hoarauthomas.go4lunchthp7.ui.workmates;
 
+import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
 
@@ -9,7 +10,7 @@ import java.util.List;
 public class ViewStateWorkMates {
 
 
-    List<ViewModelWorkMates.SpecialWorkMate> mySpecialWorkMAtes = new ArrayList<>();
+    List<SpecialWorkMates> mySpecialWorkMAtes = new ArrayList<>();
 
     List<User> myWorkMatesList;
     List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantList;
@@ -40,7 +41,7 @@ public class ViewStateWorkMates {
         this.myRestauResult = myRestauResult;
     }
 
-    public ViewStateWorkMates(List<ViewModelWorkMates.SpecialWorkMate> mySpecial) {
+    public ViewStateWorkMates(List<SpecialWorkMates> mySpecial) {
         //Log.i("[WORKM]","ViewxStateWorkMAtes constructor " + myWorkMatesList.size());
         //this.myWorkMatesList = myWorkMatesList;
         //this.myRestaurantList = myRestaurantList;
@@ -49,11 +50,11 @@ public class ViewStateWorkMates {
         this.mySpecialWorkMAtes = mySpecial;
     }
 
-    public List<ViewModelWorkMates.SpecialWorkMate> getMySpecialWorkMAtes() {
+    public List<SpecialWorkMates> getMySpecialWorkMAtes() {
         return mySpecialWorkMAtes;
     }
 
-    public void setMySpecialWorkMAtes(List<ViewModelWorkMates.SpecialWorkMate> mySpecialWorkMAtes) {
+    public void setMySpecialWorkMAtes(List<SpecialWorkMates> mySpecialWorkMAtes) {
         this.mySpecialWorkMAtes = mySpecialWorkMAtes;
     }
 }

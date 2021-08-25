@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hoarauthomas.go4lunchthp7.databinding.FragmentWorkBinding;
+import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
@@ -36,7 +37,7 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.WorkMates
     private RecyclerView recyclerView;
 
     //public final List<User> allResult = new ArrayList<>();
-    public final List<ViewModelWorkMates.SpecialWorkMate> resultToShow = new ArrayList<>();
+    public final List<SpecialWorkMates> resultToShow = new ArrayList<>();
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -101,7 +102,7 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.WorkMates
         recyclerView.setAdapter(new WorkMatesAdapter(resultToShow,this));
     }
 
-    private void showWorkMates(List<ViewModelWorkMates.SpecialWorkMate> mySpecial) {
+    private void showWorkMates(List<SpecialWorkMates> mySpecial) {
 
         if (mySpecial == null)
         {

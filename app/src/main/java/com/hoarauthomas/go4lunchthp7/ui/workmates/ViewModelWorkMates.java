@@ -7,6 +7,7 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
@@ -20,7 +21,7 @@ public class ViewModelWorkMates extends ViewModel {
 
     private WorkMatesRepository myWorkMatesRepository;
     private RestaurantsRepository myRestaurantRepository;
-    private List<SpecialWorkMate> mySpecialWorkMatesList = new ArrayList<>();
+    private List<SpecialWorkMates> mySpecialWorkMatesList = new ArrayList<>();
 
     private final MediatorLiveData<ViewStateWorkMates> myViewStateWorkMatesMediator = new MediatorLiveData<>();
     private final RestaurantPojo myRestauResult = new RestaurantPojo();
@@ -70,18 +71,18 @@ public class ViewModelWorkMates extends ViewModel {
 
             for (int i = 0; i < myList.size(); i++) {
 
-                SpecialWorkMate myWorkMates = new SpecialWorkMate();
+                SpecialWorkMates myWorkMates = new SpecialWorkMates();
 
-                myWorkMates.avatar = myList.get(i).getUrlPicture();
-                myWorkMates.nameOfWorkMates = myList.get(i).getUsername();
+                myWorkMates.setAvatar(myList.get(i).getUrlPicture());
+                myWorkMates.setNameOfWorkMates(myList.get(i).getUsername());
 
                 for (int z = 0; z < myRestaurant.size(); z++) {
 
 
                     if (myRestaurant.get(z).getPlaceId() != null) {
                         if (myList.get(i).getFavoriteRestaurant().equals(myRestaurant.get(z).getPlaceId())) {
-                            myWorkMates.nameOfRestaurant = myRestaurant.get(z).getName();
-                            myWorkMates.placeId = myRestaurant.get(z).getPlaceId();
+                            myWorkMates.setNameOfRestaurant( myRestaurant.get(z).getName());
+                            myWorkMates.setPlaceId(myRestaurant.get(z).getPlaceId());
                         }
                     }
 
@@ -100,56 +101,5 @@ public class ViewModelWorkMates extends ViewModel {
         return myViewStateWorkMatesMediator;
     }
 
-    public static class SpecialWorkMate {
 
-        String avatar;
-        String nameOfWorkMates;
-        String nameOfRestaurant;
-        String placeId;
-
-        public String getPlaceId() {
-            return placeId;
-        }
-
-        public void setPlaceId(String placeId) {
-            this.placeId = placeId;
-        }
-
-        public String getNameOfWorkMates() {
-            return nameOfWorkMates;
-        }
-
-        public void setNameOfWorkMates(String nameOfWorkMates) {
-            this.nameOfWorkMates = nameOfWorkMates;
-        }
-
-        public String getAvatar() {
-            return avatar;
-        }
-
-        public void setAvatar(String avatar) {
-            this.avatar = avatar;
-        }
-
-
-        public String getNameOfRestaurant() {
-            return nameOfRestaurant;
-        }
-
-        public void setNameOfRestaurant(String nameOfRestaurant) {
-            this.nameOfRestaurant = nameOfRestaurant;
-        }
-
-        public SpecialWorkMate(String avatar, String name, String nameOfRestaurant, String id) {
-            this.avatar = avatar;
-            this.nameOfWorkMates = name;
-            this.nameOfRestaurant = nameOfRestaurant;
-            this.placeId = id;
-        }
-
-        public SpecialWorkMate() {
-
-        }
-
-    }
 }
