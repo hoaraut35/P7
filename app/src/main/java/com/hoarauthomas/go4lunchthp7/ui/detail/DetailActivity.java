@@ -29,10 +29,7 @@ import javax.annotation.Nullable;
 public class DetailActivity extends AppCompatActivity {
 
     private ActivityDetailRestaurantBinding binding;
-
     private ViewModelDetail myViewModelDetail;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

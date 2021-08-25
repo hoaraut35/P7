@@ -21,6 +21,7 @@ Executez la commande ``telnet mapscii.me`` pour commencer ensuite [...]
 * [Google Places PAI](https://cloud.google.com/maps-platform/places?hl=fr) - Google Places
 * [Google Place Autocomplete](https://developers.google.com/maps/documentation/places/android-sdk/autocomplete#get_place_predictions_programmatically) - Place Autocomplete
 
+* [JsonSchema2Pojo](https://www.jsonschema2pojo.org/) - Json2Pojo
 
 ## Auteurs
 

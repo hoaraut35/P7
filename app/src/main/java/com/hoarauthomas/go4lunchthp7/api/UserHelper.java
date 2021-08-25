@@ -2,12 +2,17 @@ package com.hoarauthomas.go4lunchthp7.api;
 
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 
 import java.util.List;
@@ -18,6 +23,34 @@ public class UserHelper {
     private static final String COLLECTION_NAME = "users";
 
     // --- COLLECTION REFERENCE ---
+
+
+
+
+    public void  getListenerOnUser(String uid){
+
+        DocumentReference docRef = FirebaseFirestore.getInstance().document(uid).collection(COLLECTION_NAME).document(uid);
+
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable @org.jetbrains.annotations.Nullable DocumentSnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
+
+                if (error != null){
+
+                    return;
+                }
+
+                if (value != null && value.exists()){
+                    Log.i("FIRE","Event on user" + value.getData());
+                }else
+                {
+                    Log.i("FIRE","Event null on user firestore");
+                }
+
+            }
+        });
+
+    }
 
     public static CollectionReference getUsersCollection() {
         return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);

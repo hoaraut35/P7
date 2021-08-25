@@ -1,7 +1,6 @@
 package com.hoarauthomas.go4lunchthp7.viewmodel;
 
 import android.location.Location;
-import android.util.Log;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
@@ -47,12 +46,9 @@ public class MainViewState {
     }
 
     public MainViewState(@Nullable Location myLocation, @Nullable List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantPojoList, @Nullable List<User> myWorkMatesList) {
-
         this.myLocation = myLocation;
         this.myRestaurantsList = myRestaurantPojoList;
         this.myWorkMatesList = myWorkMatesList;
-
-
     }
 
     public MainViewState(MyDetailRestaurant monrestau) {
@@ -62,9 +58,6 @@ public class MainViewState {
     public MainViewState(Location MyLocation) {
         this.myLocation = MyLocation;
     }
-
-
-
 
     public MyDetailRestaurant getMyDetailRestaurant() {
         return myDetailRestaurant;

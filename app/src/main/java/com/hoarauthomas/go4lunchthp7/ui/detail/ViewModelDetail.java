@@ -84,18 +84,14 @@ public class ViewModelDetail extends ViewModel {
         myViewStateDetailMediator.addSource(myDetail, new Observer<ResultDetailRestaurant>() {
             @Override
             public void onChanged(ResultDetailRestaurant resultDetailRestaurant) {
-
                 if (resultDetailRestaurant == null) {
                     Log.i("[MONDETAIL]", "Event récupération détail retour null");
                 } else {
                     Log.i("[MONDETAIL]", "Event récupération du détail du restaurant");
                     logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), resultDetailRestaurant);
                 }
-
             }
         });
-
-
     }
 
     //**********************************************************************************************
@@ -103,94 +99,42 @@ public class ViewModelDetail extends ViewModel {
     //**********************************************************************************************
     private void logicWork(@Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates, @Nullable ResultDetailRestaurant detail) {
 
-        List<User> resultWorkMAtes = new ArrayList<>();
         RestaurantPojo resultRestaurant = null;
-        ResultDetailRestaurant resultDetailRestaurant = null;
-
-
         SpecialWorkMates myWorkMates = new SpecialWorkMates();
-
 
         if (restaurants != null && workmates != null && detail != null && placeIdGen != null) {
 
+            mySpecialWorkMatesList.clear();
+
             for (int i = 0; i < restaurants.size(); i++) {
-
-
 
                 if (restaurants.get(i).getPlaceId().equals(placeIdGen)) {
 
                     resultRestaurant = restaurants.get(i);
 
                     for (int z = 0; z < workmates.size(); z++) {
+                        if (workmates.get(z).getFavoriteRestaurant().equals(resultRestaurant.getPlaceId())) {
+                            myWorkMates.setAvatar(workmates.get(z).getUrlPicture());
+                            myWorkMates.setNameOfWorkMates(workmates.get(z).getUsername());
+                            myWorkMates.setNameOfRestaurant(resultRestaurant.getName());
+                            myWorkMates.setPlaceId(resultRestaurant.getPlaceId());
+                            mySpecialWorkMatesList.add(myWorkMates);
+                        }//end if
 
-                        myWorkMates.setAvatar(workmates.get(z).getUrlPicture());
-                        myWorkMates.setNameOfWorkMates(workmates.get(z).getUsername());
-
-                        if (workmates.get(z).getFavoriteRestaurant().equals(placeIdGen)) {
-                            resultWorkMAtes.add(workmates.get(z));
-
-                            myWorkMates.setNameOfRestaurant( restaurants.get(i).getName());
-                            myWorkMates.setPlaceId(restaurants.get(i).getPlaceId());
-                        }
-
-                    }
-                    mySpecialWorkMatesList.add(myWorkMates);
-
-
+                    }//end for
 
                 }//end if
-
 
             }//end for
 
             myViewStateDetailMediator.setValue(new ViewStateDetail(resultRestaurant, detail, mySpecialWorkMatesList));
 
-
         }
-        //**********************************************************************************
-
-
-                /*for (int i = 0; i < restaurants.size(); i++) {
-
-                    //restaurant trouvé
-                    if (restaurants.get(i).getPlaceId().equals(placeId)) {
-                        newRestau = restaurants.get(i);
-
-                        if (workmates != null) {
-                            for (int y = 0; y < workmates.size(); y++) {
-                                if (workmates.get(y).getFavoriteRestaurant().equals(placeId)) {
-                                    workMatesTag.add(workmates.get(y));
-                                }
-                            }
-
-                        }
-
-
-                        if (detail != null) {
-                            newDetailRestau = detail;
-                        }
-
-
-
-                    }
-
-
-                }
-
-                 */
-
 
     }
-//} else {
-//  Log.i("[MONDETAIL]", "Pas de restaurant identifié donc en attente ...");
-//return;
-//}
-
-
-//}
-//**********************************************************************************************
-// End of logic work
-//**********************************************************************************************
+    //**********************************************************************************************
+    // End of logic work
+    //**********************************************************************************************
 
 
     public void setPlaceId(String placeId) {
