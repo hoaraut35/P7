@@ -24,6 +24,7 @@ import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.OAuthProvider;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 import com.hoarauthomas.go4lunchthp7.ui.FragmentsAdapter;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
@@ -58,6 +59,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             new AuthUI.IdpConfig.EmailBuilder().build(),
             new AuthUI.IdpConfig.FacebookBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build());
+
+    //for twitter auth
+    private final OAuthProvider.Builder provider = OAuthProvider.newBuilder("twitter.com");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
