@@ -119,9 +119,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         //authentification ok
                         if (result.getResultCode() == -1) {
                             Log.i("[NEWLOGIN]", "login ok " + result.getResultCode());
-                            myViewModel.updateUSer();
+
+
+                            if (myViewModel.updateUSer() == false){
+                                myViewModel.createUser();
+                            };
+
+
                             //myViewModel.getMyCurrentUser();
-                            myViewModel.createUser();
+
                         } else {
 
                             Log.i("[LOGIN]", "Erreur login");

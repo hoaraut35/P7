@@ -122,8 +122,14 @@ public class ViewModelGo4Lunch extends ViewModel {
     //**********************************************************************************************
 
 
-    public void updateUSer() {
-        myAuthSource.getUserFromRepo();
+    public Boolean updateUSer() {
+       if (myAuthSource.getUserFromRepo() == null){
+
+           return false;
+       }else
+       {
+           return true;
+       }
     }
 
 
