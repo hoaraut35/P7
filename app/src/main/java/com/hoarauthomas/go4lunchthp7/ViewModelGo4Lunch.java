@@ -77,7 +77,7 @@ public class ViewModelGo4Lunch extends ViewModel {
 
         //on test si l'utiliseur exist dsans firestore
         if (myUser != null) {
-            if (!myUser.getUid().isEmpty() && user == null) {
+            if (!myUser.getUid().isEmpty() ) {
                 //  for (int i = 0; i < user.size(); i++) {
                 //     if (!myUser.getUid().equals(user.get(i).getUid())) {
                 createUser();
