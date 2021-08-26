@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.hoarauthomas.go4lunchthp7.api.UserHelper;
 
 //Only to get data or store and publish it to ViewModel ...
 
@@ -26,6 +27,10 @@ public class AuthRepository {
         if (myAuth.getCurrentUser() != null) {
             myUser.postValue(myAuth.getCurrentUser());//get actual user object from FirebaseAuth
             myUserState.postValue(true);//set state of login
+
+          //  UserHelper.getListenerOnUser(myAuth.getUid());
+
+
         } else {
             myUser.postValue(null);//no user logged
             myUserState.postValue(false);//set state of login

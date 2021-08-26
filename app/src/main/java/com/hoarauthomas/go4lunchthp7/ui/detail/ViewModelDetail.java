@@ -167,7 +167,10 @@ public class ViewModelDetail extends ViewModel {
     }
 
     public FirebaseUser getCurrentUser() {
+
+
         return myWorkMatesRepository.getCurrentUser();
+
     }
 
     //public livedata to publish in viexwstate

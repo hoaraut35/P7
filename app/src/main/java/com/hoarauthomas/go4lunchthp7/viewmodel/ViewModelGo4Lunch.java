@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.hoarauthomas.go4lunchthp7.api.UserHelper;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.repository.AuthRepository;
 import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
@@ -29,10 +30,16 @@ public class ViewModelGo4Lunch extends ViewModel {
         this.myUserStateVM = myAuthSource.getUserStateFromRepo();
         this.myWorkMatesSource = workMatesRepository;
         this.workMatesLiveData = myWorkMatesSource.getAllWorkMates();
+
+
+
     }
 
     //publish method to activity for
     public MutableLiveData<FirebaseUser> getMyCurrentUser() {
+
+
+
         return myUserVM;
     }
 
@@ -49,6 +56,7 @@ public class ViewModelGo4Lunch extends ViewModel {
     //Create user to Firestore
     public void createUser() {
         this.myWorkMatesSource.createUser();
+
     }
 
 }

@@ -34,7 +34,7 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
     }
 
     //declare callbacl
-    // private final Listener callback;
+   // private final Listener callback;
 
     //the constructor
     //public RecyclerViewAdapter(int mode, List<Result> myList, Listener callback) {
@@ -74,8 +74,25 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
         holder.nameOfWorkMate.setText(mResults.get(position).getNameOfWorkMates());
 
         //show avatar
+        String avatar = "";
+
+        if (result.getAvatar() == null) {
+
+            String nom = result.getNameOfWorkMates();
+            String[] parts = nom.split(" ", 2);
+            String z = "";
+
+            for (int i = 0; i < parts.length; i++) {
+                z = parts[i].charAt(0) + z;
+            }
+
+            avatar = "https://eu.ui-avatars.com/api/?name=" + z;
+        } else {
+            avatar = result.getAvatar();
+        }
+
         Glide.with(holder.itemView)
-                .load(result.getAvatar())
+                .load(avatar)
                 .circleCrop()
                 .into(holder.avatar);
 

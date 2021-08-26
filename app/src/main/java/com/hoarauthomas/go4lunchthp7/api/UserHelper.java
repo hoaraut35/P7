@@ -27,7 +27,7 @@ public class UserHelper {
 
 
 
-    public void  getListenerOnUser(String uid){
+    public static void  getListenerOnUser(String uid){
 
         DocumentReference docRef = FirebaseFirestore.getInstance().document(uid).collection(COLLECTION_NAME).document(uid);
 
@@ -51,6 +51,11 @@ public class UserHelper {
         });
 
     }
+
+
+
+
+
 
     public static CollectionReference getUsersCollection() {
         return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
