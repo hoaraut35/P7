@@ -171,6 +171,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         ImageView avatar = (ImageView) hv.findViewById(R.id.avatar);
 
+        //avatar
+        String avatar2 = "";
+        if (this.myViewModel.getMyCurrentUser().getValue().getPhotoUrl() == null) {
+
+            String nom = this.myViewModel.getMyCurrentUser().getValue().getDisplayName();
+            String[] parts = nom.split(" ", 2);
+            String z = "";
+
+            for (int i = 0; i < parts.length; i++) {
+                z = parts[i].charAt(0) + z;
+            }
+
+            avatar2 = "https://eu.ui-avatars.com/api/?name=" + z;
+        } else {
+            avatar2 = this.myViewModel.getMyCurrentUser().getValue().getPhotoUrl().toString();
+        }
+
+        Glide.with(avatar)
+                .load(avatar2)
+                .circleCrop()
+                .into(avatar);
+
+
+
+
         if (myViewModel.getMyCurrentUser().getValue().getPhotoUrl() == null) {
             Log.i("[LOGIN]", "Pas d'avatar");
         } else {

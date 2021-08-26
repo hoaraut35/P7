@@ -21,7 +21,6 @@ public class AuthRepository {
     //constructor called by factory
     public AuthRepository() {
         myAuth = FirebaseAuth.getInstance();//get instance of FirebaseAuth
-
         CheckUser();
     }
 
