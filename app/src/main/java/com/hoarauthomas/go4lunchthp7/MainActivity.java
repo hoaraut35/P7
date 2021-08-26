@@ -14,6 +14,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
@@ -29,7 +30,6 @@ import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 import com.hoarauthomas.go4lunchthp7.ui.FragmentsAdapter;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
-import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelGo4Lunch;
 
 import java.util.Arrays;
 import java.util.List;
@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
+
         setupPermission();
         setupIntent();
         setupViewModel();
@@ -75,18 +76,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setupViewModel() {
+
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
-        this.myViewModel.getMyUserState().observe(this, this::onCheckSecurity);
+        this.myViewModel.getMediatorLiveData().observe(this, new Observer<MainViewState>() {
+            @Override
+            public void onChanged(MainViewState mainViewState) {
+                Log.i("[NEWLOGIN]","Changement sur le MAIN");
+
+                onCheckSecurity(mainViewState.getMyLogState().booleanValue());
+
+
+              //  showSnackBar("New login" + mainViewState.getMyActualUser().getDisplayName());
+            }
+        });
+
+       // this.myViewModel.getMyUserState().observe(this, this::onCheckSecurity);
     }
 
     private void onCheckSecurity(Boolean connected) {
         if (!connected) {
             request_login();
         } else {
-            Log.i("[LOGIN]", "user is connected " + myViewModel.getMyCurrentUser().getValue().getDisplayName());
             request_user_info();
         }
     }
+
+
+
+
+
+
 
     private void setupIntent() {
 
@@ -99,8 +118,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         //authentification ok
                         if (result.getResultCode() == -1) {
-                            Log.i("[LOGIN]", "login ok " + result.getResultCode());
-                            myViewModel.getMyCurrentUser();
+                            Log.i("[NEWLOGIN]", "login ok " + result.getResultCode());
+                            myViewModel.updateUSer();
+                            //myViewModel.getMyCurrentUser();
                             myViewModel.createUser();
                         } else {
 
@@ -178,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             } else if (id == R.id.navigation_drawer_settings) {
                 binding.viewpager.setCurrentItem(4);
             } else if (id == R.id.navigation_drawer_logout) {
-                myViewModel.logOut();
+                myViewModel.logOut(this);
             }
 
             binding.drawerLayout.closeDrawer(START);

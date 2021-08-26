@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.location.LocationServices;
 import com.hoarauthomas.go4lunchthp7.MainApplication;
+import com.hoarauthomas.go4lunchthp7.ViewModelGo4Lunch;
 import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
 import com.hoarauthomas.go4lunchthp7.repository.AuthRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;

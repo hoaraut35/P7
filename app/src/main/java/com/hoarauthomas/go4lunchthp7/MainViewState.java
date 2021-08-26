@@ -1,4 +1,4 @@
-package com.hoarauthomas.go4lunchthp7.viewmodel;
+package com.hoarauthomas.go4lunchthp7;
 
 import android.location.Location;
 
@@ -18,6 +18,8 @@ public class MainViewState {
     private List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantsList;
     private List<User> myWorkMatesList;
     private MyDetailRestaurant myDetailRestaurant;
+
+    private Boolean myLogState;
 
     //**********************************************************************************************
 
@@ -49,6 +51,29 @@ public class MainViewState {
         this.myLocation = myLocation;
         this.myRestaurantsList = myRestaurantPojoList;
         this.myWorkMatesList = myWorkMatesList;
+    }
+
+
+    public MainViewState(@Nullable FirebaseUser user){
+        this.myActualUser = user;
+    }
+
+    public MainViewState(@Nullable Boolean myLogState){
+        this.myLogState = myLogState;
+    }
+
+
+    public MainViewState(@Nullable FirebaseUser user, Boolean myLogState){
+        this.myActualUser = user;
+        this.myLogState = myLogState;
+    }
+
+    public Boolean getMyLogState() {
+        return myLogState;
+    }
+
+    public void setMyLogState(Boolean myLogState) {
+        this.myLogState = myLogState;
     }
 
     public MainViewState(MyDetailRestaurant monrestau) {
