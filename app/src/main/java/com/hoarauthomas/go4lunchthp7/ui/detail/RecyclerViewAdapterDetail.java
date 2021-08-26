@@ -2,7 +2,6 @@ package com.hoarauthomas.go4lunchthp7.ui.detail;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
-import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 
 import java.util.List;
 
@@ -34,7 +32,7 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
     }
 
     //declare callbacl
-   // private final Listener callback;
+    // private final Listener callback;
 
     //the constructor
     //public RecyclerViewAdapter(int mode, List<Result> myList, Listener callback) {
@@ -95,7 +93,6 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
                 .load(avatar)
                 .circleCrop()
                 .into(holder.avatar);
-
 
 
         if (result.getNameOfRestaurant() != null && result.getNameOfRestaurant() != "") {

@@ -17,6 +17,7 @@ import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -47,9 +48,9 @@ public class ViewModelMap extends ViewModel {
         myViewStateMapMediator.addSource(myPosition, new Observer<Location>() {
             @Override
             public void onChanged(Location position) {
-                Log.i("[MAP]", "Event position");
+             //   Log.i("[MAP]", "Event position");
                 if (position != null) {
-                    Log.i("[MAP]", "Position trouvée" + position.getLatitude() + position.getLongitude());
+                 //   Log.i("[MAP]", "Position trouvée" + position.getLatitude() + position.getLongitude());
                     myRestaurantRepository.UpdateLngLat(position.getLongitude(), position.getLatitude());
                 }
                 //logicWork(position,myRestaurantsList.getValue());
@@ -59,9 +60,9 @@ public class ViewModelMap extends ViewModel {
         myViewStateMapMediator.addSource(myRestaurantsList, new Observer<List<RestaurantPojo>>() {
             @Override
             public void onChanged(List<RestaurantPojo> restaurantPojos) {
-                Log.i("[MAP]", "Event restaurants");
+             //   Log.i("[MAP]", "Event restaurants");
                 if (restaurantPojos != null) {
-                    Log.i("[MAP]", "Liste restaura" + restaurantPojos.size());
+                   // Log.i("[MAP]", "Liste restaura" + restaurantPojos.size());
                     logicWork(myPosition.getValue(), restaurantPojos, myWorkMatesList.getValue());
                 }
 
@@ -71,9 +72,9 @@ public class ViewModelMap extends ViewModel {
         myViewStateMapMediator.addSource(myWorkMatesList, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
-                Log.i("[MAP]", "Event workmates list...");
+            //    Log.i("[MAP]", "Event workmates list...");
                 if (users != null) {
-                    Log.i("[MAP]", "Liste workmates" + users.size());
+                 //   Log.i("[MAP]", "Liste workmates" + users.size());
                     logicWork(myPosition.getValue(), myRestaurantsList.getValue(), users);
                 }
             }
@@ -85,24 +86,43 @@ public class ViewModelMap extends ViewModel {
     //**********************************************************************************************
     private void logicWork(@Nullable Location position, @Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates) {
 
-        if (position == null || restaurants == null || workmates== null || restaurants.isEmpty() || workmates.isEmpty()) {
-            return;
-        } else {
+
+
+
+
+        if (position != null && restaurants != null && workmates != null && !restaurants.isEmpty() && !workmates.isEmpty()) {
+
+            List<RestaurantPojo> newList = new ArrayList<>();
+            RestaurantPojo newRestau;
+
+            newList.clear();
 
             for (int i = 0; i < restaurants.size(); i++) {
 
+                newRestau = restaurants.get(i);
+
                 for (int z = 0; z < workmates.size(); z++) {
 
+                    Log.i("[MAP]","id " + restaurants.get(i).getPlaceId() + " " + workmates.get(z).getFavoriteRestaurant());
+                  //  newRestau.setIcon("rouge");
+
                     if (restaurants.get(i).getPlaceId().equals(workmates.get(z).getFavoriteRestaurant())) {
-                        restaurants.get(i).setIcon("vert");
-                    } else {
-                        restaurants.get(i).setIcon("rouge");
+                        Log.i("[MAP]", "restaurant deja liké " + restaurants.get(i).getName());
+
+                        newRestau.setIcon("vert");
+                        break;
+
                     }
+                        //restaurants.set(i,se
+                       newRestau.setIcon("rouge");
 
                 }
+
+                    newList.add(newRestau);
+
             }
 
-            myViewStateMapMediator.setValue(new ViewStateMap(position, restaurants));
+            myViewStateMapMediator.setValue(new ViewStateMap(position, newList));
 
         }
 

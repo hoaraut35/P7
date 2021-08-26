@@ -37,17 +37,8 @@ import java.util.List;
 public class MapsFragment extends Fragment implements OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener {
 
     private ViewModelMap myViewModelMap;
-
     private static final int DEFAULT_ZOOM = 10;
     private GoogleMap myMap;
-
-    // private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-    //private boolean locationPermissionGranted;
-    // private Location lastKnownLocation;
-    //private FusedLocationProviderClient fusedLocationProviderClient;
-    //private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    // private List<Marker> markerMap = new ArrayList<>();
-    //public LatLng myPosition;
 
     @Nullable
     @Override
@@ -94,6 +85,8 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
         for (int i = 0; i < restaurants.size(); i++) {
 
+            Log.i("[MAP]","Couleur marquer adapteur : "+ restaurants.get(i).getIcon());
+
             myMarkerPosition = new LatLng(restaurants.get(i).getGeometry().getLocation().getLat(), restaurants.get(i).getGeometry().getLocation().getLng());
             myMarkerOptions = new MarkerOptions();
 
@@ -101,18 +94,19 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
             if (restaurants.get(i).getIcon().toString().contains("rouge")) {
                 myMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                //break;
 
             } else {
                 myMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-                myMarkerOptions.rotation(90);
+               // myMarkerOptions.rotation(90);
             }
 
             myMarker = myMap.addMarker(myMarkerOptions);
             myMarker.setTag(restaurants.get(i).getPlaceId());
 
-            Log.i("[MAP]", "nombre dappel " + i);
 
         }
+
     }
 
     //**********************************************************************************************
