@@ -23,12 +23,13 @@ public class ViewModelGo4Lunch extends ViewModel {
 
     //repo
     private final AuthRepository myAuthSource;
-    private final WorkMatesRepository myWorkMatesSource;
+    private WorkMatesRepository myWorkMatesSource;
 
     //data
     private MutableLiveData<FirebaseUser> myUserVM = null;
     private MutableLiveData<Boolean> myUserStateVM;
     private LiveData<List<User>> workMatesLiveData;
+
 
     private final MediatorLiveData<MainViewState> myAppMapMediator = new MediatorLiveData<>();
 
@@ -36,19 +37,19 @@ public class ViewModelGo4Lunch extends ViewModel {
     //constructor to get one instance of each object, called by ViewModelFactory
     public ViewModelGo4Lunch(AuthRepository authRepository, WorkMatesRepository workMatesRepository) {
         this.myAuthSource = authRepository;
-
         this.myUserVM = myAuthSource.getUserFromRepo();
+
         this.myUserStateVM = myAuthSource.getUserStateFromRepo();
 
-
         this.myWorkMatesSource = workMatesRepository;
+
         this.workMatesLiveData = myWorkMatesSource.getAllWorkMates();
 
         myAppMapMediator.addSource(myUserVM, new Observer<FirebaseUser>() {
             @Override
             public void onChanged(FirebaseUser firebaseUser) {
                 Log.i("[NEWLOGIN]", "Updater user system...");
-                logicWork(firebaseUser,myUserStateVM.getValue());
+                logicWork(firebaseUser, myUserStateVM.getValue(), workMatesLiveData.getValue());
             }
         });
 
@@ -56,47 +57,49 @@ public class ViewModelGo4Lunch extends ViewModel {
             @Override
             public void onChanged(Boolean aBoolean) {
                 Log.i("[NEWLOGIN]", "Updater user state login...");
-                logicWork(myUserVM.getValue(), aBoolean);
+                logicWork(myUserVM.getValue(), aBoolean, workMatesLiveData.getValue());
             }
         });
 
-
-
-
-
-        /*new Observer<List<User>>() {
+        myAppMapMediator.addSource(workMatesLiveData, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
-                //    Log.i("[MAP]", "Event workmates list...");
-                if (users != null) {
-                    //   Log.i("[MAP]", "Liste workmates" + users.size());
-                    logicWork(myPosition.getValue(), myRestaurantsList.getValue(), users);
-                }
+                logicWork(myUserVM.getValue(), myUserStateVM.getValue(), users);
             }
         });
-
-         */
 
     }
 
     //**********************************************************************************************
     // Logic work
     //**********************************************************************************************
-    private void logicWork(@Nullable FirebaseUser myUser,@Nullable Boolean userState) {
+    private void logicWork(@Nullable FirebaseUser myUser, @Nullable Boolean userState, @Nullable List<User> user) {
+
+        //on test si l'utiliseur exist dsans firestore
+        if (myUser != null) {
+            if (!myUser.getUid().isEmpty() && user == null) {
+                //  for (int i = 0; i < user.size(); i++) {
+                //     if (!myUser.getUid().equals(user.get(i).getUid())) {
+                createUser();
+                // break;
+                //   }
+                //}
+            }
+
+        }
+
 
         if (myUser != null && !myUser.getUid().isEmpty()) {
             myAppMapMediator.setValue(new MainViewState(myUser, true));
-        }else
-        {
-            if (userState != null){
+        } else {
+            if (userState != null) {
 
-                if (!userState){
-                    Log.i("[NEWLOGIN]","requets login");
+                if (!userState) {
+                    Log.i("[NEWLOGIN]", "requets login");
                     myAppMapMediator.setValue(new MainViewState(false));
-                }else
-                {
-              //      myAppMapMediator.setValue(new MainViewState(true));
-                    Log.i("[NEWLOGIN]"," error requets login");
+                } else {
+                    //      myAppMapMediator.setValue(new MainViewState(true));
+                    Log.i("[NEWLOGIN]", " error requets login");
 
                 }
 
@@ -107,7 +110,7 @@ public class ViewModelGo4Lunch extends ViewModel {
         }
 
 
-            //myAppMapMediator.setValue();//request login
+        //myAppMapMediator.setValue();//request login
 
         /*else
             if (myUser == null && userState != null ){
@@ -122,14 +125,15 @@ public class ViewModelGo4Lunch extends ViewModel {
     //**********************************************************************************************
 
 
-    public Boolean updateUSer() {
-       if (myAuthSource.getUserFromRepo() == null){
 
-           return false;
-       }else
-       {
-           return true;
-       }
+
+
+    //called by mainactivity only when lon gin
+    public void updateUSer() {
+        //myViewModel.getMyCurrentUser();
+
+        myAuthSource.getUserFromRepo();
+
     }
 
 
@@ -143,7 +147,7 @@ public class ViewModelGo4Lunch extends ViewModel {
         //this.myUserStateVM.setValue(false);
         myAuthSource.signout(context);
         //);AuthSource.logOutFromRepo();
-    //    updateUSer();
+        //    updateUSer();
     }
 
     //publish method to activity... (logged or not) work fine
@@ -154,7 +158,6 @@ public class ViewModelGo4Lunch extends ViewModel {
     //Create user to Firestore
     public void createUser() {
         this.myWorkMatesSource.createUser();
-
     }
 
 

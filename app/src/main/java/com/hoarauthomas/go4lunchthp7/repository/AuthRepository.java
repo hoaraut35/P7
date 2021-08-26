@@ -29,10 +29,19 @@ public class AuthRepository {
         if (myAuth.getCurrentUser() != null) {
             myUser.postValue(myAuth.getCurrentUser());//get actual user object from FirebaseAuth
             myUserState.postValue(true);//set state of login
+
+
+
+
+
         } else {
             myUser.postValue(null);//no user logged
             myUserState.postValue(false);//set state of login
         }
+
+
+
+
     }
 
     //publish actual user object to VM...

@@ -81,30 +81,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.myViewModel.getMediatorLiveData().observe(this, new Observer<MainViewState>() {
             @Override
             public void onChanged(MainViewState mainViewState) {
-                Log.i("[NEWLOGIN]","Changement sur le MAIN");
+                Log.i("[NEWLOGIN]", "Changement sur le MAIN");
 
                 onCheckSecurity(mainViewState.getMyLogState().booleanValue());
 
 
-              //  showSnackBar("New login" + mainViewState.getMyActualUser().getDisplayName());
+                //  showSnackBar("New login" + mainViewState.getMyActualUser().getDisplayName());
             }
         });
 
-       // this.myViewModel.getMyUserState().observe(this, this::onCheckSecurity);
+        // this.myViewModel.getMyUserState().observe(this, this::onCheckSecurity);
     }
 
     private void onCheckSecurity(Boolean connected) {
         if (!connected) {
             request_login();
         } else {
+
+         //   myViewModel.createUser();
             request_user_info();
         }
     }
-
-
-
-
-
 
 
     private void setupIntent() {
@@ -120,13 +117,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (result.getResultCode() == -1) {
                             Log.i("[NEWLOGIN]", "login ok " + result.getResultCode());
 
-
-                            if (myViewModel.updateUSer() == false){
-                                myViewModel.createUser();
-                            };
+                            myViewModel.updateUSer();
 
 
-                            //myViewModel.getMyCurrentUser();
+
 
                         } else {
 
@@ -198,8 +192,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .load(avatar2)
                 .circleCrop()
                 .into(avatar);
-
-
 
 
         if (myViewModel.getMyCurrentUser().getValue().getPhotoUrl() == null) {

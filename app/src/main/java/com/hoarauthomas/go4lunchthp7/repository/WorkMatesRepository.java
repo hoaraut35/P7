@@ -43,17 +43,28 @@ public class WorkMatesRepository {
     //init data on startup viewmodelfactory
     public WorkMatesRepository() {
 
+        getdata();
+
+
+
+    }
+
+
+    private void getdata()
+    {
+
+    //    getUsersCollection();
+
         Log.i("[MAP]", "- Appel du repository WorkMates ...");
 
         getUsersCollection().get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
+                allWorkMates.clear();
                 for (DocumentSnapshot docs : queryDocumentSnapshots) {
 
                     User myUser = new User();
-
-
 
 
                     if (docs.get("urlPicture") != null) {
@@ -79,9 +90,14 @@ public class WorkMatesRepository {
         });
     }
 
+
     //this is livedata to publish detail of restaurant to the viewmodel ...
     public LiveData<List<User>> getAllWorkMates() {
+
+        getdata();
+
         Log.i("[WORK]", "- getAllWorkMates from repo " + allWorkMates.size() + "  added ...");
+
         final MutableLiveData<List<User>> data = new MutableLiveData<>();
         data.postValue(allWorkMates);
         return data;
@@ -125,6 +141,8 @@ public class WorkMatesRepository {
 
         if (user != null) {
 
+
+
             String urlPicture = (user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null);
             String username = (user.getDisplayName() != null ? user.getDisplayName() : null);
             String uid = (user.getUid() != null ? user.getUid() : null);
@@ -146,7 +164,7 @@ public class WorkMatesRepository {
 
                 } else if (documentSnapshot.contains("username")) {
                     userToCreate.setUsername(username);
-                } else if (documentSnapshot.contains("restaurant_liked")){
+                } else if (documentSnapshot.contains("restaurant_liked")) {
                     userToCreate.setRestaurant_liked(restaurant_liked);
                 }
 
@@ -156,6 +174,8 @@ public class WorkMatesRepository {
 
 
         }
+
+
     }
 
     public Task<DocumentSnapshot> getUserData() {
