@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -35,6 +34,7 @@
 
 
             <androidx.appcompat.widget.AppCompatButton
+                android:padding="10dp"
                 android:id="@+id/twitter_button"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
@@ -42,17 +42,19 @@
                 android:layout_margin="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/background_button_google"
-
+                android:background="@drawable/background_button_twitter"
+                android:drawableStart="@drawable/logo_twitter"
                 android:text="Sign in with Twitter"
                 android:textAlignment="center"
                 android:textAllCaps="false"
+                android:textColor="@color/black"
                 android:textStyle="normal">
 
             </androidx.appcompat.widget.AppCompatButton>
 
 
             <androidx.appcompat.widget.AppCompatButton
+                android:padding="10dp"
                 android:id="@+id/email_button"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
@@ -60,8 +62,9 @@
                 android:layout_margin="20dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/background_button_google"
-
+                android:textColor="@color/black"
+                android:background="@drawable/background_button_twitter"
+                android:drawableStart="@drawable/logo_mail"
                 android:text="Sign in with Email"
                 android:textAlignment="center"
                 android:textAllCaps="false"
@@ -70,6 +73,7 @@
             </androidx.appcompat.widget.AppCompatButton>
 
             <androidx.appcompat.widget.AppCompatButton
+                android:padding="10dp"
                 android:id="@+id/google_btn"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
@@ -88,6 +92,7 @@
 
 
             <androidx.appcompat.widget.AppCompatButton
+                android:padding="10dp"
                 android:id="@+id/facebook_btn"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
