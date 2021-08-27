@@ -41,11 +41,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public ActivityMainBinding binding;
 
-    public ViewModelGo4Lunch myViewModel;
+    public ViewModelMain myViewModel;
 
     private ActivityResultLauncher<Intent> openFirebaseAuthForResult;
 
     private final List<AuthUI.IdpConfig> providers = Arrays.asList(
+            new AuthUI.IdpConfig.TwitterBuilder().build(),
             new AuthUI.IdpConfig.EmailBuilder().build(),
             new AuthUI.IdpConfig.FacebookBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build());
@@ -76,52 +77,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setupViewModel() {
-
-        this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelGo4Lunch.class);
-        this.myViewModel.getMediatorLiveData().observe(this, new Observer<MainViewState>() {
+        this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
+        this.myViewModel.getMediatorLiveData().observe(this, new Observer<ViewStateMain>() {
             @Override
-            public void onChanged(MainViewState mainViewState) {
-                Log.i("[NEWLOGIN]", "Changement sur le MAIN");
-
-                onCheckSecurity(mainViewState.getMyLogState().booleanValue());
-
-
-                //  showSnackBar("New login" + mainViewState.getMyActualUser().getDisplayName());
+            public void onChanged(ViewStateMain viewStateMain) {
+                Log.i("[MAINV]", "ViewState change ...");
+                onCheckSecurity(viewStateMain.getMyLogState().booleanValue());
             }
         });
-
-        // this.myViewModel.getMyUserState().observe(this, this::onCheckSecurity);
     }
 
     private void onCheckSecurity(Boolean connected) {
+        Log.i("[MAINV]", "Check security ...");
         if (!connected) {
+            Log.i("[MAINV]", "Request login ...");
             request_login();
         } else {
-
-         //   myViewModel.createUser();
+            Log.i("[MAINV]", "Request user information ...");
             request_user_info();
         }
     }
-
 
     private void setupIntent() {
 
         openFirebaseAuthForResult = registerForActivityResult(
                 new FirebaseAuthUIActivityResultContract(),
                 new ActivityResultCallback<FirebaseAuthUIAuthenticationResult>() {
-
                     @Override
                     public void onActivityResult(FirebaseAuthUIAuthenticationResult result) {
 
                         //authentification ok
                         if (result.getResultCode() == -1) {
                             Log.i("[NEWLOGIN]", "login ok " + result.getResultCode());
-
                             myViewModel.updateUSer();
-
-
-
-
                         } else {
 
                             Log.i("[LOGIN]", "Erreur login");
@@ -138,9 +126,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void request_login() {
+
         //setup layout
         AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
                 .Builder(R.layout.custom_layout_login)
+                .setTwitterButtonId(R.id.twitter_button)
                 .setEmailButtonId(R.id.email_button)
                 .setGoogleButtonId(R.id.google_btn)
                 .setFacebookButtonId(R.id.facebook_btn)

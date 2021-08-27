@@ -11,7 +11,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-public class MainViewState {
+public class ViewStateMain {
 
     private Location myLocation;
     private FirebaseUser myActualUser;
@@ -47,23 +47,24 @@ public class MainViewState {
         this.myRestaurantsList = myRestaurantsList;
     }
 
-    public MainViewState(@Nullable Location myLocation, @Nullable List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantPojoList, @Nullable List<User> myWorkMatesList) {
+    //**********************************************************************************************
+
+    public ViewStateMain(@Nullable Location myLocation, @Nullable List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantPojoList, @Nullable List<User> myWorkMatesList) {
         this.myLocation = myLocation;
         this.myRestaurantsList = myRestaurantPojoList;
         this.myWorkMatesList = myWorkMatesList;
     }
 
-
-    public MainViewState(@Nullable FirebaseUser user){
+    public ViewStateMain(@Nullable FirebaseUser user){
         this.myActualUser = user;
     }
 
-    public MainViewState(@Nullable Boolean myLogState){
+    public ViewStateMain(@Nullable Boolean myLogState){
         this.myLogState = myLogState;
     }
 
 
-    public MainViewState(@Nullable FirebaseUser user, Boolean myLogState){
+    public ViewStateMain(@Nullable FirebaseUser user, Boolean myLogState){
         this.myActualUser = user;
         this.myLogState = myLogState;
     }
@@ -72,15 +73,17 @@ public class MainViewState {
         return myLogState;
     }
 
+    //**********************************************************************************************
+
     public void setMyLogState(Boolean myLogState) {
         this.myLogState = myLogState;
     }
 
-    public MainViewState(MyDetailRestaurant monrestau) {
+    public ViewStateMain(MyDetailRestaurant monrestau) {
         this.myDetailRestaurant = monrestau;
     }
 
-    public MainViewState(Location MyLocation) {
+    public ViewStateMain(Location MyLocation) {
         this.myLocation = MyLocation;
     }
 

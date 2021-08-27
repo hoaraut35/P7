@@ -9,9 +9,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.location.LocationServices;
 import com.hoarauthomas.go4lunchthp7.MainApplication;
-import com.hoarauthomas.go4lunchthp7.ViewModelGo4Lunch;
+import com.hoarauthomas.go4lunchthp7.ViewModelMain;
 import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
-import com.hoarauthomas.go4lunchthp7.repository.AuthRepository;
+import com.hoarauthomas.go4lunchthp7.repository.AuthentificationRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
@@ -28,7 +28,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private static ViewModelFactory myViewModelFactory;
 
     //Add repository here...
-    private final AuthRepository authRepository;
+    private final AuthentificationRepository authentificationRepository;
     private final PositionRepository positionRepository;
 
     @NonNull
@@ -48,7 +48,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     Application application = MainApplication.getApplication();
                     myViewModelFactory = new ViewModelFactory(
                             new PermissionChecker(application),
-                            new AuthRepository(),
+                            new AuthentificationRepository(),
                             new RestaurantsRepository(),
                             new PositionRepository(LocationServices.getFusedLocationProviderClient(application)),
                             new WorkMatesRepository()
@@ -65,13 +65,13 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     //constructor of ViewModelFactory ...
     private ViewModelFactory(
             @NonNull PermissionChecker permissionChecker,
-            AuthRepository authRepository,
+            AuthentificationRepository authentificationRepository,
             @NonNull RestaurantsRepository restaurantsRepository,
             PositionRepository positionRepository,
             WorkMatesRepository workMatesRepository
     ) {
         this.permissionChecker = permissionChecker;
-        this.authRepository = authRepository;
+        this.authentificationRepository = authentificationRepository;
         this.positionRepository = positionRepository;
         this.restaurantsRepository = restaurantsRepository;
         this.workMatesRepository = workMatesRepository;
@@ -83,9 +83,9 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
 
-        if (modelClass.isAssignableFrom(ViewModelGo4Lunch.class)) {
-            return (T) new ViewModelGo4Lunch(
-                    authRepository,
+        if (modelClass.isAssignableFrom(ViewModelMain.class)) {
+            return (T) new ViewModelMain(
+                    authentificationRepository,
                     //   restaurantsRepository,
                     //   positionRepository,
                     workMatesRepository

@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
-import com.hoarauthomas.go4lunchthp7.repository.AuthRepository;
+import com.hoarauthomas.go4lunchthp7.repository.AuthentificationRepository;
 import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
 
 import java.util.List;
@@ -19,10 +19,10 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 
-public class ViewModelGo4Lunch extends ViewModel {
+public class ViewModelMain extends ViewModel {
 
-    //repo
-    private final AuthRepository myAuthSource;
+    //repositories
+    private final AuthentificationRepository myFirebaseSource;
     private WorkMatesRepository myWorkMatesSource;
 
     //data
@@ -30,16 +30,16 @@ public class ViewModelGo4Lunch extends ViewModel {
     private MutableLiveData<Boolean> myUserStateVM;
     private LiveData<List<User>> workMatesLiveData;
 
+    //for update ViewStateMain data
+    private final MediatorLiveData<ViewStateMain> myAppMapMediator = new MediatorLiveData<>();
+  
+    //constructor
+    public ViewModelMain(AuthentificationRepository authentificationRepository, WorkMatesRepository workMatesRepository) {
+        
+        this.myFirebaseSource = authentificationRepository;
+        this.myUserVM = myFirebaseSource.getUserFromRepo();
 
-    private final MediatorLiveData<MainViewState> myAppMapMediator = new MediatorLiveData<>();
-
-
-    //constructor to get one instance of each object, called by ViewModelFactory
-    public ViewModelGo4Lunch(AuthRepository authRepository, WorkMatesRepository workMatesRepository) {
-        this.myAuthSource = authRepository;
-        this.myUserVM = myAuthSource.getUserFromRepo();
-
-        this.myUserStateVM = myAuthSource.getUserStateFromRepo();
+        this.myUserStateVM = myFirebaseSource.getUserStateFromRepo();
 
         this.myWorkMatesSource = workMatesRepository;
 
@@ -48,7 +48,7 @@ public class ViewModelGo4Lunch extends ViewModel {
         myAppMapMediator.addSource(myUserVM, new Observer<FirebaseUser>() {
             @Override
             public void onChanged(FirebaseUser firebaseUser) {
-                Log.i("[NEWLOGIN]", "Updater user system...");
+                Log.i("[MAINV]", "Updater user system...");
                 logicWork(firebaseUser, myUserStateVM.getValue(), workMatesLiveData.getValue());
             }
         });
@@ -56,7 +56,7 @@ public class ViewModelGo4Lunch extends ViewModel {
         myAppMapMediator.addSource(myUserStateVM, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                Log.i("[NEWLOGIN]", "Updater user state login...");
+                Log.i("[MAINV]", "Updater user state login...");
                 logicWork(myUserVM.getValue(), aBoolean, workMatesLiveData.getValue());
             }
         });
@@ -90,16 +90,16 @@ public class ViewModelGo4Lunch extends ViewModel {
 
 
         if (myUser != null && !myUser.getUid().isEmpty()) {
-            myAppMapMediator.setValue(new MainViewState(myUser, true));
+            myAppMapMediator.setValue(new ViewStateMain(myUser, true));
         } else {
             if (userState != null) {
 
                 if (!userState) {
-                    Log.i("[NEWLOGIN]", "requets login");
-                    myAppMapMediator.setValue(new MainViewState(false));
+                    Log.i("[MAINV]", "requets login");
+                    myAppMapMediator.setValue(new ViewStateMain(false));
                 } else {
                     //      myAppMapMediator.setValue(new MainViewState(true));
-                    Log.i("[NEWLOGIN]", " error requets login");
+                    Log.i("[MAINV]", " error requets login");
 
                 }
 
@@ -108,17 +108,6 @@ public class ViewModelGo4Lunch extends ViewModel {
 
 
         }
-
-
-        //myAppMapMediator.setValue();//request login
-
-        /*else
-            if (myUser == null && userState != null ){
-                myAppMapMediator.setValue(new MainViewState(userState));
-            }
-
-         */
-
     }
     //**********************************************************************************************
     // End of logic work
@@ -132,7 +121,7 @@ public class ViewModelGo4Lunch extends ViewModel {
     public void updateUSer() {
         //myViewModel.getMyCurrentUser();
 
-        myAuthSource.getUserFromRepo();
+        myFirebaseSource.getUserFromRepo();
 
     }
 
@@ -145,7 +134,7 @@ public class ViewModelGo4Lunch extends ViewModel {
     //publish method to activity... to log out work fine
     public void logOut(Context context) {
         //this.myUserStateVM.setValue(false);
-        myAuthSource.signout(context);
+        myFirebaseSource.signout(context);
         //);AuthSource.logOutFromRepo();
         //    updateUSer();
     }
@@ -162,7 +151,7 @@ public class ViewModelGo4Lunch extends ViewModel {
 
 
     //to publish mediatorlivedata to mainactivity
-    public LiveData<MainViewState> getMediatorLiveData() {
+    public LiveData<ViewStateMain> getMediatorLiveData() {
         return myAppMapMediator;
     }
 

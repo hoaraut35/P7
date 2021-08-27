@@ -12,14 +12,16 @@ import com.google.firebase.auth.FirebaseUser;
 
 //Only to get data or store and publish it to ViewModel ...
 
-public class AuthRepository {
+public class AuthentificationRepository {
 
+    //
     private final FirebaseAuth myAuth;
+
     private MutableLiveData<FirebaseUser> myUser = new MutableLiveData<>();
     private MutableLiveData<Boolean> myUserState = new MutableLiveData<>();
 
     //constructor called by factory
-    public AuthRepository() {
+    public AuthentificationRepository() {
         myAuth = FirebaseAuth.getInstance();//get instance of FirebaseAuth
         CheckUser();
     }
@@ -29,19 +31,10 @@ public class AuthRepository {
         if (myAuth.getCurrentUser() != null) {
             myUser.postValue(myAuth.getCurrentUser());//get actual user object from FirebaseAuth
             myUserState.postValue(true);//set state of login
-
-
-
-
-
         } else {
             myUser.postValue(null);//no user logged
             myUserState.postValue(false);//set state of login
         }
-
-
-
-
     }
 
     //publish actual user object to VM...
