@@ -10,66 +10,58 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-//Only to get data or store and publish it to ViewModel ...
+//Only to get data from Firestore, store and publish user and userstate to ViewModel ...
 
 public class AuthentificationRepository {
 
-    //
     private final FirebaseAuth myAuth;
 
     private MutableLiveData<FirebaseUser> myUser = new MutableLiveData<>();
     private MutableLiveData<Boolean> myUserState = new MutableLiveData<>();
 
-    //constructor called by factory
     public AuthentificationRepository() {
-        myAuth = FirebaseAuth.getInstance();//get instance of FirebaseAuth
-        CheckUser();
+        this.myAuth = FirebaseAuth.getInstance();
+        checkUser();
     }
 
-    //internal function
-    private void CheckUser() {
+    //**********************************************************************************************
+    // PRIVATE
+    //**********************************************************************************************
+    private void checkUser() {
         if (myAuth.getCurrentUser() != null) {
-            myUser.postValue(myAuth.getCurrentUser());//get actual user object from FirebaseAuth
-            myUserState.postValue(true);//set state of login
+            myUser.postValue(myAuth.getCurrentUser());
+            myUserState.postValue(true);
         } else {
-            myUser.postValue(null);//no user logged
-            myUserState.postValue(false);//set state of login
+            myUser.postValue(null);
+            myUserState.postValue(false);
         }
     }
 
-    //publish actual user object to VM...
+    //**********************************************************************************************
+    // PUBLIC
+    //**********************************************************************************************
+
     public MutableLiveData<FirebaseUser> getUserFromRepo() {
-        CheckUser();
-        return myUser;
+        checkUser();
+        return this.myUser;
     }
 
-    //publish actual user state to VM...
     public MutableLiveData<Boolean> getUserStateFromRepo() {
-      //  CheckUser();
+        checkUser();
         return myUserState;
     }
 
-    //method called from VM to logout...
-    public void logOutFromRepo() {
-
-
-        myAuth.signOut();
-        //myAuth.getCurrentUser().ssignOut();
-        //     CheckUser();
-        //getUserStateFromRepo();
-
-        //CheckUser();
-    }
-
-    public Task<Void> signout(Context context)
-    {
+    public Task<Void> signOut(Context context) {
         return AuthUI.getInstance().signOut(context).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                CheckUser();
+                checkUser();
             }
         });
+    }
 
+    public Task<Void> deleteUser(Context context){
+        return AuthUI.getInstance().delete(context);
     }
 
 }

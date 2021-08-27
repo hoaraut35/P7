@@ -134,7 +134,7 @@ public class ViewModelMain extends ViewModel {
     //publish method to activity... to log out work fine
     public void logOut(Context context) {
         //this.myUserStateVM.setValue(false);
-        myFirebaseSource.signout(context);
+        myFirebaseSource.signOut(context);
         //);AuthSource.logOutFromRepo();
         //    updateUSer();
     }
