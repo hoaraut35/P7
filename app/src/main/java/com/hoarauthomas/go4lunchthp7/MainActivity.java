@@ -27,6 +27,8 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.OAuthProvider;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
+import com.hoarauthomas.go4lunchthp7.model.MyUser;
+import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
 import com.hoarauthomas.go4lunchthp7.ui.FragmentsAdapter;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
@@ -163,6 +165,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //TODO: review binding navigation view ?
     private void request_user_info() {
+
+
+
+
+
+
+        //TODO:get data from ViewModelMain
+
+
+
+
+
+
+
+
+
+
         View hv = binding.navigationView.getHeaderView(0);
 
         TextView name = (TextView) hv.findViewById(R.id.displayName);

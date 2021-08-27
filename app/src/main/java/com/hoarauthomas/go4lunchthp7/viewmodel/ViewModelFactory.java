@@ -103,6 +103,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
 
         if (modelClass.isAssignableFrom(ViewModelDetail.class)) {
             return (T) new ViewModelDetail(
+                    authentificationRepository,
                     restaurantsRepository,
                     workMatesRepository);
 

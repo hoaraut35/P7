@@ -40,7 +40,6 @@ public class User {
         return restaurant_liked;
     }
 
-
     public String getUrlPicture() {
         return urlPicture;
     }
@@ -49,10 +48,7 @@ public class User {
         return favoriteRestaurant;
     }
 
-    public List<String> getLikedRestaurant() {
-        return restaurant_liked;
-    }
-
+    public List<String> getLikedRestaurant() {    return restaurant_liked;  }
 
     // --- SETTERS ---
     public void setUsername(String username) {

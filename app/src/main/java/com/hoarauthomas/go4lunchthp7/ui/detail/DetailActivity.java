@@ -62,6 +62,9 @@ public class DetailActivity extends AppCompatActivity {
         myViewModelDetail.getMediatorLiveData().observe(this, new Observer<ViewStateDetail>() {
             @Override
             public void onChanged(ViewStateDetail viewStateDetail) {
+
+
+
                 Log.i("[MONDETAIL]", "detail demandé activity");
 
                 //show image of restaurant if exist
@@ -127,6 +130,10 @@ public class DetailActivity extends AppCompatActivity {
 
                 setupButtonChoice();
                 setupButtonLike();
+
+
+
+
 
             }
         });

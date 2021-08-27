@@ -13,14 +13,12 @@ import retrofit2.http.Query;
 public interface GooglePlaceApi {
 
     //for Restaurants search ...
-    @GET("place/nearbysearch/json?rankby=distance&type=restaurant")
-    Call<Place> getNearbyPlaces(
+    @GET("place/nearbysearch/json?rankby=distance&type=restaurant") Call<Place> getNearbyPlaces(
             @Query("key") String key,
             @Query("location") String myLocation);
 
     //for restaurant details ...
-    @GET("place/details/json?fields=formatted_phone_number,url,rating,opening_hours")
-    Call<MyDetailRestaurant> getPlaceDetails2(
+    @GET("place/details/json?fields=formatted_phone_number,url,rating,opening_hours") Call<MyDetailRestaurant> getPlaceDetails2(
             @Query("key") String key,
             @Query("place_id") String myPlaceId);
 

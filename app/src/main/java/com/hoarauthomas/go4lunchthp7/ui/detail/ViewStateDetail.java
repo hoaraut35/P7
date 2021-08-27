@@ -27,24 +27,15 @@ public class ViewStateDetail {
         return myRestaurantObject;
     }
 
-    public void setMyRestaurantObject(RestaurantPojo myRestaurantObject) {
-        this.myRestaurantObject = myRestaurantObject;
-    }
-
-    public ResultDetailRestaurant getMyRestaurantDetailObject() {
-        return myRestaurantDetailObject;
-    }
-
-    public void setMyRestaurantDetailObject(ResultDetailRestaurant myRestaurantDetailObject) {
-        this.myRestaurantDetailObject = myRestaurantDetailObject;
-    }
-
 
     public ViewStateDetail(RestaurantPojo myRestaurant, ResultDetailRestaurant myDetailRestaurant, List<SpecialWorkMates> myWorkMatesTag) {
         this.myRestaurantObject = myRestaurant;
         this.myRestaurantDetailObject = myDetailRestaurant;
         this.myWorkMatesTag = myWorkMatesTag;
     }
+
+
+
 
     public List<SpecialWorkMates> getMyWorkMatesTag() {
         return myWorkMatesTag;
@@ -88,4 +79,16 @@ public class ViewStateDetail {
     }
 
 
+
+    public void setMyRestaurantObject(RestaurantPojo myRestaurantObject) {
+        this.myRestaurantObject = myRestaurantObject;
+    }
+
+    public ResultDetailRestaurant getMyRestaurantDetailObject() {
+        return myRestaurantDetailObject;
+    }
+
+    public void setMyRestaurantDetailObject(ResultDetailRestaurant myRestaurantDetailObject) {
+        this.myRestaurantDetailObject = myRestaurantDetailObject;
+    }
 }

@@ -10,10 +10,12 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.hoarauthomas.go4lunchthp7.model.MyUser;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.repository.AuthentificationRepository;
 import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -29,6 +31,12 @@ public class ViewModelMain extends ViewModel {
     private MutableLiveData<FirebaseUser> myUserVM = null;
     private MutableLiveData<Boolean> myUserStateVM;
     private LiveData<List<User>> myWorkMatesVM;
+
+
+    public LiveData<MyUser> myUser;
+    private MutableLiveData<MyUser> myUserMutable = new MutableLiveData<>();
+
+
 
     //for update ViewStateMain data
     private final MediatorLiveData<ViewStateMain> myAppMapMediator = new MediatorLiveData<>();
@@ -82,6 +90,8 @@ public class ViewModelMain extends ViewModel {
                 createUser();
 
 
+
+
                 // break;
                 //   }
                 //}
@@ -89,30 +99,43 @@ public class ViewModelMain extends ViewModel {
 
         }
 
-
-
-
-
         if (myUser != null && !myUser.getUid().isEmpty()) {
 
             String id ="";
 
-          /*  if (myWorkMatesVM != null)
-            {
-             if(   !myWorkMatesVM.getValue().isEmpty()) {
+         // /*  if (myWorkMatesVM != null)
+           // {
+            // if(   !myWorkMatesVM.getValue().isEmpty()) {
 
 
-                 for (int i = 0; i < myWorkMatesVM.getValue().size(); i++) {
-                     if (myUser.getUid().equals(myWorkMatesVM.getValue().get(i).getUid())) {
-                         id = myWorkMatesVM.getValue().get(i).getFavoriteRestaurant();
-                         break;
+                    List<String> mesrestau =new ArrayList<>();
+                    String favrestau ;
+
+                 if (user!= null) {
+
+                     if (!user.isEmpty()) {
+
+                         for (int i = 0; i < user.size(); i++) {
+
+                             if (myUser.getUid().equals(user.get(i).getUid())) {
+                                 mesrestau.add(user.get(i).getFavoriteRestaurant());
+
+                                 break;
+                             }
+                         }
                      }
                  }
-             }
 
-            }
+            // }
 
-           */
+            //}
+
+          // */
+
+
+            myUserMutable.postValue(new MyUser("m","","",mesrestau));
+
+//            MyUser newUser = new MyUser(myUser.getPhotoUrl().toString(), myUser.getDisplayName(),null,mesrestau);
 
 
             myAppMapMediator.setValue(new ViewStateMain(myUser, true));
@@ -144,6 +167,13 @@ public class ViewModelMain extends ViewModel {
     //**********************************************************************************************
     // PUBLIC
     //**********************************************************************************************
+
+
+    public MyUser getMyUser()
+    {
+        return myUserMutable.getValue();
+    }
+
 
     public void updateUSer() {
         //myViewModel.getMyCurrentUser();

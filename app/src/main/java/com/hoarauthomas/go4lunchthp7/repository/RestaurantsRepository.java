@@ -111,11 +111,6 @@ public class RestaurantsRepository {
     //this livedata is publish to viewmodel... v2
     public LiveData<ResultDetailRestaurant> getRestaurantById(String restaurant_id) {
 
-
-
-
-
-
         if (restaurant_id == null || restaurant_id.isEmpty()) {
             Log.i("[MONDETAIL]","id null opu vide");
             monDetailRestau.setValue(null);
