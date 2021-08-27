@@ -5,12 +5,11 @@ import android.content.Context;
 import androidx.lifecycle.MutableLiveData;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-//Only to get data from Firestore, store and publish user and userstate to ViewModel ...
+//Only to get data from Firestore, store and publish user and user state to ViewModel ...
 
 public class AuthentificationRepository {
 
@@ -52,12 +51,7 @@ public class AuthentificationRepository {
     }
 
     public Task<Void> signOut(Context context) {
-        return AuthUI.getInstance().signOut(context).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                checkUser();
-            }
-        });
+        return AuthUI.getInstance().signOut(context).addOnSuccessListener(unused -> checkUser());
     }
 
     public Task<Void> deleteUser(Context context){
