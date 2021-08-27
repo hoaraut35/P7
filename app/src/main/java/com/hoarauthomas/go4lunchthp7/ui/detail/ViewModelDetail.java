@@ -75,10 +75,10 @@ public class ViewModelDetail extends ViewModel {
             }
         });
 
-        myViewStateDetailMediator.addSource((myUserFromRepo, new Observer<FirebaseUser>() {
+        myViewStateDetailMediator.addSource(myUserFromRepo, new Observer<FirebaseUser>() {
             @Override
             public void onChanged(FirebaseUser firebaseUser) {
-                Log.i("","");
+                Log.i("[MONDETAIL]","event sur user");
             }
         });
 
@@ -129,6 +129,7 @@ public class ViewModelDetail extends ViewModel {
 
 
 
+
                     resultRestaurant = restaurants.get(i);
 
                     for (int z = 0; z < workmates.size(); z++) {
@@ -155,7 +156,7 @@ public class ViewModelDetail extends ViewModel {
             }//end for
 
 
-            myViewStateDetailMediator.setValue(new ViewStateDetail(resultRestaurant, detail, mySpecialWorkMatesList));
+            myViewStateDetailMediator.setValue(new ViewStateDetail(resultRestaurant, detail, mySpecialWorkMatesList, true, true));
 
         }
 

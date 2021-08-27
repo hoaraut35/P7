@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
+import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.api.GooglePlaceApi;
 import com.hoarauthomas.go4lunchthp7.api.UserHelper;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding;
@@ -128,8 +129,9 @@ public class DetailActivity extends AppCompatActivity {
                 setupRecyclerView(viewStateDetail.getMyWorkMatesTag());
 
 
-                setupButtonChoice();
-                setupButtonLike();
+                setupButtonChoice(viewStateDetail.getFavoris());
+
+                setupButtonLike(viewStateDetail.getLike());
 
 
 
@@ -141,7 +143,7 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
-    private void setupButtonChoice() {
+    private void setupButtonChoice(Boolean state) {
 
         binding.choiceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,13 +202,21 @@ public class DetailActivity extends AppCompatActivity {
         });
     }
 
-    private void setupButtonLike() {
+    private void setupButtonLike(Boolean state) {
         binding.likeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showSnackBar("Enregistrer le restaurant : " + binding.restaurantTitre.getText());
 
                     //myViewModelDetail.getCurrentUser().
+
+                if (state){
+                    binding.likeBtn.setImageResource(R.drawable.background_button_facebook);
+                }
+                else
+                {
+                    binding.likeBtn.setImageResource(R.drawable.com_facebook_button_like_icon_selected);
+                }
 
 
                     myViewModelDetail.adLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());

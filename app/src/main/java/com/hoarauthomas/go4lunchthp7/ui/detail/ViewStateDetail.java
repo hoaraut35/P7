@@ -28,10 +28,12 @@ public class ViewStateDetail {
     }
 
 
-    public ViewStateDetail(RestaurantPojo myRestaurant, ResultDetailRestaurant myDetailRestaurant, List<SpecialWorkMates> myWorkMatesTag) {
+    public ViewStateDetail(RestaurantPojo myRestaurant, ResultDetailRestaurant myDetailRestaurant, List<SpecialWorkMates> myWorkMatesTag, Boolean fav, Boolean like) {
         this.myRestaurantObject = myRestaurant;
         this.myRestaurantDetailObject = myDetailRestaurant;
         this.myWorkMatesTag = myWorkMatesTag;
+        this.like = like;
+        this.Favoris = fav;
     }
 
 
