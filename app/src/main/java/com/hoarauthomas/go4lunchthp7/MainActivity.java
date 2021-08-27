@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public ViewModelMain myViewModel;
 
+    public String actualRestaurant;
+
     private ActivityResultLauncher<Intent> openFirebaseAuthForResult;
 
     private final List<AuthUI.IdpConfig> providers = Arrays.asList(
@@ -83,9 +85,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onChanged(ViewStateMain viewStateMain) {
                 Log.i("[MAINV]", "ViewState change ...");
                 onCheckSecurity(viewStateMain.getMyLogState().booleanValue());
+                setupFavRestau(viewStateMain.getMyRestaurantFavorite());
+
+
             }
+
+
         });
     }
+
+    private void setupFavRestau(String myRestaurantFavorite) {
+    this.actualRestaurant = myRestaurantFavorite;
+    }
+
 
     private void onCheckSecurity(Boolean connected) {
         Log.i("[MAINV]", "Check security ...");
@@ -222,10 +234,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void openMyFavoriteRestaurant() {
 
-        //TODO: add favorite restaurant from viewmodel ?
 
         Intent intent = new Intent(this, DetailActivity.class);
+        intent.putExtra("TAG_ID", this.actualRestaurant);
         startActivity(intent);
+
     }
 
     private void setupBottomBAr() {

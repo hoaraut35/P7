@@ -18,6 +18,7 @@ public class ViewStateMain {
     private List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantsList;
     private List<User> myWorkMatesList;
     private MyDetailRestaurant myDetailRestaurant;
+    private String myRestaurantFavorite;
 
     private Boolean myLogState;
 
@@ -50,9 +51,18 @@ public class ViewStateMain {
     //**********************************************************************************************
 
     public ViewStateMain(@Nullable Location myLocation, @Nullable List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantPojoList, @Nullable List<User> myWorkMatesList) {
+        //this.myRestaurantFavorite = myRestaurantFavorite;
         this.myLocation = myLocation;
         this.myRestaurantsList = myRestaurantPojoList;
         this.myWorkMatesList = myWorkMatesList;
+    }
+
+    public String getMyRestaurantFavorite() {
+        return myRestaurantFavorite;
+    }
+
+    public void setMyRestaurantFavorite(String myRestaurantFavorite) {
+        this.myRestaurantFavorite = myRestaurantFavorite;
     }
 
     public ViewStateMain(@Nullable FirebaseUser user){
@@ -64,7 +74,9 @@ public class ViewStateMain {
     }
 
 
-    public ViewStateMain(@Nullable FirebaseUser user, Boolean myLogState){
+   // public ViewStateMain(@Nullable FirebaseUser user, Boolean myLogState, String id){
+   public ViewStateMain(@Nullable FirebaseUser user, Boolean myLogState){
+        //this.myRestaurantFavorite = id;
         this.myActualUser = user;
         this.myLogState = myLogState;
     }

@@ -72,6 +72,7 @@ public class ViewModelMain extends ViewModel {
     //**********************************************************************************************
     private void logicWork(@Nullable FirebaseUser myUser, @Nullable Boolean userState, @Nullable List<User> user) {
 
+
         //on test si l'utiliseur exist dsans firestore
         if (myUser != null) {
             if (!myUser.getUid().isEmpty() ) {
@@ -91,8 +92,32 @@ public class ViewModelMain extends ViewModel {
 
 
 
+
         if (myUser != null && !myUser.getUid().isEmpty()) {
+
+            String id ="";
+
+          /*  if (myWorkMatesVM != null)
+            {
+             if(   !myWorkMatesVM.getValue().isEmpty()) {
+
+
+                 for (int i = 0; i < myWorkMatesVM.getValue().size(); i++) {
+                     if (myUser.getUid().equals(myWorkMatesVM.getValue().get(i).getUid())) {
+                         id = myWorkMatesVM.getValue().get(i).getFavoriteRestaurant();
+                         break;
+                     }
+                 }
+             }
+
+            }
+
+           */
+
+
             myAppMapMediator.setValue(new ViewStateMain(myUser, true));
+            //myAppMapMediator.setValue(new ViewStateMain(myUser, true, id));
+
         } else {
             if (userState != null) {
 
