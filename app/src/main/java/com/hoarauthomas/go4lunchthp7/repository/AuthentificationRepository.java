@@ -1,10 +1,12 @@
 package com.hoarauthomas.go4lunchthp7.repository;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,6 +29,7 @@ public class AuthentificationRepository {
     // PRIVATE
     //**********************************************************************************************
     private void checkUser() {
+        Log.i("[MAINV]","Check user in progress...");
         if (myAuth.getCurrentUser() != null) {
             myUser.postValue(myAuth.getCurrentUser());
             myUserState.postValue(true);
@@ -51,7 +54,12 @@ public class AuthentificationRepository {
     }
 
     public Task<Void> signOut(Context context) {
-        return AuthUI.getInstance().signOut(context).addOnSuccessListener(unused -> checkUser());
+        return AuthUI.getInstance().signOut(context).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                AuthentificationRepository.this.checkUser();
+            }
+        });
     }
 
     public Task<Void> deleteUser(Context context){

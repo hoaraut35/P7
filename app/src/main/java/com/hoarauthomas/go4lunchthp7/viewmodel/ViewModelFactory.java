@@ -30,21 +30,19 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     //Add repository here...
     private final AuthentificationRepository authentificationRepository;
     private final PositionRepository positionRepository;
-
     @NonNull
     private final RestaurantsRepository restaurantsRepository;
     private final WorkMatesRepository workMatesRepository;
-
     @NonNull
     private final PermissionChecker permissionChecker;
 
     //Get an instance of ViewModelFactory ... see pattern singleton
     public static ViewModelFactory getInstance() {
-        Log.i("[THOMAS]", "[VIEWMODELFACTORY INIT]");
+        Log.i("[FACTORY]", "[VIEWMODELFACTORY INIT]");
         if (myViewModelFactory == null) {
             synchronized (ViewModelFactory.class) {
                 if (myViewModelFactory == null) {
-                    Log.i("[THOMAS]", "[VIEWMODELFACTORY NEW OBJECT]");
+                    Log.i("[FACTORY]", "[VIEWMODELFACTORY NEW OBJECT]");
                     Application application = MainApplication.getApplication();
                     myViewModelFactory = new ViewModelFactory(
                             new PermissionChecker(application),
@@ -54,7 +52,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                             new WorkMatesRepository()
                     );
                 } else {
-                    Log.i("[THOMAS]", "[VIEWMODELFACTORY OBJECT ALREADY EXIST]");
+                    Log.i("[FACTORY]", "[VIEWMODELFACTORY OBJECT ALREADY EXIST]");
                 }
             }
         }

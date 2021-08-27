@@ -3,6 +3,7 @@ package com.hoarauthomas.go4lunchthp7.repository;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -12,8 +13,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 
@@ -21,6 +26,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.google.firebase.firestore.DocumentChange.Type.ADDED;
+import static com.google.firebase.firestore.DocumentChange.Type.MODIFIED;
+import static com.google.firebase.firestore.DocumentChange.Type.REMOVED;
 
 //get data from repository
 
@@ -49,7 +58,47 @@ public class WorkMatesRepository {
 
         getdata();
 
+        setupListenerOnCollection();
 
+    }
+
+    private void setupListenerOnCollection() {
+
+        CollectionReference collectionReference = getUsersCollection();
+
+        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable @org.jetbrains.annotations.Nullable QuerySnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
+
+
+                if (error != null)
+                {
+                    Log.i("[FIRE]","Erreur " ,error );
+                   return;
+                }
+
+                for (DocumentChange dc : value.getDocumentChanges()){
+
+                    switch (dc.getType()){
+                        case ADDED:
+                            Log.i("[FIRE]","add " );
+                            getdata();
+                            break;
+                        case MODIFIED:
+                            Log.i("[FIRE]","modif "  );
+                            getdata();
+                            break;
+                        case REMOVED:
+                            Log.i("[FIRE]","remove "  );
+                            getdata();
+                            break;
+
+                    }
+                }
+
+                Log.i("[FIRE]","Event on databse ...");
+            }
+        });
 
     }
 
@@ -57,7 +106,7 @@ public class WorkMatesRepository {
     private void getdata()
     {
 
-    //    getUsersCollection();
+
 
         Log.i("[MAP]", "- Appel du repository WorkMates ...");
 
@@ -139,13 +188,13 @@ public class WorkMatesRepository {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
+
+
     public void createUser() {
 
         FirebaseUser user = getCurrentUser();
 
         if (user != null) {
-
-
             String urlPicture = (user.getPhotoUrl() != null ? user.getPhotoUrl().toString() : null);
             String username = (user.getDisplayName() != null ? user.getDisplayName() : null);
             String uid = (user.getUid() != null ? user.getUid() : null);
