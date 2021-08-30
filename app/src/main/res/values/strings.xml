@@ -58,5 +58,6 @@
     <string name="error_authentification_canceled">Connexion annulée</string>
     <string name="error_no_network">Erreur réseau</string>
     <string name="error_unknow">Erreur inconnu</string>
+    <string name="default_notification_channel_id" />
 
 </resources>
