@@ -207,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             avatar2 = "https://eu.ui-avatars.com/api/?name=" + z;
         } else {
             avatar2 = this.myViewModel.getMyCurrentUser().getValue().getPhotoUrl().toString();
+            Log.i("[AVATAR]","" + avatar2.toString());
         }
 
         Glide.with(avatar)
