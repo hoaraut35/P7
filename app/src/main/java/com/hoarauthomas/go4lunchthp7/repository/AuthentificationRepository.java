@@ -29,7 +29,7 @@ public class AuthentificationRepository {
     // PRIVATE
     //**********************************************************************************************
     private void checkUser() {
-        Log.i("[MAINV]","Check user in progress...");
+
         if (myAuth.getCurrentUser() != null) {
             myUser.postValue(myAuth.getCurrentUser());
             myUserState.postValue(true);
@@ -44,7 +44,7 @@ public class AuthentificationRepository {
     //**********************************************************************************************
 
     public MutableLiveData<FirebaseUser> getUserFromRepo() {
-        checkUser();
+       checkUser();
         return this.myUser;
     }
 
@@ -54,16 +54,15 @@ public class AuthentificationRepository {
     }
 
     public Task<Void> signOut(Context context) {
+
         return AuthUI.getInstance().signOut(context).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
+
                 AuthentificationRepository.this.checkUser();
             }
-        });
-    }
 
-    public Task<Void> deleteUser(Context context){
-        return AuthUI.getInstance().delete(context);
+        });
     }
 
 }

@@ -62,8 +62,16 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     //**********************************************************************************************
 
     private void showMapWithPosition(@NonNull LatLng position) {
-        myMap.moveCamera(CameraUpdateFactory.newLatLng(position));
-        myMap.animateCamera(CameraUpdateFactory.zoomTo(10));//city zoom
+
+        if (position != null){
+            myMap.moveCamera(CameraUpdateFactory.newLatLng(position));
+            myMap.animateCamera(CameraUpdateFactory.zoomTo(10));//city zoom
+        }else
+        {
+
+        }
+
+
     }
 
     //**********************************************************************************************

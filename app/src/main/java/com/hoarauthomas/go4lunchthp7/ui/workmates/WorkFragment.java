@@ -27,18 +27,11 @@ import java.util.Objects;
 
 public class WorkFragment extends Fragment implements WorkMatesAdapter.WorkMatesListener {
 
-    //Binding
     private FragmentWorkBinding binding;
-
-    //ViewModel
     private ViewModelWorkMates myViewModelWorkMates;
     private View myView;
-
     private RecyclerView recyclerView;
-
-    //public final List<User> allResult = new ArrayList<>();
     public final List<SpecialWorkMates> resultToShow = new ArrayList<>();
-
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

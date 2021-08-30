@@ -15,7 +15,6 @@ import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.repository.AuthentificationRepository;
 import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -32,17 +31,11 @@ public class ViewModelMain extends ViewModel {
     private MutableLiveData<Boolean> myUserStateVM;
     private LiveData<List<User>> myWorkMatesVM;
 
-
-    public LiveData<MyUser> myUser;
-    private MutableLiveData<MyUser> myUserMutable = new MutableLiveData<>();
-
-
-
     //for update ViewStateMain data
     private final MediatorLiveData<ViewStateMain> myAppMapMediator = new MediatorLiveData<>();
 
     public ViewModelMain(AuthentificationRepository authentificationRepository, WorkMatesRepository workMatesRepository) {
-        
+
         this.myAuthentificationSource = authentificationRepository;
         this.myUserVM = myAuthentificationSource.getUserFromRepo();
         this.myUserStateVM = myAuthentificationSource.getUserStateFromRepo();
@@ -80,84 +73,16 @@ public class ViewModelMain extends ViewModel {
     //**********************************************************************************************
     private void logicWork(@Nullable FirebaseUser myUser, @Nullable Boolean userState, @Nullable List<User> user) {
 
+        if (myUser != null){
+            myAppMapMediator.setValue(new ViewStateMain(myUser));
+            createUser();
+        }else
+        {
 
-        //on test si l'utiliseur exist dsans firestore
-        if (myUser != null) {
-            if (!myUser.getUid().isEmpty() ) {
-                Log.i("[MAINV]", "Création utilisateur dans la base");
-                //  for (int i = 0; i < user.size(); i++) {
-                //     if (!myUser.getUid().equals(user.get(i).getUid())) {
-                createUser();
-
-
-
-
-                // break;
-                //   }
-                //}
-            }
-
+            myAppMapMediator.setValue(new ViewStateMain(myUser));
         }
 
-        if (myUser != null && !myUser.getUid().isEmpty()) {
 
-            String id ="";
-
-         // /*  if (myWorkMatesVM != null)
-           // {
-            // if(   !myWorkMatesVM.getValue().isEmpty()) {
-
-
-                    List<String> mesrestau =new ArrayList<>();
-                    String favrestau ;
-
-                 if (user!= null) {
-
-                     if (!user.isEmpty()) {
-
-                         for (int i = 0; i < user.size(); i++) {
-
-                             if (myUser.getUid().equals(user.get(i).getUid())) {
-                                 mesrestau.add(user.get(i).getFavoriteRestaurant());
-
-                                 break;
-                             }
-                         }
-                     }
-                 }
-
-            // }
-
-            //}
-
-          // */
-
-
-            myUserMutable.postValue(new MyUser("m","","",mesrestau));
-
-//            MyUser newUser = new MyUser(myUser.getPhotoUrl().toString(), myUser.getDisplayName(),null,mesrestau);
-
-
-            myAppMapMediator.setValue(new ViewStateMain(myUser, true));
-            //myAppMapMediator.setValue(new ViewStateMain(myUser, true, id));
-
-        } else {
-            if (userState != null) {
-
-                if (!userState) {
-                    Log.i("[MAINV]", "requets login");
-                    myAppMapMediator.setValue(new ViewStateMain(false));
-                } else {
-                    //      myAppMapMediator.setValue(new MainViewState(true));
-                    Log.i("[MAINV]", " error requets login");
-
-                }
-
-
-            }
-
-
-        }
     }
     //**********************************************************************************************
     // End of logic work
@@ -168,14 +93,7 @@ public class ViewModelMain extends ViewModel {
     // PUBLIC
     //**********************************************************************************************
 
-
-    public MyUser getMyUser()
-    {
-        return myUserMutable.getValue();
-    }
-
-
-    public void updateUSer() {
+    public void checkLogin() {
         //myViewModel.getMyCurrentUser();
         myAuthentificationSource.getUserFromRepo();
     }
@@ -206,7 +124,6 @@ public class ViewModelMain extends ViewModel {
     public LiveData<ViewStateMain> getMediatorLiveData() {
         return myAppMapMediator;
     }
-
 }
 
 

@@ -9,29 +9,29 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkRequest;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
-import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.OAuthProvider;
+import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 import com.hoarauthomas.go4lunchthp7.model.MyUser;
-import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
 import com.hoarauthomas.go4lunchthp7.ui.FragmentsAdapter;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
+import com.hoarauthomas.go4lunchthp7.ui.workmates.ViewModelWorkMates;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
+import com.hoarauthomas.go4lunchthp7.workmanager.WorkManager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -42,21 +42,17 @@ import static androidx.core.view.GravityCompat.START;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public ActivityMainBinding binding;
-
     public ViewModelMain myViewModel;
-
-    public String actualRestaurant;
-
-    private ActivityResultLauncher<Intent> openFirebaseAuthForResult;
+    public ViewModelWorkMates myWorkMatesVM;
 
     private final List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.TwitterBuilder().build(),
             new AuthUI.IdpConfig.EmailBuilder().build(),
             new AuthUI.IdpConfig.FacebookBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build());
+    private ActivityResultLauncher<Intent> openFirebaseAuthForResult;
 
-    //TODO: must be developed
-    private final OAuthProvider.Builder provider = OAuthProvider.newBuilder("twitter.com");
+    public String actualRestaurant;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,74 +62,75 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(view);
 
         setupPermission();
-        setupIntent();
         setupViewModel();
+        Authentification();
+
         setupTopAppBar();
         setupNavigationDrawer();
         setupBottomBAr();
         setupViewPager();
+        loadWork();
+    }
+
+    private void loadWork() {
+        WorkRequest newLoadWork = OneTimeWorkRequest.from(WorkManager.class);
+        androidx.work.WorkManager.getInstance(this).enqueue(newLoadWork);
+
     }
 
     private void setupPermission() {
         ActivityCompat.requestPermissions(this, new String[]{
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.INTERNET}, 0);
     }
 
     private void setupViewModel() {
+
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
-        this.myViewModel.getMediatorLiveData().observe(this, new Observer<ViewStateMain>() {
-            @Override
-            public void onChanged(ViewStateMain viewStateMain) {
-                Log.i("[MAINV]", "ViewState change ...");
-                onCheckSecurity(viewStateMain.getMyLogState().booleanValue());
-                setupFavRestau(viewStateMain.getMyRestaurantFavorite());
+        this.myViewModel.getMediatorLiveData().observe(this, viewStateMain -> {
 
-
-            }
-
+          //  showSnackBar(viewStateMain.getMyLogState().toString());
+            onCheckSecurity(viewStateMain.getMyActualUser());
 
         });
     }
 
     private void setupFavRestau(String myRestaurantFavorite) {
-    this.actualRestaurant = myRestaurantFavorite;
+        this.actualRestaurant = myRestaurantFavorite;
     }
 
 
-    private void onCheckSecurity(Boolean connected) {
-        Log.i("[MAINV]", "Check security ...");
-        if (!connected) {
-            Log.i("[MAINV]", "Request login ...");
+    private void onCheckSecurity(FirebaseUser user) {
+
+        if (user == null){
             request_login();
-        } else {
-            Log.i("[MAINV]", "Request user information ...");
-            request_user_info();
+        }else
+        {
+            showSnackBar("request user info");
+               request_user_info();
         }
     }
 
-    private void setupIntent() {
+    private void Authentification() {
 
         openFirebaseAuthForResult = registerForActivityResult(
                 new FirebaseAuthUIActivityResultContract(),
-                new ActivityResultCallback<FirebaseAuthUIAuthenticationResult>() {
-                    @Override
-                    public void onActivityResult(FirebaseAuthUIAuthenticationResult result) {
+                result -> {
 
-                        //authentification ok
-                        if (result.getResultCode() == -1) {
-                            Log.i("[NEWLOGIN]", "login ok " + result.getResultCode());
-                            myViewModel.updateUSer();
-                        } else {
+                    if (result.getResultCode() == -1) {
+                        Log.i("[NEWLOGIN]", "login ok " + result.getResultCode());
+                        myViewModel.checkLogin();
+                    } else {
 
-                            Log.i("[LOGIN]", "Erreur login");
-                            if (result.getIdpResponse() == null) {
-                                MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_no_network));
-                            } else if (result.getIdpResponse().equals(ErrorCodes.NO_NETWORK)) {
-                                MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_no_network));
-                            } else if (result.getIdpResponse().equals(ErrorCodes.UNKNOWN_ERROR)) {
-                                MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_unknow));
-                            }
+                        Log.i("[LOGIN]", "Erreur login");
+                        if (result.getIdpResponse() == null) {
+                            MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_no_network));
+                            showSnackBar("Annulée");
+                        } else if (result.getIdpResponse().equals(ErrorCodes.NO_NETWORK)) {
+                            MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_no_network));
+                        } else if (result.getIdpResponse().equals(ErrorCodes.UNKNOWN_ERROR)) {
+                            MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_unknow));
                         }
                     }
                 });
@@ -167,30 +164,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void request_user_info() {
 
 
-
-
-
-
-        //TODO:get data from ViewModelMain
-
-
-
-
-
-
-
-
-
+//        showSnackBar(user.getMyAvatar() + user.getMyName());
 
         View hv = binding.navigationView.getHeaderView(0);
 
-        TextView name = (TextView) hv.findViewById(R.id.displayName);
+
+        TextView name = hv.findViewById(R.id.displayName);
         name.setText(Objects.requireNonNull(this.myViewModel.getMyCurrentUser().getValue()).getDisplayName());
 
-        TextView email = (TextView) hv.findViewById(R.id.email);
+        TextView email = hv.findViewById(R.id.email);
         email.setText(this.myViewModel.getMyCurrentUser().getValue().getEmail());
 
-        ImageView avatar = (ImageView) hv.findViewById(R.id.avatar);
+        ImageView avatar = hv.findViewById(R.id.avatar);
 
         //avatar
         String avatar2 = "";
@@ -207,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             avatar2 = "https://eu.ui-avatars.com/api/?name=" + z;
         } else {
             avatar2 = this.myViewModel.getMyCurrentUser().getValue().getPhotoUrl().toString();
-            Log.i("[AVATAR]","" + avatar2.toString());
+            Log.i("[AVATAR]", "" + avatar2.toString());
         }
 
         Glide.with(avatar)
@@ -225,6 +210,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .circleCrop()
                     .into(avatar);
         }
+
+
 
     }
 

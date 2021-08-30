@@ -48,7 +48,6 @@ public class User {
         return favoriteRestaurant;
     }
 
-    public List<String> getLikedRestaurant() {    return restaurant_liked;  }
 
     // --- SETTERS ---
     public void setUsername(String username) {
