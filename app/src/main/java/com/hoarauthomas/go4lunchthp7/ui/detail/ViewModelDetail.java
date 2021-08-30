@@ -105,10 +105,16 @@ public class ViewModelDetail extends ViewModel {
         SpecialWorkMates myActualUser = new SpecialWorkMates();
 
 
+        MyUser myUser;
+
         Boolean restauInFav;
         Boolean restauliked;
 
         if (restaurants != null && workmates != null && detail != null && placeIdGen != null) {
+
+
+
+
 
             mySpecialWorkMatesList.clear();
 

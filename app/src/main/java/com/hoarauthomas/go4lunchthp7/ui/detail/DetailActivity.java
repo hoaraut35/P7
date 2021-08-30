@@ -16,11 +16,8 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.R;
-import com.hoarauthomas.go4lunchthp7.api.GooglePlaceApi;
-import com.hoarauthomas.go4lunchthp7.api.UserHelper;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding;
 import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
-import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 
 import java.util.List;
@@ -63,7 +60,6 @@ public class DetailActivity extends AppCompatActivity {
         myViewModelDetail.getMediatorLiveData().observe(this, new Observer<ViewStateDetail>() {
             @Override
             public void onChanged(ViewStateDetail viewStateDetail) {
-
 
 
                 Log.i("[MONDETAIL]", "detail demandé activity");
@@ -134,9 +130,6 @@ public class DetailActivity extends AppCompatActivity {
                 setupButtonLike(viewStateDetail.getLike());
 
 
-
-
-
             }
         });
 
@@ -144,6 +137,14 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void setupButtonChoice(Boolean state) {
+
+        if (state) {
+            binding.choiceBtn.setImageResource(R.drawable.background_button_facebook);
+        } else {
+            binding.choiceBtn.setImageResource(R.drawable.com_facebook_button_like_icon_selected);
+        }
+
+
 
         binding.choiceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,23 +204,19 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void setupButtonLike(Boolean state) {
+
+        if (state) {
+            binding.likeBtn.setImageResource(R.drawable.background_button_facebook);
+        } else {
+            binding.likeBtn.setImageResource(R.drawable.com_facebook_button_like_icon_selected);
+        }
+
         binding.likeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showSnackBar("Enregistrer le restaurant : " + binding.restaurantTitre.getText());
-
-                    //myViewModelDetail.getCurrentUser().
-
-                if (state){
-                    binding.likeBtn.setImageResource(R.drawable.background_button_facebook);
-                }
-                else
-                {
-                    binding.likeBtn.setImageResource(R.drawable.com_facebook_button_like_icon_selected);
-                }
-
-
-                    myViewModelDetail.adLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
+                //myViewModelDetail.getCurrentUser().
+                myViewModelDetail.adLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
             }
         });
     }
