@@ -101,4 +101,7 @@ dependencies {
     //Retrofit Adapter for RxJava
     implementation 'com.squareup.retrofit2:adapter-rxjava:2.9.0'
 
+    //Cloud Messaging
+    implementation 'com.google.firebase:firebase-messaging'
+
 }
