@@ -15,7 +15,7 @@ import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
-import com.hoarauthomas.go4lunchthp7.repository.AuthentificationRepository;
+import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
 
@@ -29,7 +29,7 @@ public class ViewModelDetail extends ViewModel {
     //declare repo here...
     private final RestaurantsRepository myRestaurantRepository;
     private final WorkMatesRepository myWorkMatesRepository;
-    private final AuthentificationRepository myAuthRepository;
+    private final FirebaseAuthRepository myAuthRepository;
     private List<SpecialWorkMates> mySpecialWorkMatesList = new ArrayList<>();
 
 
@@ -45,13 +45,13 @@ public class ViewModelDetail extends ViewModel {
 
 
     //constructor
-    public ViewModelDetail(AuthentificationRepository myAuthRepository, RestaurantsRepository myRestaurantRepository, WorkMatesRepository myWorkMatesRepository) {
+    public ViewModelDetail(FirebaseAuthRepository myAuthRepository, RestaurantsRepository myRestaurantRepository, WorkMatesRepository myWorkMatesRepository) {
 
         this.myAuthRepository = myAuthRepository;
         this.myRestaurantRepository = myRestaurantRepository;
         this.myWorkMatesRepository = myWorkMatesRepository;
 
-        LiveData<FirebaseUser> myUserFromRepo  = myAuthRepository.getUserFromRepo();
+        LiveData<FirebaseUser> myUserFromRepo  = myAuthRepository.getUserLiveData();
         LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
         LiveData<ResultDetailRestaurant> myDetail = this.myRestaurantRepository.getMyRestaurantDetail();
 

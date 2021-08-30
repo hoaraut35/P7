@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public ViewModelMain myViewModel;
     public ViewModelWorkMates myWorkMatesVM;
 
+
+
     private final List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.TwitterBuilder().build(),
             new AuthUI.IdpConfig.EmailBuilder().build(),
@@ -91,7 +93,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.myViewModel.getMediatorLiveData().observe(this, viewStateMain -> {
 
           //  showSnackBar(viewStateMain.getMyLogState().toString());
-            onCheckSecurity(viewStateMain.getMyActualUser());
+            onCheckSecurity(viewStateMain.getMyLogState());
+
+
+           // Log.i("LOGIN","" + viewStateMain.getMyActualUser().getUid());
 
         });
     }
@@ -101,13 +106,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    private void onCheckSecurity(FirebaseUser user) {
+    private void onCheckSecurity(Boolean user) {
 
-        if (user == null){
+        if (!user){
             request_login();
         }else
         {
             showSnackBar("request user info");
+
                request_user_info();
         }
     }
@@ -120,7 +126,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     if (result.getResultCode() == -1) {
                         Log.i("[NEWLOGIN]", "login ok " + result.getResultCode());
-                        myViewModel.checkLogin();
+                        myViewModel.checkUserLogin();
+
                     } else {
 
                         Log.i("[LOGIN]", "Erreur login");
@@ -164,11 +171,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void request_user_info() {
 
 
+
+
+
 //        showSnackBar(user.getMyAvatar() + user.getMyName());
 
         View hv = binding.navigationView.getHeaderView(0);
 
-
+/*
         TextView name = hv.findViewById(R.id.displayName);
         name.setText(Objects.requireNonNull(this.myViewModel.getMyCurrentUser().getValue()).getDisplayName());
 
@@ -212,11 +222,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
+ */
+
 
     }
 
     private void showSnackBar(String message) {
-        Snackbar.make(binding.viewpager, message, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(binding.viewpager, message, Snackbar.LENGTH_LONG).show();
     }
 
     private void setupNavigationDrawer() {

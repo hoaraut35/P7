@@ -11,7 +11,7 @@ import com.google.android.gms.location.LocationServices;
 import com.hoarauthomas.go4lunchthp7.MainApplication;
 import com.hoarauthomas.go4lunchthp7.ViewModelMain;
 import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
-import com.hoarauthomas.go4lunchthp7.repository.AuthentificationRepository;
+import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
@@ -28,7 +28,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private static ViewModelFactory myViewModelFactory;
 
     //Add repository here...
-    private final AuthentificationRepository authentificationRepository;
+    private final FirebaseAuthRepository firebaseAuthRepository;
     private final PositionRepository positionRepository;
     @NonNull
     private final RestaurantsRepository restaurantsRepository;
@@ -46,7 +46,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     Application application = MainApplication.getApplication();
                     myViewModelFactory = new ViewModelFactory(
                             new PermissionChecker(application),
-                            new AuthentificationRepository(),
+                            new FirebaseAuthRepository(),
                             new RestaurantsRepository(),
                             new PositionRepository(LocationServices.getFusedLocationProviderClient(application)),
                             new WorkMatesRepository()
@@ -63,13 +63,13 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     //constructor of ViewModelFactory ...
     private ViewModelFactory(
             @NonNull PermissionChecker permissionChecker,
-            AuthentificationRepository authentificationRepository,
+            FirebaseAuthRepository firebaseAuthRepository,
             @NonNull RestaurantsRepository restaurantsRepository,
             PositionRepository positionRepository,
             WorkMatesRepository workMatesRepository
     ) {
         this.permissionChecker = permissionChecker;
-        this.authentificationRepository = authentificationRepository;
+        this.firebaseAuthRepository = firebaseAuthRepository;
         this.positionRepository = positionRepository;
         this.restaurantsRepository = restaurantsRepository;
         this.workMatesRepository = workMatesRepository;
@@ -83,7 +83,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
 
         if (modelClass.isAssignableFrom(ViewModelMain.class)) {
             return (T) new ViewModelMain(
-                    authentificationRepository,
+                    firebaseAuthRepository,
                     //   restaurantsRepository,
                     //   positionRepository,
                     workMatesRepository
@@ -103,7 +103,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
 
         if (modelClass.isAssignableFrom(ViewModelDetail.class)) {
             return (T) new ViewModelDetail(
-                    authentificationRepository,
+                    firebaseAuthRepository,
                     restaurantsRepository,
                     workMatesRepository);
 
