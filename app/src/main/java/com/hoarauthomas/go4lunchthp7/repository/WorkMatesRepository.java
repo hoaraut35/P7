@@ -43,8 +43,11 @@ public class WorkMatesRepository {
     private static final String TAG_RESTAURANT = "restaurant_liked";
 
     //to expose list to viewmodel
+
+
     private final List<User> allWorkMates = new ArrayList<>();
 
+    private final MutableLiveData<List<User>> myWorkMAtesList = new MutableLiveData<>(null);
 
     private String uid;
 
@@ -106,8 +109,6 @@ public class WorkMatesRepository {
     private void getdata()
     {
 
-
-
         Log.i("[MAP]", "- Appel du repository WorkMates ...");
 
         getUsersCollection().get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -115,10 +116,15 @@ public class WorkMatesRepository {
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
                 allWorkMates.clear();
+
                 for (DocumentSnapshot docs : queryDocumentSnapshots) {
 
                     User myUser = new User();
 
+                    if (docs.get("uid") != null) {
+                        myUser.setUid(docs.get("uid").toString());
+
+                    }
 
                     if (docs.get("urlPicture") != null) {
                         Log.i("[MAP]", "Avatar : " + docs.get("urlPicture").toString());

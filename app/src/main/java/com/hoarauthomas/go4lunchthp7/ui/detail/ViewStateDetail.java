@@ -1,5 +1,6 @@
 package com.hoarauthomas.go4lunchthp7.ui.detail;
 
+import com.hoarauthomas.go4lunchthp7.model.MyUser;
 import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
@@ -15,6 +16,7 @@ public class ViewStateDetail {
     String website;
     Boolean like;
     Boolean Favoris;
+    MyUser myUser;
     List<SpecialWorkMates> myWorkMatesTag;
     //= new ArrayList<>();
 
@@ -28,12 +30,13 @@ public class ViewStateDetail {
     }
 
 
-    public ViewStateDetail(RestaurantPojo myRestaurant, ResultDetailRestaurant myDetailRestaurant, List<SpecialWorkMates> myWorkMatesTag, Boolean fav, Boolean like) {
+    public ViewStateDetail(RestaurantPojo myRestaurant, ResultDetailRestaurant myDetailRestaurant, List<SpecialWorkMates> myWorkMatesTag, Boolean fav, Boolean like,MyUser myUser) {
         this.myRestaurantObject = myRestaurant;
         this.myRestaurantDetailObject = myDetailRestaurant;
         this.myWorkMatesTag = myWorkMatesTag;
         this.like = like;
         this.Favoris = fav;
+        this.myUser = myUser;
     }
 
 
@@ -50,6 +53,14 @@ public class ViewStateDetail {
 
     public String getTelephone() {
         return telephone;
+    }
+
+    public MyUser getMyUser() {
+        return myUser;
+    }
+
+    public void setMyUser(MyUser myUser) {
+        this.myUser = myUser;
     }
 
     public void setTelephone(String telephone) {

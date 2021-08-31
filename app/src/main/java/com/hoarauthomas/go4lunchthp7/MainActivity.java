@@ -6,9 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,16 +16,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkRequest;
 
-import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
+import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
-import com.hoarauthomas.go4lunchthp7.model.MyUser;
 import com.hoarauthomas.go4lunchthp7.ui.FragmentsAdapter;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 import com.hoarauthomas.go4lunchthp7.ui.workmates.ViewModelWorkMates;
@@ -35,7 +32,6 @@ import com.hoarauthomas.go4lunchthp7.workmanager.WorkManager;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import static androidx.core.view.GravityCompat.START;
 
@@ -45,13 +41,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public ViewModelMain myViewModel;
     public ViewModelWorkMates myWorkMatesVM;
 
-
-
+    //choose authentification sign-in intent
     private final List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.TwitterBuilder().build(),
             new AuthUI.IdpConfig.EmailBuilder().build(),
             new AuthUI.IdpConfig.FacebookBuilder().build(),
             new AuthUI.IdpConfig.GoogleBuilder().build());
+
     private ActivityResultLauncher<Intent> openFirebaseAuthForResult;
 
     public String actualRestaurant;
@@ -90,13 +86,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setupViewModel() {
 
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
+
+
+        //this.myViewModel.checkUserLogin();
+
         this.myViewModel.getMediatorLiveData().observe(this, viewStateMain -> {
 
-          //  showSnackBar(viewStateMain.getMyLogState().toString());
+            //  showSnackBar(viewStateMain.getMyLogState().toString());
             onCheckSecurity(viewStateMain.getMyLogState());
 
 
-           // Log.i("LOGIN","" + viewStateMain.getMyActualUser().getUid());
+            // Log.i("LOGIN","" + viewStateMain.getMyActualUser().getUid());
 
         });
     }
@@ -108,37 +108,55 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void onCheckSecurity(Boolean user) {
 
-        if (!user){
+        if (!user) {
             request_login();
-        }else
-        {
+        } else {
             showSnackBar("request user info");
 
-               request_user_info();
+            request_user_info();
         }
     }
 
     private void Authentification() {
 
+        //0 = canceled
+        //-1 = OK
+        //
+
         openFirebaseAuthForResult = registerForActivityResult(
                 new FirebaseAuthUIActivityResultContract(),
-                result -> {
+                new ActivityResultCallback<FirebaseAuthUIAuthenticationResult>() {
+                    @Override
+                    public void onActivityResult(FirebaseAuthUIAuthenticationResult result) {
 
-                    if (result.getResultCode() == -1) {
-                        Log.i("[NEWLOGIN]", "login ok " + result.getResultCode());
+                        if (result.getResultCode() == -1) {
+                            Log.i("[Auth]", "login ok " + result.getResultCode());
+
+                        } else {
+
+                            if (result.getResultCode() == 0) {
+                                Log.i("[Auth]", "Login annulé");
+                            } else {
+
+
+                                Log.i("[Auth]", "Erreur login");
+                                if (result.getIdpResponse() == null) {
+                                    MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_no_network));
+                                    MainActivity.this.showSnackBar("Annulée");
+                                } else if (result.getIdpResponse().equals(ErrorCodes.NO_NETWORK)) {
+                                    MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_no_network));
+                                } else if (result.getIdpResponse().equals(ErrorCodes.UNKNOWN_ERROR)) {
+                                    MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_unknow));
+                                }
+
+                            }
+
+
+                        }
+
                         myViewModel.checkUserLogin();
 
-                    } else {
 
-                        Log.i("[LOGIN]", "Erreur login");
-                        if (result.getIdpResponse() == null) {
-                            MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_no_network));
-                            showSnackBar("Annulée");
-                        } else if (result.getIdpResponse().equals(ErrorCodes.NO_NETWORK)) {
-                            MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_no_network));
-                        } else if (result.getIdpResponse().equals(ErrorCodes.UNKNOWN_ERROR)) {
-                            MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_unknow));
-                        }
                     }
                 });
     }
@@ -169,9 +187,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //TODO: review binding navigation view ?
     private void request_user_info() {
-
-
-
 
 
 //        showSnackBar(user.getMyAvatar() + user.getMyName());

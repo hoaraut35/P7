@@ -21,31 +21,34 @@ public class FirebaseAuthRepository {
     private final MutableLiveData<Boolean> myUserState = new MutableLiveData<>(false);
 
     public FirebaseAuthRepository() {
+        Log.i("[Auth]","Get an instance of Firebase Auth...");
         this.myAuth = FirebaseAuth.getInstance();
         checkUser();
     }
 
     public void checkUser() {
+        Log.i("[Auth]","Check current user ...");
         if (myAuth.getCurrentUser() != null) {
-            myUser.postValue(myAuth.getCurrentUser());
-            myUserState.postValue(true);
+            Log.i("[Auth]","User log in");
+            myUser.setValue(myAuth.getCurrentUser());
+            myUserState.setValue(true);
         } else {
-            myUser.postValue(null);
-            myUserState.postValue(false);
+            Log.i("[Auth]","User not log in");
+            myUser.setValue(null);
+            myUserState.setValue(false);
         }
     }
 
-
-
     public LiveData<FirebaseUser> getUserLiveData() {
-        return this.myUser;
+        return myUser;
     }
 
     public LiveData<Boolean> getUserStateLiveData() {
-        return this.myUserState;
+        return myUserState;
     }
 
     public Task<Void> signOut(Context context) {
+
         return AuthUI.getInstance().signOut(context).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {

@@ -51,7 +51,7 @@ public class ViewModelDetail extends ViewModel {
         this.myRestaurantRepository = myRestaurantRepository;
         this.myWorkMatesRepository = myWorkMatesRepository;
 
-        LiveData<FirebaseUser> myUserFromRepo  = myAuthRepository.getUserLiveData();
+        LiveData<FirebaseUser> myUserFromRepo = myAuthRepository.getUserLiveData();
         LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
         LiveData<ResultDetailRestaurant> myDetail = this.myRestaurantRepository.getMyRestaurantDetail();
 
@@ -62,7 +62,7 @@ public class ViewModelDetail extends ViewModel {
             @Override
             public void onChanged(List<RestaurantPojo> restaurantPojos) {
                 // Log.i("[MONDETAIL]", "Event récupération de la liste restaurants : " + restaurantPojos.size());
-                logicWork(restaurantPojos, myWorkMatesList.getValue(), myDetail.getValue());
+                logicWork(restaurantPojos, myWorkMatesList.getValue(), myDetail.getValue(), myUserFromRepo.getValue());
             }
         });
 
@@ -71,14 +71,14 @@ public class ViewModelDetail extends ViewModel {
             @Override
             public void onChanged(List<User> users) {
                 // Log.i("[MONDETAIL]", "Event récupération liste collègues : " + users.size());
-                logicWork(myRestaurantsList.getValue(), users, myDetail.getValue());
+                logicWork(myRestaurantsList.getValue(), users, myDetail.getValue(), myUserFromRepo.getValue());
             }
         });
 
         myViewStateDetailMediator.addSource(myUserFromRepo, new Observer<FirebaseUser>() {
             @Override
             public void onChanged(FirebaseUser firebaseUser) {
-                Log.i("[MONDETAIL]","event sur user");
+                Log.i("[MONDETAIL]", "event sur user");
             }
         });
 
@@ -89,7 +89,7 @@ public class ViewModelDetail extends ViewModel {
                     Log.i("[MONDETAIL]", "Event récupération détail retour null");
                 } else {
                     Log.i("[MONDETAIL]", "Event récupération du détail du restaurant");
-                    logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), resultDetailRestaurant);
+                    logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), resultDetailRestaurant, myUserFromRepo.getValue());
                 }
             }
         });
@@ -98,43 +98,22 @@ public class ViewModelDetail extends ViewModel {
     //**********************************************************************************************
     // Logic work
     //**********************************************************************************************
-    private void logicWork(@Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates, @Nullable ResultDetailRestaurant detail) {
+    private void logicWork(@Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates, @Nullable ResultDetailRestaurant detail, @Nullable FirebaseUser myUserBase) {
 
         RestaurantPojo resultRestaurant = null;
         SpecialWorkMates myWorkMates = new SpecialWorkMates();
         SpecialWorkMates myActualUser = new SpecialWorkMates();
-
-
-        MyUser myUser;
-
+        MyUser myUser = null;
         Boolean restauInFav;
         Boolean restauliked;
 
         if (restaurants != null && workmates != null && detail != null && placeIdGen != null) {
-
-
-
-
 
             mySpecialWorkMatesList.clear();
 
             for (int i = 0; i < restaurants.size(); i++) {
 
                 if (restaurants.get(i).getPlaceId().equals(placeIdGen)) {
-
-
-/*                    if (restaurants.get(i).getPlaceId().equals(getMyUserLiveData().getValue().getMyFavoriteRestaurantId()))
-                    {
-                        restauInFav = true;
-                    }else
-                    {
-                        restauInFav = false;
-                    }
-
- */
-
-
-
 
                     resultRestaurant = restaurants.get(i);
 
@@ -146,13 +125,7 @@ public class ViewModelDetail extends ViewModel {
                             myWorkMates.setPlaceId(resultRestaurant.getPlaceId());
                             mySpecialWorkMatesList.add(myWorkMates);
 
-
-
                         }//end if
-
-
-
-
 
                     }//end for
 
@@ -162,7 +135,17 @@ public class ViewModelDetail extends ViewModel {
             }//end for
 
 
-            myViewStateDetailMediator.setValue(new ViewStateDetail(resultRestaurant, detail, mySpecialWorkMatesList, true, true));
+            if (myUserBase != null) {
+
+                for (int i = 0; i < workmates.size(); i++) {
+                    if (workmates.get(i).getUid().equals(myUserBase.getUid())) {
+//                        myUser.setMyFavoriteRestaurantId(workmates.get(i).getFavoriteRestaurant());
+                    }
+                }
+
+            }
+
+            myViewStateDetailMediator.setValue(new ViewStateDetail(resultRestaurant, detail, mySpecialWorkMatesList, true, true, myUser));
 
         }
 

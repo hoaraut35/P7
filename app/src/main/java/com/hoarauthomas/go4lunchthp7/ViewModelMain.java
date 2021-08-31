@@ -21,47 +21,57 @@ import javax.annotation.Nullable;
 
 public class ViewModelMain extends ViewModel {
 
+    //repo
     private final FirebaseAuthRepository myFirebaseAuthRepository;
     private final WorkMatesRepository myWorkMatesRepository;
 
+    //mut liv etc
     private final MutableLiveData<FirebaseUser> myUser = null;
     private MutableLiveData<Boolean> myUserState = new MutableLiveData<>(false);
-    //private LiveData<List<User>> myWorkMatesVM;
 
     //for update ViewStateMain data
     private final MediatorLiveData<ViewStateMain> myAppMapMediator = new MediatorLiveData<>();
 
     public ViewModelMain(FirebaseAuthRepository firebaseAuthRepository, WorkMatesRepository workMatesRepository) {
 
-        //init first repo
         this.myFirebaseAuthRepository = firebaseAuthRepository;
+//        myFirebaseAuthRepository.checkUser();
         LiveData<FirebaseUser> myUserVM = myFirebaseAuthRepository.getUserLiveData();
         LiveData<Boolean> myUserStateVM = myFirebaseAuthRepository.getUserStateLiveData();
 
-        //init second repo
         this.myWorkMatesRepository = workMatesRepository;
-        LiveData<List<User>> myWorkMatesVM = myWorkMatesRepository.getAllWorkMates();
+        LiveData<List<User>> myWorkMatesVM = this.myWorkMatesRepository.getAllWorkMates();
 
         myAppMapMediator.addSource(myUserVM, new Observer<FirebaseUser>() {
             @Override
             public void onChanged(FirebaseUser firebaseUser) {
-                logicWork(firebaseUser, myUserStateVM.getValue(), myWorkMatesVM.getValue());
+
+                if (firebaseUser != null) {
+                    logicWork(firebaseUser, myUserStateVM.getValue(), myWorkMatesVM.getValue());
+                }
             }
         });
 
         myAppMapMediator.addSource(myUserStateVM, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                logicWork(myUserVM.getValue(), aBoolean, myWorkMatesVM.getValue());
+                if (aBoolean != null){
+                    logicWork(myUserVM.getValue(), aBoolean, myWorkMatesVM.getValue());
+                }
+
             }
         });
 
         myAppMapMediator.addSource(myWorkMatesVM, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
-                logicWork(myUserVM.getValue(), myUserStateVM.getValue(), users);
+                if (users != null){
+                    logicWork(myUserVM.getValue(), myUserStateVM.getValue(), users);
+                }
+
             }
         });
+
     }
 
     //**********************************************************************************************
@@ -69,24 +79,57 @@ public class ViewModelMain extends ViewModel {
     //**********************************************************************************************
     private void logicWork(@Nullable FirebaseUser myUser, @Nullable Boolean userState, @Nullable List<User> user) {
 
-        if (userState == null) {
-            return;
+        if (userState == null || !userState) {
+            myAppMapMediator.setValue(new ViewStateMain(myUser, false));
+        } else if (userState) {
+            createUser();
+
+            if (user != null){
+                if (!user.isEmpty()){
+
+                    for (int i=0 ; i< user.size();i++){
+
+                        if (user.get(i).getUid().equals(myUser.getUid())){
+
+                        }
+
+                    }
+
+                }
+            }
+
+
+
+
+
+
+
+
+
+            myAppMapMediator.setValue(new ViewStateMain(myUser, true));
         }
 
-        if (myUser == null) {
-            return;
+
+       /*f (myUser == null) {
+            myAppMapMediator.setValue(new ViewStateMain(myUser, false));
         }
 
-        if (myUser != null && userState) {
+        */
+
+   /*     if (myUser != null && userState) {
             myAppMapMediator.setValue(new ViewStateMain(myUser, true));
             createUser();
         }
 
-        if (!userState) {
+    */
+
+   /*     if (!userState) {
             Log.i("LOGOUT", "logout");
             myAppMapMediator.setValue(new ViewStateMain(userState.booleanValue()));
 
         }
+
+    */
 
 
     }
@@ -99,8 +142,9 @@ public class ViewModelMain extends ViewModel {
     // PUBLIC
     //**********************************************************************************************
 
-    public LiveData<Boolean> checkUserLogin() {
-        return myUserState;
+    public void  checkUserLogin() {
+        myFirebaseAuthRepository.checkUser();
+        //return myUserState;
     }
 
     public LiveData<FirebaseUser> getMyCurrentUser() {

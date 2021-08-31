@@ -49,6 +49,8 @@ public class DetailActivity extends AppCompatActivity {
             myViewModelDetail.setPlaceId(intent.getStringExtra("TAG_ID"));
             showSnackBar(intent.getStringExtra("TAG_ID"));
         } else {
+
+
             //restaurant_id = "";
             // Log.i("[MONDETAIL]", "Pas de restaurant sélectionné : [" + restaurant_id + "]");
         }
@@ -62,7 +64,11 @@ public class DetailActivity extends AppCompatActivity {
             public void onChanged(ViewStateDetail viewStateDetail) {
 
 
-                Log.i("[MONDETAIL]", "detail demandé activity");
+
+
+
+
+//                Log.i("[MONDETAIL]", "detail demandé activity"+ viewStateDetail.getMyUser().getMyFavoriteRestaurantId());
 
                 //show image of restaurant if exist
                 try {
