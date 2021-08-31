@@ -16,14 +16,24 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class FirebaseAuthRepository {
 
-    private final FirebaseAuth myAuth;
-    private final MutableLiveData<FirebaseUser> myUser = new MutableLiveData<>(null);
-    private final MutableLiveData<Boolean> myUserState = new MutableLiveData<>(false);
+    private FirebaseAuth myAuth;
+    private MutableLiveData<FirebaseUser> myUser = new MutableLiveData<>(null);
+    private MutableLiveData<Boolean> myUserState = new MutableLiveData<>(false);
 
     public FirebaseAuthRepository() {
+
         Log.i("[Auth]","Get an instance of Firebase Auth...");
         this.myAuth = FirebaseAuth.getInstance();
+        this.myUser = new MutableLiveData<>();
+        this.myUserState = new MutableLiveData<>();
+
+        if (myAuth.getCurrentUser() != null){
+            myUser.postValue(myAuth.getCurrentUser());
+            myUserState.postValue(false);
+        }
+
         checkUser();
+
     }
 
     public void checkUser() {
@@ -39,6 +49,25 @@ public class FirebaseAuthRepository {
         }
     }
 
+    //added
+    public MutableLiveData<FirebaseUser> getUserLiveDataNew(){
+        return myUser;
+    }
+
+    //added
+    public MutableLiveData<Boolean> getLoggedOutLiveDataNew(){
+        return myUserState;
+    }
+
+    //added
+    public void logOut(){
+        myAuth.signOut();
+        myUserState.postValue(true);
+    }
+
+
+
+
     public LiveData<FirebaseUser> getUserLiveData() {
         return myUser;
     }
@@ -46,6 +75,10 @@ public class FirebaseAuthRepository {
     public LiveData<Boolean> getUserStateLiveData() {
         return myUserState;
     }
+
+
+
+
 
     public Task<Void> signOut(Context context) {
 

@@ -24,9 +24,6 @@ public class UserHelper {
 
     // --- COLLECTION REFERENCE ---
 
-
-
-
     public static void  getListenerOnUser(String uid){
 
         DocumentReference docRef = FirebaseFirestore.getInstance().document(uid).collection(COLLECTION_NAME).document(uid);

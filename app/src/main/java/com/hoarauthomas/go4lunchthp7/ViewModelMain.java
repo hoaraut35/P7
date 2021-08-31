@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.facebook.internal.Mutable;
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthRepository;
@@ -21,11 +22,14 @@ import javax.annotation.Nullable;
 
 public class ViewModelMain extends ViewModel {
 
-    //repo
-    private final FirebaseAuthRepository myFirebaseAuthRepository;
-    private final WorkMatesRepository myWorkMatesRepository;
+    //for Auth
+    private final FirebaseAuthRepository myFirebaseAuthRepoVM;
+    private MutableLiveData<FirebaseUser> myUserLiveData;
 
-    //mut liv etc
+    //for Workmates
+    private final WorkMatesRepository myWorkMatesRepoVM;
+
+
     private final MutableLiveData<FirebaseUser> myUser = null;
     private MutableLiveData<Boolean> myUserState = new MutableLiveData<>(false);
 
@@ -34,13 +38,16 @@ public class ViewModelMain extends ViewModel {
 
     public ViewModelMain(FirebaseAuthRepository firebaseAuthRepository, WorkMatesRepository workMatesRepository) {
 
-        this.myFirebaseAuthRepository = firebaseAuthRepository;
-//        myFirebaseAuthRepository.checkUser();
-        LiveData<FirebaseUser> myUserVM = myFirebaseAuthRepository.getUserLiveData();
-        LiveData<Boolean> myUserStateVM = myFirebaseAuthRepository.getUserStateLiveData();
+        this.myFirebaseAuthRepoVM = firebaseAuthRepository;
+        myUserLiveData = myFirebaseAuthRepoVM.getUserLiveDataNew();
 
-        this.myWorkMatesRepository = workMatesRepository;
-        LiveData<List<User>> myWorkMatesVM = this.myWorkMatesRepository.getAllWorkMates();
+        //to remove
+        LiveData<FirebaseUser> myUserVM = myFirebaseAuthRepoVM.getUserLiveData();
+        //to remove
+        LiveData<Boolean> myUserStateVM = myFirebaseAuthRepoVM.getUserStateLiveData();
+
+        this.myWorkMatesRepoVM = workMatesRepository;
+        LiveData<List<User>> myWorkMatesVM = this.myWorkMatesRepoVM.getAllWorkMates();
 
         myAppMapMediator.addSource(myUserVM, new Observer<FirebaseUser>() {
             @Override
@@ -142,7 +149,7 @@ public class ViewModelMain extends ViewModel {
     //**********************************************************************************************
 
     public void  checkUserLogin() {
-        myFirebaseAuthRepository.checkUser();
+        myFirebaseAuthRepoVM.checkUser();
         //return myUserState;
     }
 
@@ -153,7 +160,7 @@ public class ViewModelMain extends ViewModel {
 
     public void logOut(Context context) {
         //this.myUserStateVM.setValue(false);
-        myFirebaseAuthRepository.signOut(context);
+        myFirebaseAuthRepoVM.signOut(context);
         //);AuthSource.logOutFromRepo();
         //    updateUSer();
     }
@@ -167,7 +174,7 @@ public class ViewModelMain extends ViewModel {
 
     //Create user to Firestore
     public void createUser() {
-        this.myWorkMatesRepository.createUser();
+        this.myWorkMatesRepoVM.createUser();
     }
 
 

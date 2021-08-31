@@ -121,7 +121,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //0 = canceled
         //-1 = OK
-        //
 
         openFirebaseAuthForResult = registerForActivityResult(
                 new FirebaseAuthUIActivityResultContract(),
@@ -131,7 +130,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         if (result.getResultCode() == -1) {
                             Log.i("[Auth]", "login ok " + result.getResultCode());
-
                         } else {
 
                             if (result.getResultCode() == 0) {
