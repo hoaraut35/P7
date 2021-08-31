@@ -66,7 +66,9 @@ public class ViewModelMain extends ViewModel {
             @Override
             public void onChanged(List<User> users) {
                 if (users != null){
-                    logicWork(myUserVM.getValue(), myUserStateVM.getValue(), users);
+                    if (!users.isEmpty()) {
+                        logicWork(myUserVM.getValue(), myUserStateVM.getValue(), users);
+                    }
                 }
 
             }
@@ -78,6 +80,9 @@ public class ViewModelMain extends ViewModel {
     // Logic work
     //**********************************************************************************************
     private void logicWork(@Nullable FirebaseUser myUser, @Nullable Boolean userState, @Nullable List<User> user) {
+     //   Log.i("[Auth]","taille user" + user.size());
+
+        String restaurantUser = null;
 
         if (userState == null || !userState) {
             myAppMapMediator.setValue(new ViewStateMain(myUser, false));
@@ -90,7 +95,9 @@ public class ViewModelMain extends ViewModel {
                     for (int i=0 ; i< user.size();i++){
 
                         if (user.get(i).getUid().equals(myUser.getUid())){
-
+                            Log.i("[Auth]","" + user.get(i).getFavoriteRestaurant());
+                            restaurantUser = user.get(i).getFavoriteRestaurant();
+                            break;
                         }
 
                     }
@@ -98,15 +105,7 @@ public class ViewModelMain extends ViewModel {
                 }
             }
 
-
-
-
-
-
-
-
-
-            myAppMapMediator.setValue(new ViewStateMain(myUser, true));
+            myAppMapMediator.setValue(new ViewStateMain(myUser, true, restaurantUser));
         }
 
 

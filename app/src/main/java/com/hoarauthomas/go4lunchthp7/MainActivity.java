@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public ViewModelMain myViewModel;
     public ViewModelWorkMates myWorkMatesVM;
 
+    private String myRestaurant=null ;
+
     //choose authentification sign-in intent
     private final List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.TwitterBuilder().build(),
@@ -86,14 +88,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setupViewModel() {
 
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
-
-
-        //this.myViewModel.checkUserLogin();
-
         this.myViewModel.getMediatorLiveData().observe(this, viewStateMain -> {
 
             //  showSnackBar(viewStateMain.getMyLogState().toString());
-            onCheckSecurity(viewStateMain.getMyLogState());
+            onCheckSecurity(viewStateMain.getMyLogState(), viewStateMain.getMyRestaurantFavorite());
+
 
 
             // Log.i("LOGIN","" + viewStateMain.getMyActualUser().getUid());
@@ -106,14 +105,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    private void onCheckSecurity(Boolean user) {
+    private void onCheckSecurity(Boolean user, String restaurant) {
+        Log.i("[Auth]","Check security");
 
         if (!user) {
             request_login();
         } else {
             showSnackBar("request user info");
 
-            request_user_info();
+            request_user_info(restaurant);
         }
     }
 
@@ -186,10 +186,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     //TODO: review binding navigation view ?
-    private void request_user_info() {
+    private void request_user_info(String restaurant) {
+
+        if (restaurant != null){
+            showSnackBar(restaurant);
+            myRestaurant = restaurant;
+        }
 
 
-//        showSnackBar(user.getMyAvatar() + user.getMyName());
+
 
         View hv = binding.navigationView.getHeaderView(0);
 
@@ -270,7 +275,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         Intent intent = new Intent(this, DetailActivity.class);
-        intent.putExtra("TAG_ID", this.actualRestaurant);
+        intent.putExtra("TAG_ID", myRestaurant);
         startActivity(intent);
 
     }

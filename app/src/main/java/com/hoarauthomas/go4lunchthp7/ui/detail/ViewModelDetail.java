@@ -139,7 +139,11 @@ public class ViewModelDetail extends ViewModel {
 
                 for (int i = 0; i < workmates.size(); i++) {
                     if (workmates.get(i).getUid().equals(myUserBase.getUid())) {
-//                        myUser.setMyFavoriteRestaurantId(workmates.get(i).getFavoriteRestaurant());
+
+                        List<String> z = null;
+                       myUser = new MyUser("null","null", workmates.get(i).getFavoriteRestaurant().toString(),    z);
+                    myUser.setMyFavoriteRestaurantId("toto");
+                        //myUser.setMyFavoriteRestaurantId(workmates.get(i).getFavoriteRestaurant());
                     }
                 }
 

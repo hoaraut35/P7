@@ -3,7 +3,6 @@ package com.hoarauthomas.go4lunchthp7;
 import android.location.Location;
 
 import com.google.firebase.auth.FirebaseUser;
-import com.hoarauthomas.go4lunchthp7.model.MyUser;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.MyDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
@@ -56,11 +55,18 @@ public class ViewStateMain {
 
     //**********************************************************************************************
 
-    public ViewStateMain(@Nullable Location myLocation, @Nullable List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantPojoList, @Nullable List<User> myWorkMatesList) {
+    public ViewStateMain(
+            FirebaseUser user,
+            Boolean bool,
+
+            @Nullable String restaurant) {
         //this.myRestaurantFavorite = myRestaurantFavorite;
-        this.myLocation = myLocation;
-        this.myRestaurantsList = myRestaurantPojoList;
+        //this.myLocation = myLocation;
+        // this.myRestaurantsList = myRestaurantPojoList;
         this.myWorkMatesList = myWorkMatesList;
+        //this.getMyActualUser() = user;
+        this.myLogState = bool;
+        this.myRestaurantFavorite = restaurant;
     }
 
     public String getMyRestaurantFavorite() {
@@ -71,17 +77,17 @@ public class ViewStateMain {
         this.myRestaurantFavorite = myRestaurantFavorite;
     }
 
-    public ViewStateMain(@Nullable FirebaseUser user){
+    public ViewStateMain(@Nullable FirebaseUser user) {
         this.myActualUser = user;
     }
 
-    public ViewStateMain(@Nullable Boolean myLogState){
+    public ViewStateMain(@Nullable Boolean myLogState) {
         this.myLogState = myLogState;
     }
 
 
-   // public ViewStateMain(@Nullable FirebaseUser user, Boolean myLogState, String id){
-   public ViewStateMain(@Nullable FirebaseUser user, Boolean myLogState){
+    // public ViewStateMain(@Nullable FirebaseUser user, Boolean myLogState, String id){
+    public ViewStateMain(@Nullable FirebaseUser user, Boolean myLogState) {
         //this.myRestaurantFavorite = id;
         this.myActualUser = user;
         this.myLogState = myLogState;

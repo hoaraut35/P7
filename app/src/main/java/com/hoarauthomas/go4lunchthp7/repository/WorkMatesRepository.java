@@ -31,24 +31,14 @@ import static com.google.firebase.firestore.DocumentChange.Type.ADDED;
 import static com.google.firebase.firestore.DocumentChange.Type.MODIFIED;
 import static com.google.firebase.firestore.DocumentChange.Type.REMOVED;
 
-//get data from repository
-
 public class WorkMatesRepository {
 
-    //Collections in Firestore...
     private static final String COLLECTION_NAME = "users";
-
-    //Fields in collection ...
     private static final String FAVORITE_RESTAURANT = "fav_restaurant_id";
     private static final String TAG_RESTAURANT = "restaurant_liked";
 
-    //to expose list to viewmodel
-
-
-    private final List<User> allWorkMates = new ArrayList<>();
-
-    private final MutableLiveData<List<User>> myWorkMAtesList = new MutableLiveData<>(null);
-
+    private List<User> allWorkMates = new ArrayList<>();
+    private final MutableLiveData<List<User>> myWorkMatesList = new MutableLiveData<>(null);
     private String uid;
 
     //get an instance from firestore ...
@@ -115,6 +105,8 @@ public class WorkMatesRepository {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
+
+
                 allWorkMates.clear();
 
                 for (DocumentSnapshot docs : queryDocumentSnapshots) {
@@ -145,6 +137,9 @@ public class WorkMatesRepository {
 
                 Log.i("[WORK]", "Total utilisateur du système : " + allWorkMates.size());
 
+                myWorkMatesList.setValue(allWorkMates);
+
+
             }
         });
     }
@@ -155,11 +150,11 @@ public class WorkMatesRepository {
 
         getdata();
 
-        Log.i("[WORK]", "- getAllWorkMates from repo " + allWorkMates.size() + "  added ...");
+        //Log.i("[WORK]", "- getAllWorkMates from repo " + allWorkMates.size() + "  added ...");
 
-        final MutableLiveData<List<User>> data = new MutableLiveData<>();
-        data.postValue(allWorkMates);
-        return data;
+        //final MutableLiveData<List<User>> data = new MutableLiveData<>();
+        //data.postValue(allWorkMates);
+        return myWorkMatesList;
     }
 
 

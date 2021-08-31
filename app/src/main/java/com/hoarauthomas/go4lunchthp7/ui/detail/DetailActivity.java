@@ -64,7 +64,9 @@ public class DetailActivity extends AppCompatActivity {
             public void onChanged(ViewStateDetail viewStateDetail) {
 
 
-
+                if (getIntent().getStringExtra("TAG_ID") == null){
+                    myViewModelDetail.setPlaceId(viewStateDetail.myUser.getMyFavoriteRestaurantId());
+                }
 
 
 
