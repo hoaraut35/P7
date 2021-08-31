@@ -29,7 +29,7 @@ public class FirebaseAuthRepository {
 
         if (myAuth.getCurrentUser() != null){
             myUser.postValue(myAuth.getCurrentUser());
-            myUserState.postValue(false);
+            myUserState.postValue(true);
         }
 
         checkUser();
@@ -62,7 +62,7 @@ public class FirebaseAuthRepository {
     //added
     public void logOut(){
         myAuth.signOut();
-        myUserState.postValue(true);
+        myUserState.postValue(false);
     }
 
 

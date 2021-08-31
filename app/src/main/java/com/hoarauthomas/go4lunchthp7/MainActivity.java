@@ -12,6 +12,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkRequest;
@@ -88,7 +89,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setupViewModel() {
 
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
-        this.myViewModel.getMediatorLiveData().observe(this, viewStateMain -> {
+
+
+
+        this.myViewModel.getMyLogin().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                onCheckSecurityNew(aBoolean);
+            }
+        });
+
+
+
+
+
+
+
+    /*    this.myViewModel.getMediatorLiveData().observe(this, viewStateMain -> {
 
             //  showSnackBar(viewStateMain.getMyLogState().toString());
             onCheckSecurity(viewStateMain.getMyLogState(), viewStateMain.getMyRestaurantFavorite());
@@ -98,6 +115,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // Log.i("LOGIN","" + viewStateMain.getMyActualUser().getUid());
 
         });
+
+     */
+    }
+
+    private void onCheckSecurityNew(Boolean myLogin) {
+
+        if (myLogin ){
+            request_user_info("test");
+        }else
+        {
+            request_login();
+        }
+
     }
 
     private void setupFavRestau(String myRestaurantFavorite) {
@@ -260,7 +290,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             } else if (id == R.id.navigation_drawer_settings) {
                 binding.viewpager.setCurrentItem(4);
             } else if (id == R.id.navigation_drawer_logout) {
-                myViewModel.logOut(this);
+                //myViewModel.logOut(this);
+
+                myViewModel.LogOut();
             }
 
             binding.drawerLayout.closeDrawer(START);

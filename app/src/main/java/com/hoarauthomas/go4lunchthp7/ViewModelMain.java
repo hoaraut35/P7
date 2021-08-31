@@ -9,7 +9,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.facebook.internal.Mutable;
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthRepository;
@@ -23,33 +22,43 @@ import javax.annotation.Nullable;
 public class ViewModelMain extends ViewModel {
 
     //for Auth
-    private final FirebaseAuthRepository myFirebaseAuthRepoVM;
+    private FirebaseAuthRepository myFirebaseAuthRepoVM;
     private MutableLiveData<FirebaseUser> myUserLiveData;
+    private MutableLiveData<Boolean> myUserStateNew;
 
     //for Workmates
-    private final WorkMatesRepository myWorkMatesRepoVM;
+    private WorkMatesRepository myWorkMatesRepoVM;
+    private MutableLiveData<List<User>> myWorkMatesListLiveData;
 
-
-    private final MutableLiveData<FirebaseUser> myUser = null;
-    private MutableLiveData<Boolean> myUserState = new MutableLiveData<>(false);
-
-    //for update ViewStateMain data
+    //to merge data
     private final MediatorLiveData<ViewStateMain> myAppMapMediator = new MediatorLiveData<>();
 
+
+    //to remove
+ //   private MutableLiveData<FirebaseUser> myUser = null;
+   // private MutableLiveData<Boolean> myUserState = new MutableLiveData<>(false);
+
+    //constructor
     public ViewModelMain(FirebaseAuthRepository firebaseAuthRepository, WorkMatesRepository workMatesRepository) {
 
-        this.myFirebaseAuthRepoVM = firebaseAuthRepository;
+        myFirebaseAuthRepoVM = firebaseAuthRepository;
         myUserLiveData = myFirebaseAuthRepoVM.getUserLiveDataNew();
+        myUserStateNew = myFirebaseAuthRepoVM.getLoggedOutLiveDataNew();
 
         //to remove
-        LiveData<FirebaseUser> myUserVM = myFirebaseAuthRepoVM.getUserLiveData();
+     //   LiveData<FirebaseUser> myUserVM = myFirebaseAuthRepoVM.getUserLiveData();
         //to remove
-        LiveData<Boolean> myUserStateVM = myFirebaseAuthRepoVM.getUserStateLiveData();
+       // LiveData<Boolean> myUserStateVM = myFirebaseAuthRepoVM.getUserStateLiveData();
 
-        this.myWorkMatesRepoVM = workMatesRepository;
+        myWorkMatesRepoVM = workMatesRepository;
+        // myWorkMatesListLiveData = myWorkMatesRepoVM.getAllWorkMates();
+
         LiveData<List<User>> myWorkMatesVM = this.myWorkMatesRepoVM.getAllWorkMates();
 
-        myAppMapMediator.addSource(myUserVM, new Observer<FirebaseUser>() {
+
+
+
+      /*  myAppMapMediator.addSource(myUserVM, new Observer<FirebaseUser>() {
             @Override
             public void onChanged(FirebaseUser firebaseUser) {
 
@@ -59,20 +68,24 @@ public class ViewModelMain extends ViewModel {
             }
         });
 
-        myAppMapMediator.addSource(myUserStateVM, new Observer<Boolean>() {
+       */
+
+        /*myAppMapMediator.addSource(myUserStateVM, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                if (aBoolean != null){
+                if (aBoolean != null) {
                     logicWork(myUserVM.getValue(), aBoolean, myWorkMatesVM.getValue());
                 }
 
             }
         });
 
-        myAppMapMediator.addSource(myWorkMatesVM, new Observer<List<User>>() {
+         */
+
+        /*myAppMapMediator.addSource(myWorkMatesVM, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
-                if (users != null){
+                if (users != null) {
                     if (!users.isEmpty()) {
                         logicWork(myUserVM.getValue(), myUserStateVM.getValue(), users);
                     }
@@ -81,13 +94,15 @@ public class ViewModelMain extends ViewModel {
             }
         });
 
+         */
+
     }
 
     //**********************************************************************************************
     // Logic work
     //**********************************************************************************************
     private void logicWork(@Nullable FirebaseUser myUser, @Nullable Boolean userState, @Nullable List<User> user) {
-     //   Log.i("[Auth]","taille user" + user.size());
+        //   Log.i("[Auth]","taille user" + user.size());
 
         String restaurantUser = null;
 
@@ -96,13 +111,13 @@ public class ViewModelMain extends ViewModel {
         } else if (userState) {
             createUser();
 
-            if (user != null){
-                if (!user.isEmpty()){
+            if (user != null) {
+                if (!user.isEmpty()) {
 
-                    for (int i=0 ; i< user.size();i++){
+                    for (int i = 0; i < user.size(); i++) {
 
-                        if (user.get(i).getUid().equals(myUser.getUid())){
-                            Log.i("[Auth]","" + user.get(i).getFavoriteRestaurant());
+                        if (user.get(i).getUid().equals(myUser.getUid())) {
+                            Log.i("[Auth]", "" + user.get(i).getFavoriteRestaurant());
                             restaurantUser = user.get(i).getFavoriteRestaurant();
                             break;
                         }
@@ -148,14 +163,23 @@ public class ViewModelMain extends ViewModel {
     // PUBLIC
     //**********************************************************************************************
 
-    public void  checkUserLogin() {
+
+    //addedd
+    public LiveData<Boolean> getMyLogin() {
+        return myUserStateNew;
+    }
+
+    //added
+    public void LogOut() {
+        myFirebaseAuthRepoVM.logOut();
+    }
+
+
+    public void checkUserLogin() {
         myFirebaseAuthRepoVM.checkUser();
         //return myUserState;
     }
 
-    public LiveData<FirebaseUser> getMyCurrentUser() {
-        return myUser;
-    }
 
 
     public void logOut(Context context) {
