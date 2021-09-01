@@ -49,46 +49,21 @@ public class FirebaseAuthRepository {
         }
     }
 
-    //added
     public MutableLiveData<FirebaseUser> getUserLiveDataNew(){
         return myUser;
     }
 
-    //added
     public MutableLiveData<Boolean> getLoggedOutLiveDataNew(){
         return myUserState;
     }
 
-    //added
     public void logOut(){
         myAuth.signOut();
         myUserState.postValue(false);
     }
 
-
-
-
     public LiveData<FirebaseUser> getUserLiveData() {
         return myUser;
-    }
-
-    public LiveData<Boolean> getUserStateLiveData() {
-        return myUserState;
-    }
-
-
-
-
-
-    public Task<Void> signOut(Context context) {
-
-        return AuthUI.getInstance().signOut(context).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                checkUser();
-                Log.i("LOGIN","Log out ok...");
-            }
-        });
     }
 
 }

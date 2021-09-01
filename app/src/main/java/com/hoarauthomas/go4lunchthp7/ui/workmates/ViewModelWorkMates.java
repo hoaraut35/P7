@@ -31,7 +31,7 @@ public class ViewModelWorkMates extends ViewModel {
         this.myRestaurantRepository = myRestaurantRepository;
         this.myWorkMatesRepository = myWorkMatesRepository;
 
-        LiveData<List<User>> myWorkMatesList = this.myWorkMatesRepository.getAllWorkMates();
+        LiveData<List<User>> myWorkMatesList = this.myWorkMatesRepository.getAllWorkMatesList();
         LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantList = this.myRestaurantRepository.getMyRestaurantsList();
 
         myViewStateWorkMatesMediator.addSource(myWorkMatesList, new Observer<List<User>>() {
@@ -51,17 +51,14 @@ public class ViewModelWorkMates extends ViewModel {
             @Override
             public void onChanged(List<RestaurantPojo> restaurantPojos) {
 
-
                 //TODO: bug passage objet restaurantr
                 logicWork(myWorkMatesList.getValue(), restaurantPojos);
-
 
             }
         });
 
 
     }
-
 
     private void logicWork(List<User> myList, List<RestaurantPojo> myRestaurant) {
 

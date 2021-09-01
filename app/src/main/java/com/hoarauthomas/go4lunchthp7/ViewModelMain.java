@@ -48,6 +48,9 @@ public class ViewModelMain extends ViewModel {
         myWorkMatesRepoVM = workMatesRepository;
         myWorkMatesListLiveData = myWorkMatesRepoVM.getAllWorkMatesList();
 
+        //fisrt init...
+   //     logicWork(myUserLiveData.getValue(),myWorkMatesListLiveData.getValue());
+
         //we observe these data... to merge for extract
         myAppMapMediator.addSource(myUserLiveData, new Observer<FirebaseUser>() {
             @Override
@@ -59,6 +62,7 @@ public class ViewModelMain extends ViewModel {
         myAppMapMediator.addSource(myWorkMatesListLiveData, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
+
                 logicWork(myUserLiveData.getValue(), users);
             }
         });
@@ -67,7 +71,6 @@ public class ViewModelMain extends ViewModel {
 
     // Logic work
     private void logicWork(@Nullable FirebaseUser myUser, @Nullable List<User> workmates) {
-
 
         if (myUser != null && workmates != null){
 
@@ -81,62 +84,10 @@ public class ViewModelMain extends ViewModel {
 
             }
 
-
+        }else
+        {
+            myUserRestaurantId.setValue("text");
         }
-
-
-
-        //   Log.i("[Auth]","taille user" + user.size());
-
-     /*   String restaurantUser = null;
-
-        if (userState == null || !userState) {
-            myAppMapMediator.setValue(new ViewStateMain(myUser, false));
-        } else if (userState) {
-            createUser();
-
-            if (user != null) {
-                if (!user.isEmpty()) {
-
-                    for (int i = 0; i < user.size(); i++) {
-
-                        if (user.get(i).getUid().equals(myUser.getUid())) {
-                            Log.i("[Auth]", "" + user.get(i).getFavoriteRestaurant());
-                            restaurantUser = user.get(i).getFavoriteRestaurant();
-                            break;
-                        }
-
-                    }
-
-                }
-            }
-
-            myAppMapMediator.setValue(new ViewStateMain(myUser, true, restaurantUser));
-        }
-
-
-
-      */
-       /*f (myUser == null) {
-            myAppMapMediator.setValue(new ViewStateMain(myUser, false));
-        }
-
-        */
-
-   /*     if (myUser != null && userState) {
-            myAppMapMediator.setValue(new ViewStateMain(myUser, true));
-            createUser();
-        }
-
-    */
-
-   /*     if (!userState) {
-            Log.i("LOGOUT", "logout");
-            myAppMapMediator.setValue(new ViewStateMain(userState.booleanValue()));
-
-        }
-
-    */
 
 
     }

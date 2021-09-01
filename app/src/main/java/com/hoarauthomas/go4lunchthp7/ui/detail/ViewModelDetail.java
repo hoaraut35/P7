@@ -55,7 +55,7 @@ public class ViewModelDetail extends ViewModel {
         LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
         LiveData<ResultDetailRestaurant> myDetail = this.myRestaurantRepository.getMyRestaurantDetail();
 
-        LiveData<List<User>> myWorkMatesList = this.myWorkMatesRepository.getAllWorkMates();
+        LiveData<List<User>> myWorkMatesList = this.myWorkMatesRepository.getAllWorkMatesList();
 
         //ok
         myViewStateDetailMediator.addSource(myRestaurantsList, new Observer<List<RestaurantPojo>>() {
@@ -142,7 +142,11 @@ public class ViewModelDetail extends ViewModel {
 
                         List<String> z = null;
                        myUser = new MyUser("null","null", workmates.get(i).getFavoriteRestaurant().toString(),    z);
-                    myUser.setMyFavoriteRestaurantId("toto");
+
+
+                       myUser.setMyFavoriteRestaurantId("toto");
+
+
                         //myUser.setMyFavoriteRestaurantId(workmates.get(i).getFavoriteRestaurant());
                     }
                 }

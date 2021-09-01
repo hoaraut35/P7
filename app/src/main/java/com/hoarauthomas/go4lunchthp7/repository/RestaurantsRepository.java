@@ -70,10 +70,6 @@ public class RestaurantsRepository {
         String myPositionStr = Lat + "," + Long;
         Log.i("[MAP]", "[REPOSITORY RESTAURANT] : Ma position : " + myPositionStr);
 
-
-
-
-
         service.getNearbyPlaces(BuildConfig.MAPS_API_KEY, myPositionStr)
 
                 .enqueue(new Callback<Place>() {

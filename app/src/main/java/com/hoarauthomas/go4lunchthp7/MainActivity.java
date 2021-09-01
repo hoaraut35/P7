@@ -265,9 +265,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .circleCrop()
                     .into(avatar);
         }
-
-
-
     }
 
     private void showSnackBar(String message) {
@@ -298,14 +295,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void openMyFavoriteRestaurant() {
 
-
         if (myViewModel.getMyUserRestaurant().getValue() != null){
-
             Intent intent = new Intent(this, DetailActivity.class);
             intent.putExtra("TAG_ID", myViewModel.getMyUserRestaurant().getValue());
             startActivity(intent);
-
-        }else
+        } else
         {
             showSnackBar("Vous n'avez pas de favoris");
         }

@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.facebook.internal.Mutable;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -15,7 +14,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -28,42 +26,76 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.google.firebase.firestore.DocumentChange.Type.ADDED;
-import static com.google.firebase.firestore.DocumentChange.Type.MODIFIED;
-import static com.google.firebase.firestore.DocumentChange.Type.REMOVED;
-
 public class WorkMatesRepository {
 
+    //added
+    private CollectionReference myBase;
     private static final String COLLECTION_NAME = "users";
-    private static final String FAVORITE_RESTAURANT = "fav_restaurant_id";
-    private static final String TAG_RESTAURANT = "restaurant_liked";
-
-    private List<User> allWorkMates = new ArrayList<>();
-    private final MutableLiveData<List<User>> myWorkMatesList = new MutableLiveData<>(null);
-    private String uid;
-
-
 
     private MutableLiveData<List<User>> myWorkMAtesListMedia = new MutableLiveData<>();
-
-
-    //get an instance from firestore ...
-    public CollectionReference getUsersCollection() {
-        return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
-    }
 
     //init data on startup viewmodelfactory
     public WorkMatesRepository() {
 
-        getdata();
-
+        this.myBase = FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
+        getRestaurantFromFirestore();
         setupListenerOnCollection();
+
+    }
+
+    private void getRestaurantFromFirestore()
+    {
+
+        Log.i("[MAP]", "- Appel du repository WorkMates ...");
+
+        myBase.get().addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull @NotNull Exception e) {
+                Log.i("[WORK]","Fail to access workmates");
+            }
+        });
+
+        myBase.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                List<User> allWorkMates = new ArrayList<>();
+
+                for (DocumentSnapshot docs : queryDocumentSnapshots) {
+
+                    User myUser = new User();
+
+                    if (docs.get("uid") != null) {
+                        myUser.setUid(docs.get("uid").toString());
+                    }
+
+                    if (docs.get("urlPicture") != null) {
+                        myUser.setUrlPicture(docs.get("urlPicture").toString());
+                    }
+
+                    if (docs.get("username") != null) {
+                        myUser.setUsername(docs.get("username").toString());
+                    }
+
+                    if (docs.get("favoriteRestaurant") != null) {
+                        myUser.setFavoriteRestaurant(docs.get("favoriteRestaurant").toString());
+                    }
+
+                    allWorkMates.add(myUser);
+
+                }
+
+                myWorkMAtesListMedia.setValue(allWorkMates);
+
+            }
+
+        });
 
     }
 
     private void setupListenerOnCollection() {
 
-        CollectionReference collectionReference = getUsersCollection();
+        CollectionReference collectionReference = myBase;
 
         collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -72,8 +104,8 @@ public class WorkMatesRepository {
 
                 if (error != null)
                 {
-                    Log.i("[FIRE]","Erreur " ,error );
-                   return;
+                    Log.i("[FIRE]","Erreur " , error );
+                    return;
                 }
 
                 for (DocumentChange dc : value.getDocumentChanges()){
@@ -81,15 +113,15 @@ public class WorkMatesRepository {
                     switch (dc.getType()){
                         case ADDED:
                             Log.i("[FIRE]","add " );
-                            getdata();
+                            getRestaurantFromFirestore();
                             break;
                         case MODIFIED:
                             Log.i("[FIRE]","modif "  );
-                            getdata();
+                            getRestaurantFromFirestore();
                             break;
                         case REMOVED:
                             Log.i("[FIRE]","remove "  );
-                            getdata();
+                            getRestaurantFromFirestore();
                             break;
 
                     }
@@ -100,71 +132,6 @@ public class WorkMatesRepository {
         });
 
     }
-
-
-    private void getdata()
-    {
-
-        Log.i("[MAP]", "- Appel du repository WorkMates ...");
-
-        getUsersCollection().get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-
-
-                allWorkMates.clear();
-
-                for (DocumentSnapshot docs : queryDocumentSnapshots) {
-
-                    User myUser = new User();
-
-                    if (docs.get("uid") != null) {
-                        myUser.setUid(docs.get("uid").toString());
-
-                    }
-
-                    if (docs.get("urlPicture") != null) {
-                        Log.i("[MAP]", "Avatar : " + docs.get("urlPicture").toString());
-                        myUser.setUrlPicture(docs.get("urlPicture").toString());
-                    }
-                    if (docs.get("username") != null) {
-                        Log.i("[MAP]", "Nom complet : " + docs.get("username").toString());
-                        myUser.setUsername(docs.get("username").toString());
-                    }
-                    if (docs.get("favoriteRestaurant") != null) {
-                        Log.i("[MAP]", "Restaurant favoris : " + docs.get("favoriteRestaurant").toString());
-                        myUser.setFavoriteRestaurant(docs.get("favoriteRestaurant").toString());
-                    }
-
-                    allWorkMates.add(myUser);
-
-                }
-
-                Log.i("[WORK]", "Total utilisateur du système : " + allWorkMates.size());
-
-                myWorkMatesList.setValue(allWorkMates);
-
-                myWorkMAtesListMedia.setValue(allWorkMates);
-
-
-            }
-        });
-    }
-
-
-    //this is livedata to publish detail of restaurant to the viewmodel ...
-    public LiveData<List<User>> getAllWorkMates() {
-
-        getdata();
-
-        //Log.i("[WORK]", "- getAllWorkMates from repo " + allWorkMates.size() + "  added ...");
-
-        //final MutableLiveData<List<User>> data = new MutableLiveData<>();
-        //data.postValue(allWorkMates);
-        return myWorkMatesList;
-    }
-
 
     public MutableLiveData<List<User>> getAllWorkMatesList()
     {
@@ -179,22 +146,26 @@ public class WorkMatesRepository {
 
     public Task<DocumentSnapshot> getWorkMates(String uid) {
         if (uid != null) {
-            return this.getUsersCollection().document(uid).get();
+            return this.myBase.document(uid).get();
 
         } else {
             return null;
         }
     }
 
-    public void updateFavorite(String place_id) {
+ /*   public void updateFavorite(String place_id) {
         if (place_id != null) {
             this.getUsersCollection().document(uid).update(FAVORITE_RESTAURANT, place_id);
         }
     }
 
-    public void addRestaurant(String name) {
+  */
+
+    /*public void addRestaurant(String name) {
         this.getUsersCollection().document().update(TAG_RESTAURANT, name);
     }
+
+     */
 
     public void removeRestaurant() {
 
@@ -221,7 +192,7 @@ public class WorkMatesRepository {
             User userToCreate = new User(uid, username, urlPicture, restaurant, restaurant_liked);
 
             //si utilisateur existant ?
-            Task<DocumentSnapshot> future = this.getUsersCollection().document(getCurrentUserUID()).get();
+            Task<DocumentSnapshot> future = this.myBase.document(getCurrentUserUID()).get();
             future.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -231,7 +202,7 @@ public class WorkMatesRepository {
                     }else
                     {
                         Log.i("[CREATE]","a créer");
-                        getUsersCollection().document(uid).set(userToCreate);
+                        myBase.document(uid).set(userToCreate);
 
                     }
 
@@ -289,7 +260,7 @@ public class WorkMatesRepository {
     {
         String uid = this.getCurrentUserUID();
         if (uid!= null){
-            return this.getUsersCollection().document(uid).get();
+            return this.myBase.document(uid).get();
         }else
         {
             return null;
@@ -301,7 +272,7 @@ public class WorkMatesRepository {
     public Task<DocumentSnapshot> getUserData() {
         String uid = this.getCurrentUserUID();
         if (uid != null) {
-            return this.getUsersCollection().document(uid).get();
+            return this.myBase.document(uid).get();
         } else {
             return null;
         }
