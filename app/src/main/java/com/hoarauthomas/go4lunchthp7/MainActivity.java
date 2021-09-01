@@ -1,7 +1,14 @@
 package com.hoarauthomas.go4lunchthp7;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -14,9 +21,12 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkRequest;
 
 import com.bumptech.glide.Glide;
@@ -37,6 +47,7 @@ import com.hoarauthomas.go4lunchthp7.workmanager.WorkManager;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import static androidx.core.view.GravityCompat.START;
 
@@ -75,11 +86,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setupBottomBAr();
         setupViewPager();
         loadWork();
+
+
+        notificationtest();
+
+
     }
 
+    private void notificationtest() {
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "123")
+                .setSmallIcon(R.drawable.ic_logo)
+                .setContentTitle("Go4Lunch")
+                .setContentText(myViewModel.getMyUser().getValue().getDisplayName() + " n'oubliez pas votre restaurant ce midi")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
+        notificationManagerCompat.notify(1, builder.build());
+
+
+
+    }
+
+    //create new work to workmanager
+    //added time to start request
+    //onetime ore periodic
     private void loadWork() {
+
+        //onetime mode
         WorkRequest newLoadWork = OneTimeWorkRequest.from(WorkManager.class);
         androidx.work.WorkManager.getInstance(this).enqueue(newLoadWork);
+
+        //periodic mode
+     //   PeriodicWorkRequest newLoadPeriodicWork = new PeriodicWorkRequest.Builder(WorkManager.class, 10, TimeUnit.SECONDS)
+                //constrains
+       //     .build();
+
+     //   newLoadPeriodicWork;
+
 
     }
 

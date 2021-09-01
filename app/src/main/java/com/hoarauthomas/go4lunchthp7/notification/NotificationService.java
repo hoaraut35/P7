@@ -53,8 +53,7 @@ public class NotificationService extends FirebaseMessagingService{
 
         String channelId = getString(R.string.default_notification_channel_id);
 
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this,channelId)
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this,channelId)
                 .setSmallIcon(R.drawable.ic_logo)
                 .setContentTitle(notification.getTitle())
                 .setContentText(notification.getBody())

@@ -104,6 +104,7 @@ dependencies {
     //WorkManager
     implementation 'androidx.work:work-runtime:2.6.0-rc01'
 
-
+    //notification
+    implementation "androidx.core:core:1.6.0"
 
 }
