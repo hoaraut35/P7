@@ -9,13 +9,19 @@
 
     <!-- Added for bottom navigation menu-->
     <string name="bottom_navigation_menu_map">Carte</string>
-    <string name="bottom_navigation_menu_list">Liste</string>
-    <string name="bottom_navigation_menu_work">Collègues</string>
+    <string name="bottom_navigation_menu_list">Restaurant(s)</string>
+    <string name="bottom_navigation_menu_work">Collègue(s)</string>
     <string name="header_title">Go4Lunch</string>
     <string name="my_account_link">MY ACCOUNT LINK</string>
-    <string name="your_lunch">YOUR LUNCH</string>
-    <string name="settings">SETTINGS</string>
-    <string name="logout">LOGOUT</string>
+
+    <string name="your_lunch">MON RESTAURANT</string>
+    <string name="settings">PARAMETRES</string>
+    <string name="logout">SE DECONNECTER</string>
+
+
+
+
+
     <string name="login_name">John SMITH</string>
     <string name="content_description_favorite">description_favorite</string>
     <string name="favorite">favorite_text</string>
@@ -51,7 +57,14 @@
     <string name="numberOfWorkmates">(10)</string>
     <string name="numberOfLike">3</string>
     <string name="labelForOpeningHours">\"Ouvert : \"</string>
-    <string name="facebook_btn_str">Sign in with Facebook</string>
-    <string name="google_btn_str">Sign in with Google</string>
+
+
+
+    <string name="facebook_btn_str">Se connecter avec Facebook</string>
+    <string name="google_btn_str">Se connecter avec Google</string>
+    <string name="sign_in_with_twitter">Se connecter avec Twitter</string>
+    <string name="sign_in_with_email">Se connecter avec un Email</string>
+    <string name="sign_in_with_google">Se connecter avec Google</string>
+    <string name="is_eating_txt"> a choisi </string>
 
 </resources>

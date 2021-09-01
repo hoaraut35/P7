@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.facebook.internal.Mutable;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -40,6 +41,11 @@ public class WorkMatesRepository {
     private List<User> allWorkMates = new ArrayList<>();
     private final MutableLiveData<List<User>> myWorkMatesList = new MutableLiveData<>(null);
     private String uid;
+
+
+
+    private MutableLiveData<List<User>> myWorkMAtesListMedia = new MutableLiveData<>();
+
 
     //get an instance from firestore ...
     public CollectionReference getUsersCollection() {
@@ -139,6 +145,8 @@ public class WorkMatesRepository {
 
                 myWorkMatesList.setValue(allWorkMates);
 
+                myWorkMAtesListMedia.setValue(allWorkMates);
+
 
             }
         });
@@ -156,6 +164,14 @@ public class WorkMatesRepository {
         //data.postValue(allWorkMates);
         return myWorkMatesList;
     }
+
+
+    public MutableLiveData<List<User>> getAllWorkMatesList()
+    {
+        return myWorkMAtesListMedia;
+    }
+
+
 
 
     //----------------------------------------------------------------------------------------------

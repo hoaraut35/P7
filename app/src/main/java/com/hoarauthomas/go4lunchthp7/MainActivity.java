@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -17,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkRequest;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -33,6 +36,7 @@ import com.hoarauthomas.go4lunchthp7.workmanager.WorkManager;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static androidx.core.view.GravityCompat.START;
 
@@ -89,20 +93,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setupViewModel() {
 
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
-
-
-
         this.myViewModel.getMyLogin().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
+
                 onCheckSecurityNew(aBoolean);
             }
         });
-
-
-
-
-
 
 
     /*    this.myViewModel.getMediatorLiveData().observe(this, viewStateMain -> {
@@ -217,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void request_user_info(String restaurant) {
 
         if (restaurant != null){
-            showSnackBar(restaurant);
+           // showSnackBar(restaurant);
             myRestaurant = restaurant;
         }
 
@@ -226,20 +223,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         View hv = binding.navigationView.getHeaderView(0);
 
-/*
+
         TextView name = hv.findViewById(R.id.displayName);
-        name.setText(Objects.requireNonNull(this.myViewModel.getMyCurrentUser().getValue()).getDisplayName());
+        name.setText(Objects.requireNonNull(this.myViewModel.getMyUser().getValue().getDisplayName()));
 
         TextView email = hv.findViewById(R.id.email);
-        email.setText(this.myViewModel.getMyCurrentUser().getValue().getEmail());
+        email.setText(this.myViewModel.getMyUser().getValue().getEmail());
 
         ImageView avatar = hv.findViewById(R.id.avatar);
 
         //avatar
         String avatar2 = "";
-        if (this.myViewModel.getMyCurrentUser().getValue().getPhotoUrl() == null) {
+        if (this.myViewModel.getMyUser().getValue().getPhotoUrl() == null) {
 
-            String nom = this.myViewModel.getMyCurrentUser().getValue().getDisplayName();
+            String nom = this.myViewModel.getMyUser().getValue().getDisplayName();
             String[] parts = nom.split(" ", 2);
             String z = "";
 
@@ -249,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             avatar2 = "https://eu.ui-avatars.com/api/?name=" + z;
         } else {
-            avatar2 = this.myViewModel.getMyCurrentUser().getValue().getPhotoUrl().toString();
+            avatar2 = this.myViewModel.getMyUser().getValue().getPhotoUrl().toString();
             Log.i("[AVATAR]", "" + avatar2.toString());
         }
 
@@ -259,18 +256,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .into(avatar);
 
 
-        if (myViewModel.getMyCurrentUser().getValue().getPhotoUrl() == null) {
+        if (myViewModel.getMyUser().getValue().getPhotoUrl() == null) {
             Log.i("[LOGIN]", "Pas d'avatar");
         } else {
 
             Glide.with(avatar)
-                    .load(this.myViewModel.getMyCurrentUser().getValue().getPhotoUrl())
+                    .load(this.myViewModel.getMyUser().getValue().getPhotoUrl())
                     .circleCrop()
                     .into(avatar);
         }
 
-
- */
 
 
     }
@@ -304,9 +299,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void openMyFavoriteRestaurant() {
 
 
-        Intent intent = new Intent(this, DetailActivity.class);
-        intent.putExtra("TAG_ID", myRestaurant);
-        startActivity(intent);
+        if (myViewModel.getMyUserRestaurant().getValue() != null){
+
+            Intent intent = new Intent(this, DetailActivity.class);
+            intent.putExtra("TAG_ID", myViewModel.getMyUserRestaurant().getValue());
+            startActivity(intent);
+
+        }else
+        {
+            showSnackBar("Vous n'avez pas de favoris");
+        }
 
     }
 

@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
+
     android:orientation="vertical">
 
 
@@ -26,6 +27,7 @@
         android:layout_margin="5dp"
         android:text="@string/nameOfRestaurant"
         app:layout_constraintLeft_toLeftOf="parent"
+        android:maxLines="@integer/material_motion_duration_short_1"
         app:layout_constraintRight_toLeftOf="@id/distanceOfRestaurant"
         app:layout_constraintTop_toBottomOf="@id/nameOfRestaurant" />
 

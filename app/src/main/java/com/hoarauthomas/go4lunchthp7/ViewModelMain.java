@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.facebook.internal.Mutable;
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthRepository;
@@ -30,81 +31,64 @@ public class ViewModelMain extends ViewModel {
     private WorkMatesRepository myWorkMatesRepoVM;
     private MutableLiveData<List<User>> myWorkMatesListLiveData;
 
+    //
+    private MutableLiveData<String> myUserRestaurantId = new MutableLiveData<>();
+
     //to merge data
     private final MediatorLiveData<ViewStateMain> myAppMapMediator = new MediatorLiveData<>();
-
-
-    //to remove
- //   private MutableLiveData<FirebaseUser> myUser = null;
-   // private MutableLiveData<Boolean> myUserState = new MutableLiveData<>(false);
 
     //constructor
     public ViewModelMain(FirebaseAuthRepository firebaseAuthRepository, WorkMatesRepository workMatesRepository) {
 
+        //get data from Auth repository...
         myFirebaseAuthRepoVM = firebaseAuthRepository;
         myUserLiveData = myFirebaseAuthRepoVM.getUserLiveDataNew();
         myUserStateNew = myFirebaseAuthRepoVM.getLoggedOutLiveDataNew();
-
-        //to remove
-     //   LiveData<FirebaseUser> myUserVM = myFirebaseAuthRepoVM.getUserLiveData();
-        //to remove
-       // LiveData<Boolean> myUserStateVM = myFirebaseAuthRepoVM.getUserStateLiveData();
-
+        //get data from workmates repository...
         myWorkMatesRepoVM = workMatesRepository;
-        // myWorkMatesListLiveData = myWorkMatesRepoVM.getAllWorkMates();
+        myWorkMatesListLiveData = myWorkMatesRepoVM.getAllWorkMatesList();
 
-        LiveData<List<User>> myWorkMatesVM = this.myWorkMatesRepoVM.getAllWorkMates();
-
-
-
-
-      /*  myAppMapMediator.addSource(myUserVM, new Observer<FirebaseUser>() {
+        //we observe these data... to merge for extract
+        myAppMapMediator.addSource(myUserLiveData, new Observer<FirebaseUser>() {
             @Override
             public void onChanged(FirebaseUser firebaseUser) {
-
-                if (firebaseUser != null) {
-                    logicWork(firebaseUser, myUserStateVM.getValue(), myWorkMatesVM.getValue());
-                }
+                logicWork(firebaseUser, myWorkMatesListLiveData.getValue());
             }
         });
 
-       */
-
-        /*myAppMapMediator.addSource(myUserStateVM, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean != null) {
-                    logicWork(myUserVM.getValue(), aBoolean, myWorkMatesVM.getValue());
-                }
-
-            }
-        });
-
-         */
-
-        /*myAppMapMediator.addSource(myWorkMatesVM, new Observer<List<User>>() {
+        myAppMapMediator.addSource(myWorkMatesListLiveData, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
-                if (users != null) {
-                    if (!users.isEmpty()) {
-                        logicWork(myUserVM.getValue(), myUserStateVM.getValue(), users);
-                    }
-                }
-
+                logicWork(myUserLiveData.getValue(), users);
             }
         });
-
-         */
 
     }
 
-    //**********************************************************************************************
     // Logic work
-    //**********************************************************************************************
-    private void logicWork(@Nullable FirebaseUser myUser, @Nullable Boolean userState, @Nullable List<User> user) {
+    private void logicWork(@Nullable FirebaseUser myUser, @Nullable List<User> workmates) {
+
+
+        if (myUser != null && workmates != null){
+
+            for (int i =0; i<workmates.size(); i++){
+
+                if (myUser.getUid().equals(workmates.get(i).getUid())){
+
+                    myUserRestaurantId.setValue(workmates.get(i).getFavoriteRestaurant());
+
+                }
+
+            }
+
+
+        }
+
+
+
         //   Log.i("[Auth]","taille user" + user.size());
 
-        String restaurantUser = null;
+     /*   String restaurantUser = null;
 
         if (userState == null || !userState) {
             myAppMapMediator.setValue(new ViewStateMain(myUser, false));
@@ -131,6 +115,8 @@ public class ViewModelMain extends ViewModel {
         }
 
 
+
+      */
        /*f (myUser == null) {
             myAppMapMediator.setValue(new ViewStateMain(myUser, false));
         }
@@ -174,33 +160,25 @@ public class ViewModelMain extends ViewModel {
         myFirebaseAuthRepoVM.logOut();
     }
 
+    public LiveData<FirebaseUser> getMyUser(){
+        return myUserLiveData;
+    }
+
+    public LiveData<String> getMyUserRestaurant(){
+        return myUserRestaurantId;
+    }
+
+
 
     public void checkUserLogin() {
         myFirebaseAuthRepoVM.checkUser();
         //return myUserState;
     }
 
-
-
-    public void logOut(Context context) {
-        //this.myUserStateVM.setValue(false);
-        myFirebaseAuthRepoVM.signOut(context);
-        //);AuthSource.logOutFromRepo();
-        //    updateUSer();
-    }
-
-    //publish method to activity... (logged or not) work fine
- /*   public MutableLiveData<Boolean> getMyUserState() {
-        return myUserStateVM;
-    }
-
-  */
-
     //Create user to Firestore
     public void createUser() {
         this.myWorkMatesRepoVM.createUser();
     }
-
 
     //to publish mediatorlivedata to mainactivity
     public LiveData<ViewStateMain> getMediatorLiveData() {

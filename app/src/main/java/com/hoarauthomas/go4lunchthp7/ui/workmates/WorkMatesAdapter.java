@@ -96,12 +96,15 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
         if (myWorkMates.getNameOfRestaurant() != null && myWorkMates.getNameOfRestaurant() != "") {
             holder.nameOfWorkMate.setTypeface(null, Typeface.BOLD);
             holder.workMateState.setTypeface(null, Typeface.BOLD);
-            holder.workMateState.setText(" is eating (" + myWorkMates.getNameOfRestaurant() + ")");
+
+            //holder.workMateState.setText(R.string." is eating (" + myWorkMates.getNameOfRestaurant() + ")");
+            holder.workmateRestaurant.setText(" (" + myWorkMates.getNameOfRestaurant() + ")");
 
         } else {
             holder.nameOfWorkMate.setTypeface(null, Typeface.ITALIC);
             holder.workMateState.setTypeface(null, Typeface.ITALIC);
-            holder.workMateState.setText(" hasn't decided yet");
+            //holder.workMateState.setText(" hasn't decided yet");
+            //holder.workmateRestaurant.setText("(" + myWorkMates.getNameOfRestaurant() + ")");
         }
 
 
@@ -137,12 +140,14 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
         private final ImageView avatar;
         private final TextView nameOfWorkMate;
         private final TextView workMateState;
+        private final TextView workmateRestaurant;
 
         public ViewHolder(View view) {
             super(view);
             avatar = view.findViewById(R.id.workMateAvatar);
             nameOfWorkMate = view.findViewById(R.id.workMateName);
             workMateState = view.findViewById(R.id.workmateState);
+            workmateRestaurant = view.findViewById(R.id.workmateRestaurant);
         }
     }
 }
