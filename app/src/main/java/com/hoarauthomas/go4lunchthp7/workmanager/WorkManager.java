@@ -1,6 +1,7 @@
 package com.hoarauthomas.go4lunchthp7.workmanager;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
@@ -20,8 +21,14 @@ public class WorkManager extends Worker {
     public Result doWork() {
 
 
+        //create notification sample
 
+        Log.i("[ALARM]", "Working....");
         //result to return
-        return null;
+        return Result.success();
+
+        //result failure
+
+        //result retry
     }
 }
