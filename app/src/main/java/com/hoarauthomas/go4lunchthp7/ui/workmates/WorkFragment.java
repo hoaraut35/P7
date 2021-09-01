@@ -15,6 +15,9 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.divider.MaterialDivider;
+import com.google.android.material.divider.MaterialDividerItemDecoration;
+import com.google.api.Distribution;
 import com.hoarauthomas.go4lunchthp7.databinding.FragmentWorkBinding;
 import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
@@ -88,10 +91,17 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.WorkMates
     private void setupRecyclerView(View view) {
 
         recyclerView = binding.recyclerViewWorkmates;
-        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+
+      //  RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+
+        MaterialDividerItemDecoration matDec = new MaterialDividerItemDecoration(recyclerView.getContext(), LinearLayoutManager.VERTICAL);
+        matDec.setDividerInsetStart(200);
+        matDec.setDividerInsetEnd(5);
+
+
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-        recyclerView.addItemDecoration(itemDecoration);
+        recyclerView.addItemDecoration(matDec);
         recyclerView.setAdapter(new WorkMatesAdapter(resultToShow,this));
     }
 
