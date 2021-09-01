@@ -17,29 +17,20 @@ import com.google.firebase.auth.FirebaseUser;
 public class FirebaseAuthRepository {
 
     private FirebaseAuth myAuth;
-    private MutableLiveData<FirebaseUser> myUser = new MutableLiveData<>(null);
-    private MutableLiveData<Boolean> myUserState = new MutableLiveData<>(false);
+    private MutableLiveData<FirebaseUser> myUser = new MutableLiveData<>();
+    private MutableLiveData<Boolean> myUserState = new MutableLiveData<>();
 
-    public FirebaseAuthRepository() {
-
-        Log.i("[Auth]","Get an instance of Firebase Auth...");
-        this.myAuth = FirebaseAuth.getInstance();
-        this.myUser = new MutableLiveData<>();
-        this.myUserState = new MutableLiveData<>();
-
-        if (myAuth.getCurrentUser() != null){
-            myUser.postValue(myAuth.getCurrentUser());
-            myUserState.postValue(true);
-        }
-
+    public FirebaseAuthRepository(FirebaseAuth firebaseAuth) {
+        this.myAuth = firebaseAuth;
+        Log.i("[Auth]","Get an instance of Firebase Auth..." + this.myAuth.getUid() + this.myAuth.getCurrentUser().getDisplayName());
+      //  this.myAuth = FirebaseAuth.getInstance();
         checkUser();
-
     }
 
     public void checkUser() {
         Log.i("[Auth]","Check current user ...");
         if (myAuth.getCurrentUser() != null) {
-            Log.i("[Auth]","User log in");
+            Log.i("[Auth]","User log in"+myAuth.getCurrentUser().getDisplayName());
             myUser.setValue(myAuth.getCurrentUser());
             myUserState.setValue(true);
         } else {
@@ -50,10 +41,12 @@ public class FirebaseAuthRepository {
     }
 
     public MutableLiveData<FirebaseUser> getUserLiveDataNew(){
+
         return myUser;
     }
 
     public MutableLiveData<Boolean> getLoggedOutLiveDataNew(){
+
         return myUserState;
     }
 

@@ -216,6 +216,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (restaurant != null){
            // showSnackBar(restaurant);
             myRestaurant = restaurant;
+
+
+          //  myViewModel.getMyUserRestaurant()
         }
 
 

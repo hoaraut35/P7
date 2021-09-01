@@ -21,11 +21,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:text="Scarlett"
-        android:textStyle="bold"
-
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
+
+        android:text="Scarlett"
+        android:textStyle="bold"
 
         app:layout_constraintBottom_toBottomOf="@id/workMateAvatar"
         app:layout_constraintLeft_toRightOf="@+id/workMateAvatar"
@@ -38,9 +38,9 @@
         android:layout_height="wrap_content"
         android:text="@string/is_eating_txt"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/workMateAvatar"
         app:layout_constraintLeft_toRightOf="@id/workMateName"
-        app:layout_constraintTop_toTopOf="@id/workMateName"
-        />
+        app:layout_constraintTop_toTopOf="@id/workMateAvatar" />
 
     <TextView
         android:id="@+id/workmateRestaurant"
@@ -48,9 +48,11 @@
         android:layout_height="wrap_content"
         android:text=""
         android:textStyle="bold"
+
+        app:layout_constraintBottom_toBottomOf="@id/workMateAvatar"
         app:layout_constraintLeft_toRightOf="@id/workmateState"
-        app:layout_constraintTop_toTopOf="@id/workMateName"
-        />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/workMateAvatar" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

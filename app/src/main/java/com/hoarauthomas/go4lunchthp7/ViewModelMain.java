@@ -1,6 +1,5 @@
 package com.hoarauthomas.go4lunchthp7;
 
-import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -9,7 +8,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.facebook.internal.Mutable;
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthRepository;
@@ -22,16 +20,14 @@ import javax.annotation.Nullable;
 
 public class ViewModelMain extends ViewModel {
 
-    //for Auth
+    //repository
     private FirebaseAuthRepository myFirebaseAuthRepoVM;
+    private WorkMatesRepository myWorkMatesRepoVM;
+
+    //livedata
     private MutableLiveData<FirebaseUser> myUserLiveData;
     private MutableLiveData<Boolean> myUserStateNew;
-
-    //for Workmates
-    private WorkMatesRepository myWorkMatesRepoVM;
-    private MutableLiveData<List<User>> myWorkMatesListLiveData;
-
-    //
+    private MutableLiveData<List<User>> myWorkMatesListLiveData = new MutableLiveData<>();
     private MutableLiveData<String> myUserRestaurantId = new MutableLiveData<>();
 
     //to merge data
@@ -41,15 +37,16 @@ public class ViewModelMain extends ViewModel {
     public ViewModelMain(FirebaseAuthRepository firebaseAuthRepository, WorkMatesRepository workMatesRepository) {
 
         //get data from Auth repository...
-        myFirebaseAuthRepoVM = firebaseAuthRepository;
+        this.myFirebaseAuthRepoVM = firebaseAuthRepository;
         myUserLiveData = myFirebaseAuthRepoVM.getUserLiveDataNew();
         myUserStateNew = myFirebaseAuthRepoVM.getLoggedOutLiveDataNew();
+
         //get data from workmates repository...
-        myWorkMatesRepoVM = workMatesRepository;
+        this.myWorkMatesRepoVM = workMatesRepository;
         myWorkMatesListLiveData = myWorkMatesRepoVM.getAllWorkMatesList();
 
-        //fisrt init...
-   //     logicWork(myUserLiveData.getValue(),myWorkMatesListLiveData.getValue());
+        //force updateisrt init...
+        //logicWork(myUserLiveData.getValue(),myWorkMatesListLiveData.getValue());
 
         //we observe these data... to merge for extract
         myAppMapMediator.addSource(myUserLiveData, new Observer<FirebaseUser>() {
@@ -67,16 +64,19 @@ public class ViewModelMain extends ViewModel {
             }
         });
 
+        //   myWorkMatesRepoVM.getAllWorkMatesList();
+
     }
 
     // Logic work
     private void logicWork(@Nullable FirebaseUser myUser, @Nullable List<User> workmates) {
 
-        if (myUser != null && workmates != null){
+        Log.i("LOGIK", "LOGIK");
+        if (myUser != null && workmates != null) {
 
-            for (int i =0; i<workmates.size(); i++){
+            for (int i = 0; i < workmates.size(); i++) {
 
-                if (myUser.getUid().equals(workmates.get(i).getUid())){
+                if (myUser.getUid().equals(workmates.get(i).getUid())) {
 
                     myUserRestaurantId.setValue(workmates.get(i).getFavoriteRestaurant());
 
@@ -84,8 +84,7 @@ public class ViewModelMain extends ViewModel {
 
             }
 
-        }else
-        {
+        } else {
             myUserRestaurantId.setValue("text");
         }
 
@@ -111,14 +110,13 @@ public class ViewModelMain extends ViewModel {
         myFirebaseAuthRepoVM.logOut();
     }
 
-    public LiveData<FirebaseUser> getMyUser(){
+    public LiveData<FirebaseUser> getMyUser() {
         return myUserLiveData;
     }
 
-    public LiveData<String> getMyUserRestaurant(){
+    public LiveData<String> getMyUserRestaurant() {
         return myUserRestaurantId;
     }
-
 
 
     public void checkUserLogin() {

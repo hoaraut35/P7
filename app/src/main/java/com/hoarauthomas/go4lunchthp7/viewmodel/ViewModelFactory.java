@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
 import com.hoarauthomas.go4lunchthp7.MainApplication;
 import com.hoarauthomas.go4lunchthp7.ViewModelMain;
 import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
@@ -44,9 +45,9 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                 if (myViewModelFactory == null) {
                     Log.i("[FACTORY]", "[VIEWMODELFACTORY NEW OBJECT]");
                     Application application = MainApplication.getApplication();
-                    myViewModelFactory = new ViewModelFactory(
+                    myViewModelFactory =                     new ViewModelFactory(
                             new PermissionChecker(application),
-                            new FirebaseAuthRepository(),
+                            new FirebaseAuthRepository(FirebaseAuth.getInstance()),
                             new RestaurantsRepository(),
                             new PositionRepository(LocationServices.getFusedLocationProviderClient(application)),
                             new WorkMatesRepository()
@@ -77,27 +78,18 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     }
 
 
+    //TODO: why ?
+    @SuppressWarnings("unchecked")
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
 
         if (modelClass.isAssignableFrom(ViewModelMain.class)) {
-            return (T) new ViewModelMain(
-                    firebaseAuthRepository,
-                    //   restaurantsRepository,
-                    //   positionRepository,
-                    workMatesRepository
-                    //    permissionChecker
-            );
+            return (T) new ViewModelMain(firebaseAuthRepository, workMatesRepository);
         }
 
         if (modelClass.isAssignableFrom(ViewModelMap.class)) {
-            return (T) new ViewModelMap(
-                    permissionChecker,
-                    positionRepository,
-                    restaurantsRepository,
-                    workMatesRepository
-            );
+            return (T) new ViewModelMap(permissionChecker, positionRepository, restaurantsRepository, workMatesRepository);
 
         }
 

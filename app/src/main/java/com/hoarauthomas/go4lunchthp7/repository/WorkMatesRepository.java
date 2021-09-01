@@ -135,6 +135,8 @@ public class WorkMatesRepository {
 
     public MutableLiveData<List<User>> getAllWorkMatesList()
     {
+        //remove it ?
+        getRestaurantFromFirestore();
         return myWorkMAtesListMedia;
     }
 
