@@ -62,8 +62,14 @@ public class ViewModelMain extends ViewModel {
             @Override
             public void onChanged(FirebaseUser firebaseUser) {
                 Log.i("MEDIA", "new event on user");
-                if (firebaseUser != null){
-                    logicWork(firebaseUser, myWorkMatesListLiveData.getValue(), myUserStateNew.getValue());
+
+
+                if (firebaseUser != null) {
+
+                    if (!firebaseUser.getUid().isEmpty()) {
+                        logicWork(firebaseUser, myWorkMatesListLiveData.getValue(), myUserStateNew.getValue());
+                    }
+
                 }
 
             }
@@ -74,6 +80,15 @@ public class ViewModelMain extends ViewModel {
             public void onChanged(List<User> users) {
 
                 Log.i("MEDIA", "new event on list workmates");
+
+
+                if (myWorkMatesListLiveData != null) {
+                    if (!myWorkMatesListLiveData.getValue().isEmpty()) {
+                        logicWork(myUserLiveData.getValue(), users, myUserStateNew.getValue());
+
+                    }
+
+                }
             }
         });
 
@@ -87,30 +102,39 @@ public class ViewModelMain extends ViewModel {
 
         if (bool) {
 
-            if (!bool){
-                myAppMapMediator.setValue(new ViewMainState2(false));
-            }else
-            {
-                myAppMapMediator.setValue(new ViewMainState2(true));
+            if (myUser != null && workmates != null) {
+
+
+                        if (!myUser.getUid().isEmpty()) {
+
+                            for (int i = 0; i < workmates.size(); i++) {
+
+                                if (workmates.get(i).getUid().equals(myUser.getUid())) {
+                                    myUserRestaurantId.setValue(workmates.get(i).getFavoriteRestaurant());
+                                    break;
+                                }
+                            }
+
+                            myAppMapMediator.setValue(new ViewMainState2(true, myUserRestaurantId.getValue()));
+
+                        } else {
+                            myAppMapMediator.setValue(new ViewMainState2(true, "pas de restau"));
+
+                        }
+
+
+
+
+
+
 
             }
 
-          /*  for (int i = 0; i < workmates.size(); i++) {
-
-                if (myUser.getUid().equals(workmates.get(i).getUid())) {
-
-                    myUserRestaurantId.setValue(workmates.get(i).getFavoriteRestaurant());
-
-                }
-
-            }
-
-           */
-
+            myAppMapMediator.setValue(new ViewMainState2(true, "liste restaur non chargée"));
 
 
         } else {
-            myAppMapMediator.setValue(new ViewMainState2(false));
+            myAppMapMediator.setValue(new ViewMainState2(false, "echec login"));
             //myUserRestaurantId.setValue("text");
         }
 
