@@ -1,5 +1,6 @@
 package com.hoarauthomas.go4lunchthp7;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -24,14 +25,18 @@ public class ViewModelMain extends ViewModel {
     private FirebaseAuthRepository myFirebaseAuthRepoVM;
     private WorkMatesRepository myWorkMatesRepoVM;
 
-    //livedata
+    //livedata 1
     private MutableLiveData<FirebaseUser> myUserLiveData;
     private MutableLiveData<Boolean> myUserStateNew;
-    private MutableLiveData<List<User>> myWorkMatesListLiveData = new MutableLiveData<>();
+
+    //livedata2
+    private MutableLiveData<List<User>> myWorkMatesListLiveData;
+
+    //others
     private MutableLiveData<String> myUserRestaurantId = new MutableLiveData<>();
 
     //to merge data
-    private final MediatorLiveData<ViewStateMain> myAppMapMediator = new MediatorLiveData<>();
+    MediatorLiveData<ViewMainState2> myAppMapMediator = new MediatorLiveData<>();
 
     //constructor
     public ViewModelMain(FirebaseAuthRepository firebaseAuthRepository, WorkMatesRepository workMatesRepository) {
@@ -45,14 +50,22 @@ public class ViewModelMain extends ViewModel {
         this.myWorkMatesRepoVM = workMatesRepository;
         myWorkMatesListLiveData = myWorkMatesRepoVM.getAllWorkMatesList();
 
-        //force updateisrt init...
-        //logicWork(myUserLiveData.getValue(),myWorkMatesListLiveData.getValue());
+        myAppMapMediator.addSource(myUserStateNew, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                Log.i("MEDIA", "new event on state");
+                logicWork(myUserLiveData.getValue(), myWorkMatesListLiveData.getValue(), aBoolean);
+            }
+        });
 
-        //we observe these data... to merge for extract
         myAppMapMediator.addSource(myUserLiveData, new Observer<FirebaseUser>() {
             @Override
             public void onChanged(FirebaseUser firebaseUser) {
-                logicWork(firebaseUser, myWorkMatesListLiveData.getValue());
+                Log.i("MEDIA", "new event on user");
+                if (firebaseUser != null){
+                    logicWork(firebaseUser, myWorkMatesListLiveData.getValue(), myUserStateNew.getValue());
+                }
+
             }
         });
 
@@ -60,21 +73,29 @@ public class ViewModelMain extends ViewModel {
             @Override
             public void onChanged(List<User> users) {
 
-                logicWork(myUserLiveData.getValue(), users);
+                Log.i("MEDIA", "new event on list workmates");
             }
         });
 
-        //   myWorkMatesRepoVM.getAllWorkMatesList();
 
     }
 
     // Logic work
-    private void logicWork(@Nullable FirebaseUser myUser, @Nullable List<User> workmates) {
+    private void logicWork(@Nullable FirebaseUser myUser, @Nullable List<User> workmates, Boolean bool) {
 
-        Log.i("LOGIK", "LOGIK");
-        if (myUser != null && workmates != null) {
+        Log.i("MEDIA", "Logic work ...");
 
-            for (int i = 0; i < workmates.size(); i++) {
+        if (bool) {
+
+            if (!bool){
+                myAppMapMediator.setValue(new ViewMainState2(false));
+            }else
+            {
+                myAppMapMediator.setValue(new ViewMainState2(true));
+
+            }
+
+          /*  for (int i = 0; i < workmates.size(); i++) {
 
                 if (myUser.getUid().equals(workmates.get(i).getUid())) {
 
@@ -84,8 +105,13 @@ public class ViewModelMain extends ViewModel {
 
             }
 
+           */
+
+
+
         } else {
-            myUserRestaurantId.setValue("text");
+            myAppMapMediator.setValue(new ViewMainState2(false));
+            //myUserRestaurantId.setValue("text");
         }
 
 
@@ -106,13 +132,15 @@ public class ViewModelMain extends ViewModel {
     }
 
     //added
-    public void LogOut() {
-        myFirebaseAuthRepoVM.logOut();
+    public void LogOut(Context context) {
+        myFirebaseAuthRepoVM.logOut(context);
     }
 
-    public LiveData<FirebaseUser> getMyUser() {
+  /*  public LiveData<FirebaseUser> getMyUser() {
         return myUserLiveData;
     }
+
+   */
 
     public LiveData<String> getMyUserRestaurant() {
         return myUserRestaurantId;
@@ -130,7 +158,7 @@ public class ViewModelMain extends ViewModel {
     }
 
     //to publish mediatorlivedata to mainactivity
-    public LiveData<ViewStateMain> getMediatorLiveData() {
+    public LiveData<ViewMainState2> getMediatorLiveData() {
         return myAppMapMediator;
     }
 }

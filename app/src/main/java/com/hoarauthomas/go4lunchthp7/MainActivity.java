@@ -54,8 +54,8 @@ import static androidx.core.view.GravityCompat.START;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public ActivityMainBinding binding;
+
     public ViewModelMain myViewModel;
-    public ViewModelWorkMates myWorkMatesVM;
 
     private String myRestaurant=null ;
 
@@ -85,11 +85,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setupNavigationDrawer();
         setupBottomBAr();
         setupViewPager();
+
+
+        //notificationtest();
         loadWork();
 
 
-        notificationtest();
-
+        System.out.println();
 
     }
 
@@ -98,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "123")
                 .setSmallIcon(R.drawable.ic_logo)
                 .setContentTitle("Go4Lunch")
-                .setContentText(myViewModel.getMyUser().getValue().getDisplayName() + " n'oubliez pas votre restaurant ce midi")
+                .setContentText("myViewModel.getMyUser().getValue().getDisplayName()" + " n'oubliez pas votre restaurant ce midi")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
@@ -114,13 +116,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void loadWork() {
 
         //onetime mode
-        WorkRequest newLoadWork = OneTimeWorkRequest.from(WorkManager.class);
-        androidx.work.WorkManager.getInstance(this).enqueue(newLoadWork);
+      //  WorkRequest newLoadWork = OneTimeWorkRequest.from(WorkManager.class);
+       // androidx.work.WorkManager.getInstance(this).enqueue(newLoadWork);
 
         //periodic mode
-     //   PeriodicWorkRequest newLoadPeriodicWork = new PeriodicWorkRequest.Builder(WorkManager.class, 10, TimeUnit.SECONDS)
+      PeriodicWorkRequest newLoadPeriodicWork = new PeriodicWorkRequest.Builder(WorkManager.class, 15, TimeUnit.SECONDS)
                 //constrains
-       //     .build();
+            .build();
 
      //   newLoadPeriodicWork;
 
@@ -137,13 +139,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setupViewModel() {
 
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
-        this.myViewModel.getMyLogin().observe(this, new Observer<Boolean>() {
+        this.myViewModel.myAppMapMediator.observe(this, new Observer<ViewMainState2>() {
             @Override
-            public void onChanged(Boolean aBoolean) {
+            public void onChanged(ViewMainState2 viewStateMain) {
 
-                onCheckSecurityNew(aBoolean);
+                if (viewStateMain.LoginState){
+                    Log.i("MEDIA","connecté recup infoMEDIA");
+                }else
+                {
+                    request_login();
+                    Log.i("MEDIA","non connecté attente");
+                }
+
             }
         });
+
+
+
+
+
 
 
     /*    this.myViewModel.getMediatorLiveData().observe(this, viewStateMain -> {
@@ -201,6 +215,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         if (result.getResultCode() == -1) {
                             Log.i("[Auth]", "login ok " + result.getResultCode());
+
+                            myViewModel.checkUserLogin();
+
+
+
                         } else {
 
                             if (result.getResultCode() == 0) {
@@ -223,7 +242,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         }
 
-                        myViewModel.checkUserLogin();
 
 
                     }
@@ -271,8 +289,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         View hv = binding.navigationView.getHeaderView(0);
 
 
-        TextView name = hv.findViewById(R.id.displayName);
-        name.setText(Objects.requireNonNull(this.myViewModel.getMyUser().getValue().getDisplayName()));
+        /*TextView name = hv.findViewById(R.id.displayName);
+        name.setText(Objects.requireNonNull("this.myViewModel.getMyUser().getValue().getDisplayName()"));
 
         TextView email = hv.findViewById(R.id.email);
         email.setText(this.myViewModel.getMyUser().getValue().getEmail());
@@ -312,6 +330,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .circleCrop()
                     .into(avatar);
         }
+
+         */
     }
 
     private void showSnackBar(String message) {
@@ -331,7 +351,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             } else if (id == R.id.navigation_drawer_logout) {
                 //myViewModel.logOut(this);
 
-                myViewModel.LogOut();
+                myViewModel.LogOut(this);
             }
 
             binding.drawerLayout.closeDrawer(START);

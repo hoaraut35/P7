@@ -45,7 +45,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                 if (myViewModelFactory == null) {
                     Log.i("[FACTORY]", "[VIEWMODELFACTORY NEW OBJECT]");
                     Application application = MainApplication.getApplication();
-                    myViewModelFactory =                     new ViewModelFactory(
+                    myViewModelFactory = new ViewModelFactory(
                             new PermissionChecker(application),
                             new FirebaseAuthRepository(FirebaseAuth.getInstance()),
                             new RestaurantsRepository(),
