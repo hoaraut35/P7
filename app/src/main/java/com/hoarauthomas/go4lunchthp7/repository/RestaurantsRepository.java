@@ -42,7 +42,7 @@ public class RestaurantsRepository {
     private final MutableLiveData<String> placeId = new MutableLiveData<String>();
 
     //test for caching data
-    private final LruCache<String, RestaurantDetailPojo> myCache = new LruCache<>(2_000);
+    private final LruCache<String, ResultDetailRestaurant> myCache = new LruCache<>(2_000);
 
     //this is the constructor is called by factory...
     public RestaurantsRepository() {
@@ -69,6 +69,13 @@ public class RestaurantsRepository {
 
         String myPositionStr = Lat + "," + Long;
         Log.i("[MAP]", "[REPOSITORY RESTAURANT] : Ma position : " + myPositionStr);
+
+
+        //TODO: cache
+
+
+
+
 
         service.getNearbyPlaces(BuildConfig.MAPS_API_KEY, myPositionStr)
 
@@ -107,38 +114,46 @@ public class RestaurantsRepository {
     //this livedata is publish to viewmodel... v2
     public LiveData<ResultDetailRestaurant> getRestaurantById(String restaurant_id) {
 
-        if (restaurant_id == null || restaurant_id.isEmpty()) {
-            Log.i("[MONDETAIL]","id null opu vide");
-            monDetailRestau.setValue(null);
-        }else{
-            Log.i("[RESTAURANT]", "detail restaurant avec id " + restaurant_id);
 
-            service.getPlaceDetails2(BuildConfig.MAPS_API_KEY, restaurant_id)
-                    .enqueue(new Callback<MyDetailRestaurant>() {
-                        @Override
-                        public void onResponse(Call<MyDetailRestaurant> call, Response<MyDetailRestaurant> response) {
-                            assert response.body() != null;
-                            Log.i("[MONDETAIL]","recup detail... repository");
-                            monDetailRestau.setValue(response.body().getResult());
+       ResultDetailRestaurant existing = myCache.get(restaurant_id);
 
-                        }
+        if (existing != null){
+            monDetailRestau.setValue(existing);
+            Log.i("[CACHE]","cache used !!");
+        }else
+        {
+            if (restaurant_id == null || restaurant_id.isEmpty()) {
+                Log.i("[MONDETAIL]","id null opu vide");
+                monDetailRestau.setValue(null);
+            }else{
+                Log.i("[RESTAURANT]", "detail restaurant avec id " + restaurant_id);
 
-                        @Override
-                        public void onFailure(Call<MyDetailRestaurant> call, Throwable t) {
-                            Log.i("[MONDETAIL]","Erreur sur le detail... repository");
-                        }
-                    });
+                service.getPlaceDetails2(BuildConfig.MAPS_API_KEY, restaurant_id)
+                        .enqueue(new Callback<MyDetailRestaurant>() {
+                            @Override
+                            public void onResponse(Call<MyDetailRestaurant> call, Response<MyDetailRestaurant> response) {
+                                assert response.body() != null;
+                                Log.i("[MONDETAIL]","recup detail... repository");
+                                monDetailRestau.setValue(response.body().getResult());
 
+                            }
 
+                            @Override
+                            public void onFailure(Call<MyDetailRestaurant> call, Throwable t) {
+                                Log.i("[MONDETAIL]","Erreur sur le detail... repository");
+                            }
+                        });
+
+            }
 
         }
+
         return monDetailRestau;
 
 
     }
 
     public String setPlaceId(String id){
-
         getRestaurantById(id);
         return id;
     }
@@ -146,6 +161,5 @@ public class RestaurantsRepository {
     public LiveData<ResultDetailRestaurant> getMyRestaurantDetail() {
         return monDetailRestau;
     }
-
 
 }

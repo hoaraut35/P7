@@ -35,6 +35,11 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
@@ -44,12 +49,15 @@ import com.hoarauthomas.go4lunchthp7.ui.workmates.ViewModelWorkMates;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.workmanager.WorkManager;
 
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import static androidx.core.view.GravityCompat.START;
+import static com.facebook.internal.FeatureManager.Feature.Places;
+import static com.google.android.gms.common.config.GservicesValue.isInitialized;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -91,9 +99,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         loadWork();
 
 
-        System.out.println();
+        setupAutocomplete();
+
+
 
     }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        return super.onOptionsItemSelected(item);
+
+
+
+
+
+    }
+
+    private void setupAutocomplete() {
+
+        AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
+
+        FindAutocompletePredictionsRequest myRequest = FindAutocompletePredictionsRequest.builder()
+
+
+
+
+                .build();
+
+
+
+    }
+
+
+
 
     private void notificationtest() {
 
@@ -120,7 +159,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
        // androidx.work.WorkManager.getInstance(this).enqueue(newLoadWork);
 
         //periodic mode
-      PeriodicWorkRequest newLoadPeriodicWork = new PeriodicWorkRequest.Builder(WorkManager.class, 15, TimeUnit.SECONDS)
+
+
+        Log.i("TEMPS","montemps : " + LocalTime.now());
+
+       // LocalTime myLocal = LocalTime.now
+
+      PeriodicWorkRequest newLoadPeriodicWork = new PeriodicWorkRequest.Builder(WorkManager.class,
+              15, TimeUnit.MINUTES)
                 //constrains
             .build();
 
@@ -144,6 +190,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onChanged(ViewMainState2 viewStateMain) {
 
                 if (viewStateMain.LoginState){
+                    request_user_info("");
                     Log.i("MEDIA","connecté recup infoMEDIA");
                 }else
                 {
@@ -153,54 +200,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             }
         });
-
-
-
-
-
-
-
-    /*    this.myViewModel.getMediatorLiveData().observe(this, viewStateMain -> {
-
-            //  showSnackBar(viewStateMain.getMyLogState().toString());
-            onCheckSecurity(viewStateMain.getMyLogState(), viewStateMain.getMyRestaurantFavorite());
-
-
-
-            // Log.i("LOGIN","" + viewStateMain.getMyActualUser().getUid());
-
-        });
-
-     */
     }
 
-    private void onCheckSecurityNew(Boolean myLogin) {
 
-        if (myLogin ){
-            request_user_info("test");
-        }else
-        {
-            request_login();
-        }
-
-    }
 
     private void setupFavRestau(String myRestaurantFavorite) {
         this.actualRestaurant = myRestaurantFavorite;
     }
 
 
-    private void onCheckSecurity(Boolean user, String restaurant) {
-        Log.i("[Auth]","Check security");
-
-        if (!user) {
-            request_login();
-        } else {
-            showSnackBar("request user info");
-
-            request_user_info(restaurant);
-        }
-    }
 
     private void Authentification() {
 
@@ -217,7 +225,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             Log.i("[Auth]", "login ok " + result.getResultCode());
 
                             myViewModel.checkUserLogin();
-
 
 
                         } else {
@@ -275,63 +282,60 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //TODO: review binding navigation view ?
     private void request_user_info(String restaurant) {
 
+        //check resturant
         if (restaurant != null){
-           // showSnackBar(restaurant);
             myRestaurant = restaurant;
-
-
-          //  myViewModel.getMyUserRestaurant()
         }
 
+        if (myViewModel.getUser() != null){
+
+            showSnackBar(myViewModel.getUser().getDisplayName());
+
+            View hv = binding.navigationView.getHeaderView(0);
+
+            TextView name = hv.findViewById(R.id.displayName);
+            name.setText(Objects.requireNonNull(this.myViewModel.getUser().getDisplayName()));
+
+            TextView email = hv.findViewById(R.id.email);
+            email.setText(this.myViewModel.getUser().getEmail());
+
+            ImageView avatar = hv.findViewById(R.id.avatar);
 
 
+            //avatar
+            String avatar2 = "";
+            if (this.myViewModel.getUser().getPhotoUrl() == null) {
 
-        View hv = binding.navigationView.getHeaderView(0);
+                String nom = this.myViewModel.getUser().getDisplayName();
+                String[] parts = nom.split(" ", 2);
+                String z = "";
 
+                for (int i = 0; i < parts.length; i++) {
+                    z = parts[i].charAt(0) + z;
+                }
 
-        /*TextView name = hv.findViewById(R.id.displayName);
-        name.setText(Objects.requireNonNull("this.myViewModel.getMyUser().getValue().getDisplayName()"));
-
-        TextView email = hv.findViewById(R.id.email);
-        email.setText(this.myViewModel.getMyUser().getValue().getEmail());
-
-        ImageView avatar = hv.findViewById(R.id.avatar);
-
-        //avatar
-        String avatar2 = "";
-        if (this.myViewModel.getMyUser().getValue().getPhotoUrl() == null) {
-
-            String nom = this.myViewModel.getMyUser().getValue().getDisplayName();
-            String[] parts = nom.split(" ", 2);
-            String z = "";
-
-            for (int i = 0; i < parts.length; i++) {
-                z = parts[i].charAt(0) + z;
+                avatar2 = "https://eu.ui-avatars.com/api/?name=" + z;
+            } else {
+                avatar2 = this.myViewModel.getUser().getPhotoUrl().toString();
+                Log.i("[AVATAR]", "" + avatar2.toString());
             }
 
-            avatar2 = "https://eu.ui-avatars.com/api/?name=" + z;
-        } else {
-            avatar2 = this.myViewModel.getMyUser().getValue().getPhotoUrl().toString();
-            Log.i("[AVATAR]", "" + avatar2.toString());
-        }
-
-        Glide.with(avatar)
-                .load(avatar2)
-                .circleCrop()
-                .into(avatar);
-
-
-        if (myViewModel.getMyUser().getValue().getPhotoUrl() == null) {
-            Log.i("[LOGIN]", "Pas d'avatar");
-        } else {
-
             Glide.with(avatar)
-                    .load(this.myViewModel.getMyUser().getValue().getPhotoUrl())
+                    .load(avatar2)
                     .circleCrop()
                     .into(avatar);
+
+            if (myViewModel.getUser().getPhotoUrl() == null) {
+                Log.i("[LOGIN]", "Pas d'avatar");
+            } else {
+
+                Glide.with(avatar)
+                        .load(this.myViewModel.getUser().getPhotoUrl())
+                        .circleCrop()
+                        .into(avatar);
+            }
         }
 
-         */
     }
 
     private void showSnackBar(String message) {
@@ -402,9 +406,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding.topAppBar.setOnMenuItemClickListener(item -> {
             //TODO: add search function
             Log.i("THOMAS", "Click sur recherche top bar app");
+
+
+            onSearchCalled();
+
+
+
             return false;
         });
     }
+
+
+    public void onSearchCalled(){
+
+        // Set the fields to specify which types of place data to return.
+        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG);
+        // Start the autocomplete intent.
+        Intent intent = new Autocomplete.IntentBuilder(
+                AutocompleteActivityMode.FULLSCREEN, fields).setCountry("FR") //NIGERIA
+                .build(this);
+
+        //  startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+
+
+
+    }
+
 
     //get item selected on navigation drawer
     @Override

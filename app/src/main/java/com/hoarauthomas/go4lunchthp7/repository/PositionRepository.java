@@ -45,7 +45,6 @@ public class PositionRepository {
                 @Override
                 public void onLocationResult(@NonNull LocationResult locationResult) {
                     Location location = locationResult.getLastLocation();
-
                     locationMutableLiveData.setValue(location);
                 }
             };

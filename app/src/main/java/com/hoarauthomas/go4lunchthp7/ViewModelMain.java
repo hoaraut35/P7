@@ -35,6 +35,7 @@ public class ViewModelMain extends ViewModel {
     //others
     private MutableLiveData<String> myUserRestaurantId = new MutableLiveData<>();
 
+
     //to merge data
     MediatorLiveData<ViewMainState2> myAppMapMediator = new MediatorLiveData<>();
 
@@ -102,6 +103,9 @@ public class ViewModelMain extends ViewModel {
 
         if (bool) {
 
+            createUser();
+
+
             if (myUser != null && workmates != null) {
 
 
@@ -111,6 +115,7 @@ public class ViewModelMain extends ViewModel {
 
                                 if (workmates.get(i).getUid().equals(myUser.getUid())) {
                                     myUserRestaurantId.setValue(workmates.get(i).getFavoriteRestaurant());
+
                                     break;
                                 }
                             }
@@ -128,6 +133,12 @@ public class ViewModelMain extends ViewModel {
 
 
 
+            }else
+            {
+                if (myUser != null && workmates == null){
+                    createUser();
+
+                }
             }
 
             myAppMapMediator.setValue(new ViewMainState2(true, "liste restaur non chargée"));
@@ -160,11 +171,10 @@ public class ViewModelMain extends ViewModel {
         myFirebaseAuthRepoVM.logOut(context);
     }
 
-  /*  public LiveData<FirebaseUser> getMyUser() {
-        return myUserLiveData;
+    public FirebaseUser getUser(){
+        return myUserLiveData.getValue();
     }
 
-   */
 
     public LiveData<String> getMyUserRestaurant() {
         return myUserRestaurantId;

@@ -121,6 +121,10 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
+
+
+
+
         @Override
         public void onMapReady(GoogleMap map) {
 

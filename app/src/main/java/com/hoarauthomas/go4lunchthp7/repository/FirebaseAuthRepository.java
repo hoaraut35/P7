@@ -31,11 +31,11 @@ public class FirebaseAuthRepository {
     public FirebaseAuthRepository(FirebaseAuth firebaseAuthInstance) {
         this.myFireBaseAuthInstance = firebaseAuthInstance;
         this.myFireBaseUser = myFireBaseAuthInstance.getCurrentUser();
-        //        Log.i("[Auth]","Get an instance of Firebase Auth..." + this.myAuth.getUid() + this.myAuth.getCurrentUser().getDisplayName());
         checkUser();
     }
 
     public void checkUser() {
+
         Log.i("[Auth]","Check current user ...");
 
         myFireBaseUser = myFireBaseAuthInstance.getCurrentUser();
@@ -60,25 +60,8 @@ public class FirebaseAuthRepository {
     }
 
     public void logOut(Context context){
-      //  FirebaseAuth myAuth = FirebaseAuth.getInstance().getCurrentUser();
-        //myAuth.signOut();
-
         myFireBaseAuthInstance.signOut();
-
-        /*AuthUI.getInstance()
-                .signOut(context)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull @NotNull Task<Void> task) {
-                        checkUser();
-                    }
-                });
-
-         */
-
-        //myAuth.signOut();
         checkUser();
-       // myUserState.postValue(false);//or checkuser
     }
 
     public LiveData<FirebaseUser> getUserLiveData() {
