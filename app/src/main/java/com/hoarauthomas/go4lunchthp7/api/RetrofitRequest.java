@@ -17,7 +17,7 @@ public class RetrofitRequest {
         return retrofit;
     }
 
-    public static Retrofit getGooglePlaceAutocomplete(){
+   /* public static Retrofit getGooglePlaceAutocomplete(){
         if (retrofit == null) {
 
             retrofit = new Retrofit.Builder()
@@ -26,6 +26,8 @@ public class RetrofitRequest {
                     .build();
         }
     }
+
+    */
 
 
 
