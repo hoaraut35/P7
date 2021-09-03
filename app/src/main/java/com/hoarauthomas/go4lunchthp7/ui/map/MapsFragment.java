@@ -40,6 +40,14 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     private static final int DEFAULT_ZOOM = 10;
     private GoogleMap myMap;
 
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        //TODO: stop location
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -62,6 +70,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     //**********************************************************************************************
 
     private void showMapWithPosition(@NonNull LatLng position) {
+
 
         if (position != null){
             myMap.moveCamera(CameraUpdateFactory.newLatLng(position));

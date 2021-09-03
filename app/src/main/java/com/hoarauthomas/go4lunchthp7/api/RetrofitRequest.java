@@ -16,4 +16,19 @@ public class RetrofitRequest {
         }
         return retrofit;
     }
+
+    public static Retrofit getGooglePlaceAutocomplete(){
+        if (retrofit == null) {
+
+            retrofit = new Retrofit.Builder()
+                    .baseUrl("")
+                    .addCallAdapterFactory(GsonConverterFactory.create())
+                    .build();
+        }
+    }
+
+
+
+
+
 }

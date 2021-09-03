@@ -37,12 +37,21 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
+
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="536dp"
             android:layout_gravity="center"
             />
+
+
+   <!--     <fragment android:id="@+id/autocomplete_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
+            />
+            -->
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation_menu"
@@ -52,7 +61,15 @@
 
             app:itemIconTint="@drawable/bottom_navigation_colors"
             app:itemTextColor="@drawable/bottom_navigation_colors"
-            app:menu="@menu/bottom_navigation_menu" />
+            app:menu="@menu/bottom_navigation_menu"
+
+
+
+
+
+            />
+
+
 
 
     </LinearLayout>

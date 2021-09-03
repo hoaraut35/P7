@@ -1,14 +1,7 @@
 package com.hoarauthomas.go4lunchthp7;
 
 import android.Manifest;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -19,15 +12,14 @@ import android.widget.TextView;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkRequest;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthMethodPickerLayout;
@@ -35,37 +27,46 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.RectangularBounds;
+import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 import com.hoarauthomas.go4lunchthp7.ui.FragmentsAdapter;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
-import com.hoarauthomas.go4lunchthp7.ui.workmates.ViewModelWorkMates;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.workmanager.WorkManager;
 
-import java.time.LocalTime;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import static androidx.core.view.GravityCompat.START;
-import static com.facebook.internal.FeatureManager.Feature.Places;
-import static com.google.android.gms.common.config.GservicesValue.isInitialized;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    public String TAG = "[AUTO]";
 
     public ActivityMainBinding binding;
 
     public ViewModelMain myViewModel;
 
-    private String myRestaurant=null ;
+    private String myRestaurant = null;
 
     //choose authentification sign-in intent
     private final List<AuthUI.IdpConfig> providers = Arrays.asList(
@@ -94,44 +95,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setupBottomBAr();
         setupViewPager();
 
-
         //notificationtest();
         loadWork();
 
-
         setupAutocomplete();
 
-
-
     }
-
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         return super.onOptionsItemSelected(item);
-
-
-
-
-
     }
 
     private void setupAutocomplete() {
+        //initialize
+        Places.initialize(getApplicationContext(), BuildConfig.MAPS_API_KEY);
 
-        AutocompleteSessionToken token = AutocompleteSessionToken.newInstance();
-
-        FindAutocompletePredictionsRequest myRequest = FindAutocompletePredictionsRequest.builder()
-
-
-
-
-                .build();
-
-
-
+        // create
+        PlacesClient placesClient = Places.createClient(this);
     }
-
-
 
 
     private void notificationtest() {
@@ -146,7 +128,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         notificationManagerCompat.notify(1, builder.build());
 
 
-
     }
 
     //create new work to workmanager
@@ -155,22 +136,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void loadWork() {
 
         //onetime mode
-      //  WorkRequest newLoadWork = OneTimeWorkRequest.from(WorkManager.class);
-       // androidx.work.WorkManager.getInstance(this).enqueue(newLoadWork);
+        //  WorkRequest newLoadWork = OneTimeWorkRequest.from(WorkManager.class);
+        // androidx.work.WorkManager.getInstance(this).enqueue(newLoadWork);
 
         //periodic mode
 
 
-        Log.i("TEMPS","montemps : " + LocalTime.now());
+        // Log.i("TEMPS", "montemps : " + LocalTime.now());
 
-       // LocalTime myLocal = LocalTime.now
+        // LocalTime myLocal = LocalTime.now
 
-      PeriodicWorkRequest newLoadPeriodicWork = new PeriodicWorkRequest.Builder(WorkManager.class,
-              15, TimeUnit.MINUTES)
+        PeriodicWorkRequest newLoadPeriodicWork = new PeriodicWorkRequest.Builder(WorkManager.class,
+                15, TimeUnit.MINUTES)
                 //constrains
-            .build();
+                .build();
 
-     //   newLoadPeriodicWork;
+        //   newLoadPeriodicWork;
 
 
     }
@@ -189,13 +170,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onChanged(ViewMainState2 viewStateMain) {
 
-                if (viewStateMain.LoginState){
+                if (viewStateMain.LoginState) {
                     request_user_info("");
-                    Log.i("MEDIA","connecté recup infoMEDIA");
-                }else
-                {
+                    Log.i("MEDIA", "connecté recup infoMEDIA");
+                } else {
                     request_login();
-                    Log.i("MEDIA","non connecté attente");
+                    Log.i("MEDIA", "non connecté attente");
                 }
 
             }
@@ -203,11 +183,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-
     private void setupFavRestau(String myRestaurantFavorite) {
         this.actualRestaurant = myRestaurantFavorite;
     }
-
 
 
     private void Authentification() {
@@ -250,7 +228,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
 
 
-
                     }
                 });
     }
@@ -283,11 +260,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void request_user_info(String restaurant) {
 
         //check resturant
-        if (restaurant != null){
+        if (restaurant != null) {
             myRestaurant = restaurant;
         }
 
-        if (myViewModel.getUser() != null){
+        if (myViewModel.getUser() != null) {
 
             showSnackBar(myViewModel.getUser().getDisplayName());
 
@@ -366,12 +343,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void openMyFavoriteRestaurant() {
 
-        if (myViewModel.getMyUserRestaurant().getValue() != null){
+        if (myViewModel.getMyUserRestaurant().getValue() != null) {
             Intent intent = new Intent(this, DetailActivity.class);
             intent.putExtra("TAG_ID", myViewModel.getMyUserRestaurant().getValue());
             startActivity(intent);
-        } else
-        {
+        } else {
             showSnackBar("Vous n'avez pas de favoris");
         }
 
@@ -411,13 +387,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             onSearchCalled();
 
 
-
             return false;
         });
     }
 
 
-    public void onSearchCalled(){
+    public void onSearchCalled() {
 
         // Set the fields to specify which types of place data to return.
         List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG);
@@ -429,7 +404,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //  startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
 
 
-
     }
 
 
@@ -439,4 +413,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    public void startAutocompleteActivity(MenuItem item) {
+
+        Intent intent = new Autocomplete.IntentBuilder(
+                AutocompleteActivityMode.OVERLAY,
+
+                Arrays.asList(Place.Field.ID, Place.Field.NAME)    )
+                .setTypeFilter(TypeFilter.ESTABLISHMENT)
+                .setCountries(Arrays.asList("FR"))
+                .build(this);
+
+        startActivityForResult(intent, 123);
+
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 123){
+            if (resultCode == RESULT_OK){
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                showSnackBar(place.getName() + " id: " + place.getId());
+            }else if (resultCode == AutocompleteActivity.RESULT_ERROR){
+                showSnackBar("Erreur autocomplete");
+            }else if (resultCode == RESULT_CANCELED){
+                showSnackBar("Recherche annulée");
+            }
+        }
+    }
 }

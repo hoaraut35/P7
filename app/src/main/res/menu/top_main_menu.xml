@@ -7,7 +7,10 @@
         android:id="@+id/search"
         android:icon="@drawable/ic_search"
         android:title="@string/favorite"
+        android:onClick="startAutocompleteActivity"
         app:showAsAction="always|collapseActionView" />
+
+
 
 
 </menu>
