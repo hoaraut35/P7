@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -13,13 +15,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -38,7 +40,7 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
-import com.google.android.material.appbar.MaterialToolbar;
+
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
@@ -96,8 +98,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setupAutocomplete();
 
-        MaterialToolbar toolbar= (MaterialToolbar) findViewById(R.id.topAppBar);
-
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.topAppBar);
+        setSupportActionBar(binding.topAppBar);
 
     }
 
@@ -477,54 +479,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
 
 
-    }
 
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        Log.i("[QUERY]","menu load...");
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.top_main_menu, menu);
 
         MenuItem search = menu.findItem(R.id.searchView);
         SearchView searchView = (SearchView)search.getActionView();
 
-
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-
-
-                showSnackBar("test");
-
-
-                return false;
-            }
-        });
-
-
-        //SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-
-      /*  searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-
-                Log.i("[QUERY]","ok on peut envoyer");
-                if (query.length() > 3){
-
-
+                if (query.length() >3 ){
+                    showSnackBar("test");
 
                     String st = null;
 
@@ -546,22 +520,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
 
 
+
                 }else
                 {
-                    showSnackBar("ajuster votre recherche");
+                    showSnackBar("critere trop faible");
                 }
 
-                return true;
+                return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
 
 
+
                 return false;
             }
+        });
 
-       */
+
+
+
+
+
+
+
 
         return super.onCreateOptionsMenu(menu);
 
