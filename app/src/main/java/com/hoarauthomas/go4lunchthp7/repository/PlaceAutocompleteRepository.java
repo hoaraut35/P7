@@ -1,5 +1,7 @@
 package com.hoarauthomas.go4lunchthp7.repository;
 
+import android.location.Location;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
@@ -22,15 +24,24 @@ public class PlaceAutocompleteRepository {
     //constructor
     public PlaceAutocompleteRepository() {
         service = RetrofitRequest.getRetrofitInstance().create(GooglePlaceApi.class);
-        getPlaceAutocomplete("pizza");
+        //getPlaceAutocomplete("pizza");
     }
 
-    public MutableLiveData<PlaceAutocomplete> getPlaceAutocomplete(String textSearch) {
+    public MutableLiveData<PlaceAutocomplete> getPlaceAutocomplete(String textSearch, Location position) {
+        String positionstr =null;
+
+
+        if (!Double.isNaN(position.getLatitude()) && !Double.isNaN(position.getLongitude())){
+
+            positionstr = position.getLatitude() +  "," + position.getLongitude();
+        }
+
+
 
         if (textSearch != null && textSearch.length() > 3) {
 
 
-            service.getPlaceAutocomplete(BuildConfig.MAPS_API_KEY, "Cantine de fra").enqueue(new Callback<PlaceAutocomplete>() {
+            service.getPlaceAutocomplete(BuildConfig.MAPS_API_KEY, textSearch, positionstr).enqueue(new Callback<PlaceAutocomplete>() {
                 @Override
                 public void onResponse(Call<PlaceAutocomplete> call, Response<PlaceAutocomplete> response) {
 

@@ -1,6 +1,7 @@
 package com.hoarauthomas.go4lunchthp7;
 
 import android.content.Context;
+import android.location.Location;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -9,11 +10,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.facebook.internal.Mutable;
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
+import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class ViewModelMain extends ViewModel {
     private FirebaseAuthRepository myFirebaseAuthRepoVM;
     private WorkMatesRepository myWorkMatesRepoVM;
     private PlaceAutocompleteRepository myPlaceAutocompleteRepoVM;
+    private PositionRepository myPositionRepoVM;
 
     //livedata 1
     private MutableLiveData<FirebaseUser> myUserLiveData;
@@ -46,7 +48,7 @@ public class ViewModelMain extends ViewModel {
     MediatorLiveData<ViewMainState2> myAppMapMediator = new MediatorLiveData<>();
 
     //constructor
-    public ViewModelMain(FirebaseAuthRepository firebaseAuthRepository, WorkMatesRepository workMatesRepository, PlaceAutocompleteRepository placeAutocompleteRepository) {
+    public ViewModelMain(FirebaseAuthRepository firebaseAuthRepository, WorkMatesRepository workMatesRepository, PlaceAutocompleteRepository placeAutocompleteRepository, PositionRepository myPositionRepoVM) {
 
         //get data from Auth repository...
         this.myFirebaseAuthRepoVM = firebaseAuthRepository;
@@ -59,6 +61,10 @@ public class ViewModelMain extends ViewModel {
 
         //get data from place autocomplete repository...
         this.myPlaceAutocompleteRepoVM = placeAutocompleteRepository;
+
+        //get position for autocomplete request
+        this.myPositionRepoVM = myPositionRepoVM;
+
 
         //add source
         myAppMapMediator.addSource(myUserStateNew, new Observer<Boolean>() {
@@ -210,17 +216,23 @@ public class ViewModelMain extends ViewModel {
 
 
 
-    public MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> getResultAutocomplete(){
-        myPlaceAutocompleteList = getDataFromAutoCompleteRepo();
+    public MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> getResultAutocomplete(String query, Location location){
+        myPlaceAutocompleteList = getDataFromAutoCompleteRepo(query,location);
         return myPlaceAutocompleteList;
 
     }
 
 
-    private MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> getDataFromAutoCompleteRepo(){
-        return myPlaceAutocompleteRepoVM.getPlaceAutocomplete("cantine de fran");
+    private MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> getDataFromAutoCompleteRepo(String query, Location location){
+        return myPlaceAutocompleteRepoVM.getPlaceAutocomplete(query, location);
     }
 
+
+
+
+    public Location getMyPosition(){
+        return myPositionRepoVM.getLocationLiveData().getValue();
+    }
 
 
 

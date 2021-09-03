@@ -6,7 +6,9 @@
         android:id="@+id/searchView"
         android:icon="@drawable/ic_search"
         android:title="@string/favorite"
+
         app:actionViewClass="android.widget.SearchView"
+
         app:showAsAction="ifRoom|collapseActionView" />
 
 

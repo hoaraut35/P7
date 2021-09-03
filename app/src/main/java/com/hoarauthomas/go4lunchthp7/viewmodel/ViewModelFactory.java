@@ -89,7 +89,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
 
         if (modelClass.isAssignableFrom(ViewModelMain.class)) {
-            return (T) new ViewModelMain(firebaseAuthRepository, workMatesRepository, placeAutocompleteRepository);
+            return (T) new ViewModelMain(firebaseAuthRepository, workMatesRepository, placeAutocompleteRepository, positionRepository);
         }
 
         if (modelClass.isAssignableFrom(ViewModelMap.class)) {

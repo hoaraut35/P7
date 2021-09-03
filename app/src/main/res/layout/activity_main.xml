@@ -41,7 +41,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:menu="@menu/top_main_menu"
-                app:navigationIcon="@drawable/ic_list"/>
+                app:navigationIcon="@drawable/ic_list"
+                app:title="@string/menu_title"
+                android:background="@color/background_orange"
+                style="@style/Widget.MaterialComponents.Toolbar.Primary"/>
 
 
 

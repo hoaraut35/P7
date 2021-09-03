@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -427,7 +428,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void startAutocompleteActivity(MenuItem item) {
 
 
-        String st = null;
+    /*    String st = null;
 
 
         if (myViewModel.getResultAutocomplete().getValue() != null) {
@@ -439,12 +440,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         }
 
+     */
 
-        if (st != null) {
+
+ /*       if (st != null) {
             showSnackBar("Resultat autocomplete :" + st);
         } else {
             showSnackBar("Resultat vide autocomplete :");
         }
+
+  */
 
 
   /*      Intent intent = new Autocomplete.IntentBuilder(
@@ -498,15 +503,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public boolean onQueryTextSubmit(String query) {
 
                 if (query.length() >3 ){
-                    showSnackBar("test");
+
+
+                    Location mypos = myViewModel.getMyPosition();
+
+                    showSnackBar("test" + mypos.getLatitude() +  " " + mypos.getLatitude());
 
                     String st = null;
 
 
-                    if (myViewModel.getResultAutocomplete().getValue() != null) {
+                    List<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myListResponse=null;
 
-                        for (int i = 0; i < myViewModel.getResultAutocomplete().getValue().getPredictions().size(); i++) {
-                            st = st + myViewModel.getResultAutocomplete().getValue().getPredictions().get(i).getPlaceId();
+                    if (myViewModel.getResultAutocomplete(query,mypos).getValue() != null) {
+
+
+                        for (int i = 0; i < myViewModel.getResultAutocomplete(query,mypos).getValue().getPredictions().size(); i++) {
+                            st = st + myViewModel.getResultAutocomplete(query,mypos).getValue().getPredictions().get(i).getDescription();
                         }
 
 
