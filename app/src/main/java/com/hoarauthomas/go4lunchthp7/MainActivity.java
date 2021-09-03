@@ -384,7 +384,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.i("THOMAS", "Click sur recherche top bar app");
 
 
-            onSearchCalled();
+         //   onSearchCalled();
 
 
             return false;
@@ -394,13 +394,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void onSearchCalled() {
 
+
+
+
         // Set the fields to specify which types of place data to return.
-        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG);
+      /*  List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG);
         // Start the autocomplete intent.
         Intent intent = new Autocomplete.IntentBuilder(
                 AutocompleteActivityMode.FULLSCREEN, fields).setCountry("FR") //NIGERIA
                 .build(this);
 
+
+       */
         //  startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
 
 
@@ -408,14 +413,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     //get item selected on navigation drawer
+
+
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         return true;
     }
 
+
+
+
+    //work fine but sdk with can't specify position
     public void startAutocompleteActivity(MenuItem item) {
 
-        Intent intent = new Autocomplete.IntentBuilder(
+
+        String st=null;
+
+        for (int i =0 ;i<  myViewModel.getResultAutocomplete().getValue().getPredictions().size();i++){
+            st = st + myViewModel.getResultAutocomplete().getValue().getPredictions().get(i).getPlaceId();
+        }
+        showSnackBar("Resultat autocomplete :" + st);
+  /*      Intent intent = new Autocomplete.IntentBuilder(
                 AutocompleteActivityMode.OVERLAY,
 
                 Arrays.asList(Place.Field.ID, Place.Field.NAME)    )
@@ -425,7 +444,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         startActivityForResult(intent, 123);
 
+
+*/
     }
+
+
 
 
     @Override

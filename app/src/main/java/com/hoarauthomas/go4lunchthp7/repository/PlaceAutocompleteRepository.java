@@ -22,6 +22,7 @@ public class PlaceAutocompleteRepository {
     //constructor
     public PlaceAutocompleteRepository() {
         service = RetrofitRequest.getRetrofitInstance().create(GooglePlaceApi.class);
+        getPlaceAutocomplete("pizza");
     }
 
     public MutableLiveData<PlaceAutocomplete> getPlaceAutocomplete(String textSearch) {
