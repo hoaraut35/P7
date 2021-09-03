@@ -17,20 +17,16 @@ public class RetrofitRequest {
         return retrofit;
     }
 
-   /* public static Retrofit getGooglePlaceAutocomplete(){
+    //not necesseray
+    public static Retrofit getPlaceAutocomplete() {
         if (retrofit == null) {
-
             retrofit = new Retrofit.Builder()
-                    .baseUrl("")
-                    .addCallAdapterFactory(GsonConverterFactory.create())
+                    .baseUrl("https://maps.googleapis.com/maps/api/")
+                    .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
+        return retrofit;
     }
-
-    */
-
-
-
 
 
 }
