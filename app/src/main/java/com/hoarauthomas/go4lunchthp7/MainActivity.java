@@ -1,13 +1,19 @@
 package com.hoarauthomas.go4lunchthp7;
 
 import android.Manifest;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -27,20 +33,12 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.RectangularBounds;
-import com.google.android.libraries.places.api.model.TypeFilter;
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
@@ -48,8 +46,6 @@ import com.hoarauthomas.go4lunchthp7.ui.FragmentsAdapter;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.workmanager.WorkManager;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -99,6 +95,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         loadWork();
 
         setupAutocomplete();
+
+        MaterialToolbar toolbar= (MaterialToolbar) findViewById(R.id.topAppBar);
+
 
     }
 
@@ -379,12 +378,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setupTopAppBar() {
         binding.topAppBar.setNavigationOnClickListener(v -> binding.drawerLayout.openDrawer(START));
 
+
+
+
         binding.topAppBar.setOnMenuItemClickListener(item -> {
             //TODO: add search function
             Log.i("THOMAS", "Click sur recherche top bar app");
 
 
-         //   onSearchCalled();
+            //   onSearchCalled();
 
 
             return false;
@@ -393,8 +395,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     public void onSearchCalled() {
-
-
 
 
         // Set the fields to specify which types of place data to return.
@@ -415,25 +415,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //get item selected on navigation drawer
 
 
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         return true;
     }
 
 
-
-
     //work fine but sdk with can't specify position
     public void startAutocompleteActivity(MenuItem item) {
 
 
-        String st=null;
+        String st = null;
 
-        for (int i =0 ;i<  myViewModel.getResultAutocomplete().getValue().getPredictions().size();i++){
-            st = st + myViewModel.getResultAutocomplete().getValue().getPredictions().get(i).getPlaceId();
+
+        if (myViewModel.getResultAutocomplete().getValue() != null) {
+
+            for (int i = 0; i < myViewModel.getResultAutocomplete().getValue().getPredictions().size(); i++) {
+                st = st + myViewModel.getResultAutocomplete().getValue().getPredictions().get(i).getPlaceId();
+            }
+
+
         }
-        showSnackBar("Resultat autocomplete :" + st);
+
+
+        if (st != null) {
+            showSnackBar("Resultat autocomplete :" + st);
+        } else {
+            showSnackBar("Resultat vide autocomplete :");
+        }
+
+
   /*      Intent intent = new Autocomplete.IntentBuilder(
                 AutocompleteActivityMode.OVERLAY,
 
@@ -449,21 +460,110 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 123){
-            if (resultCode == RESULT_OK){
+        if (requestCode == 123) {
+            if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 showSnackBar(place.getName() + " id: " + place.getId());
-            }else if (resultCode == AutocompleteActivity.RESULT_ERROR){
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 showSnackBar("Erreur autocomplete");
-            }else if (resultCode == RESULT_CANCELED){
+            } else if (resultCode == RESULT_CANCELED) {
                 showSnackBar("Recherche annulée");
             }
         }
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+
+
+    }
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        Log.i("[QUERY]","menu load...");
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.top_main_menu, menu);
+
+        MenuItem search = menu.findItem(R.id.searchView);
+        SearchView searchView = (SearchView)search.getActionView();
+
+
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+
+                showSnackBar("test");
+
+
+                return false;
+            }
+        });
+
+
+        //SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+
+      /*  searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                Log.i("[QUERY]","ok on peut envoyer");
+                if (query.length() > 3){
+
+
+
+                    String st = null;
+
+
+                    if (myViewModel.getResultAutocomplete().getValue() != null) {
+
+                        for (int i = 0; i < myViewModel.getResultAutocomplete().getValue().getPredictions().size(); i++) {
+                            st = st + myViewModel.getResultAutocomplete().getValue().getPredictions().get(i).getPlaceId();
+                        }
+
+
+                    }
+
+
+                    if (st != null) {
+                        showSnackBar("Resultat autocomplete :" + st);
+                    } else {
+                        showSnackBar("Resultat vide autocomplete :");
+                    }
+
+
+                }else
+                {
+                    showSnackBar("ajuster votre recherche");
+                }
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+
+                return false;
+            }
+
+       */
+
+        return super.onCreateOptionsMenu(menu);
+
     }
 }

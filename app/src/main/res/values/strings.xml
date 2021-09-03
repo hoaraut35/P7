@@ -18,7 +18,7 @@
     <string name="logout">LOGOUT</string>
     <string name="login_name">John SMITH</string>
     <string name="content_description_favorite">description_favorite</string>
-    <string name="favorite">favorite_text</string>
+    <string name="favorite">Search ...</string>
     <string name="bottom_navigation_work">Workmates</string>
 
     <!-- strings for Workmates view -->
