@@ -1,6 +1,7 @@
 package com.hoarauthomas.go4lunchthp7.api;
 
 
+import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.MyDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
 
@@ -25,10 +26,12 @@ public interface GooglePlaceApi {
             @Query("place_id") String myPlaceId);
 
     //for autocomplete search...
-    @GET("place/autocomplete/json?types=establishment&radius=1000")
-    Call<MyDetailRestaurant> getPlaceAutocomplete(
+    //TODO: remove location
+    @GET("place/autocomplete/json?types=establishment&radius=1000&location=37.76999%2C-122.44696")
+    Call<PlaceAutocomplete> getPlaceAutocomplete(
             @Query("key") String key,
-            @Query("input") String input,
-            @Query("location") String myLocation);
+            @Query("input") String input);
+
+    //        @Query("location") String myLocation);
 
 }

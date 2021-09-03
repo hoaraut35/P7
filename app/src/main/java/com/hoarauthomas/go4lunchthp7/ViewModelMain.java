@@ -9,9 +9,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.facebook.internal.Mutable;
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthRepository;
+import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
 import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
 
 import java.util.List;
@@ -24,6 +26,7 @@ public class ViewModelMain extends ViewModel {
     //repository
     private FirebaseAuthRepository myFirebaseAuthRepoVM;
     private WorkMatesRepository myWorkMatesRepoVM;
+    private PlaceAutocompleteRepository myPlaceAutocompleteRepoVM;
 
     //livedata 1
     private MutableLiveData<FirebaseUser> myUserLiveData;
@@ -36,11 +39,14 @@ public class ViewModelMain extends ViewModel {
     private MutableLiveData<String> myUserRestaurantId = new MutableLiveData<>();
 
 
+    private MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myPlaceAutocompleteList = new MutableLiveData<>();
+
+
     //to merge data
     MediatorLiveData<ViewMainState2> myAppMapMediator = new MediatorLiveData<>();
 
     //constructor
-    public ViewModelMain(FirebaseAuthRepository firebaseAuthRepository, WorkMatesRepository workMatesRepository) {
+    public ViewModelMain(FirebaseAuthRepository firebaseAuthRepository, WorkMatesRepository workMatesRepository, PlaceAutocompleteRepository placeAutocompleteRepository) {
 
         //get data from Auth repository...
         this.myFirebaseAuthRepoVM = firebaseAuthRepository;
@@ -51,6 +57,10 @@ public class ViewModelMain extends ViewModel {
         this.myWorkMatesRepoVM = workMatesRepository;
         myWorkMatesListLiveData = myWorkMatesRepoVM.getAllWorkMatesList();
 
+        //get data from place autocomplete repository...
+        this.myPlaceAutocompleteRepoVM = placeAutocompleteRepository;
+
+        //add source
         myAppMapMediator.addSource(myUserStateNew, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
@@ -59,6 +69,7 @@ public class ViewModelMain extends ViewModel {
             }
         });
 
+        //add source
         myAppMapMediator.addSource(myUserLiveData, new Observer<FirebaseUser>() {
             @Override
             public void onChanged(FirebaseUser firebaseUser) {
@@ -76,6 +87,7 @@ public class ViewModelMain extends ViewModel {
             }
         });
 
+        //add source
         myAppMapMediator.addSource(myWorkMatesListLiveData, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
@@ -195,6 +207,28 @@ public class ViewModelMain extends ViewModel {
     public LiveData<ViewMainState2> getMediatorLiveData() {
         return myAppMapMediator;
     }
+
+
+
+    public MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> getResultAutocomplete(){
+        myPlaceAutocompleteList = getDataFromAutoCompleteRepo();
+        return myPlaceAutocompleteList;
+
+    }
+
+
+    private MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> getDataFromAutoCompleteRepo(){
+        return myPlaceAutocompleteRepoVM.getPlaceAutocomplete("cantine de fran");
+    }
+
+
+
+
+
+
+
+
+
 }
 
 
