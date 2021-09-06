@@ -283,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (myViewModel.getUser() != null) {
 
-            showSnackBar(myViewModel.getUser().getDisplayName());
+            //showSnackBar(myViewModel.getUser().getDisplayName());
 
             View hv = binding.navigationView.getHeaderView(0);
 
@@ -360,7 +360,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void openMyFavoriteRestaurant() {
 
-        if (myViewModel.getMyUserRestaurant().getValue() != null) {
+        if (myViewModel.getMyUserRestaurant().getValue() != null && !myViewModel.getMyUserRestaurant().getValue().isEmpty()) {
             Intent intent = new Intent(this, DetailActivity.class);
             intent.putExtra("TAG_ID", myViewModel.getMyUserRestaurant().getValue());
             startActivity(intent);
@@ -397,14 +397,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setupTopAppBar() {
 
-
-
-
-
-
-
-
-        binding.topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+/*        binding.topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
 
@@ -412,21 +405,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return false;
             }
         });
-
-
-     /*   binding.topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Log.i("MENU","mon menu");
-                binding.drawerLayout.openDrawer(START);
-            }
-        });
-
-      */
-
-
-
 
         binding.topAppBar.setOnMenuItemClickListener(item -> {
             //TODO: add search function
@@ -438,6 +416,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             return false;
         });
+
+ */
     }
 
 
@@ -527,12 +507,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-
-
-
-
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -593,14 +567,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return false;
             }
         });
-
-
-
-
-
-
-
-
 
         return super.onCreateOptionsMenu(menu);
 

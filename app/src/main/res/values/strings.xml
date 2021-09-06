@@ -66,5 +66,6 @@
     <string name="sign_in_with_email">Sign in with Email</string>
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="is_eating_txt"> is eating </string>
+    <string name="restaunochoice">\" hasn\'t decided yet\"</string>
 
 </resources>

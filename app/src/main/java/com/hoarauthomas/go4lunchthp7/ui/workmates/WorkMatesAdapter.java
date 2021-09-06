@@ -90,20 +90,18 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
                 .into(holder.avatar);
 
 
-        holder.nameOfWorkMate.setText(myWorkMates.getNameOfWorkMates());
+        holder.nameOfWorkMate.setText(myWorkMates.getNameOfWorkMates() + " ");
 
-        Log.i("[NEW]", "" + myWorkMates.getNameOfRestaurant());
+
         if (myWorkMates.getNameOfRestaurant() != null && myWorkMates.getNameOfRestaurant() != "") {
             holder.nameOfWorkMate.setTypeface(null, Typeface.BOLD);
             holder.workMateState.setTypeface(null, Typeface.BOLD);
-
-            //holder.workMateState.setText(R.string." is eating (" + myWorkMates.getNameOfRestaurant() + ")");
             holder.workmateRestaurant.setText(" (" + myWorkMates.getNameOfRestaurant() + ")");
 
         } else {
             holder.nameOfWorkMate.setTypeface(null, Typeface.ITALIC);
             holder.workMateState.setTypeface(null, Typeface.ITALIC);
-            //holder.workMateState.setText(" hasn't decided yet");
+            holder.workMateState.setText(R.string.restaunochoice);
             //holder.workmateRestaurant.setText("(" + myWorkMates.getNameOfRestaurant() + ")");
         }
 

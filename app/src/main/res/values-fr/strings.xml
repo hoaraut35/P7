@@ -66,5 +66,7 @@
     <string name="sign_in_with_email">Se connecter avec un Email</string>
     <string name="sign_in_with_google">Se connecter avec Google</string>
     <string name="is_eating_txt"> a choisi </string>
+    <string name="restaunochoice"> a pas décidé</string>
+
 
 </resources>
