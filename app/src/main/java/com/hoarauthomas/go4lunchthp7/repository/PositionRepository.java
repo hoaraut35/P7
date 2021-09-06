@@ -16,28 +16,34 @@ import com.google.android.gms.location.LocationResult;
 
 import org.jetbrains.annotations.NotNull;
 
+//to get position when changed
+
 public class PositionRepository {
 
+    //parameters
     private static final int LOCATION_REQUEST_INTERVAL_MS = 10_000;
     private static final float SMALLEST_DISPLACEMENT_THRESHOLD_METER = 25;
 
-    @NonNull
+    //for object
     private final FusedLocationProviderClient fusedLocationProviderClient;
 
-    @NonNull
+    //To update data
     private final MutableLiveData<Location> locationMutableLiveData = new MutableLiveData<>(null);
 
+    //for callback of FusedLocationProviderClient
     private LocationCallback callback;
 
+    //constructor called by viewmodelfactory to get an instance...
     public PositionRepository(@NonNull FusedLocationProviderClient fusedLocationProviderClient) {
-        Log.i("[MAP]","Repository position ...");
         this.fusedLocationProviderClient = fusedLocationProviderClient;
     }
 
+    //publish to viewmodel
     public LiveData<Location> getLocationLiveData() {
         return locationMutableLiveData;
     }
 
+    //public method to start listener position
     @RequiresPermission(anyOf = {"android.permission.ACCESS_COARSE_LOCATION", "android.permission.ACCESS_FINE_LOCATION"})
     public void startLocationRequest() {
         if (callback == null) {
@@ -62,6 +68,7 @@ public class PositionRepository {
         );
     }
 
+    //public method to stop listener when permission is not granted
     public void stopLocationRequest() {
         if (callback != null) {
             fusedLocationProviderClient.removeLocationUpdates(callback);

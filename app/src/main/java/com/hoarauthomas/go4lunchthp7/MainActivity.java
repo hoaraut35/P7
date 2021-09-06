@@ -50,6 +50,8 @@ import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.workmanager.WorkManager;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -99,13 +101,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         setupAutocomplete();
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.topAppBar);
+
         setSupportActionBar(binding.topAppBar);
 
+        binding.topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                Log.i("MENU","clic");
+                return false;
+            }
+        });
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        Log.i("MENU","on,Item clic");
+
+
+        binding.drawerLayout.openDrawer(START);
         return super.onOptionsItemSelected(item);
     }
 
@@ -378,15 +393,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding.viewpager.setUserInputEnabled(false);
     }
 
+
+
     private void setupTopAppBar() {
-        binding.topAppBar.setNavigationOnClickListener(v -> binding.drawerLayout.openDrawer(START));
+
+
+
+
+
+
+
+
+        binding.topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+        Log.i("MENU","mon menu");
+                return false;
+            }
+        });
+
+
+     /*   binding.topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.i("MENU","mon menu");
+                binding.drawerLayout.openDrawer(START);
+            }
+        });
+
+      */
 
 
 
 
         binding.topAppBar.setOnMenuItemClickListener(item -> {
             //TODO: add search function
-            Log.i("THOMAS", "Click sur recherche top bar app");
+            Log.i("MENU", "Click sur recherche top bar app");
 
 
             //   onSearchCalled();

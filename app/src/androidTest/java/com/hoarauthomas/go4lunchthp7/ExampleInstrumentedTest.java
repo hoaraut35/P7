@@ -23,4 +23,11 @@ public class ExampleInstrumentedTest {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         assertEquals("com.hoarauthomas.go4lunchthp7", appContext.getPackageName());
     }
+
+
+    //tester la partie ui ici
+    //https://developer.android.com/jetpack/guide
+
+
+
 }

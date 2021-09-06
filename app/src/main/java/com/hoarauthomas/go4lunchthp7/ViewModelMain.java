@@ -24,30 +24,23 @@ import javax.annotation.Nullable;
 
 public class ViewModelMain extends ViewModel {
 
-    //repository
+    //repository...
     private FirebaseAuthRepository myFirebaseAuthRepoVM;
     private WorkMatesRepository myWorkMatesRepoVM;
     private PlaceAutocompleteRepository myPlaceAutocompleteRepoVM;
     private PositionRepository myPositionRepoVM;
 
-    //livedata 1
+    //livedata...
     private MutableLiveData<FirebaseUser> myUserLiveData;
     private MutableLiveData<Boolean> myUserStateNew;
-
-    //livedata2
     private MutableLiveData<List<User>> myWorkMatesListLiveData;
-
-    //others
     private MutableLiveData<String> myUserRestaurantId = new MutableLiveData<>();
-
-
     private MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myPlaceAutocompleteList = new MutableLiveData<>();
 
-
-    //to merge data
+    //to update ViewState...
     MediatorLiveData<ViewMainState2> myAppMapMediator = new MediatorLiveData<>();
 
-    //constructor
+    //constructor...
     public ViewModelMain(FirebaseAuthRepository firebaseAuthRepository, WorkMatesRepository workMatesRepository, PlaceAutocompleteRepository placeAutocompleteRepository, PositionRepository myPositionRepoVM) {
 
         //get data from Auth repository...
@@ -144,12 +137,6 @@ public class ViewModelMain extends ViewModel {
                             myAppMapMediator.setValue(new ViewMainState2(true, "pas de restau"));
 
                         }
-
-
-
-
-
-
 
             }else
             {

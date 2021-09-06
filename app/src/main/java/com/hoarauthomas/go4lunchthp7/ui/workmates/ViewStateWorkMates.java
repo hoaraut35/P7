@@ -11,7 +11,6 @@ public class ViewStateWorkMates {
 
 
     List<SpecialWorkMates> mySpecialWorkMAtes = new ArrayList<>();
-
     List<User> myWorkMatesList;
     List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantList;
     RestaurantPojo myRestauResult;

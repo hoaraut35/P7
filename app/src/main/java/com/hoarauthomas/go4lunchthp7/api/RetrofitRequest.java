@@ -17,16 +17,4 @@ public class RetrofitRequest {
         return retrofit;
     }
 
-    //not necesseray
-    public static Retrofit getPlaceAutocomplete() {
-        if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl("https://maps.googleapis.com/maps/api/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-        }
-        return retrofit;
-    }
-
-
 }

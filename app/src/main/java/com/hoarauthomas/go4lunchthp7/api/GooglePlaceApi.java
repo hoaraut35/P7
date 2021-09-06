@@ -33,6 +33,4 @@ public interface GooglePlaceApi {
             @Query("input") String input,
             @Query("location") String location);
 
-    //        @Query("location") String myLocation);
-
 }
