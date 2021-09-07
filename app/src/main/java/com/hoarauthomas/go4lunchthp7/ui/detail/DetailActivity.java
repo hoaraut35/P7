@@ -1,8 +1,6 @@
 package com.hoarauthomas.go4lunchthp7.ui.detail;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,8 +17,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding;
-import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
+import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
 
 import java.util.List;
 
@@ -34,7 +32,6 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = ActivityDetailRestaurantBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
@@ -42,19 +39,12 @@ public class DetailActivity extends AppCompatActivity {
         setupIntent();
     }
 
+    //update placeId to ViewModel from intent
     private void setupIntent() {
-
         Intent intent = getIntent();
-
         if (intent.getStringExtra("TAG_ID") != null) {
-            //Log.i("[MONDETAIL]", "TAG MODE" + restaurant_id);
             myViewModelDetail.setPlaceId(intent.getStringExtra("TAG_ID"));
-            showSnackBar(intent.getStringExtra("TAG_ID"));
-        } else {
-
-
-            //restaurant_id = "";
-            // Log.i("[MONDETAIL]", "Pas de restaurant sélectionné : [" + restaurant_id + "]");
+            showSnackBar("Place id selected for detail : " + intent.getStringExtra("TAG_ID"));
         }
     }
 
@@ -65,12 +55,10 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onChanged(ViewStateDetail viewStateDetail) {
 
-
+                //si aucun placeif alors on prend cleui de l'utilisateur actuel
                 if (getIntent().getStringExtra("TAG_ID") == null){
                     myViewModelDetail.setPlaceId(viewStateDetail.myUser.getMyFavoriteRestaurantId());
                 }
-
-
 
                 //show image of restaurant if exist
                 try {
@@ -132,15 +120,12 @@ public class DetailActivity extends AppCompatActivity {
 
                 setupRecyclerView(viewStateDetail.getMyWorkMatesTag());
 
-
                 setupButtonChoice(viewStateDetail.getFavoris());
 
                 setupButtonLike(viewStateDetail.getLike());
 
-
             }
         });
-
 
     }
 
@@ -148,27 +133,19 @@ public class DetailActivity extends AppCompatActivity {
 
         if (state) {
             binding.choiceBtn.setImageResource(R.drawable.checkon_foreground);
-            binding.choiceBtn.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.selected_favorite)));
 
         } else {
             binding.choiceBtn.setImageResource(R.drawable.checkoff_foreground);
-            binding.choiceBtn.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.not_selected_favorite)));
-
         }
-
-
 
         binding.choiceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Log.i("[CLIC]", "Clic sur choix restaurant ..." + myViewModelDetail.getPlaceId() + myViewModelDetail.getCurrentUser().getUid());
                 myViewModelDetail.setFavRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
             }
         });
 
     }
-
 
     //to map a range to another range ... from arduino library
     public double map(double value, double in_min, double in_max, double out_min, double out_max) {
@@ -180,7 +157,6 @@ public class DetailActivity extends AppCompatActivity {
             Log.i("[MONDETAIL]", "liste user nulle ou vide");
             return;
         } else if (!myWorkmatesList.isEmpty()) {
-            Log.i("[MONDETAIL]", "liste user ok");
             RecyclerView recyclerView = binding.recyclerView;
             //     RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
             recyclerView.setHasFixedSize(false);
@@ -192,26 +168,21 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
-
-    //TODO: set the web site from viewmodel ?
     private void setupButtonWeb(@Nullable String url) {
 
         binding.website.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (url != null) {
-
                     if (!url.isEmpty()) {
                         Intent makeURLBrowser = new Intent(Intent.ACTION_VIEW);
                         makeURLBrowser.setData(Uri.parse(url));
                         startActivity(makeURLBrowser);
                     } else {
-                        showSnackBar("Pas de site renseigné!");
+                        showSnackBar(getString(R.string.no_url_string));
                     }
-
                 }
             }
-
         });
     }
 
@@ -233,8 +204,8 @@ public class DetailActivity extends AppCompatActivity {
         });
     }
 
-    //TODO: set the phone number to dial
     private void setupButtonPhone(@Nullable String number) {
+
         binding.callBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -243,11 +214,10 @@ public class DetailActivity extends AppCompatActivity {
                     makeCall.setData(Uri.parse("tel:" + number));
                     startActivity(makeCall);
                 } else {
-                    showSnackBar("Pas de téléphone renseigné!");
+                    showSnackBar(getString(R.string.no_phone_string));
                 }
             }
         });
-
     }
 
     private void showSnackBar(String message) {

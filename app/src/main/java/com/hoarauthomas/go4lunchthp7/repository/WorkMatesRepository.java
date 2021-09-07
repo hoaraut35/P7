@@ -81,6 +81,8 @@ public class WorkMatesRepository {
                         myUser.setFavoriteRestaurant(docs.get("favoriteRestaurant").toString());
                     }
 
+                   // if(docs.get("")
+
                     allWorkMates.add(myUser);
 
                 }
@@ -135,7 +137,6 @@ public class WorkMatesRepository {
 
     public MutableLiveData<List<User>> getAllWorkMatesList()
     {
-        //remove it ?
         getRestaurantFromFirestore();
         return myWorkMAtesListMedia;
     }

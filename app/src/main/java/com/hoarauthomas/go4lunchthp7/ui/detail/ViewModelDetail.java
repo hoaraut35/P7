@@ -31,44 +31,44 @@ public class ViewModelDetail extends ViewModel {
     private final WorkMatesRepository myWorkMatesRepository;
     private final FirebaseAuthRepository myAuthRepository;
 
+    //livedata...
     private List<SpecialWorkMates> mySpecialWorkMatesList = new ArrayList<>();
     private MutableLiveData<MyUser> myUserMutable = new MutableLiveData<>();
-    private final UserHelper myUserHelper = new UserHelper();
 
     //to publish data in ViewState
     private final MediatorLiveData<ViewStateDetail> myViewStateDetailMediator = new MediatorLiveData<>();
 
+    //others
     private String placeIdGen = null;
-
 
     //constructor
     public ViewModelDetail(FirebaseAuthRepository myAuthRepository, RestaurantsRepository myRestaurantRepository, WorkMatesRepository myWorkMatesRepository) {
 
         this.myAuthRepository = myAuthRepository;
-        this.myRestaurantRepository = myRestaurantRepository;
-        this.myWorkMatesRepository = myWorkMatesRepository;
-
+        //get actual user authentification
         LiveData<FirebaseUser> myUserFromRepo = myAuthRepository.getUserLiveData();
-        LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
-        LiveData<ResultDetailRestaurant> myDetail = this.myRestaurantRepository.getMyRestaurantDetail();
 
+        this.myRestaurantRepository = myRestaurantRepository;
+        //get restaurant list
+        LiveData<List<RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
+        //get restaurant detail
+        LiveData<ResultDetailRestaurant> myRestaurantDetail = this.myRestaurantRepository.getMyRestaurantDetail();
+
+        this.myWorkMatesRepository = myWorkMatesRepository;
+        //get workmates list
         LiveData<List<User>> myWorkMatesList = this.myWorkMatesRepository.getAllWorkMatesList();
 
-        //ok
         myViewStateDetailMediator.addSource(myRestaurantsList, new Observer<List<RestaurantPojo>>() {
             @Override
             public void onChanged(List<RestaurantPojo> restaurantPojos) {
-                // Log.i("[MONDETAIL]", "Event récupération de la liste restaurants : " + restaurantPojos.size());
-                logicWork(restaurantPojos, myWorkMatesList.getValue(), myDetail.getValue(), myUserFromRepo.getValue());
+                logicWork(restaurantPojos, myWorkMatesList.getValue(), myRestaurantDetail.getValue(), myUserFromRepo.getValue());
             }
         });
 
-        //ok
         myViewStateDetailMediator.addSource(myWorkMatesList, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
-                // Log.i("[MONDETAIL]", "Event récupération liste collègues : " + users.size());
-                logicWork(myRestaurantsList.getValue(), users, myDetail.getValue(), myUserFromRepo.getValue());
+                logicWork(myRestaurantsList.getValue(), users, myRestaurantDetail.getValue(), myUserFromRepo.getValue());
             }
         });
 
@@ -79,7 +79,7 @@ public class ViewModelDetail extends ViewModel {
             }
         });
 
-        myViewStateDetailMediator.addSource(myDetail, new Observer<ResultDetailRestaurant>() {
+        myViewStateDetailMediator.addSource(myRestaurantDetail, new Observer<ResultDetailRestaurant>() {
             @Override
             public void onChanged(ResultDetailRestaurant resultDetailRestaurant) {
                 if (resultDetailRestaurant == null) {
@@ -97,11 +97,24 @@ public class ViewModelDetail extends ViewModel {
     //**********************************************************************************************
     private void logicWork(@Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates, @Nullable ResultDetailRestaurant detail, @Nullable FirebaseUser myUserBase) {
 
+        //retourner
+        //un objet restaurant
+        //un objet de tail restaurant
+        //la liste des workmates
+        // l'état du bouton favoris
+        // l'état du bouton like
+
+
+
+
+
+
+
         RestaurantPojo resultRestaurant = null;
         SpecialWorkMates myWorkMates = new SpecialWorkMates();
         SpecialWorkMates myActualUser = new SpecialWorkMates();
         MyUser myUser = null;
-        Boolean restauInFav=false;
+        Boolean restauInFav = false;
         Boolean restauliked = false;
 
         if (restaurants != null && workmates != null && detail != null && placeIdGen != null) {
@@ -132,7 +145,7 @@ public class ViewModelDetail extends ViewModel {
             }//end for
 
 
-
+            //on test si l'utilisateur actuel a un favoris et des restaurant liked
 
             if (myUserBase != null) {
 
@@ -141,45 +154,48 @@ public class ViewModelDetail extends ViewModel {
 
                     if (workmates.get(i).getUid().equals(myUserBase.getUid())) {
 
-                        if (workmates.get(i).getFavoriteRestaurant().equals(placeIdGen)){
+                        //check favorite restaurant
+                        if (workmates.get(i).getFavoriteRestaurant().equals(placeIdGen)) {
                             restauInFav = true;
-                        }
-                        else
-                        {
-                            restauInFav =false;
+                        } else {
+                            restauInFav = false;
                         }
 
-                        //plante sur la liste des liked mettre dans une liste puis itérer ?
-                  /*      for (int y=0; y < workmates.get(i).getRestaurant_liked().size();y++){
+                        //check likedrestaurant
 
-                     //      if (placeIdGen.equals(workmates.get(i).getRestaurant_liked()))
-                       //     {
-                         //       restauliked = true;
-                           // }else
-                           // {
-                             //   restauliked = false;
-                            //}
+
+                        if (workmates.get(i).getRestaurant_liked() != null) {
+
+                            for (int y = 0; y < workmates.get(i).getRestaurant_liked().size(); y++) {
+                                if (placeIdGen.equals(workmates.get(i).getRestaurant_liked().get(y))) {
+                                    restauliked = true;
+                                } else {
+                                    restauliked = false;
+                                }
+
+                            }
+
+
+                        } else {
+                            //liste liked null
                         }
-
-                   */
-
-
 
 
                         List<String> z = null;
-                       myUser = new MyUser("null","null", workmates.get(i).getFavoriteRestaurant().toString(),    z);
-
-
-                       myUser.setMyFavoriteRestaurantId("toto");
+                        myUser = new MyUser("null", "null", workmates.get(i).getFavoriteRestaurant().toString(), z);
+                        myUser.setMyFavoriteRestaurantId(restauInFav.toString());
 
 
                         //myUser.setMyFavoriteRestaurantId(workmates.get(i).getFavoriteRestaurant());
                     }
+
+
                 }
+
 
             }
 
-            myViewStateDetailMediator.setValue(new ViewStateDetail(resultRestaurant, detail, mySpecialWorkMatesList, false,true, myUser));
+            myViewStateDetailMediator.setValue(new ViewStateDetail(resultRestaurant, detail, mySpecialWorkMatesList, restauInFav.booleanValue(), restauliked.booleanValue(), myUser));
 
         }
 
@@ -193,6 +209,8 @@ public class ViewModelDetail extends ViewModel {
         return myUserMutable;
     }
 
+
+    //
     public void setPlaceId(String placeId) {
         placeIdGen = myRestaurantRepository.setPlaceId(placeId);
     }

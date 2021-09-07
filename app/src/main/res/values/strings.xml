@@ -59,13 +59,20 @@
     <string name="default_notification_channel_id" />
 
 
-
+    <!-- login screen -->
     <string name="facebook_btn_str">Sign in with Facebook</string>
     <string name="google_btn_str">Sign in with Google</string>
     <string name="sign_in_with_twitter">Sign in with Twitter</string>
     <string name="sign_in_with_email">Sign in with Email</string>
     <string name="sign_in_with_google">Sign in with Google</string>
+
+
     <string name="is_eating_txt"> is eating </string>
     <string name="restaunochoice">\" hasn\'t decided yet\"</string>
+
+
+    <!-- screen detail restaurant -->
+    <string name="no_url_string">No url !</string>
+    <string name="no_phone_string">Pas de téléphone renseigné!</string>
 
 </resources>

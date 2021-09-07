@@ -19,9 +19,6 @@
     <string name="logout">SE DECONNECTER</string>
 
 
-
-
-
     <string name="login_name">John SMITH</string>
     <string name="content_description_favorite">description_favorite</string>
     <string name="favorite">Chercher...</string>
@@ -59,14 +56,27 @@
     <string name="labelForOpeningHours">\"Ouvert : \"</string>
 
 
+    <string name="is_eating_txt"> a choisi </string>
+    <string name="restaunochoice"> a pas décidé</string>
 
+
+    <!-- login screen -->
     <string name="facebook_btn_str">Se connecter avec Facebook</string>
     <string name="google_btn_str">Se connecter avec Google</string>
     <string name="sign_in_with_twitter">Se connecter avec Twitter</string>
     <string name="sign_in_with_email">Se connecter avec un Email</string>
     <string name="sign_in_with_google">Se connecter avec Google</string>
-    <string name="is_eating_txt"> a choisi </string>
-    <string name="restaunochoice"> a pas décidé</string>
+
+
+
+    <!-- screnn map -->
+
+    <!-- screen restaurant list -->
+
+    <!-- screnn workmates list -->
+
+    <!-- screen detail -->
+    <string name="no_url_string">No url !</string>
 
 
 </resources>
