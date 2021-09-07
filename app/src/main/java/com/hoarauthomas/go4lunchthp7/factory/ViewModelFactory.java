@@ -1,4 +1,4 @@
-package com.hoarauthomas.go4lunchthp7.viewmodel;
+package com.hoarauthomas.go4lunchthp7.factory;
 
 import android.app.Application;
 import android.util.Log;
@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
 import com.hoarauthomas.go4lunchthp7.MainApplication;
-import com.hoarauthomas.go4lunchthp7.ViewModelMain;
+import com.hoarauthomas.go4lunchthp7.ui.ViewModelMain;
 import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
@@ -22,6 +22,7 @@ import com.hoarauthomas.go4lunchthp7.ui.map.ViewModelMap;
 import com.hoarauthomas.go4lunchthp7.ui.restaurant.ViewModelRestaurant;
 import com.hoarauthomas.go4lunchthp7.ui.workmates.ViewModelWorkMates;
 
+//Dependance injection with factory pattern
 //https://medium.com/koderlabs/viewmodel-with-viewmodelprovider-factory-the-creator-of-viewmodel-8fabfec1aa4f
 //ViewModelProvider.Factory is responsible to create the instance of ViewModels, one for all application
 
@@ -81,8 +82,6 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
 
     }
 
-
-    //TODO: why ?
     @SuppressWarnings("unchecked")
     @NonNull
     @Override
@@ -94,7 +93,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     workMatesRepository,
                     placeAutocompleteRepository,
                     positionRepository);
-        }
+        }else
 
         if (modelClass.isAssignableFrom(ViewModelMap.class)) {
             return (T) new ViewModelMap(
@@ -103,7 +102,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     restaurantsRepository,
                     workMatesRepository);
 
-        }
+        }else
 
         if (modelClass.isAssignableFrom(ViewModelDetail.class)) {
             return (T) new ViewModelDetail(
@@ -111,14 +110,14 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     restaurantsRepository,
                     workMatesRepository);
 
-        }
+        }else
         if (modelClass.isAssignableFrom(ViewModelRestaurant.class)) {
             return (T) new ViewModelRestaurant(
                     positionRepository,
                     restaurantsRepository,
                     workMatesRepository);
 
-        }
+        }else
 
         if (modelClass.isAssignableFrom(ViewModelWorkMates.class)) {
             return (T) new ViewModelWorkMates(

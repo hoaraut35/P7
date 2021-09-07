@@ -30,13 +30,10 @@ public class ViewModelDetail extends ViewModel {
     private final RestaurantsRepository myRestaurantRepository;
     private final WorkMatesRepository myWorkMatesRepository;
     private final FirebaseAuthRepository myAuthRepository;
+
     private List<SpecialWorkMates> mySpecialWorkMatesList = new ArrayList<>();
-
-
     private MutableLiveData<MyUser> myUserMutable = new MutableLiveData<>();
-
     private final UserHelper myUserHelper = new UserHelper();
-
 
     //to publish data in ViewState
     private final MediatorLiveData<ViewStateDetail> myViewStateDetailMediator = new MediatorLiveData<>();
@@ -104,8 +101,8 @@ public class ViewModelDetail extends ViewModel {
         SpecialWorkMates myWorkMates = new SpecialWorkMates();
         SpecialWorkMates myActualUser = new SpecialWorkMates();
         MyUser myUser = null;
-        Boolean restauInFav;
-        Boolean restauliked;
+        Boolean restauInFav=false;
+        Boolean restauliked = false;
 
         if (restaurants != null && workmates != null && detail != null && placeIdGen != null) {
 
@@ -135,10 +132,39 @@ public class ViewModelDetail extends ViewModel {
             }//end for
 
 
+
+
             if (myUserBase != null) {
 
                 for (int i = 0; i < workmates.size(); i++) {
+
+
                     if (workmates.get(i).getUid().equals(myUserBase.getUid())) {
+
+                        if (workmates.get(i).getFavoriteRestaurant().equals(placeIdGen)){
+                            restauInFav = true;
+                        }
+                        else
+                        {
+                            restauInFav =false;
+                        }
+
+                        //plante sur la liste des liked mettre dans une liste puis itérer ?
+                  /*      for (int y=0; y < workmates.get(i).getRestaurant_liked().size();y++){
+
+                     //      if (placeIdGen.equals(workmates.get(i).getRestaurant_liked()))
+                       //     {
+                         //       restauliked = true;
+                           // }else
+                           // {
+                             //   restauliked = false;
+                            //}
+                        }
+
+                   */
+
+
+
 
                         List<String> z = null;
                        myUser = new MyUser("null","null", workmates.get(i).getFavoriteRestaurant().toString(),    z);
@@ -153,7 +179,7 @@ public class ViewModelDetail extends ViewModel {
 
             }
 
-            myViewStateDetailMediator.setValue(new ViewStateDetail(resultRestaurant, detail, mySpecialWorkMatesList, true, true, myUser));
+            myViewStateDetailMediator.setValue(new ViewStateDetail(resultRestaurant, detail, mySpecialWorkMatesList, false,true, myUser));
 
         }
 

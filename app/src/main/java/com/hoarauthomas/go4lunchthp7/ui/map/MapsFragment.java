@@ -27,7 +27,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
-import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
+import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
 
 import org.jetbrains.annotations.NotNull;
 

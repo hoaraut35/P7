@@ -9,13 +9,11 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
         sApplication = this;
     }
 
     public static Application getApplication() {
         return sApplication;
     }
-
 
 }

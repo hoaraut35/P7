@@ -1,6 +1,8 @@
 package com.hoarauthomas.go4lunchthp7.ui.detail;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,7 +20,7 @@ import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding;
 import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
-import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
+import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
 
 import java.util.List;
 
@@ -69,8 +71,6 @@ public class DetailActivity extends AppCompatActivity {
                 }
 
 
-
-//                Log.i("[MONDETAIL]", "detail demandé activity"+ viewStateDetail.getMyUser().getMyFavoriteRestaurantId());
 
                 //show image of restaurant if exist
                 try {
@@ -147,9 +147,13 @@ public class DetailActivity extends AppCompatActivity {
     private void setupButtonChoice(Boolean state) {
 
         if (state) {
-            binding.choiceBtn.setImageResource(R.drawable.background_button_facebook);
+            binding.choiceBtn.setImageResource(R.drawable.checkon_foreground);
+            binding.choiceBtn.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.selected_favorite)));
+
         } else {
-            binding.choiceBtn.setImageResource(R.drawable.com_facebook_button_like_icon_selected);
+            binding.choiceBtn.setImageResource(R.drawable.checkoff_foreground);
+            binding.choiceBtn.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.not_selected_favorite)));
+
         }
 
 
@@ -214,9 +218,9 @@ public class DetailActivity extends AppCompatActivity {
     private void setupButtonLike(Boolean state) {
 
         if (state) {
-            binding.likeBtn.setImageResource(R.drawable.background_button_facebook);
+            binding.likeBtn.setImageResource(R.drawable.ic_baseline_star_24_green);
         } else {
-            binding.likeBtn.setImageResource(R.drawable.com_facebook_button_like_icon_selected);
+            binding.likeBtn.setImageResource(R.drawable.ic_baseline_star_24);
         }
 
         binding.likeBtn.setOnClickListener(new View.OnClickListener() {

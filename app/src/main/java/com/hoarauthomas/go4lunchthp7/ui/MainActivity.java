@@ -1,11 +1,7 @@
-package com.hoarauthomas.go4lunchthp7;
+package com.hoarauthomas.go4lunchthp7.ui;
 
 import android.Manifest;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,7 +18,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -44,13 +39,12 @@ import com.google.android.libraries.places.widget.AutocompleteActivity;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.hoarauthomas.go4lunchthp7.BuildConfig;
+import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
-import com.hoarauthomas.go4lunchthp7.ui.FragmentsAdapter;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
-import com.hoarauthomas.go4lunchthp7.viewmodel.ViewModelFactory;
+import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.workmanager.WorkManager;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
@@ -90,36 +84,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setupPermission();
         setupViewModel();
         Authentification();
-
         setupTopAppBar();
         setupNavigationDrawer();
         setupBottomBAr();
         setupViewPager();
-
         //notificationtest();
         loadWork();
-
         setupAutocomplete();
-
-
         setSupportActionBar(binding.topAppBar);
 
-        binding.topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-
-                Log.i("MENU","clic");
-                return false;
-            }
-        });
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-        Log.i("MENU","on,Item clic");
-
-
         binding.drawerLayout.openDrawer(START);
         return super.onOptionsItemSelected(item);
     }
@@ -127,11 +104,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setupAutocomplete() {
         //initialize
         Places.initialize(getApplicationContext(), BuildConfig.MAPS_API_KEY);
-
         // create
         PlacesClient placesClient = Places.createClient(this);
     }
-
 
     private void notificationtest() {
 
@@ -143,7 +118,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
         notificationManagerCompat.notify(1, builder.build());
-
 
     }
 
@@ -238,13 +212,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 } else if (result.getIdpResponse().equals(ErrorCodes.UNKNOWN_ERROR)) {
                                     MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_unknow));
                                 }
-
                             }
-
-
                         }
-
-
                     }
                 });
     }
@@ -393,39 +362,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         binding.viewpager.setUserInputEnabled(false);
     }
 
-
-
     private void setupTopAppBar() {
 
-/*        binding.topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
 
-        Log.i("MENU","mon menu");
-                return false;
-            }
-        });
-
-        binding.topAppBar.setOnMenuItemClickListener(item -> {
-            //TODO: add search function
-            Log.i("MENU", "Click sur recherche top bar app");
-
-
-            //   onSearchCalled();
-
-
-            return false;
-        });
-
- */
     }
-
 
     public void onSearchCalled() {
 
 
         // Set the fields to specify which types of place data to return.
-      /*  List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG);
+        /*  List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG);
         // Start the autocomplete intent.
         Intent intent = new Autocomplete.IntentBuilder(
                 AutocompleteActivityMode.FULLSCREEN, fields).setCountry("FR") //NIGERIA
@@ -435,24 +381,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
        */
         //  startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
 
-
     }
 
 
     //get item selected on navigation drawer
-
-
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         return true;
     }
 
-
     //work fine but sdk with can't specify position
     public void startAutocompleteActivity(MenuItem item) {
 
-
-    /*    String st = null;
+        /*    String st = null;
 
 
         if (myViewModel.getResultAutocomplete().getValue() != null) {

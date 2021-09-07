@@ -1,4 +1,4 @@
-package com.hoarauthomas.go4lunchthp7;
+package com.hoarauthomas.go4lunchthp7.ui;
 
 public class ViewMainState2 {
 
