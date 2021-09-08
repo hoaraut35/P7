@@ -112,11 +112,10 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void setupButtonChoice(Boolean state) {
-
         if (state) {
-            binding.choiceBtn.setImageResource(R.drawable.checkon_foreground);
+            binding.choiceBtn.setImageResource(R.drawable.checked_favorite_restaurant);
         } else {
-            binding.choiceBtn.setImageResource(R.drawable.checkoff_foreground);
+            binding.choiceBtn.setImageResource(R.drawable.unchecked_favori_restaurant);
         }
 
         binding.choiceBtn.setOnClickListener(new View.OnClickListener() {
