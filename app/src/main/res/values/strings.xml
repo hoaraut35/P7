@@ -37,7 +37,7 @@
 
     <!-- Sync Preferences -->
 
-    <string name="menu_title">I\'m hungry!</string>
+
     <string name="sync_title">Sync in real time</string>
     <string name="attachment_title">Download incoming attachments</string>
     <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
@@ -65,6 +65,12 @@
     <string name="sign_in_with_twitter">Sign in with Twitter</string>
     <string name="sign_in_with_email">Sign in with Email</string>
     <string name="sign_in_with_google">Sign in with Google</string>
+
+
+    <!-- menu top -->
+    <string name="menu_title">I\'m hungry!</string>
+
+
 
 
     <string name="is_eating_txt"> is eating </string>

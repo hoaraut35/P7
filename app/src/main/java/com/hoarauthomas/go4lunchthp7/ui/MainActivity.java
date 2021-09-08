@@ -1,5 +1,7 @@
 package com.hoarauthomas.go4lunchthp7.ui;
 
+import static androidx.core.view.GravityCompat.START;
+
 import android.Manifest;
 import android.content.Intent;
 import android.location.Location;
@@ -18,6 +20,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -36,14 +39,13 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
-
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
-import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
+import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 import com.hoarauthomas.go4lunchthp7.workmanager.WorkManager;
 
 import java.util.ArrayList;
@@ -51,8 +53,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-
-import static androidx.core.view.GravityCompat.START;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -92,15 +92,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //notificationtest();
         loadWork();
         setupAutocomplete();
+
         setSupportActionBar(binding.topAppBar);
 
+        //work fine
+        binding.topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binding.drawerLayout.openDrawer(START);
+            }
+        });
+
+
+        binding.topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                return false;
+            }
+        });
+
+
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        binding.drawerLayout.openDrawer(START);
-        return super.onOptionsItemSelected(item);
-    }
+
 
     private void setupAutocomplete() {
         //initialize
@@ -366,6 +381,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setupTopAppBar() {
 
 
+        binding.topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                showSnackBar("menu principalo");
+
+                switch (item.getItemId()) {
+                    case R.id.action0:
+                        showSnackBar("menu principalo");
+                        break;
+
+                    case R.id.searchView:
+                        showSnackBar("menu recherche");
+                        break;
+
+                }
+
+
+                return true;
+            }
+        });
+
     }
 
     public void onSearchCalled() {
@@ -456,7 +492,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                */
 
 
-
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 showSnackBar("Erreur autocomplete");
             } else if (resultCode == RESULT_CANCELED) {
@@ -471,37 +506,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.top_main_menu, menu);
 
+
         MenuItem search = menu.findItem(R.id.searchView);
-        SearchView searchView = (SearchView)search.getActionView();
+        SearchView searchView = (SearchView) search.getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
 
-                if (query.length() >3 ){
+                if (query.length() > 3) {
 
                     Location mypos = myViewModel.getMyPosition();
 
-                    showSnackBar("test" + mypos.getLatitude() +  " " + mypos.getLatitude());
+                    showSnackBar("test" + mypos.getLatitude() + " " + mypos.getLatitude());
 
                     String st = null;
 
 
-                    List<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myListResponse= new ArrayList<>();
+                    List<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myListResponse = new ArrayList<>();
 
-                    if (myViewModel.getResultAutocomplete(query,mypos).getValue() != null) {
-
-
-                        for (int i = 0; i < myViewModel.getResultAutocomplete(query,mypos).getValue().getPredictions().size(); i++) {
-
-                            myListResponse.add(myViewModel.getResultAutocomplete(query,mypos).getValue());
-                            st = st + myViewModel.getResultAutocomplete(query,mypos).getValue().getPredictions().get(i).getDescription();
+                    if (myViewModel.getResultAutocomplete(query, mypos).getValue() != null) {
 
 
-                            Log.i("[AUTOCOMPLETE]","" + myListResponse.size() + myListResponse.get(i).getPredictions().get(i).getDescription());
+                        for (int i = 0; i < myViewModel.getResultAutocomplete(query, mypos).getValue().getPredictions().size(); i++) {
+
+                            myListResponse.add(myViewModel.getResultAutocomplete(query, mypos).getValue());
+                            st = st + myViewModel.getResultAutocomplete(query, mypos).getValue().getPredictions().get(i).getDescription();
+
+
+                            Log.i("[AUTOCOMPLETE]", "" + myListResponse.size() + myListResponse.get(i).getPredictions().get(i).getDescription());
                         }
-
-
 
 
                     }
@@ -510,7 +544,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if (myListResponse.size() > 0) {
                         showSnackBar("Resultat autocomplete :" + myListResponse.size());
 
-                        Intent intent = new Intent(getApplicationContext(),DetailActivity.class );
+                        Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
                         intent.putExtra("TAG_ID", myListResponse.get(0).getPredictions().get(0).getPlaceId());
                         startActivity(intent);
 
@@ -528,17 +562,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                        */
 
 
-
-
-
                     } else {
                         showSnackBar("Resultat vide autocomplete :");
                     }
 
 
-
-                }else
-                {
+                } else {
                     showSnackBar("critere trop faible");
                 }
 
@@ -547,7 +576,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public boolean onQueryTextChange(String newText) {
-
 
 
                 return false;

@@ -39,7 +39,7 @@
     <string name="reply_title">View by default</string>
 
     <!-- Sync Preferences -->
-    <string name="menu_title">J\'ai faim!</string>
+
     <string name="sync_title">Sync in real time</string>
     <string name="attachment_title">Download incoming attachments</string>
     <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
@@ -67,6 +67,13 @@
     <string name="sign_in_with_email">Se connecter avec un Email</string>
     <string name="sign_in_with_google">Se connecter avec Google</string>
 
+
+
+
+
+
+    <!-- menu top -->
+    <string name="menu_title">J\'ai faim!</string>
 
 
     <!-- screnn map -->

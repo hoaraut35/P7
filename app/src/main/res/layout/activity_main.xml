@@ -23,6 +23,7 @@
             android:id="@+id/mytopappbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
             android:layout_gravity="top">
 
             <!--<com.google.android.material.appbar.MaterialToolbar
@@ -36,14 +37,23 @@
                 app:navigationIcon="@drawable/ic_list"
                 app:title="@string/menu_title" />
 -->
+
+
+
+
+
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/topAppBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:menu="@menu/top_main_menu"
+
                 app:navigationIcon="@drawable/ic_list"
+
                 app:title="@string/menu_title"
+
                 android:background="@color/background_orange"
+
                 style="@style/Widget.MaterialComponents.Toolbar.Primary"/>
 
 
@@ -54,7 +64,7 @@
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
-            android:layout_height="536dp"
+            android:layout_height="600dp"
             android:layout_gravity="center" />
 
 
@@ -90,7 +100,7 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/header_navigation_drawer"
         app:itemTextColor="@color/white"
-        app:menu="@menu/activity_main_menu_drawer" />
+        app:menu="@menu/navigation_drawer_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
 
