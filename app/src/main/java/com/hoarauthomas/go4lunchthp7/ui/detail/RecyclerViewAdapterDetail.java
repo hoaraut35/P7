@@ -73,7 +73,7 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
 
 
         //show the name of restaurant
-        holder.nameOfWorkMate.setText(mResults.get(position).getUsername());
+        holder.nameOfWorkMate.setText(mResults.get(position).getUsername() + " " );
                 //.getNameOfWorkMates());
 
         //show avatar
@@ -103,7 +103,7 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
         if (userResult.getFavoriteRestaurant() != null && userResult.getFavoriteRestaurant() != "") {
             holder.nameOfWorkMate.setTypeface(null, Typeface.BOLD);
             holder.workMateState.setTypeface(null, Typeface.BOLD);
-            holder.workMateState.setText(" is eating (" + userResult.getFavoriteRestaurant() + ")");
+            holder.workMateState.setText(R.string.is_joining_txt);
 
         } else {
             holder.nameOfWorkMate.setTypeface(null, Typeface.ITALIC);

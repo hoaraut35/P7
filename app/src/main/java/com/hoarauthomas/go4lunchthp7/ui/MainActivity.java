@@ -46,6 +46,7 @@ import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.workmanager.WorkManager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -440,6 +441,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 showSnackBar(place.getName() + " id: " + place.getId());
+
+
+
+
+              /*  if (myListResponse.size()>0) {
+                    Intent intent = new Intent(this, DetailActivity.class);
+                    intent.putExtra("TAG_ID", myListResponse.get(0).getPredictions().get(0).getPlaceId());
+                    startActivity(intent);
+                } else {
+                    showSnackBar("Vous n'avez pas de favoris");
+                }
+
+               */
+
+
+
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 showSnackBar("Erreur autocomplete");
             } else if (resultCode == RESULT_CANCELED) {
@@ -463,7 +480,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 if (query.length() >3 ){
 
-
                     Location mypos = myViewModel.getMyPosition();
 
                     showSnackBar("test" + mypos.getLatitude() +  " " + mypos.getLatitude());
@@ -471,21 +487,50 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     String st = null;
 
 
-                    List<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myListResponse=null;
+                    List<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myListResponse= new ArrayList<>();
 
                     if (myViewModel.getResultAutocomplete(query,mypos).getValue() != null) {
 
 
                         for (int i = 0; i < myViewModel.getResultAutocomplete(query,mypos).getValue().getPredictions().size(); i++) {
+
+                            myListResponse.add(myViewModel.getResultAutocomplete(query,mypos).getValue());
                             st = st + myViewModel.getResultAutocomplete(query,mypos).getValue().getPredictions().get(i).getDescription();
+
+
+                            Log.i("[AUTOCOMPLETE]","" + myListResponse.size() + myListResponse.get(i).getPredictions().get(i).getDescription());
                         }
+
+
 
 
                     }
 
 
-                    if (st != null) {
-                        showSnackBar("Resultat autocomplete :" + st);
+                    if (myListResponse.size() > 0) {
+                        showSnackBar("Resultat autocomplete :" + myListResponse.size());
+
+                        Intent intent = new Intent(getApplicationContext(),DetailActivity.class );
+                        intent.putExtra("TAG_ID", myListResponse.get(0).getPredictions().get(0).getPlaceId());
+                        startActivity(intent);
+
+
+                      /*
+
+                       if (myListResponse.size()>0) {
+                            Intent intent = new Intent(this, DetailActivity.class);
+                            intent.putExtra("TAG_ID", myListResponse.get(0).getPredictions().get(0).getPlaceId());
+                            startActivity(intent);
+                        } else {
+                            showSnackBar("Vous n'avez pas de favoris");
+                        }
+
+                       */
+
+
+
+
+
                     } else {
                         showSnackBar("Resultat vide autocomplete :");
                     }

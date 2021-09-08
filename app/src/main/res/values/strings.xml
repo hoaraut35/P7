@@ -74,5 +74,6 @@
     <!-- screen detail restaurant -->
     <string name="no_url_string">No url !</string>
     <string name="no_phone_string">No phone number !</string>
+    <string name="is_joining_txt">is joining</string>
 
 </resources>

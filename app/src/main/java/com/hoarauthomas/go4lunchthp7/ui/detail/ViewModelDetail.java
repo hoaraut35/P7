@@ -34,7 +34,7 @@ public class ViewModelDetail extends ViewModel {
     private MutableLiveData<MyUser> myUserMutable = new MutableLiveData<>();
 
     //to publish data in ViewState
-    private final MediatorLiveData<ViewStateDetail> myViewStateDetailMediator = new MediatorLiveData<>();
+   // private final MediatorLiveData<ViewStateDetail> myViewStateDetailMediator = new MediatorLiveData<>();
 
     private final MediatorLiveData<ScreenDetailModel> myScreenDetailMediator = new MediatorLiveData<>();
 
@@ -211,7 +211,7 @@ public class ViewModelDetail extends ViewModel {
                                     //    if (workmates.get(i).getRestaurant_liked().get(z).equals(placeIdGen)) {
                                       //      myScreen.setLiked(true);
                                         //} else {
-                                           myScreen.setLiked(false);
+                                           myScreen.setLiked(true);
                                        // }
 
                                     //}
@@ -239,9 +239,6 @@ public class ViewModelDetail extends ViewModel {
                         myScreen.setLiked(false);
 
                     }
-
-
-                    //get liked
 
                     //si on a le detail alors...
                     if (detail != null) {
@@ -333,9 +330,11 @@ public class ViewModelDetail extends ViewModel {
     }
 
     //public livedata to publish in viexwstate
-    public LiveData<ViewStateDetail> getMediatorLiveData() {
+  /*  public LiveData<ViewStateDetail> getMediatorLiveData() {
         return myViewStateDetailMediator;
     }
+
+   */
 
     //test2
     public LiveData<ScreenDetailModel> getMediatorScreen() {

@@ -18,7 +18,6 @@ import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
-import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 
 import java.util.List;
@@ -57,6 +56,13 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onChanged(ScreenDetailModel screenDetailModel) {
 
+
+                //si aucun placeif alors on prend cleui de l'utilisateur actuel
+                /*if (getIntent().getStringExtra("TAG_ID") == null){
+                    myViewModelDetail.setPlaceId(viewStateDetail.myUser.getMyFavoriteRestaurantId());
+                }
+                 */
+
                 //get photo
                 try {
                     String base = "https://maps.googleapis.com/maps/api/place/photo?";
@@ -90,103 +96,25 @@ public class DetailActivity extends AppCompatActivity {
                 //get url
                 setupButtonWeb(screenDetailModel.getWebsite());
 
+                //get choice
                 setupButtonChoice(screenDetailModel.getFavorite());
 
-                setupButtonLike(screenDetailModel.getLiked());
+                //TODO: don't work
+                //setupButtonLike(screenDetailModel.getLiked());
 
+                //TODO: il manque le nom a partir de l'id
                 //get list of workmates
                 setupRecyclerView(screenDetailModel.getListWorkMates());
+                //  setupRecyclerView(viewStateDetail.getMyWorkMatesTag());
 
             }
         });
-
-
-
-       /*
-
-
-
-                //si aucun placeif alors on prend cleui de l'utilisateur actuel
-                if (getIntent().getStringExtra("TAG_ID") == null){
-                    myViewModelDetail.setPlaceId(viewStateDetail.myUser.getMyFavoriteRestaurantId());
-                }
-
-                //show image of restaurant if exist
-                try {
-                    String base = "https://maps.googleapis.com/maps/api/place/photo?";
-                    String key = "key=" + BuildConfig.MAPS_API_KEY;
-                    String reference = "&photoreference=" + viewStateDetail.myRestaurantObject.getPhotos().get(0).getPhotoReference();
-                    String maxH = "&maxheight=157";
-                    String maxW = "&maxwidth=157";
-                    String query = base + key + reference + maxH + maxW;
-
-                    Glide.with(binding.backgroundImage)
-                            .load(query)
-                            .centerCrop()
-                            .into(binding.backgroundImage);
-
-                } catch (Exception e) {
-                    Log.i("[IMAGE]", "Exception : " + e.getMessage());
-                }
-
-                //titre retaurant
-                binding.restaurantTitre.setText(viewStateDetail.myRestaurantObject.getName());
-
-                //adresse restaurant
-                binding.restaurantAddress.setText(viewStateDetail.myRestaurantObject.getVicinity());
-
-                //show star rating
-                try {
-                    double ratingDbl = map(viewStateDetail.myRestaurantObject.getRating(), 1.0, 5.0, 1.0, 3.0);
-
-                    int ratingInt = (int) Math.round(ratingDbl);
-
-                    //Log.i("[RATING]", "Convert [1.0 ... 5.0] : " + result.getRating() + " to [1.00 ... 3.0] : " + map(result.getRating(), 1.0, 5.0, 1.0, 3.0) + "to int :" + ratingInt);
-
-                    if (ratingInt == 1) {
-                        binding.ratingbar.setRating(1);
-                    } else if (ratingInt == 2) {
-                        binding.ratingbar.setRating(2);
-                    } else if (ratingInt == 3) {
-                        binding.ratingbar.setRating(3);
-                    }
-
-                } catch (Exception e) {
-                    Log.i("[RATING]", "Pas de notation pour ce restaurant !");
-                    binding.ratingbar.setRating(0);
-                }
-
-                //TODO:or null ?
-                if (viewStateDetail.myRestaurantDetailObject.getUrl().isEmpty()) {
-                    showSnackBar("PAs de lien internet");
-                    return;
-                } else {
-                    setupButtonWeb(viewStateDetail.getMyRestaurantDetailObject().getUrl());
-
-                }
-
-                if (viewStateDetail.getMyRestaurantDetailObject().getFormattedPhoneNumber() != null) {
-                    setupButtonPhone(viewStateDetail.getMyRestaurantDetailObject().getFormattedPhoneNumber());
-                }
-
-                setupRecyclerView(viewStateDetail.getMyWorkMatesTag());
-
-                setupButtonChoice(viewStateDetail.getFavoris());
-
-                setupButtonLike(viewStateDetail.getLike());
-
-            }
-        });
-
-        */
-
     }
 
     private void setupButtonChoice(Boolean state) {
 
         if (state) {
             binding.choiceBtn.setImageResource(R.drawable.checkon_foreground);
-
         } else {
             binding.choiceBtn.setImageResource(R.drawable.checkoff_foreground);
         }
@@ -198,11 +126,6 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    //to map a range to another range ... from arduino library
-    public double map(double value, double in_min, double in_max, double out_min, double out_max) {
-        return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
 
     private void setupRecyclerView(List<User> myWorkmatesList) {

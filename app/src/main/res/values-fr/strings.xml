@@ -77,6 +77,7 @@
 
     <!-- screen detail -->
     <string name="no_url_string">Site web non renseigné !</string>
+    <string name="is_joining_txt">a choisi ce restaurant</string>
 
 
 </resources>

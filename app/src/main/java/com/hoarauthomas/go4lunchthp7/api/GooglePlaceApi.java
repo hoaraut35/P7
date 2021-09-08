@@ -27,7 +27,7 @@ public interface GooglePlaceApi {
 
     //for autocomplete search...
     //TODO: remove location
-    @GET("place/autocomplete/json?types=establishment&radius=1000")
+    @GET("place/autocomplete/json?types=establishment&radius=1000&language=fr")
     Call<PlaceAutocomplete> getPlaceAutocomplete(
             @Query("key") String key,
             @Query("input") String input,
