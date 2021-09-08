@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         setupNavigationDrawer();
         setupBottomBAr();
         setupViewPager();
-        //notificationtest();
+        notificationtest();
         loadWork();
         setupAutocomplete();
 
@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
         //onetime mode
         //  WorkRequest newLoadWork = OneTimeWorkRequest.from(WorkManager.class);
+
         // androidx.work.WorkManager.getInstance(this).enqueue(newLoadWork);
 
         //periodic mode
@@ -131,7 +132,9 @@ public class MainActivity extends AppCompatActivity {
                 //constrains
                 .build();
 
-        //   newLoadPeriodicWork;
+           //newLoadPeriodicWork;
+
+
 
 
     }
