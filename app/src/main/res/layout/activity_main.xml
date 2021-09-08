@@ -23,8 +23,8 @@
             android:id="@+id/mytopappbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            android:layout_gravity="top">
+            android:layout_gravity="top"
+            android:fitsSystemWindows="true">
 
             <!--<com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/topAppBar"
@@ -39,23 +39,20 @@
 -->
 
 
-
-
-
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/topAppBar"
+                style="@style/Widget.MaterialComponents.Toolbar.Primary"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+
+                android:layout_weight="0.1"
+                android:background="@color/background_orange"
+
                 app:menu="@menu/top_main_menu"
 
                 app:navigationIcon="@drawable/ic_list"
 
-                app:title="@string/menu_title"
-
-                android:background="@color/background_orange"
-
-                style="@style/Widget.MaterialComponents.Toolbar.Primary"/>
-
+                app:title="@string/menu_title" />
 
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -64,8 +61,9 @@
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
-            android:layout_height="600dp"
-            android:layout_gravity="center" />
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="1" />
 
 
         <!--     <fragment android:id="@+id/autocomplete_fragment"
@@ -78,9 +76,8 @@
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation_menu"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="bottom"
-
+            android:layout_height="0dp"
+            android:layout_weight="0.1"
             app:itemIconTint="@drawable/bottom_navigation_colors"
             app:itemTextColor="@drawable/bottom_navigation_colors"
             app:menu="@menu/bottom_navigation_menu"

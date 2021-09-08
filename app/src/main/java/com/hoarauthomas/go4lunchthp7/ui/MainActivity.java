@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -39,7 +38,6 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
-import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.R;
@@ -54,8 +52,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends AppCompatActivity{
-        //implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
 
     public String TAG = "[AUTO]";
 
@@ -65,7 +62,6 @@ public class MainActivity extends AppCompatActivity{
 
     private String myRestaurant = null;
 
-    //choose authentification sign-in intent
     private final List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.TwitterBuilder().build(),
             new AuthUI.IdpConfig.EmailBuilder().build(),
@@ -73,8 +69,6 @@ public class MainActivity extends AppCompatActivity{
             new AuthUI.IdpConfig.GoogleBuilder().build());
 
     private ActivityResultLauncher<Intent> openFirebaseAuthForResult;
-
-    public String actualRestaurant;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,12 +88,7 @@ public class MainActivity extends AppCompatActivity{
         loadWork();
         setupAutocomplete();
 
-
-
-
     }
-
-
 
     private void setupAutocomplete() {
         //initialize
@@ -395,7 +384,6 @@ public class MainActivity extends AppCompatActivity{
         //  startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
 
     }
-
 
 
     //work fine but sdk with can't specify position
