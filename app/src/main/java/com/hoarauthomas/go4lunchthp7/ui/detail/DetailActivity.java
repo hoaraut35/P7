@@ -102,9 +102,9 @@ public class DetailActivity extends AppCompatActivity {
 
 
 
-       /* myViewModelDetail.getMediatorLiveData().observe(this, new Observer<ViewStateDetail>() {
-            @Override
-            public void onChanged(ViewStateDetail viewStateDetail) {
+       /*
+
+
 
                 //si aucun placeif alors on prend cleui de l'utilisateur actuel
                 if (getIntent().getStringExtra("TAG_ID") == null){

@@ -192,14 +192,13 @@ public class ViewModelDetail extends ViewModel {
 
                                     if (workmates.get(i).getFavoriteRestaurant().equals(placeIdGen)){
                                         myScreen.setFavorite(true);
+                                        break;
                                     }else{
                                         myScreen.setFavorite(false);
                                     }
 
-                                }else
-                                {
-                                    myScreen.setFavorite(false);
                                 }
+
 
 
 
@@ -293,98 +292,6 @@ public class ViewModelDetail extends ViewModel {
         }
 
 
-
-
-     /*   RestaurantPojo resultRestaurant = null;
-        SpecialWorkMates myWorkMates = new SpecialWorkMates();
-        SpecialWorkMates myActualUser = new SpecialWorkMates();
-        MyUser myUser = null;
-        Boolean restauInFav = false;
-        Boolean restauliked = false;
-
-        if (restaurants != null && workmates != null && detail != null && placeIdGen != null) {
-
-            mySpecialWorkMatesList.clear();
-
-            for (int i = 0; i < restaurants.size(); i++) {
-
-                if (restaurants.get(i).getPlaceId().equals(placeIdGen)) {
-
-                    resultRestaurant = restaurants.get(i);
-
-                    for (int z = 0; z < workmates.size(); z++) {
-                        if (workmates.get(z).getFavoriteRestaurant().equals(resultRestaurant.getPlaceId())) {
-                            myWorkMates.setAvatar(workmates.get(z).getUrlPicture());
-                            myWorkMates.setNameOfWorkMates(workmates.get(z).getUsername());
-                            myWorkMates.setNameOfRestaurant(resultRestaurant.getName());
-                            myWorkMates.setPlaceId(resultRestaurant.getPlaceId());
-                            mySpecialWorkMatesList.add(myWorkMates);
-
-                        }//end if
-
-                    }//end for
-
-
-                }//end if
-
-            }//end for
-
-
-            //on test si l'utilisateur actuel a un favoris et des restaurant liked
-
-            if (myUserBase != null) {
-
-                for (int i = 0; i < workmates.size(); i++) {
-
-
-                    if (workmates.get(i).getUid().equals(myUserBase.getUid())) {
-
-                        //check favorite restaurant
-                        if (workmates.get(i).getFavoriteRestaurant().equals(placeIdGen)) {
-                            restauInFav = true;
-                        } else {
-                            restauInFav = false;
-                        }
-
-                        //check likedrestaurant
-
-
-                        if (workmates.get(i).getRestaurant_liked() != null) {
-
-                            for (int y = 0; y < workmates.get(i).getRestaurant_liked().size(); y++) {
-                                if (placeIdGen.equals(workmates.get(i).getRestaurant_liked().get(y))) {
-                                    restauliked = true;
-                                } else {
-                                    restauliked = false;
-                                }
-
-                            }
-
-
-                        } else {
-                            //liste liked null
-                        }
-
-
-                        List<String> z = null;
-                        myUser = new MyUser("null", "null", workmates.get(i).getFavoriteRestaurant().toString(), z);
-                        myUser.setMyFavoriteRestaurantId(restauInFav.toString());
-
-
-                        //myUser.setMyFavoriteRestaurantId(workmates.get(i).getFavoriteRestaurant());
-                    }
-
-
-                }
-
-
-            }
-
-            myViewStateDetailMediator.setValue(new ViewStateDetail(resultRestaurant, detail, mySpecialWorkMatesList, restauInFav.booleanValue(), restauliked.booleanValue(), myUser));
-
-        }
-
-      */
 
     }
     //**********************************************************************************************
