@@ -76,7 +76,7 @@
     <!-- screnn workmates list -->
 
     <!-- screen detail -->
-    <string name="no_url_string">No url !</string>
+    <string name="no_url_string">Site web non renseigné !</string>
 
 
 </resources>

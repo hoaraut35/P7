@@ -19,6 +19,7 @@ import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
+import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 
 import java.util.List;
 
@@ -51,7 +52,57 @@ public class DetailActivity extends AppCompatActivity {
     private void setupViewModel() {
 
         myViewModelDetail = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelDetail.class);
-        myViewModelDetail.getMediatorLiveData().observe(this, new Observer<ViewStateDetail>() {
+
+        myViewModelDetail.getMediatorScreen().observe(this, new Observer<ScreenDetailModel>() {
+            @Override
+            public void onChanged(ScreenDetailModel screenDetailModel) {
+
+                //get photo
+                try {
+                    String base = "https://maps.googleapis.com/maps/api/place/photo?";
+                    String key = "key=" + BuildConfig.MAPS_API_KEY;
+                    String reference = "&photoreference=" + screenDetailModel.getUrlPhoto();
+                    String maxH = "&maxheight=157";
+                    String maxW = "&maxwidth=157";
+                    String query = base + key + reference + maxH + maxW;
+
+                    Glide.with(binding.backgroundImage)
+                            .load(query)
+                            .centerCrop()
+                            .into(binding.backgroundImage);
+
+                } catch (Exception e) {
+                    Log.i("[IMAGE]", "Exception : " + e.getMessage());
+                }
+
+                //get title
+                binding.restaurantTitre.setText(screenDetailModel.getTitle());
+
+                //get address
+                binding.restaurantAddress.setText(screenDetailModel.getAddress());
+
+                //get rating
+                binding.ratingbar.setRating(screenDetailModel.getRating());
+
+                //get phone number
+                setupButtonPhone(screenDetailModel.getCall());
+
+                //get url
+                setupButtonWeb(screenDetailModel.getWebsite());
+
+                //setupButtonChoice(screenDetailModel.getFavorite().booleanValue());
+
+                //setupButtonLike(screenDetailModel.getLiked().booleanValue());
+
+                //get list of workmates
+                setupRecyclerView(screenDetailModel.getListWorkMates());
+
+            }
+        });
+
+
+
+       /* myViewModelDetail.getMediatorLiveData().observe(this, new Observer<ViewStateDetail>() {
             @Override
             public void onChanged(ViewStateDetail viewStateDetail) {
 
@@ -127,6 +178,8 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
+        */
+
     }
 
     private void setupButtonChoice(Boolean state) {
@@ -152,7 +205,8 @@ public class DetailActivity extends AppCompatActivity {
         return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
 
-    private void setupRecyclerView(List<SpecialWorkMates> myWorkmatesList) {
+    private void setupRecyclerView(List<User> myWorkmatesList) {
+
         if (myWorkmatesList == null) {
             Log.i("[MONDETAIL]", "liste user nulle ou vide");
             return;
@@ -166,6 +220,7 @@ public class DetailActivity extends AppCompatActivity {
         } else {
             Log.i("[MONDETAIL]", "liste user vide");
         }
+
     }
 
     private void setupButtonWeb(@Nullable String url) {

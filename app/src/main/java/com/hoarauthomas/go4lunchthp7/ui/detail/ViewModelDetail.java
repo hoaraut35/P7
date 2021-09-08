@@ -1,7 +1,5 @@
 package com.hoarauthomas.go4lunchthp7.ui.detail;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -9,6 +7,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.api.UserHelper;
 import com.hoarauthomas.go4lunchthp7.model.MyUser;
 import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
@@ -38,6 +37,9 @@ public class ViewModelDetail extends ViewModel {
     //to publish data in ViewState
     private final MediatorLiveData<ViewStateDetail> myViewStateDetailMediator = new MediatorLiveData<>();
 
+
+    private final MediatorLiveData<ScreenDetailModel> myScreenDetailMediator = new MediatorLiveData<>();
+
     //others
     private String placeIdGen = null;
 
@@ -58,6 +60,32 @@ public class ViewModelDetail extends ViewModel {
         //get workmates list
         LiveData<List<User>> myWorkMatesList = this.myWorkMatesRepository.getAllWorkMatesList();
 
+        //observe for list of restaurant
+        myScreenDetailMediator.addSource(myRestaurantsList, new Observer<List<RestaurantPojo>>() {
+            @Override
+            public void onChanged(List<RestaurantPojo> restaurantPojos) {
+                logicWork(restaurantPojos,null,null,null);
+            }
+        });
+
+        //observe detail of restaurant
+        myScreenDetailMediator.addSource(myRestaurantDetail, new Observer<ResultDetailRestaurant>() {
+            @Override
+            public void onChanged(ResultDetailRestaurant resultDetailRestaurant) {
+                logicWork(myRestaurantsList.getValue(), null, resultDetailRestaurant,null);
+            }
+        });
+
+        //observe workmates list
+        myScreenDetailMediator.addSource(myWorkMatesList, new Observer<List<User>>() {
+            @Override
+            public void onChanged(List<User> workmates) {
+                logicWork(myRestaurantsList.getValue(), workmates, myRestaurantDetail.getValue(), null);
+            }
+        });
+
+
+        /*
         myViewStateDetailMediator.addSource(myRestaurantsList, new Observer<List<RestaurantPojo>>() {
             @Override
             public void onChanged(List<RestaurantPojo> restaurantPojos) {
@@ -90,6 +118,8 @@ public class ViewModelDetail extends ViewModel {
                 }
             }
         });
+
+         */
     }
 
     //**********************************************************************************************
@@ -98,19 +128,103 @@ public class ViewModelDetail extends ViewModel {
     private void logicWork(@Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates, @Nullable ResultDetailRestaurant detail, @Nullable FirebaseUser myUserBase) {
 
         //retourner
-        //un objet restaurant
-        //un objet de tail restaurant
+        //un objet restaurant ok
+        //un objet detail restaurant ok
         //la liste des workmates
         // l'état du bouton favoris
         // l'état du bouton like
 
+        if (restaurants != null){
+
+            for (int x=0; x<restaurants.size();x++){
+
+                //si la recherche dans la liste des restaurants correspond au restairant désiré alors...
+                if (restaurants.get(x).getPlaceId().equals(placeIdGen)){
+
+                    ScreenDetailModel myScreen;
+
+                    myScreen = new ScreenDetailModel();
+
+                    //get photo
+                    try{
+                        myScreen.setUrlPhoto(restaurants.get(x).getPhotos().get(0).getPhotoReference().toString());
+                    } catch (Exception e){
+                        //charger une photo de substitution
+                    }
+
+                    //get titre restaurant
+                    myScreen.setTitle(restaurants.get(x).getName());
+
+                    //get address
+                    myScreen.setAddress(restaurants.get(x).getVicinity());
+
+                    //get rating
+                    try {
+                        //on google we have a rating from 1 to 5 but we want 1 to 3...
+                        Double ratingDouble = map(restaurants.get(x).getRating(), 1.0, 5.0, 1.0, 3.0);
+                        int ratingInt = (int) Math.round(ratingDouble);
+
+                        if (ratingInt == 1) {
+                            myScreen.setRating(1);
+                        } else if (ratingInt == 2) {
+                            myScreen.setRating(2);
+                        } else if (ratingInt == 3) {
+                            myScreen.setRating(3);
+                        }
+                    } catch (Exception e) {
+                        myScreen.setRating(0);
+                    }
+
+                    //get favorite
+
+
+                    //get liked
+
+                    //si on a le detail alors...
+                    if (detail != null){
+
+                        //get phone number
+                        myScreen.setCall(detail.getFormattedPhoneNumber());
+
+                        //get url web
+                        myScreen.setWebsite(detail.getUrl());
+                    }
+
+
+
+                    //si on a les collegues alors ...
+                    List<User> myWorkMatesDetailList = new ArrayList<>();
+
+                    if (workmates != null){
+
+                        for (User myWorkMate : workmates){
+
+                            myWorkMatesDetailList.add(myWorkMate);
+                        }
+
+                        myScreen.setListWorkMates(myWorkMatesDetailList);
+
+                    }
+
+                    myScreenDetailMediator.setValue(myScreen);
+
+                }
+
+
+
+            }
+
+
+
+        }
 
 
 
 
 
 
-        RestaurantPojo resultRestaurant = null;
+
+     /*   RestaurantPojo resultRestaurant = null;
         SpecialWorkMates myWorkMates = new SpecialWorkMates();
         SpecialWorkMates myActualUser = new SpecialWorkMates();
         MyUser myUser = null;
@@ -199,11 +313,18 @@ public class ViewModelDetail extends ViewModel {
 
         }
 
+      */
+
     }
     //**********************************************************************************************
     // End of logic work
     //**********************************************************************************************
 
+
+    //to map a range to another range ... from arduino library
+    private Double map(double value, double in_min, double in_max, double out_min, double out_max) {
+        return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    }
 
     public LiveData<MyUser> getMyUserLiveData() {
         return myUserMutable;
@@ -250,6 +371,11 @@ public class ViewModelDetail extends ViewModel {
     //public livedata to publish in viexwstate
     public LiveData<ViewStateDetail> getMediatorLiveData() {
         return myViewStateDetailMediator;
+    }
+
+//test2
+    public LiveData<ScreenDetailModel> getMediatorScreen() {
+        return myScreenDetailMediator;
     }
 }
 

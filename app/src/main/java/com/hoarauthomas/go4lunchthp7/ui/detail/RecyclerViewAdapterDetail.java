@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
+import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
 
     //variables ...
 
-    private List<SpecialWorkMates> mResults;
+    private List<User> mResults;
     private LatLng myPosition;
 
 
@@ -36,7 +37,7 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
 
     //the constructor
     //public RecyclerViewAdapter(int mode, List<Result> myList, Listener callback) {
-    public RecyclerViewAdapterDetail(List<SpecialWorkMates> myList, LatLng myLatLng) {
+    public RecyclerViewAdapterDetail(List<User> myList, LatLng myLatLng) {
         this.mResults = myList;
 
         this.myPosition = myLatLng;
@@ -45,7 +46,7 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
         //this.callback = callback;
     }
 
-    public RecyclerViewAdapterDetail(List<SpecialWorkMates> myList) {
+    public RecyclerViewAdapterDetail(List<User> myList) {
         this.mResults = myList;
     }
 
@@ -67,6 +68,8 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
     public void onBindViewHolder(@NonNull RecyclerViewAdapterDetail.ViewHolder holder, int position) {
 
         SpecialWorkMates result = mResults.get(position);
+
+
 
         //show the name of restaurant
         holder.nameOfWorkMate.setText(mResults.get(position).getNameOfWorkMates());

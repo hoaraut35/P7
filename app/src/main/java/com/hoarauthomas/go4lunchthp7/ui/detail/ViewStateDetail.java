@@ -18,6 +18,11 @@ public class ViewStateDetail {
     Boolean Favoris;
     MyUser myUser;
     List<SpecialWorkMates> myWorkMatesTag;
+
+
+
+
+
     //= new ArrayList<>();
 
 
@@ -105,3 +110,5 @@ public class ViewStateDetail {
         this.myRestaurantDetailObject = myRestaurantDetailObject;
     }
 }
+
+
