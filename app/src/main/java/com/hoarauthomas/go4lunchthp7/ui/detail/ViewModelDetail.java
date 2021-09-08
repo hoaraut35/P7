@@ -37,7 +37,6 @@ public class ViewModelDetail extends ViewModel {
     //to publish data in ViewState
     private final MediatorLiveData<ViewStateDetail> myViewStateDetailMediator = new MediatorLiveData<>();
 
-
     private final MediatorLiveData<ScreenDetailModel> myScreenDetailMediator = new MediatorLiveData<>();
 
     //others
@@ -64,7 +63,7 @@ public class ViewModelDetail extends ViewModel {
         myScreenDetailMediator.addSource(myRestaurantsList, new Observer<List<RestaurantPojo>>() {
             @Override
             public void onChanged(List<RestaurantPojo> restaurantPojos) {
-                logicWork(restaurantPojos,null,null,null);
+                logicWork(restaurantPojos,myWorkMatesList.getValue(),myRestaurantDetail.getValue(),myUserFromRepo.getValue());
             }
         });
 
@@ -72,7 +71,7 @@ public class ViewModelDetail extends ViewModel {
         myScreenDetailMediator.addSource(myRestaurantDetail, new Observer<ResultDetailRestaurant>() {
             @Override
             public void onChanged(ResultDetailRestaurant resultDetailRestaurant) {
-                logicWork(myRestaurantsList.getValue(), null, resultDetailRestaurant,null);
+                logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), resultDetailRestaurant,myUserFromRepo.getValue());
             }
         });
 
@@ -80,10 +79,16 @@ public class ViewModelDetail extends ViewModel {
         myScreenDetailMediator.addSource(myWorkMatesList, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> workmates) {
-                logicWork(myRestaurantsList.getValue(), workmates, myRestaurantDetail.getValue(), null);
+                logicWork(myRestaurantsList.getValue(), workmates, myRestaurantDetail.getValue(), myUserFromRepo.getValue());
             }
         });
 
+        myScreenDetailMediator.addSource(myUserFromRepo, new Observer<FirebaseUser>() {
+            @Override
+            public void onChanged(FirebaseUser firebaseUser) {
+                logicWork(myRestaurantsList.getValue(),myWorkMatesList.getValue(),myRestaurantDetail.getValue(),firebaseUser);
+            }
+        });
 
         /*
         myViewStateDetailMediator.addSource(myRestaurantsList, new Observer<List<RestaurantPojo>>() {
@@ -176,6 +181,78 @@ public class ViewModelDetail extends ViewModel {
                     }
 
                     //get favorite
+                    if (workmates != null)
+                    {
+                        if (workmates.size() > 0){
+
+                            for (int i=0 ;i <workmates.size();i++){
+
+                                //restaurant is favorite, update button
+                                if (workmates.get(i).getUid().equals(myUserBase.getUid())){
+
+                                    if (workmates.get(i).getFavoriteRestaurant().equals(placeIdGen)){
+                                        myScreen.setFavorite(true);
+                                    }else{
+                                        myScreen.setFavorite(false);
+                                    }
+
+                                }else
+                                {
+                                    myScreen.setFavorite(false);
+                                }
+
+
+
+
+                                List<RestaurantPojo> myTempRestaurant = new ArrayList<>();
+
+
+
+                                //get list of liked restaurants
+
+                                //myScreen.setLiked(true);
+
+
+                                   /* if (workmates.get(i).getRestaurant_liked().size() > 0){
+
+                                        for (int z=0; z < workmates.get(i).getRestaurant_liked().size();z++){
+
+                                            //set liked restaurant bool
+                                            if (workmates.get(i).getRestaurant_liked().get(z).equals(placeIdGen)){
+                                                myScreen.setLiked(true);
+                                            }else{
+                                                myScreen.setLiked(false);
+                                            }
+
+                                        }
+
+                                    }else
+                                    {
+
+                                    */
+                                        myScreen.setLiked(false);
+                                   // }
+
+
+
+
+
+
+
+                            }
+                        }else{
+                            myScreen.setFavorite(false);
+                            myScreen.setLiked(false);
+
+                        }
+
+
+                    }else {
+                        myScreen.setFavorite(false);
+                        myScreen.setLiked(false);
+
+                    }
+
 
 
                     //get liked
@@ -190,16 +267,17 @@ public class ViewModelDetail extends ViewModel {
                         myScreen.setWebsite(detail.getUrl());
                     }
 
-
-
                     //si on a les collegues alors ...
                     List<User> myWorkMatesDetailList = new ArrayList<>();
 
                     if (workmates != null){
 
                         for (User myWorkMate : workmates){
+                            //if detail have a workmate
+                            if (myWorkMate.getFavoriteRestaurant().equals(placeIdGen)){
+                                myWorkMatesDetailList.add(myWorkMate);
+                            }
 
-                            myWorkMatesDetailList.add(myWorkMate);
                         }
 
                         myScreen.setListWorkMates(myWorkMatesDetailList);
@@ -210,16 +288,9 @@ public class ViewModelDetail extends ViewModel {
 
                 }
 
-
-
             }
 
-
-
         }
-
-
-
 
 
 

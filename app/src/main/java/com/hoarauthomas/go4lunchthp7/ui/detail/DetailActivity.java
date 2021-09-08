@@ -90,9 +90,9 @@ public class DetailActivity extends AppCompatActivity {
                 //get url
                 setupButtonWeb(screenDetailModel.getWebsite());
 
-                //setupButtonChoice(screenDetailModel.getFavorite().booleanValue());
+                setupButtonChoice(screenDetailModel.getFavorite());
 
-                //setupButtonLike(screenDetailModel.getLiked().booleanValue());
+                setupButtonLike(screenDetailModel.getLiked());
 
                 //get list of workmates
                 setupRecyclerView(screenDetailModel.getListWorkMates());

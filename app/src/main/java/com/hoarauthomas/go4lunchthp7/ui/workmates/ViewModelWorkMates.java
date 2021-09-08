@@ -26,7 +26,6 @@ public class ViewModelWorkMates extends ViewModel {
     private final MediatorLiveData<ViewStateWorkMates> myViewStateWorkMatesMediator = new MediatorLiveData<>();
     private final RestaurantPojo myRestauResult = new RestaurantPojo();
 
-
     public ViewModelWorkMates(RestaurantsRepository myRestaurantRepository, WorkMatesRepository myWorkMatesRepository) {
         this.myRestaurantRepository = myRestaurantRepository;
         this.myWorkMatesRepository = myWorkMatesRepository;
@@ -45,7 +44,6 @@ public class ViewModelWorkMates extends ViewModel {
 
             }
         });
-
 
         myViewStateWorkMatesMediator.addSource(myRestaurantList, new Observer<List<RestaurantPojo>>() {
             @Override

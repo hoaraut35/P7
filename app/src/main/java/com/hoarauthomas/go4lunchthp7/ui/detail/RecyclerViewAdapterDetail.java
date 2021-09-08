@@ -67,19 +67,21 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewAdapterDetail.ViewHolder holder, int position) {
 
-        SpecialWorkMates result = mResults.get(position);
+        //SpecialWorkMates result = mResults.get(position);
 
+        User userResult = mResults.get(position);
 
 
         //show the name of restaurant
-        holder.nameOfWorkMate.setText(mResults.get(position).getNameOfWorkMates());
+        holder.nameOfWorkMate.setText(mResults.get(position).getUsername());
+                //.getNameOfWorkMates());
 
         //show avatar
         String avatar = "";
 
-        if (result.getAvatar() == null) {
+        if (userResult.getUrlPicture() == null) {
 
-            String nom = result.getNameOfWorkMates();
+            String nom = userResult.getUsername();
             String[] parts = nom.split(" ", 2);
             String z = "";
 
@@ -89,7 +91,7 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
 
             avatar = "https://eu.ui-avatars.com/api/?name=" + z;
         } else {
-            avatar = result.getAvatar();
+            avatar = userResult.getUrlPicture();
         }
 
         Glide.with(holder.itemView)
@@ -98,16 +100,18 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
                 .into(holder.avatar);
 
 
-        if (result.getNameOfRestaurant() != null && result.getNameOfRestaurant() != "") {
+        if (userResult.getFavoriteRestaurant() != null && userResult.getFavoriteRestaurant() != "") {
             holder.nameOfWorkMate.setTypeface(null, Typeface.BOLD);
             holder.workMateState.setTypeface(null, Typeface.BOLD);
-            holder.workMateState.setText(" is eating (" + result.getNameOfRestaurant() + ")");
+            holder.workMateState.setText(" is eating (" + userResult.getFavoriteRestaurant() + ")");
 
         } else {
             holder.nameOfWorkMate.setTypeface(null, Typeface.ITALIC);
             holder.workMateState.setTypeface(null, Typeface.ITALIC);
             holder.workMateState.setText(" hasn't decided yet");
         }
+
+
 
 
     }
