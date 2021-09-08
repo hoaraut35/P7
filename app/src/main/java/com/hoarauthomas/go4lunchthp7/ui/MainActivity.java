@@ -54,7 +54,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity{
+        //implements NavigationView.OnNavigationItemSelectedListener {
 
     public String TAG = "[AUTO]";
 
@@ -93,24 +94,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         loadWork();
         setupAutocomplete();
 
-        setSupportActionBar(binding.topAppBar);
 
-        //work fine
-        binding.topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                binding.drawerLayout.openDrawer(START);
-            }
-        });
-
-
-        binding.topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-
-                return false;
-            }
-        });
 
 
     }
@@ -188,12 +172,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
     }
-
-
-    private void setupFavRestau(String myRestaurantFavorite) {
-        this.actualRestaurant = myRestaurantFavorite;
-    }
-
 
     private void Authentification() {
 
@@ -381,28 +359,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setupTopAppBar() {
 
 
-        binding.topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+        setSupportActionBar(binding.topAppBar);
+
+        //work fine
+        binding.topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                showSnackBar("menu principalo");
-
-                switch (item.getItemId()) {
-                    case R.id.action0:
-                        showSnackBar("menu principalo");
-                        break;
-
-                    case R.id.searchView:
-                        showSnackBar("menu recherche");
-                        break;
-
-                }
-
-
-                return true;
+            public void onClick(View v) {
+                binding.drawerLayout.openDrawer(START);
             }
         });
 
+
+        binding.topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                return false;
+            }
+        });
     }
+
 
     public void onSearchCalled() {
 
@@ -421,29 +397,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    //get item selected on navigation drawer
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        return true;
-    }
 
     //work fine but sdk with can't specify position
     public void startAutocompleteActivity(MenuItem item) {
 
         /*    String st = null;
 
-
         if (myViewModel.getResultAutocomplete().getValue() != null) {
-
             for (int i = 0; i < myViewModel.getResultAutocomplete().getValue().getPredictions().size(); i++) {
                 st = st + myViewModel.getResultAutocomplete().getValue().getPredictions().get(i).getPlaceId();
             }
-
-
         }
-
      */
-
 
  /*       if (st != null) {
             showSnackBar("Resultat autocomplete :" + st);
