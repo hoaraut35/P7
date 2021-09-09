@@ -19,6 +19,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Go4Lunch">
 
+
+
         <activity android:name=".ui.detail.DetailActivity">
 
             android:theme="@style/Theme.Go4LunchWithTool">
@@ -37,7 +39,11 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="${MAPS_API_KEY}" />
 
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".ui.MainActivity"
+                  android:windowSoftInputMode="adjustNothing"
+            >
+
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

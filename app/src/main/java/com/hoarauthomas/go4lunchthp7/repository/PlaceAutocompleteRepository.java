@@ -30,13 +30,10 @@ public class PlaceAutocompleteRepository {
     public MutableLiveData<PlaceAutocomplete> getPlaceAutocomplete(String textSearch, Location position) {
         String positionstr =null;
 
-
         if (!Double.isNaN(position.getLatitude()) && !Double.isNaN(position.getLongitude())){
 
             positionstr = position.getLatitude() +  "," + position.getLongitude();
         }
-
-
 
         if (textSearch != null && textSearch.length() > 3) {
 
