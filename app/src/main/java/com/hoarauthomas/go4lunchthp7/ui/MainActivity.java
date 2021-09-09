@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -464,6 +465,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         MenuItem search = menu.findItem(R.id.searchView);
+
+
+       // AutoCompleteTextView = (AutoCompleteTextView) search.getActionView();
+
+      //  binding.Au
+
+
+
         SearchView searchView = (SearchView) search.getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -505,17 +514,15 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
 
 
-                      /*
 
-                       if (myListResponse.size()>0) {
-                            Intent intent = new Intent(this, DetailActivity.class);
-                            intent.putExtra("TAG_ID", myListResponse.get(0).getPredictions().get(0).getPlaceId());
-                            startActivity(intent);
-                        } else {
-                            showSnackBar("Vous n'avez pas de favoris");
-                        }
+//                       if (myListResponse.size()>0) {
+//                            Intent intent = new Intent(this, DetailActivity.class);
+//                            intent.putExtra("TAG_ID", myListResponse.get(0).getPredictions().get(0).getPlaceId());
+//                            startActivity(intent);
+//                        } else {
+//                            showSnackBar("Vous n'avez pas de favoris");
+//                        }
 
-                       */
 
 
                     } else {
@@ -537,6 +544,9 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+
+
 
         return super.onCreateOptionsMenu(menu);
 

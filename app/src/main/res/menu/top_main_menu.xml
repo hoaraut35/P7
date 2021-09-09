@@ -4,9 +4,14 @@
 
     <item
         android:id="@+id/searchView"
-        android:title="@string/favorite"
         android:icon="@drawable/ic_search"
-        app:actionViewClass="android.widget.SearchView"
-        app:showAsAction="ifRoom" />
+        android:title="@string/favorite"
+
+    app:actionViewClass="android.widget.SearchView"
+    app:showAsAction="ifRoom" />
+
 
 </menu>
+
+
+    <!-- app:actionViewClass="android.widget.SearchView"-->
