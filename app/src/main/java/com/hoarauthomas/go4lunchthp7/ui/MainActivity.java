@@ -5,6 +5,7 @@ import static androidx.core.view.GravityCompat.START;
 import android.Manifest;
 import android.content.Intent;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -25,7 +27,9 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.work.PeriodicWorkRequest;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.WorkRequest;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthMethodPickerLayout;
@@ -39,15 +43,26 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.type.DateTime;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
+import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
-import com.hoarauthomas.go4lunchthp7.workmanager.WorkManager;
+import com.hoarauthomas.go4lunchthp7.workmanager.WorkManagerTest;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -84,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         setupNavigationDrawer();
         setupBottomBAr();
         setupViewPager();
-        notificationtest();
+        //  notificationtest();
         loadWork();
         setupAutocomplete();
 
@@ -110,30 +125,67 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //create new work to workmanager
-    //added time to start request
-    //onetime ore periodic
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void loadWork() {
 
-        //onetime mode
-        //  WorkRequest newLoadWork = OneTimeWorkRequest.from(WorkManager.class);
+        //Determine the format to work
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
-        // androidx.work.WorkManager.getInstance(this).enqueue(newLoadWork);
+        //Determine actual datetime
+        LocalDateTime dateactu = LocalDateTime.now();
+        Log.i("[JOB]","Actual date and time : " + dateactu.format(formatter));
 
-        //periodic mode
+        //Determine the target date and time to execute request
+        LocalDate dateToStart = LocalDate.now();
+        LocalTime timeToStart = LocalTime.parse("12:00:00");
+        LocalDateTime fullDateTimeToStart = LocalDateTime.of(dateToStart,timeToStart);
+        Log.i("[JOB]","Target date and time : " + fullDateTimeToStart.format(formatter).toString());
+
+        //extract initial delay to construct work request after
+        long minutes = ChronoUnit.MINUTES.between(fullDateTimeToStart,dateactu);
+        Log.i("[JOB]","Extraction initial delay for work request : " + Long.toString(minutes) + " min");
+
+        //extract position
+
+        //on peut creer l'alrme
+        if (minutes < 0 ){
 
 
-        // Log.i("TEMPS", "montemps : " + LocalTime.now());
+            //first we cancel all job with tag popup12h00
+            androidx.work.WorkManager.getInstance(this).cancelAllWorkByTag("popup12h00");
 
-        // LocalTime myLocal = LocalTime.now
+            //second create a new work
+            WorkRequest newLoadWork = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
+                    .setInitialDelay(Math.abs((int)minutes), TimeUnit.MINUTES)
+                    .addTag("popup12h00")
+                    .build();
 
-        PeriodicWorkRequest newLoadPeriodicWork = new PeriodicWorkRequest.Builder(WorkManager.class,
-                15, TimeUnit.MINUTES)
-                //constrains
-                .build();
+            androidx.work.WorkManager.getInstance(this).enqueue(newLoadWork);
 
-        //newLoadPeriodicWork;
+            //periodic mode
+            // PeriodicWorkRequest newLoadPeriodicWork = new PeriodicWorkRequest.Builder(WorkManagerTest.class,
+            //        15, TimeUnit.MINUTES)
+            // //constrains
+            //.build();
+        }
+        //le temps est dépassé
+        else
+        {
+            //first we cancel all job with tag popup12h00
+            androidx.work.WorkManager.getInstance(this).cancelAllWorkByTag("popup12h00");
 
+            //second create a new work
+            WorkRequest newLoadWork = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
+                    .setInitialDelay(Math.abs((int)minutes) + 1440, TimeUnit.MINUTES)
+                    .addTag("popup12h00")
+                    .build();
+
+            androidx.work.WorkManager.getInstance(this).enqueue(newLoadWork);
+
+            //nothing to do
+            //j+1 ?
+        }
 
     }
 
@@ -478,6 +530,10 @@ public class MainActivity extends AppCompatActivity {
 
 
                     List<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myListResponse = new ArrayList<>();
+
+
+                    List<PlaceAutocomplete> myAutocompleteList = (List<PlaceAutocomplete>) myViewModel.getResultAutocomplete(query, mypos).getValue();
+
 
                     if (myViewModel.getResultAutocomplete(query, mypos).getValue() != null) {
 

@@ -98,8 +98,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.numberOfWorkmates.setText("?");
         }
 
-
-
         //show the address of restaurant
         holder.addressOfRestaurant.setText(myRestaurantResult.get(position).getVicinity());
 

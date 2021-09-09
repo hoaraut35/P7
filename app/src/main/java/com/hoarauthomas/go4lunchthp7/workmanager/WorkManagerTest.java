@@ -20,9 +20,9 @@ import org.jetbrains.annotations.NotNull;
 
 import static android.provider.Settings.System.getString;
 
-public class WorkManager extends Worker {
+public class WorkManagerTest extends Worker {
 
-    public WorkManager(@NonNull @NotNull Context context, @NonNull @NotNull WorkerParameters workerParams) {
+    public WorkManagerTest(@NonNull @NotNull Context context, @NonNull @NotNull WorkerParameters workerParams) {
         super(context, workerParams);
     }
 
@@ -31,6 +31,8 @@ public class WorkManager extends Worker {
     @Override
     public Result doWork() {
 
+
+        //get data from viewmodel for new favorite user selected
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "123")
                 .setSmallIcon(R.drawable.ic_logo)
