@@ -2,7 +2,6 @@ package com.hoarauthomas.go4lunchthp7.repository;
 
 import android.location.Location;
 import android.os.Looper;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresPermission;
@@ -13,8 +12,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
-
-import org.jetbrains.annotations.NotNull;
 
 //to get position when changed
 
@@ -38,7 +35,7 @@ public class PositionRepository {
         this.fusedLocationProviderClient = fusedLocationProviderClient;
     }
 
-    //publish to viewmodel
+    //publish to viewModel
     public LiveData<Location> getLocationLiveData() {
         return locationMutableLiveData;
     }

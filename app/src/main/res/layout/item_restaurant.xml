@@ -2,11 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="10dp"
-
-    android:orientation="vertical">
-
+    android:layout_height="82dp"
+    android:layout_margin="10dp">
 
     <TextView
         android:id="@+id/nameOfRestaurant"
@@ -25,9 +22,9 @@
         android:layout_width="0dp"
         android:layout_height="25dp"
         android:layout_margin="5dp"
+        android:maxLines="@integer/material_motion_duration_short_1"
         android:text="@string/nameOfRestaurant"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:maxLines="@integer/material_motion_duration_short_1"
         app:layout_constraintRight_toLeftOf="@id/distanceOfRestaurant"
         app:layout_constraintTop_toBottomOf="@id/nameOfRestaurant" />
 
@@ -45,12 +42,11 @@
     <ImageView
         android:layout_width="20dp"
         android:layout_height="20dp"
-        app:layout_constraintRight_toLeftOf="@+id/numberOfWorkmates"
-        app:layout_constraintTop_toTopOf="@+id/numberOfWorkmates"
-        app:layout_constraintBottom_toBottomOf="@+id/numberOfWorkmates"
+        android:contentDescription="@string/descriptionForWorkMatesIcon"
         android:src="@drawable/ic_baseline_person_outline_24"
-        />
-
+        app:layout_constraintBottom_toBottomOf="@+id/numberOfWorkmates"
+        app:layout_constraintRight_toLeftOf="@+id/numberOfWorkmates"
+        app:layout_constraintTop_toTopOf="@+id/numberOfWorkmates" />
 
 
     <TextView
@@ -70,19 +66,18 @@
         style="@style/Widget.AppCompat.RatingBar.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="5dp"
         android:isIndicator="true"
         android:numStars="3"
-        android:progressTint="@color/material_star"
         android:rating="0"
         android:rotation="180"
         android:stepSize="0.1"
-        android:layout_margin="5dp"
         app:layout_constraintRight_toLeftOf="@id/imageOfRestaurant"
         app:layout_constraintTop_toBottomOf="@id/numberOfWorkmates" />
 
 
     <TextView
-        android:id="@+id/openinghours"
+        android:id="@+id/openingHours"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
@@ -95,7 +90,7 @@
         android:id="@+id/imageOfRestaurant"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:contentDescription="TODO"
+        android:contentDescription="@string/descriptionForRestaurantImage"
         android:src="@drawable/ic_baseline_food_bank_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"

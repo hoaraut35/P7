@@ -32,7 +32,7 @@ public class ViewModelMap extends ViewModel {
     private RestaurantsRepository myRestaurantRepository;
     private WorkMatesRepository myWorkMatesRepository;
 
-    private LiveData<Location> myPosition;
+    private LiveData<Location> myPosition = null;
     private final MediatorLiveData<ViewStateMap> myViewStateMapMediator = new MediatorLiveData<>();
 
     public ViewModelMap(PermissionChecker myPermission, PositionRepository myPositionRepository, RestaurantsRepository myRestaurantsRepository, WorkMatesRepository myWorkMatesRepository) {

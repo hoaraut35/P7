@@ -1,6 +1,5 @@
 package com.hoarauthomas.go4lunchthp7.ui.detail;
 
-import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 
 import java.util.List;

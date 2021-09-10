@@ -74,9 +74,7 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.WorkMates
     }
 
     private void setupViewModel() {
-
         this.myViewModelWorkMates = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelWorkMates.class);
-
         this.myViewModelWorkMates.getMediatorLiveData().observe(getViewLifecycleOwner(), new Observer<ViewStateWorkMates>() {
             @Override
             public void onChanged(ViewStateWorkMates viewStateWorkMates) {
@@ -86,19 +84,19 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.WorkMates
     }
 
     private void setupRecyclerView(View view) {
-
         recyclerView = binding.recyclerViewWorkmates;
 
-      //  RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
 
-        MaterialDividerItemDecoration matDec = new MaterialDividerItemDecoration(recyclerView.getContext(), LinearLayoutManager.VERTICAL);
-        matDec.setDividerInsetStart(200);
-        matDec.setDividerInsetEnd(5);
+        //RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+
+//        MaterialDividerItemDecoration matDec = new MaterialDividerItemDecoration(recyclerView.getContext(), LinearLayoutManager.VERTICAL);
+    //    matDec.setDividerInsetStart(200);
+      //  matDec.setDividerInsetEnd(5);
 
 
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-        recyclerView.addItemDecoration(matDec);
+    //    recyclerView.addItemDecoration(matDec);
         recyclerView.setAdapter(new WorkMatesAdapter(resultToShow,this));
     }
 

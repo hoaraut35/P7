@@ -177,7 +177,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             imageOfRestaurant = view.findViewById(R.id.imageOfRestaurant);
             addressOfRestaurant = view.findViewById(R.id.addressOfRestaurant);
             numberOfWorkmates = view.findViewById(R.id.numberOfWorkmates);
-            openingHours = view.findViewById(R.id.openinghours);
+            openingHours = view.findViewById(R.id.openingHours);
             rating = view.findViewById(R.id.rating);
         }
     }

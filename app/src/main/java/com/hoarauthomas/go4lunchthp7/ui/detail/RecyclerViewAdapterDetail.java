@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.R;
-import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 
 import java.util.List;
@@ -85,8 +84,12 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
             String[] parts = nom.split(" ", 2);
             String z = "";
 
-            for (int i = 0; i < parts.length; i++) {
-                z = parts[i].charAt(0) + z;
+//            for (int i = 0; i < parts.length; i++) {
+//                z = parts[i].charAt(0) + z;
+//            }
+//
+            for (String part : parts) {
+                z = part.charAt(0) + z;
             }
 
             avatar = "https://eu.ui-avatars.com/api/?name=" + z;

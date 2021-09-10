@@ -77,12 +77,25 @@
     <string name="restaunochoice">\" hasn\'t decided yet\"</string>
 
 
+    <!-- main screen -->
+    <string name="no_fav_msg">No favorite restaurant to show</string>
+
     <!-- screen detail restaurant -->
     <string name="no_url_string">No url !</string>
     <string name="no_phone_string">No phone number !</string>
     <string name="is_joining_txt">is joining</string>
 
+    <string name="like_delete_msg">Suppression du like</string>
+    <string name="like_add_msg">Ajout du like</string>
+
+    <string name="delete_fav_msg">Suppression du restaurant</string>
+    <string name="add_fav_msg">Restaurant enregistré</string>
+
     <!-- screen settings -->
     <string name="langage_mode">Notifications On/Off : </string>
+    <string name="descriptionForRestaurantImage">TODO</string>
+    <string name="descriptionForWorkMatesIcon">TODO</string>
+
+
 
 </resources>

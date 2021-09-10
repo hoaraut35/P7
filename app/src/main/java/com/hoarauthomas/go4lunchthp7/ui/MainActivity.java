@@ -339,7 +339,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("TAG_ID", myViewModel.getMyUserRestaurant().getValue());
             startActivity(intent);
         } else {
-            showSnackBar("Vous n'avez pas de favoris");
+            showSnackBar(getString(R.string.no_fav_msg));
         }
 
     }

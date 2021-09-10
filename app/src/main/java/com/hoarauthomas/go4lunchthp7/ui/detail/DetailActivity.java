@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -52,60 +51,57 @@ public class DetailActivity extends AppCompatActivity {
 
         myViewModelDetail = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelDetail.class);
 
-        myViewModelDetail.getMediatorScreen().observe(this, new Observer<ScreenDetailModel>() {
-            @Override
-            public void onChanged(ScreenDetailModel screenDetailModel) {
+        myViewModelDetail.getMediatorScreen().observe(this, screenDetailModel -> {
 
 
-                //si aucun placeif alors on prend cleui de l'utilisateur actuel
-                /*if (getIntent().getStringExtra("TAG_ID") == null){
-                    myViewModelDetail.setPlaceId(viewStateDetail.myUser.getMyFavoriteRestaurantId());
-                }
-                 */
-
-                //get photo
-                try {
-                    String base = "https://maps.googleapis.com/maps/api/place/photo?";
-                    String key = "key=" + BuildConfig.MAPS_API_KEY;
-                    String reference = "&photoreference=" + screenDetailModel.getUrlPhoto();
-                    String maxH = "&maxheight=157";
-                    String maxW = "&maxwidth=157";
-                    String query = base + key + reference + maxH + maxW;
-
-                    Glide.with(binding.backgroundImage)
-                            .load(query)
-                            .centerCrop()
-                            .into(binding.backgroundImage);
-
-                } catch (Exception e) {
-                    Log.i("[IMAGE]", "Exception : " + e.getMessage());
-                }
-
-                //get title
-                binding.restaurantTitre.setText(screenDetailModel.getTitle());
-
-                //get address
-                binding.restaurantAddress.setText(screenDetailModel.getAddress());
-
-                //get rating
-                binding.ratingbar.setRating(screenDetailModel.getRating());
-
-                //get phone number
-                setupButtonPhone(screenDetailModel.getCall());
-
-                //get url
-                setupButtonWeb(screenDetailModel.getWebsite());
-
-                //get choice
-                setupButtonChoice(screenDetailModel.getFavorite());
-
-                //TODO: don't work
-                setupButtonLike(screenDetailModel.getLiked());
-
-                //get list of workmates
-                setupRecyclerView(screenDetailModel.getListWorkMates());
-
+            //si aucun placeif alors on prend cleui de l'utilisateur actuel
+            /*if (getIntent().getStringExtra("TAG_ID") == null){
+                myViewModelDetail.setPlaceId(viewStateDetail.myUser.getMyFavoriteRestaurantId());
             }
+             */
+
+            //get photo
+            try {
+                String base = "https://maps.googleapis.com/maps/api/place/photo?";
+                String key = "key=" + BuildConfig.MAPS_API_KEY;
+                String reference = "&photoreference=" + screenDetailModel.getUrlPhoto();
+                String maxH = "&maxheight=157";
+                String maxW = "&maxwidth=157";
+                String query = base + key + reference + maxH + maxW;
+
+                Glide.with(binding.backgroundImage)
+                        .load(query)
+                        .centerCrop()
+                        .into(binding.backgroundImage);
+
+            } catch (Exception e) {
+                Log.i("[IMAGE]", "Exception : " + e.getMessage());
+            }
+
+            //get title
+            binding.restaurantTitre.setText(screenDetailModel.getTitle());
+
+            //get address
+            binding.restaurantAddress.setText(screenDetailModel.getAddress());
+
+            //get rating
+            binding.ratingbar.setRating(screenDetailModel.getRating());
+
+            //get phone number
+            setupButtonPhone(screenDetailModel.getCall());
+
+            //get url
+            setupButtonWeb(screenDetailModel.getWebsite());
+
+            //get choice
+            setupButtonChoice(screenDetailModel.getFavorite());
+
+            //TODO: don't work
+            setupButtonLike(screenDetailModel.getLiked());
+
+            //get list of workmates
+            setupRecyclerView(screenDetailModel.getListWorkMates());
+
         });
     }
 
@@ -119,22 +115,19 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         //for action
-        binding.choiceBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        binding.choiceBtn.setOnClickListener(v -> {
 
-                if (state){
-                    //disable
-                    showSnackBar("Suppression du restaurant");
-                    myViewModelDetail.deleteFavRestaurant(myViewModelDetail.getCurrentUser().getUid());
-                }else
-                {
-                    //enable
-                    showSnackBar("Restaurant enregistré");
-                    myViewModelDetail.setFavRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
-                }
-
+            if (state){
+                //disable
+                showSnackBar(getString(R.string.delete_fav_msg));
+                myViewModelDetail.deleteFavRestaurant(myViewModelDetail.getCurrentUser().getUid());
+            }else
+            {
+                //enable
+                showSnackBar(getString(R.string.add_fav_msg));
+                myViewModelDetail.setFavRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
             }
+
         });
 
     }
@@ -143,7 +136,6 @@ public class DetailActivity extends AppCompatActivity {
 
         if (myWorkmatesList == null) {
             Log.i("[MONDETAIL]", "liste user nulle ou vide");
-            return;
         } else if (!myWorkmatesList.isEmpty()) {
             RecyclerView recyclerView = binding.recyclerView;
             //     RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
@@ -159,17 +151,14 @@ public class DetailActivity extends AppCompatActivity {
 
     private void setupButtonWeb(@Nullable String url) {
 
-        binding.website.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (url != null) {
-                    if (!url.isEmpty()) {
-                        Intent makeURLBrowser = new Intent(Intent.ACTION_VIEW);
-                        makeURLBrowser.setData(Uri.parse(url));
-                        startActivity(makeURLBrowser);
-                    } else {
-                        showSnackBar(getString(R.string.no_url_string));
-                    }
+        binding.website.setOnClickListener(v -> {
+            if (url != null) {
+                if (!url.isEmpty()) {
+                    Intent makeURLBrowser = new Intent(Intent.ACTION_VIEW);
+                    makeURLBrowser.setData(Uri.parse(url));
+                    startActivity(makeURLBrowser);
+                } else {
+                    showSnackBar(getString(R.string.no_url_string));
                 }
             }
         });
@@ -185,37 +174,33 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         //for action
-        binding.likeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        binding.likeBtn.setOnClickListener(v -> {
 
-                if (state)
-                {
-                    showSnackBar("Suppression du like");
-                    myViewModelDetail.deleteLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
+            if (state)
+            {
+                showSnackBar(getString(R.string.like_delete_msg));
+                myViewModelDetail.deleteLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
 
-                }else
-                {
-                    showSnackBar("Ajout du like");
-                    myViewModelDetail.adLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
-                }
+            }else
+            {
+                showSnackBar(getString(R.string.like_add_msg)
 
+                );
+                myViewModelDetail.adLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
             }
+
         });
     }
 
     private void setupButtonPhone(@Nullable String number) {
 
-        binding.callBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (number != null) {
-                    Intent makeCall = new Intent(Intent.ACTION_DIAL);
-                    makeCall.setData(Uri.parse("tel:" + number));
-                    startActivity(makeCall);
-                } else {
-                    showSnackBar(getString(R.string.no_phone_string));
-                }
+        binding.callBtn.setOnClickListener(v -> {
+            if (number != null) {
+                Intent makeCall = new Intent(Intent.ACTION_DIAL);
+                makeCall.setData(Uri.parse("tel:" + number));
+                startActivity(makeCall);
+            } else {
+                showSnackBar(getString(R.string.no_phone_string));
             }
         });
     }

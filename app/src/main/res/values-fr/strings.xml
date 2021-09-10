@@ -69,8 +69,8 @@
 
 
 
-
-
+    <!-- main screen-->
+    <string name="no_fav_msg">Pas de restaurant favoris</string>
 
     <!-- menu top -->
     <string name="menu_title">J\'ai faim!</string>
