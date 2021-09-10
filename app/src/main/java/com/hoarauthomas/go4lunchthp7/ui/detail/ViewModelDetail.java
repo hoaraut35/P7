@@ -2,14 +2,10 @@ package com.hoarauthomas.go4lunchthp7.ui.detail;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.api.UserHelper;
-import com.hoarauthomas.go4lunchthp7.model.MyUser;
-import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
@@ -32,7 +28,7 @@ public class ViewModelDetail extends ViewModel {
     //ViewState for ui
     private final MediatorLiveData<ScreenDetailModel> myScreenDetailMediator = new MediatorLiveData<>();
 
-    //placeid selected for detail
+    //placeId selected for detail
     private String placeIdGen = null;
 
     //constructor
@@ -53,46 +49,27 @@ public class ViewModelDetail extends ViewModel {
         LiveData<List<User>> myWorkMatesList = this.myWorkMatesRepository.getAllWorkMatesList();
 
         //observe for list of restaurant
-        myScreenDetailMediator.addSource(myRestaurantsList, new Observer<List<RestaurantPojo>>() {
-            @Override
-            public void onChanged(List<RestaurantPojo> restaurantPojos) {
-                logicWork(restaurantPojos, myWorkMatesList.getValue(), myRestaurantDetail.getValue(), myUserFromRepo.getValue());
-            }
-        });
+        myScreenDetailMediator.addSource(myRestaurantsList, restaurantPojo -> logicWork(restaurantPojo, myWorkMatesList.getValue(), myRestaurantDetail.getValue(), myUserFromRepo.getValue()));
 
         //observe detail of restaurant
-        myScreenDetailMediator.addSource(myRestaurantDetail, new Observer<ResultDetailRestaurant>() {
-            @Override
-            public void onChanged(ResultDetailRestaurant resultDetailRestaurant) {
-                logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), resultDetailRestaurant, myUserFromRepo.getValue());
-            }
-        });
+        myScreenDetailMediator.addSource(myRestaurantDetail, resultDetailRestaurant -> logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), resultDetailRestaurant, myUserFromRepo.getValue()));
 
         //observe workmates list
-        myScreenDetailMediator.addSource(myWorkMatesList, new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> workmates) {
-                logicWork(myRestaurantsList.getValue(), workmates, myRestaurantDetail.getValue(), myUserFromRepo.getValue());
-            }
-        });
+        myScreenDetailMediator.addSource(myWorkMatesList, workmates -> logicWork(myRestaurantsList.getValue(), workmates, myRestaurantDetail.getValue(), myUserFromRepo.getValue()));
 
-        myScreenDetailMediator.addSource(myUserFromRepo, new Observer<FirebaseUser>() {
-            @Override
-            public void onChanged(FirebaseUser firebaseUser) {
-                logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), myRestaurantDetail.getValue(), firebaseUser);
-            }
-        });
+        //observe user
+        myScreenDetailMediator.addSource(myUserFromRepo, firebaseUser -> logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), myRestaurantDetail.getValue(), firebaseUser));
 
     }
 
-    //logic method for mediatorlivedata
+    //logic method for mediatorLiveData
     private void logicWork(@Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates, @Nullable ResultDetailRestaurant detail, @Nullable FirebaseUser myUserBase) {
 
         if (restaurants != null) {
 
             for (int x = 0; x < restaurants.size(); x++) {
 
-                //si la recherche dans la liste des restaurants correspond au restairant désiré alors...
+                //if the list of restaurant contains the desired restaurant
                 if (restaurants.get(x).getPlaceId().equals(placeIdGen)) {
 
                     ScreenDetailModel myScreen;
@@ -101,7 +78,7 @@ public class ViewModelDetail extends ViewModel {
 
                     //get photo
                     try {
-                        myScreen.setUrlPhoto(restaurants.get(x).getPhotos().get(0).getPhotoReference().toString());
+                        myScreen.setUrlPhoto(restaurants.get(x).getPhotos().get(0).getPhotoReference());
                     } catch (Exception e) {
                         //charger une photo de substitution
                     }
@@ -116,6 +93,7 @@ public class ViewModelDetail extends ViewModel {
                     try {
                         //on google we have a rating from 1 to 5 but we want 1 to 3...
                         Double ratingDouble = map(restaurants.get(x).getRating(), 1.0, 5.0, 1.0, 3.0);
+
                         int ratingInt = (int) Math.round(ratingDouble);
 
                         if (ratingInt == 1) {
@@ -139,7 +117,7 @@ public class ViewModelDetail extends ViewModel {
                                 //restaurant is favorite, update button
                                 if (workmates.get(i).getUid().equals(myUserBase.getUid())) {
 
-                                    //check if faviorite
+                                    //check if favorite
                                     if (workmates.get(i).getFavoriteRestaurant().equals(placeIdGen)) {
                                         myScreen.setFavorite(true);
                                        // break;
@@ -149,21 +127,13 @@ public class ViewModelDetail extends ViewModel {
 
                                     //get list of liked restaurants
 
-                                    List<String> myTempRestaurant = new ArrayList<>();
-
 
                                     //TODO: check if list is empty or null
                                     if (workmates.get(i).getRestaurant_liked().size() > 0) {
 
-                                        myTempRestaurant.addAll(workmates.get(i).getRestaurant_liked());
-
-                                        if (myTempRestaurant.contains(placeIdGen))
-                                        {
-                                            myScreen.setLiked(true);
-                                        }else
-                                        {
-                                            myScreen.setLiked(false);
-                                        }
+                                        List<String> myTempRestaurant = new ArrayList<>(workmates.get(i).getRestaurant_liked());
+                                        //set bool to true or false if placeId exist in list
+                                        myScreen.setLiked(myTempRestaurant.indexOf(placeIdGen)> 0);
 
                                     }else
                                     {
@@ -188,7 +158,7 @@ public class ViewModelDetail extends ViewModel {
                         myScreen.setLiked(false);
                     }
 
-                    //si on a le detail alors...
+                    //if we have the detail then ...
                     if (detail != null) {
 
                         //get phone number
@@ -198,7 +168,7 @@ public class ViewModelDetail extends ViewModel {
                         myScreen.setWebsite(detail.getUrl());
                     }
 
-                    //si on a les collegues alors ...
+                    //if we have workmates then ...
                     List<User> myWorkMatesDetailList = new ArrayList<>();
 
                     if (workmates != null) {
@@ -240,7 +210,7 @@ public class ViewModelDetail extends ViewModel {
         placeIdGen = myRestaurantRepository.setPlaceId(placeId);
     }
 
-    //get placeid before open detail activity
+    //get placeId before open detail activity
     public String getPlaceId() {
         return placeIdGen;
     }
