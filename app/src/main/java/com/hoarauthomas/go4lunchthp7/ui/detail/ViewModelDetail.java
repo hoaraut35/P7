@@ -33,9 +33,7 @@ public class ViewModelDetail extends ViewModel {
     private List<SpecialWorkMates> mySpecialWorkMatesList = new ArrayList<>();
     private MutableLiveData<MyUser> myUserMutable = new MutableLiveData<>();
 
-    //to publish data in ViewState
-   // private final MediatorLiveData<ViewStateDetail> myViewStateDetailMediator = new MediatorLiveData<>();
-
+    //Viewstate for ui
     private final MediatorLiveData<ScreenDetailModel> myScreenDetailMediator = new MediatorLiveData<>();
 
     //others
@@ -89,54 +87,9 @@ public class ViewModelDetail extends ViewModel {
             }
         });
 
-        /*
-        myViewStateDetailMediator.addSource(myRestaurantsList, new Observer<List<RestaurantPojo>>() {
-            @Override
-            public void onChanged(List<RestaurantPojo> restaurantPojos) {
-                logicWork(restaurantPojos, myWorkMatesList.getValue(), myRestaurantDetail.getValue(), myUserFromRepo.getValue());
-            }
-        });
-
-        myViewStateDetailMediator.addSource(myWorkMatesList, new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> users) {
-                logicWork(myRestaurantsList.getValue(), users, myRestaurantDetail.getValue(), myUserFromRepo.getValue());
-            }
-        });
-
-        myViewStateDetailMediator.addSource(myUserFromRepo, new Observer<FirebaseUser>() {
-            @Override
-            public void onChanged(FirebaseUser firebaseUser) {
-                Log.i("[MONDETAIL]", "event sur user");
-            }
-        });
-
-        myViewStateDetailMediator.addSource(myRestaurantDetail, new Observer<ResultDetailRestaurant>() {
-            @Override
-            public void onChanged(ResultDetailRestaurant resultDetailRestaurant) {
-                if (resultDetailRestaurant == null) {
-                    Log.i("[MONDETAIL]", "Event récupération détail retour null");
-                } else {
-                    Log.i("[MONDETAIL]", "Event récupération du détail du restaurant");
-                    logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), resultDetailRestaurant, myUserFromRepo.getValue());
-                }
-            }
-        });
-
-         */
     }
 
-    //**********************************************************************************************
-    // Logic work
-    //**********************************************************************************************
     private void logicWork(@Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates, @Nullable ResultDetailRestaurant detail, @Nullable FirebaseUser myUserBase) {
-
-        //retourner
-        //un objet restaurant ok
-        //un objet detail restaurant ok
-        //la liste des workmates
-        // l'état du bouton favoris
-        // l'état du bouton like
 
         if (restaurants != null) {
 
@@ -222,13 +175,7 @@ public class ViewModelDetail extends ViewModel {
 
                                     break;
 
-
-
                                 }
-
-
-
-                                //?
 
                             }
 
@@ -281,68 +228,46 @@ public class ViewModelDetail extends ViewModel {
 
         }
 
-
     }
     //**********************************************************************************************
     // End of logic work
     //**********************************************************************************************
 
-
-    //to map a range to another range ... from arduino library
+    //to map a range to another range ...
     private Double map(double value, double in_min, double in_max, double out_min, double out_max) {
         return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
 
-    public LiveData<MyUser> getMyUserLiveData() {
-        return myUserMutable;
-    }
-
-
-    //
+    //setup place id before open detail activity
     public void setPlaceId(String placeId) {
         placeIdGen = myRestaurantRepository.setPlaceId(placeId);
     }
 
+    //setup placeid before open detail activity
     public String getPlaceId() {
         return placeIdGen;
     }
-
-
-
-
 
     public FirebaseUser getCurrentUser() {
         return myWorkMatesRepository.getCurrentUser();
     }
 
-    //test2
+    //publish data to UI by viewstate object
     public LiveData<ScreenDetailModel> getMediatorScreen() {
         return myScreenDetailMediator;
     }
 
-
-
     //like a restaurant
     public void adLikedRestaurant(String uid, String myPlaces) {
-
-        //UserHelper.getUser(uid);
-
-        //  DocumentReference mySnapShot = UserHelper.getUsersCollection().document();
-
-        //List<String> myTab = (List<String>) mySnapShot.get("restaurant_liked");
-        //  DocumentSnapshot document = mySnapShot.get();
-
-
         UserHelper.addLikedRestaurant(uid, myPlaces);
     }
 
-    //remove a liked restaurant
-    public void dislikeRestaurant(String uid, String placeID){
-
+    //delete a liked restaurant
+    public void deleteLikedRestaurant(String uid, String placeId) {
+        UserHelper.deleteLikedRestaurant(uid, placeId);
     }
 
-
-    //bookmark a restaurant
+    //set a favorite restaurant
     public void setFavRestaurant(String uid, String placeId) {
         UserHelper.updateFavRestaurant(uid, placeId);
     }
@@ -352,9 +277,6 @@ public class ViewModelDetail extends ViewModel {
         UserHelper.deleteFavRestaurant(uid);
     }
 
-    public void deleteLikedRestaurant(String uid, String placeId) {
-        UserHelper.deleteLikedRestaurant(uid, placeId);
-    }
 }
 
 

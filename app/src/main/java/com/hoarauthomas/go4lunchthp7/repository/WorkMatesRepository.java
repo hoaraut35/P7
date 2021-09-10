@@ -43,7 +43,7 @@ public class WorkMatesRepository {
 
     }
 
-    private void getRestaurantFromFirestore()
+    private MutableLiveData<List<User>> getRestaurantFromFirestore()
     {
 
         Log.i("[MAP]", "- Appel du repository WorkMates ...");
@@ -99,6 +99,8 @@ public class WorkMatesRepository {
 
         });
 
+        return myWorkMAtesListMedia;
+
     }
 
     private void setupListenerOnCollection() {
@@ -143,11 +145,8 @@ public class WorkMatesRepository {
 
     public MutableLiveData<List<User>> getAllWorkMatesList()
     {
-        getRestaurantFromFirestore();
-        return myWorkMAtesListMedia;
+        return getRestaurantFromFirestore();
     }
-
-
 
 
     //----------------------------------------------------------------------------------------------
