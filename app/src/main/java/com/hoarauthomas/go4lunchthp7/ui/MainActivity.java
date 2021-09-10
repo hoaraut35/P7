@@ -29,6 +29,7 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkRequest;
 
 import com.bumptech.glide.Glide;
+import com.facebook.AccessToken;
 import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -40,6 +41,8 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.R;
@@ -178,8 +181,11 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(ViewMainState2 viewStateMain) {
 
                 if (viewStateMain.LoginState) {
-                    myViewModel.getUser();
-                    request_user_info("");
+
+                   // myViewModel.getUser();
+
+
+                    request_user_info(viewStateMain.getMyUser());
                     Log.i("MEDIA", "connecté recup infoMEDIA");
                 } else {
                     request_login();
@@ -201,6 +207,9 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onActivityResult(FirebaseAuthUIAuthenticationResult result) {
 
+                        showSnackBar(result.getIdpResponse().toString());
+
+                        myViewModel.checkUserLogin();
                         if (result.getResultCode() == -1) {
                             Log.i("[Auth]", "login ok " + result.getResultCode());
 
@@ -254,26 +263,38 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //TODO: review binding navigation view ?
-    private void request_user_info(String restaurant) {
+    private void request_user_info(FirebaseUser myUserResult) {
 
-        if (myViewModel.getUser() != null) {
+
+       // showSnackBar(myUserResult.getDisplayName());
+
+        //if (mymyViewModel.getUser() != null) {
+        if (myUserResult != null) {
+
+
 
             //showSnackBar(myViewModel.getUser().getDisplayName());
 
             View hv = binding.navigationView.getHeaderView(0);
 
             TextView name = hv.findViewById(R.id.displayName);
-            name.setText(Objects.requireNonNull(this.myViewModel.getUser().getDisplayName()));
+
+            //name.setText(Objects.requireNonNull(this.myViewModel.getUser().getDisplayName()));
+            name.setText(Objects.requireNonNull(myUserResult.getDisplayName()));
 
             TextView email = hv.findViewById(R.id.email);
-            email.setText(this.myViewModel.getUser().getEmail());
+
+            //email.setText(this.myViewModel.getUser().getEmail());
+            email.setText(myUserResult.getEmail());
 
             ImageView avatar = hv.findViewById(R.id.avatar);
 
 
             //avatar
             String avatar2 = "";
-            if (this.myViewModel.getUser().getPhotoUrl() == null) {
+
+            //if (this.myViewModel.getUser().getPhotoUrl() == null) {
+            if (myUserResult.getPhotoUrl() == null) {
 
                 String nom = this.myViewModel.getUser().getDisplayName();
                 String[] parts = nom.split(" ", 2);
@@ -285,8 +306,22 @@ public class MainActivity extends AppCompatActivity {
 
                 avatar2 = "https://eu.ui-avatars.com/api/?name=" + z;
             } else {
-                avatar2 = this.myViewModel.getUser().getPhotoUrl().toString();
+
+
+                           //     myUserResult.getProviderId();
+                             //   if (myUserResult.getProviderId().equals(FacebookAuthProvider.PROVIDER_ID)){
+                                    avatar2 = myUserResult.getPhotoUrl().toString() ;//+ "?access_token=<"+ AccessToken.getCurrentAccessToken()+">" ;
+                                    //+ "?access_token=<facebook_access_token>"
+                               // }else
+                               // {
+                                 //   avatar2 = myUserResult.getPhotoUrl().toString();
+
+                               // }//
+                //avatar2 = this.myViewModel.getUser().getPhotoUrl().toString();
+
                 Log.i("[AVATAR]", "" + avatar2.toString());
+
+
             }
 
             Glide.with(avatar)
@@ -303,6 +338,10 @@ public class MainActivity extends AppCompatActivity {
                         .circleCrop()
                         .into(avatar);
             }
+        }
+        else
+        {
+            showSnackBar("profil introuvable");
         }
 
     }

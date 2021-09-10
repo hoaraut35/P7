@@ -58,7 +58,6 @@ public class ViewModelMain extends ViewModel {
         //get position for autocomplete request
         this.myPositionRepoVM = myPositionRepoVM;
 
-
         //add source
         myAppMapMediator.addSource(myUserStateNew, new Observer<Boolean>() {
             @Override
@@ -72,17 +71,11 @@ public class ViewModelMain extends ViewModel {
         myAppMapMediator.addSource(myUserLiveData, new Observer<FirebaseUser>() {
             @Override
             public void onChanged(FirebaseUser firebaseUser) {
-                Log.i("MEDIA", "new event on user");
-
-
                 if (firebaseUser != null) {
-
                     if (!firebaseUser.getUid().isEmpty()) {
                         logicWork(firebaseUser, myWorkMatesListLiveData.getValue(), myUserStateNew.getValue());
                     }
-
                 }
-
             }
         });
 
@@ -131,12 +124,12 @@ public class ViewModelMain extends ViewModel {
                                 }
                             }
 
-                            getUser();
-                            myAppMapMediator.setValue(new ViewMainState2(true, myUserRestaurantId.getValue()));
+                            //getUser();
+                            myAppMapMediator.setValue(new ViewMainState2(true, myUserRestaurantId.getValue(),getUser()));
 
                         } else {
-                            getUser();
-                            myAppMapMediator.setValue(new ViewMainState2(true, "pas de restau"));
+                            //getUser();
+                            myAppMapMediator.setValue(new ViewMainState2(true, "pas de restau",getUser()));
 
                         }
 
@@ -148,11 +141,11 @@ public class ViewModelMain extends ViewModel {
                 }
             }
 
-            myAppMapMediator.setValue(new ViewMainState2(true, "liste restaur non chargée"));
+            myAppMapMediator.setValue(new ViewMainState2(true, "liste restaur non chargée",getUser()));
 
 
         } else {
-            myAppMapMediator.setValue(new ViewMainState2(false, "echec login"));
+            myAppMapMediator.setValue(new ViewMainState2(false, "echec login",getUser()));
             //myUserRestaurantId.setValue("text");
         }
 

@@ -55,6 +55,11 @@ public class FirebaseAuthRepository {
         return myUser;
     }
 
+    public LiveData<FirebaseUser> getUserLiveData() {
+        return myUser;
+    }
+
+
     public MutableLiveData<Boolean> getLoggedOutLiveDataNew(){
         return myUserState;
     }
@@ -64,8 +69,6 @@ public class FirebaseAuthRepository {
         checkUser();
     }
 
-    public LiveData<FirebaseUser> getUserLiveData() {
-        return myUser;
-    }
+
 
 }
