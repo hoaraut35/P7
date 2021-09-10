@@ -81,23 +81,13 @@ public class WorkMatesRepository {
                         myUser.setFavoriteRestaurant(docs.get("favoriteRestaurant").toString());
                     }
 
+                    //TODO: coorect this
                     if(docs.get("restaurant_liked") != null){
 
                         List<String> mylist = new ArrayList<>();
-
-
-                        mylist.add("test1");
-                        mylist.add("test2");
-
-
-                        // for (int i=0; i<docs.getData().size();i++){
-                         //   mylist.add(docs.getData().get(i).toString());
-                       // }
-
+                        mylist.addAll((List<String>)docs.get("restaurant_liked"));
                         myUser.setRestaurant_liked(mylist);
                     }
-
-                   // if(docs.get("")
 
                     allWorkMates.add(myUser);
 

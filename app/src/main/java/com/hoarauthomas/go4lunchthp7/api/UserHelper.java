@@ -140,4 +140,8 @@ public class UserHelper {
         return UserHelper.getUsersCollection().document(uid).update("favoriteRestaurant", "");
     }
 
+    public static Task<Void> deleteLikedRestaurant(String uid, String placeId) {
+        return UserHelper.getUsersCollection().document(uid).update("restaurant_liked", FieldValue.arrayRemove(placeId));
+
+    }
 }

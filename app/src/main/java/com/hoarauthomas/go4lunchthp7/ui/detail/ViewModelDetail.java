@@ -181,6 +181,7 @@ public class ViewModelDetail extends ViewModel {
 
                     //get favorite
                     if (workmates != null) {
+
                         if (workmates.size() > 0) {
 
                             for (int i = 0; i < workmates.size(); i++) {
@@ -188,56 +189,59 @@ public class ViewModelDetail extends ViewModel {
                                 //restaurant is favorite, update button
                                 if (workmates.get(i).getUid().equals(myUserBase.getUid())) {
 
+                                    //check if faviorite
                                     if (workmates.get(i).getFavoriteRestaurant().equals(placeIdGen)) {
                                         myScreen.setFavorite(true);
-                                        break;
+                                       // break;
                                     } else {
                                         myScreen.setFavorite(false);
                                     }
 
+                                    //get list of liked restaurants
+
+                                    List<String> myTempRestaurant = new ArrayList<>();
+
+
+                                    //TODO: check if list is empty or null
+                                    if (workmates.get(i).getRestaurant_liked().size() > 0) {
+
+                                        myTempRestaurant.addAll(workmates.get(i).getRestaurant_liked());
+
+                                        if (myTempRestaurant.contains(placeIdGen))
+                                        {
+                                            myScreen.setLiked(true);
+                                        }else
+                                        {
+                                            myScreen.setLiked(false);
+                                        }
+
+                                    }else
+                                    {
+                                        myScreen.setLiked(false);
+                                    }
+
+                                    break;
+
+
+
                                 }
 
-                                //get list of liked restaurants
-
-                                List<String> myTempRestaurant = new ArrayList<>();
-
-                               // myTempRestaurant.addAll(workmates.get(i).getRestaurant_liked());
-
-                                if (workmates.get(i).getRestaurant_liked().size() > 0) {
-
-                                  //  for (int z = 0; z < workmates.get(i).getRestaurant_liked().size(); z++) {
-
-                                        //set liked restaurant bool
-                                    //    if (workmates.get(i).getRestaurant_liked().get(z).equals(placeIdGen)) {
-                                      //      myScreen.setLiked(true);
-                                        //} else {
-                                           myScreen.setLiked(true);
-                                       // }
-
-                                    //}
 
 
-
-                                }else
-                                {
-                                    myScreen.setLiked(false);
-                                }
-
-
-
+                                //?
 
                             }
+
                         } else {
+                            //no data from workmates set bool by default
                             myScreen.setFavorite(false);
                             myScreen.setLiked(false);
-
                         }
 
-
                     } else {
+                        //no data from workmates set bool by default
                         myScreen.setFavorite(false);
                         myScreen.setLiked(false);
-
                     }
 
                     //si on a le detail alors...
@@ -268,6 +272,8 @@ public class ViewModelDetail extends ViewModel {
                     }
 
                     myScreenDetailMediator.setValue(myScreen);
+
+                    //add break here?
 
                 }
 
@@ -346,6 +352,9 @@ public class ViewModelDetail extends ViewModel {
         UserHelper.deleteFavRestaurant(uid);
     }
 
+    public void deleteLikedRestaurant(String uid, String placeId) {
+        UserHelper.deleteLikedRestaurant(uid, placeId);
+    }
 }
 
 

@@ -100,12 +100,10 @@ public class DetailActivity extends AppCompatActivity {
                 setupButtonChoice(screenDetailModel.getFavorite());
 
                 //TODO: don't work
-                //setupButtonLike(screenDetailModel.getLiked());
+                setupButtonLike(screenDetailModel.getLiked());
 
-                //TODO: il manque le nom a partir de l'id
                 //get list of workmates
                 setupRecyclerView(screenDetailModel.getListWorkMates());
-                //  setupRecyclerView(viewStateDetail.getMyWorkMatesTag());
 
             }
         });
@@ -127,10 +125,12 @@ public class DetailActivity extends AppCompatActivity {
 
                 if (state){
                     //disable
+                    showSnackBar("Suppression du restaurant");
                     myViewModelDetail.deleteFavRestaurant(myViewModelDetail.getCurrentUser().getUid());
                 }else
                 {
                     //enable
+                    showSnackBar("Restaurant enregistré");
                     myViewModelDetail.setFavRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
                 }
 
@@ -177,18 +177,29 @@ public class DetailActivity extends AppCompatActivity {
 
     private void setupButtonLike(Boolean state) {
 
+        //for view
         if (state) {
             binding.likeBtn.setImageResource(R.drawable.ic_baseline_star_24_green);
         } else {
             binding.likeBtn.setImageResource(R.drawable.ic_baseline_star_24);
         }
 
+        //for action
         binding.likeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSnackBar("Enregistrer le restaurant : " + binding.restaurantTitre.getText());
-                //myViewModelDetail.getCurrentUser().
-                myViewModelDetail.adLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
+
+                if (state)
+                {
+                    showSnackBar("Suppression du like");
+                    myViewModelDetail.deleteLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
+
+                }else
+                {
+                    showSnackBar("Ajout du like");
+                    myViewModelDetail.adLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
+                }
+
             }
         });
     }
