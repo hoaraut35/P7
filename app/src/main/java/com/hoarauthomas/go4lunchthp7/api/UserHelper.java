@@ -134,4 +134,10 @@ public class UserHelper {
         return UserHelper.getUsersCollection().document(uid).delete();
     }
 
+
+
+    public static Task<Void> deleteFavRestaurant(String uid) {
+        return UserHelper.getUsersCollection().document(uid).update("favoriteRestaurant", "");
+    }
+
 }

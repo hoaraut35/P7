@@ -302,13 +302,21 @@ public class ViewModelDetail extends ViewModel {
     }
 
 
-    public void setFavRestaurant(String uid, String placeId) {
 
-        UserHelper.updateFavRestaurant(uid, placeId);
-        // myWorkMatesRepository.getCurrentUser().
+
+
+    public FirebaseUser getCurrentUser() {
+        return myWorkMatesRepository.getCurrentUser();
+    }
+
+    //test2
+    public LiveData<ScreenDetailModel> getMediatorScreen() {
+        return myScreenDetailMediator;
     }
 
 
+
+    //like a restaurant
     public void adLikedRestaurant(String uid, String myPlaces) {
 
         //UserHelper.getUser(uid);
@@ -322,24 +330,22 @@ public class ViewModelDetail extends ViewModel {
         UserHelper.addLikedRestaurant(uid, myPlaces);
     }
 
-    public FirebaseUser getCurrentUser() {
-
-
-        return myWorkMatesRepository.getCurrentUser();
+    //remove a liked restaurant
+    public void dislikeRestaurant(String uid, String placeID){
 
     }
 
-    //public livedata to publish in viexwstate
-  /*  public LiveData<ViewStateDetail> getMediatorLiveData() {
-        return myViewStateDetailMediator;
+
+    //bookmark a restaurant
+    public void setFavRestaurant(String uid, String placeId) {
+        UserHelper.updateFavRestaurant(uid, placeId);
     }
 
-   */
-
-    //test2
-    public LiveData<ScreenDetailModel> getMediatorScreen() {
-        return myScreenDetailMediator;
+    //delete a favorite restaurant
+    public void deleteFavRestaurant(String uid) {
+        UserHelper.deleteFavRestaurant(uid);
     }
+
 }
 
 

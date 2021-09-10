@@ -23,12 +23,9 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
 
 import com.bumptech.glide.Glide;
@@ -43,7 +40,6 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.type.DateTime;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.R;
@@ -52,8 +48,6 @@ import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 import com.hoarauthomas.go4lunchthp7.workmanager.WorkManagerTest;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -61,21 +55,15 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
-    public String TAG = "[AUTO]";
-
     public ActivityMainBinding binding;
 
     public ViewModelMain myViewModel;
-
-    private String myRestaurant = null;
 
     private final List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.TwitterBuilder().build(),
@@ -85,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityResultLauncher<Intent> openFirebaseAuthForResult;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
         setupNavigationDrawer();
         setupBottomBAr();
         setupViewPager();
-        //  notificationtest();
         loadWork();
         setupAutocomplete();
 
@@ -111,20 +99,6 @@ public class MainActivity extends AppCompatActivity {
         // create
         PlacesClient placesClient = Places.createClient(this);
     }
-
-    private void notificationtest() {
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "123")
-                .setSmallIcon(R.drawable.ic_logo)
-                .setContentTitle("Go4Lunch")
-                .setContentText("myViewModel.getMyUser().getValue().getDisplayName()" + " n'oubliez pas votre restaurant ce midi")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
-        notificationManagerCompat.notify(1, builder.build());
-
-    }
-
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void loadWork() {
@@ -280,11 +254,6 @@ public class MainActivity extends AppCompatActivity {
 
     //TODO: review binding navigation view ?
     private void request_user_info(String restaurant) {
-
-        //check resturant
-        if (restaurant != null) {
-            myRestaurant = restaurant;
-        }
 
         if (myViewModel.getUser() != null) {
 

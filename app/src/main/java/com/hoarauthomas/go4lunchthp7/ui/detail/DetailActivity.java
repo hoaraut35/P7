@@ -112,16 +112,28 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void setupButtonChoice(Boolean state) {
+
+        //for view
         if (state) {
             binding.choiceBtn.setImageResource(R.drawable.checked_favorite_restaurant);
         } else {
             binding.choiceBtn.setImageResource(R.drawable.unchecked_favori_restaurant);
         }
 
+        //for action
         binding.choiceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myViewModelDetail.setFavRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
+
+                if (state){
+                    //disable
+                    myViewModelDetail.deleteFavRestaurant(myViewModelDetail.getCurrentUser().getUid());
+                }else
+                {
+                    //enable
+                    myViewModelDetail.setFavRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
+                }
+
             }
         });
 

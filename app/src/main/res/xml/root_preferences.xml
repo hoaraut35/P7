@@ -1,15 +1,12 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
-
-
+    <!-- do not move to another directory -->
 
     <PreferenceCategory app:title="@string/sync_header">
 
         <SwitchPreferenceCompat
-            app:key="sync"
+            app:key="notifications"
             app:title="@string/langage_mode" />
-
 
     </PreferenceCategory>
 
