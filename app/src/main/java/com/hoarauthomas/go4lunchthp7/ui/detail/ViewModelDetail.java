@@ -23,7 +23,6 @@ public class ViewModelDetail extends ViewModel {
     //declare repo here...
     private final RestaurantsRepository myRestaurantRepository;
     private final WorkMatesRepository myWorkMatesRepository;
-    private final FirebaseAuthRepository myAuthRepository;
 
     //ViewState for ui
     private final MediatorLiveData<ScreenDetailModel> myScreenDetailMediator = new MediatorLiveData<>();
@@ -34,7 +33,6 @@ public class ViewModelDetail extends ViewModel {
     //constructor
     public ViewModelDetail(FirebaseAuthRepository myAuthRepository, RestaurantsRepository myRestaurantRepository, WorkMatesRepository myWorkMatesRepository) {
 
-        this.myAuthRepository = myAuthRepository;
         //get actual user authentification
         LiveData<FirebaseUser> myUserFromRepo = myAuthRepository.getUserLiveData();
 
@@ -92,7 +90,10 @@ public class ViewModelDetail extends ViewModel {
                     //get rating
                     try {
                         //on google we have a rating from 1 to 5 but we want 1 to 3...
-                        Double ratingDouble = map(restaurants.get(x).getRating(), 1.0, 5.0, 1.0, 3.0);
+                        //Double ratingDouble = map(restaurants.get(x).getRating(), 1.0, 5.0, 1.0, 3.0);
+                        double ratingDouble = (restaurants.get(x).getRating() - 1.0) * (3.0 - 1.0) / (5.0 - 1.0) + 1.0;
+                        //private Double map(double value, double in_min, double in_max, double out_min, double out_max) {
+                        //return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 
                         int ratingInt = (int) Math.round(ratingDouble);
 
@@ -115,12 +116,14 @@ public class ViewModelDetail extends ViewModel {
                             for (int i = 0; i < workmates.size(); i++) {
 
                                 //restaurant is favorite, update button
-                                if (workmates.get(i).getUid().equals(myUserBase.getUid())) {
+                                if (myUserBase != null && workmates.get(i).getUid().equals(myUserBase.getUid())) {
 
                                     //check if favorite
+                                    //myScreen.setFavorite(workmates.get(i).getFavoriteRestaurant().indexOf(placeIdGen)>0);
+
                                     if (workmates.get(i).getFavoriteRestaurant().equals(placeIdGen)) {
                                         myScreen.setFavorite(true);
-                                       // break;
+                                        // break;
                                     } else {
                                         myScreen.setFavorite(false);
                                     }
@@ -133,14 +136,18 @@ public class ViewModelDetail extends ViewModel {
 
                                         List<String> myTempRestaurant = new ArrayList<>(workmates.get(i).getRestaurant_liked());
                                         //set bool to true or false if placeId exist in list
-                                        myScreen.setLiked(myTempRestaurant.indexOf(placeIdGen)> 0);
+                                        myScreen.setLiked(myTempRestaurant.indexOf(placeIdGen) > 0);
 
-                                    }else
-                                    {
+                                    } else {
                                         myScreen.setLiked(false);
                                     }
 
                                     break;
+
+                                } else {
+                                    //no data from workmates set bool by default
+                                    myScreen.setFavorite(false);
+                                    myScreen.setLiked(false);
 
                                 }
 
@@ -199,11 +206,6 @@ public class ViewModelDetail extends ViewModel {
     //**********************************************************************************************
     // End of logic work
     //**********************************************************************************************
-
-    //to map rating
-    private Double map(double value, double in_min, double in_max, double out_min, double out_max) {
-        return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-    }
 
     //setup place id before open detail activity
     public void setPlaceId(String placeId) {
