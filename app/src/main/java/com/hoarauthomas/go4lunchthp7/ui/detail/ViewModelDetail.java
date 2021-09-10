@@ -29,14 +29,10 @@ public class ViewModelDetail extends ViewModel {
     private final WorkMatesRepository myWorkMatesRepository;
     private final FirebaseAuthRepository myAuthRepository;
 
-    //livedata...
-    private List<SpecialWorkMates> mySpecialWorkMatesList = new ArrayList<>();
-    private MutableLiveData<MyUser> myUserMutable = new MutableLiveData<>();
-
-    //Viewstate for ui
+    //ViewState for ui
     private final MediatorLiveData<ScreenDetailModel> myScreenDetailMediator = new MediatorLiveData<>();
 
-    //others
+    //placeid selected for detail
     private String placeIdGen = null;
 
     //constructor
@@ -89,6 +85,7 @@ public class ViewModelDetail extends ViewModel {
 
     }
 
+    //logic method for mediatorlivedata
     private void logicWork(@Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates, @Nullable ResultDetailRestaurant detail, @Nullable FirebaseUser myUserBase) {
 
         if (restaurants != null) {
@@ -233,7 +230,7 @@ public class ViewModelDetail extends ViewModel {
     // End of logic work
     //**********************************************************************************************
 
-    //to map a range to another range ...
+    //to map rating
     private Double map(double value, double in_min, double in_max, double out_min, double out_max) {
         return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
     }
@@ -243,7 +240,7 @@ public class ViewModelDetail extends ViewModel {
         placeIdGen = myRestaurantRepository.setPlaceId(placeId);
     }
 
-    //setup placeid before open detail activity
+    //get placeid before open detail activity
     public String getPlaceId() {
         return placeIdGen;
     }
@@ -252,7 +249,7 @@ public class ViewModelDetail extends ViewModel {
         return myWorkMatesRepository.getCurrentUser();
     }
 
-    //publish data to UI by viewstate object
+    //publish data to UI
     public LiveData<ScreenDetailModel> getMediatorScreen() {
         return myScreenDetailMediator;
     }
@@ -278,6 +275,3 @@ public class ViewModelDetail extends ViewModel {
     }
 
 }
-
-
-
