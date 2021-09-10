@@ -178,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(ViewMainState2 viewStateMain) {
 
                 if (viewStateMain.LoginState) {
+                    myViewModel.getUser();
                     request_user_info("");
                     Log.i("MEDIA", "connecté recup infoMEDIA");
                 } else {

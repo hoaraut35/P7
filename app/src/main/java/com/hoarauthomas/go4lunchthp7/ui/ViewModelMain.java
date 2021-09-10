@@ -131,9 +131,11 @@ public class ViewModelMain extends ViewModel {
                                 }
                             }
 
+                            getUser();
                             myAppMapMediator.setValue(new ViewMainState2(true, myUserRestaurantId.getValue()));
 
                         } else {
+                            getUser();
                             myAppMapMediator.setValue(new ViewMainState2(true, "pas de restau"));
 
                         }
