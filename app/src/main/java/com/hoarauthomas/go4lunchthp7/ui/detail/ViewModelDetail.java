@@ -34,7 +34,7 @@ public class ViewModelDetail extends ViewModel {
     public ViewModelDetail(FirebaseAuthRepository myAuthRepository, RestaurantsRepository myRestaurantRepository, WorkMatesRepository myWorkMatesRepository) {
 
         //get actual user authentification
-        LiveData<FirebaseUser> myUserFromRepo = myAuthRepository.getUserLiveData();
+        LiveData<FirebaseUser> myUserFromRepo = myAuthRepository.getUserLiveDataNew();
 
         this.myRestaurantRepository = myRestaurantRepository;
         //get restaurant list

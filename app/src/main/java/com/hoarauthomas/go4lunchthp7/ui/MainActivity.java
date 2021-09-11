@@ -41,6 +41,7 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.R;
@@ -172,34 +173,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupViewModel() {
-
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
         this.myViewModel.myAppMapMediator.observe(this, new Observer<ViewMainState>() {
             @Override
             public void onChanged(ViewMainState viewStateMain) {
-
                 if (viewStateMain.LoginState) {
-
-                   // myViewModel.getUser();
-
-
                     request_user_info(viewStateMain.getMyUser());
-                    Log.i("MEDIA", "connecté recup infoMEDIA");
                 } else {
                     request_login();
-                    Log.i("MEDIA", "non connecté attente");
                 }
-
             }
         });
     }
 
     private void Authentification() {
 
-        //0 = canceled
-        //-1 = OK
-
-        openFirebaseAuthForResult = registerForActivityResult(
+      openFirebaseAuthForResult = registerForActivityResult(
                 new FirebaseAuthUIActivityResultContract(),
                 new ActivityResultCallback<FirebaseAuthUIAuthenticationResult>() {
                     @Override
@@ -271,6 +260,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
             //showSnackBar(myViewModel.getUser().getDisplayName());
 
             View hv = binding.navigationView.getHeaderView(0);
@@ -283,63 +274,94 @@ public class MainActivity extends AppCompatActivity {
             TextView email = hv.findViewById(R.id.email);
 
             //email.setText(this.myViewModel.getUser().getEmail());
-            email.setText(myUserResult.getEmail());
+
 
             ImageView avatar = hv.findViewById(R.id.avatar);
 
 
-            //avatar
+
+
+            //avatar variable
             String avatar2 = "";
 
-            //if (this.myViewModel.getUser().getPhotoUrl() == null) {
-            if (myUserResult.getPhotoUrl() == null) {
+            //specific provider
+            for (UserInfo profile : myUserResult.getProviderData()){
 
-                String nom = this.myViewModel.getUser().getDisplayName();
-                String[] parts = nom.split(" ", 2);
-                String z = "";
 
-                for (int i = 0; i < parts.length; i++) {
-                    z = parts[i].charAt(0) + z;
+                String photoProfile = Objects.requireNonNull(profile.getPhotoUrl()).toString();
+                Log.i("[PROFILE]","Profile photo url : " + profile.getPhotoUrl());
+
+
+                email.setText(profile.getEmail());
+
+                if (photoProfile == null){
+
+                    String nom = this.myViewModel.getUser().getDisplayName();
+                    String[] parts = nom.split(" ", 2);
+                    String z = "";
+
+                    for (int i = 0; i < parts.length; i++) {
+                        z = parts[i].charAt(0) + z;
+                    }
+
+                    avatar2 = "https://eu.ui-avatars.com/api/?name=" + z;
+                }else
+                {
+                    avatar2 = photoProfile;
                 }
-
-                avatar2 = "https://eu.ui-avatars.com/api/?name=" + z;
-            } else {
-
-
-                           //     myUserResult.getProviderId();
-                             //   if (myUserResult.getProviderId().equals(FacebookAuthProvider.PROVIDER_ID)){
-                                    avatar2 = myUserResult.getPhotoUrl().toString() ;//+ "?access_token=<"+ AccessToken.getCurrentAccessToken()+">" ;
-                                    //+ "?access_token=<facebook_access_token>"
-                               // }else
-                               // {
-                                 //   avatar2 = myUserResult.getPhotoUrl().toString();
-
-                               // }//
-                //avatar2 = this.myViewModel.getUser().getPhotoUrl().toString();
-
-                Log.i("[AVATAR]", "" + avatar2.toString());
 
 
             }
+
+
+
+
+
+            //if (this.myViewModel.getUser().getPhotoUrl() == null) {
+//            if (myUserResult.getPhotoUrl() == null) {
+//
+//                String nom = this.myViewModel.getUser().getDisplayName();
+//                String[] parts = nom.split(" ", 2);
+//                String z = "";
+//
+//                for (int i = 0; i < parts.length; i++) {
+//                    z = parts[i].charAt(0) + z;
+//                }
+//
+//                avatar2 = "https://eu.ui-avatars.com/api/?name=" + z;
+//            } else {
+//
+//
+//                           //     myUserResult.getProviderId();
+//                             //   if (myUserResult.getProviderId().equals(FacebookAuthProvider.PROVIDER_ID)){
+//                                    avatar2 = myUserResult.getPhotoUrl().toString() ;//+ "?access_token=<"+ AccessToken.getCurrentAccessToken()+">" ;
+//                                    //+ "?access_token=<facebook_access_token>"
+//                               // }else
+//                               // {
+//                                 //   avatar2 = myUserResult.getPhotoUrl().toString();
+//
+//                               // }//
+//                //avatar2 = this.myViewModel.getUser().getPhotoUrl().toString();
+//
+//                Log.i("[AVATAR]", "" + avatar2.toString());
+//
+//
+//            }
 
             Glide.with(avatar)
                     .load(avatar2)
                     .circleCrop()
                     .into(avatar);
 
-            if (myViewModel.getUser().getPhotoUrl() == null) {
-                Log.i("[LOGIN]", "Pas d'avatar");
-            } else {
-
-                Glide.with(avatar)
-                        .load(this.myViewModel.getUser().getPhotoUrl())
-                        .circleCrop()
-                        .into(avatar);
-            }
-        }
-        else
-        {
-            showSnackBar("profil introuvable");
+//            if (myViewModel.getUser().getPhotoUrl() == null) {
+//                Log.i("[LOGIN]", "Pas d'avatar");
+//            } else {
+//
+//                Glide.with(avatar)
+//                        .load(this.myViewModel.getUser().getPhotoUrl())
+//                        .circleCrop()
+//                        .into(avatar);
+//            }
         }
 
     }
