@@ -86,10 +86,11 @@ public class UserHelper {
 
 
     //TODO : tableau favoris
-    public static Task<Void> addLikedRestaurant(String uid, String placeId) {
+    public static void addLikedRestaurant(String uid, String placeId) {
 
         //get user collection
         Task<DocumentSnapshot> myDoc = getUsersCollection().document(uid).get();
+
 
         //add listener
         myDoc.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -100,7 +101,7 @@ public class UserHelper {
                 restaurant_liked_list.add(placeId);
                 Log.i("[LOGIN]", "restaura liké" + myDoc.getResult().get("restaurant_liked") + restaurant_liked_list.size());
                 //UserHelper.getUsersCollection().document(uid).collection("restaurant_liked").add(temp);
-
+                UserHelper.getUsersCollection().document(uid).update("restaurant_liked", FieldValue.arrayUnion(placeId));
             }
         });
 
@@ -111,7 +112,7 @@ public class UserHelper {
             }
         });
 
-        return UserHelper.getUsersCollection().document(uid).update("restaurant_liked", FieldValue.arrayUnion(placeId));
+      //  return true;
         //    return null;
     }
 

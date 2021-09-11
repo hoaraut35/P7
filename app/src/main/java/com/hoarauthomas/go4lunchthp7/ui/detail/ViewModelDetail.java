@@ -231,6 +231,9 @@ public class ViewModelDetail extends ViewModel {
 
     //like a restaurant
     public void adLikedRestaurant(String uid, String myPlaces) {
+
+
+
         UserHelper.addLikedRestaurant(uid, myPlaces);
     }
 

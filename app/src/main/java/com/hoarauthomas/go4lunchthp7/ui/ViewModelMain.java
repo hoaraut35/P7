@@ -106,8 +106,8 @@ public class ViewModelMain extends ViewModel {
         Log.i("MEDIA", "Logic work ...");
 
 
-        if (myUser == null) return;
-        if (workmates == null) return;
+      //  if (myUser == null) return;
+     //   if (workmates == null) return;
 
 
 
