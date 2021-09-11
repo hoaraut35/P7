@@ -105,32 +105,7 @@ public class DetailActivity extends AppCompatActivity {
         });
     }
 
-    private void setupButtonChoice(Boolean state) {
 
-        //for view
-        if (state) {
-            binding.choiceBtn.setImageResource(R.drawable.checked_favorite_restaurant);
-        } else {
-            binding.choiceBtn.setImageResource(R.drawable.unchecked_favori_restaurant);
-        }
-
-        //for action
-        binding.choiceBtn.setOnClickListener(v -> {
-
-            if (state){
-                //disable
-                showSnackBar(getString(R.string.delete_fav_msg));
-                myViewModelDetail.deleteFavRestaurant(myViewModelDetail.getCurrentUser().getUid());
-            }else
-            {
-                //enable
-                showSnackBar(getString(R.string.add_fav_msg));
-                myViewModelDetail.setFavRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
-            }
-
-        });
-
-    }
 
     private void setupRecyclerView(List<User> myWorkmatesList) {
 
@@ -164,6 +139,33 @@ public class DetailActivity extends AppCompatActivity {
         });
     }
 
+    private void setupButtonChoice(Boolean state) {
+
+        //for view
+        if (state) {
+            binding.choiceBtn.setImageResource(R.drawable.checked_favorite_restaurant);
+        } else {
+            binding.choiceBtn.setImageResource(R.drawable.unchecked_favori_restaurant);
+        }
+
+        //for action
+        binding.choiceBtn.setOnClickListener(v -> {
+
+            if (state){
+                //disable
+                showSnackBar(getString(R.string.delete_fav_msg));
+                myViewModelDetail.deleteFavRestaurant(myViewModelDetail.getCurrentUser().getUid());
+            }else
+            {
+                //enable
+                showSnackBar(getString(R.string.add_fav_msg));
+                myViewModelDetail.setFavRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
+            }
+
+        });
+
+    }
+
     private void setupButtonLike(Boolean state) {
 
         //for view
@@ -183,9 +185,7 @@ public class DetailActivity extends AppCompatActivity {
 
             }else
             {
-                showSnackBar(getString(R.string.like_add_msg)
-
-                );
+                showSnackBar(getString(R.string.like_add_msg) );
                 myViewModelDetail.adLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
             }
 

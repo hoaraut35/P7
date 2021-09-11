@@ -2,8 +2,10 @@ package com.hoarauthomas.go4lunchthp7.api;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -24,7 +26,7 @@ public class UserHelper {
 
     // --- COLLECTION REFERENCE ---
 
-    public static void  getListenerOnUser(String uid){
+    public static void getListenerOnUser(String uid) {
 
         DocumentReference docRef = FirebaseFirestore.getInstance().document(uid).collection(COLLECTION_NAME).document(uid);
 
@@ -32,26 +34,21 @@ public class UserHelper {
             @Override
             public void onEvent(@Nullable @org.jetbrains.annotations.Nullable DocumentSnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
 
-                if (error != null){
+                if (error != null) {
 
                     return;
                 }
 
-                if (value != null && value.exists()){
-                    Log.i("FIRE","Event on user" + value.getData());
-                }else
-                {
-                    Log.i("FIRE","Event null on user firestore");
+                if (value != null && value.exists()) {
+                    Log.i("FIRE", "Event on user" + value.getData());
+                } else {
+                    Log.i("FIRE", "Event null on user firestore");
                 }
 
             }
         });
 
     }
-
-
-
-
 
 
     public static CollectionReference getUsersCollection() {
@@ -91,35 +88,31 @@ public class UserHelper {
     //TODO : tableau favoris
     public static Task<Void> addLikedRestaurant(String uid, String placeId) {
 
+        //get user collection
         Task<DocumentSnapshot> myDoc = getUsersCollection().document(uid).get();
 
+        //add listener
         myDoc.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                List<String> temp= (List<String>) myDoc.getResult().get("restaurant_liked");
-
-                temp.add(placeId);
-
-                Log.i("[LOGIN]","restaura liké" +myDoc.getResult().get("restaurant_liked") + temp.size());
-
-
+                List<String> restaurant_liked_list = (List<String>) myDoc.getResult().get("restaurant_liked");
+                restaurant_liked_list.add(placeId);
+                Log.i("[LOGIN]", "restaura liké" + myDoc.getResult().get("restaurant_liked") + restaurant_liked_list.size());
                 //UserHelper.getUsersCollection().document(uid).collection("restaurant_liked").add(temp);
 
             }
-
-
         });
 
-
-
-
-        //List<String> myTab = (List<String>) myDoc.getResult("restaurant_liked");
-
-
+        myDoc.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                    //
+            }
+        });
 
         return UserHelper.getUsersCollection().document(uid).update("restaurant_liked", FieldValue.arrayUnion(placeId));
-    //    return null;
+        //    return null;
     }
 
     public static Task<Void> getLikedRestaurant(String uid) {
@@ -133,7 +126,6 @@ public class UserHelper {
     public static Task<Void> deleteUser(String uid) {
         return UserHelper.getUsersCollection().document(uid).delete();
     }
-
 
 
     public static Task<Void> deleteFavRestaurant(String uid) {

@@ -63,7 +63,10 @@ public class ViewModelDetail extends ViewModel {
     //logic method for mediatorLiveData
     private void logicWork(@Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates, @Nullable ResultDetailRestaurant detail, @Nullable FirebaseUser myUserBase) {
 
-        if (restaurants != null) {
+        //if we have null data we abord
+        if (restaurants == null || workmates == null || detail == null ||myUserBase == null) return;
+
+        //if (restaurants != null) {
 
             for (int x = 0; x < restaurants.size(); x++) {
 
@@ -109,7 +112,7 @@ public class ViewModelDetail extends ViewModel {
                     }
 
                     //get favorite
-                    if (workmates != null) {
+                    //if (workmates != null) {
 
                         if (workmates.size() > 0) {
 
@@ -159,11 +162,11 @@ public class ViewModelDetail extends ViewModel {
                             myScreen.setLiked(false);
                         }
 
-                    } else {
-                        //no data from workmates set bool by default
-                        myScreen.setFavorite(false);
-                        myScreen.setLiked(false);
-                    }
+//                    } else {
+//                        //no data from workmates set bool by default
+//                        myScreen.setFavorite(false);
+//                        myScreen.setLiked(false);
+//                    }
 
                     //if we have the detail then ...
                     if (detail != null) {
@@ -200,7 +203,7 @@ public class ViewModelDetail extends ViewModel {
 
             }
 
-        }
+        //}fin si
 
     }
     //**********************************************************************************************

@@ -29,7 +29,6 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkRequest;
 
 import com.bumptech.glide.Glide;
-import com.facebook.AccessToken;
 import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -41,7 +40,6 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
@@ -176,9 +174,9 @@ public class MainActivity extends AppCompatActivity {
     private void setupViewModel() {
 
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
-        this.myViewModel.myAppMapMediator.observe(this, new Observer<ViewMainState2>() {
+        this.myViewModel.myAppMapMediator.observe(this, new Observer<ViewMainState>() {
             @Override
-            public void onChanged(ViewMainState2 viewStateMain) {
+            public void onChanged(ViewMainState viewStateMain) {
 
                 if (viewStateMain.LoginState) {
 
@@ -401,7 +399,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupViewPager() {
-        FragmentsAdapter myFragmentAdapter = new FragmentsAdapter(this);
+        MainFragmentsAdapter myFragmentAdapter = new MainFragmentsAdapter(this);
         binding.viewpager.setAdapter(myFragmentAdapter);
         binding.viewpager.setCurrentItem(1);
         binding.viewpager.setUserInputEnabled(false);

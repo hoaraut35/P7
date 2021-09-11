@@ -10,9 +10,9 @@ import com.hoarauthomas.go4lunchthp7.ui.map.MapsFragment;
 import com.hoarauthomas.go4lunchthp7.ui.settings.SettingsFragment;
 import com.hoarauthomas.go4lunchthp7.ui.workmates.WorkFragment;
 
-public class FragmentsAdapter extends FragmentStateAdapter {
+public class MainFragmentsAdapter extends FragmentStateAdapter {
 
-    public FragmentsAdapter(@NonNull FragmentActivity fragmentActivity) {
+    public MainFragmentsAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
 

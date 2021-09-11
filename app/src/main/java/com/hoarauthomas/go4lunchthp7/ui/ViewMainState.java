@@ -2,7 +2,7 @@ package com.hoarauthomas.go4lunchthp7.ui;
 
 import com.google.firebase.auth.FirebaseUser;
 
-public class ViewMainState2 {
+public class ViewMainState {
 
     public Boolean LoginState;
     public String myRestaurant;
@@ -16,7 +16,7 @@ public class ViewMainState2 {
         this.myRestaurant = myRestaurant;
     }
 
-    public ViewMainState2(Boolean loginState, String myRestaurant, FirebaseUser fbUser) {
+    public ViewMainState(Boolean loginState, String myRestaurant, FirebaseUser fbUser) {
         LoginState = loginState;
         this.myRestaurant = myRestaurant;
         this.myUser = fbUser;

@@ -38,7 +38,7 @@ public class ViewModelMain extends ViewModel {
     private MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myPlaceAutocompleteList = new MutableLiveData<>();
 
     //to update ViewState...
-    MediatorLiveData<ViewMainState2> myAppMapMediator = new MediatorLiveData<>();
+    MediatorLiveData<ViewMainState> myAppMapMediator = new MediatorLiveData<>();
 
     //constructor...
     public ViewModelMain(FirebaseAuthRepository firebaseAuthRepository, WorkMatesRepository workMatesRepository, PlaceAutocompleteRepository placeAutocompleteRepository, PositionRepository myPositionRepoVM) {
@@ -105,6 +105,12 @@ public class ViewModelMain extends ViewModel {
 
         Log.i("MEDIA", "Logic work ...");
 
+
+        if (myUser == null) return;
+        if (workmates == null) return;
+
+
+
         if (bool) {
 
             createUser();
@@ -125,11 +131,11 @@ public class ViewModelMain extends ViewModel {
                             }
 
                             //getUser();
-                            myAppMapMediator.setValue(new ViewMainState2(true, myUserRestaurantId.getValue(),getUser()));
+                            myAppMapMediator.setValue(new ViewMainState(true, myUserRestaurantId.getValue(),getUser()));
 
                         } else {
                             //getUser();
-                            myAppMapMediator.setValue(new ViewMainState2(true, "pas de restau",getUser()));
+                            myAppMapMediator.setValue(new ViewMainState(true, "pas de restau",getUser()));
 
                         }
 
@@ -141,11 +147,11 @@ public class ViewModelMain extends ViewModel {
                 }
             }
 
-            myAppMapMediator.setValue(new ViewMainState2(true, "liste restaur non chargée",getUser()));
+            myAppMapMediator.setValue(new ViewMainState(true, "liste restaur non chargée",getUser()));
 
 
         } else {
-            myAppMapMediator.setValue(new ViewMainState2(false, "echec login",getUser()));
+            myAppMapMediator.setValue(new ViewMainState(false, "echec login",getUser()));
             //myUserRestaurantId.setValue("text");
         }
 
@@ -192,7 +198,7 @@ public class ViewModelMain extends ViewModel {
     }
 
     //to publish mediatorlivedata to mainactivity
-    public LiveData<ViewMainState2> getMediatorLiveData() {
+    public LiveData<ViewMainState> getMediatorLiveData() {
         return myAppMapMediator;
     }
 
