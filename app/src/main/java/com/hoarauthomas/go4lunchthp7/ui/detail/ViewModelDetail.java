@@ -64,103 +64,102 @@ public class ViewModelDetail extends ViewModel {
     private void logicWork(@Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates, @Nullable ResultDetailRestaurant detail, @Nullable FirebaseUser myUserBase) {
 
         //if we have null data we abord
-        if (restaurants == null || workmates == null || detail == null ||myUserBase == null) return;
+        if (restaurants == null || workmates == null || detail == null || myUserBase == null)
+            return;
 
-        //if (restaurants != null) {
+        for (int x = 0; x < restaurants.size(); x++) {
 
-            for (int x = 0; x < restaurants.size(); x++) {
+            //we' get the restaurant to work with it
+            if (restaurants.get(x).getPlaceId().equals(placeIdGen)) {
 
-                //if the list of restaurant contains the desired restaurant
-                if (restaurants.get(x).getPlaceId().equals(placeIdGen)) {
+                ScreenDetailModel myScreen = new ScreenDetailModel();
 
-                    ScreenDetailModel myScreen;
+                //get photo
+                try {
+                    myScreen.setUrlPhoto(restaurants.get(x).getPhotos().get(0).getPhotoReference());
+                } catch (Exception e) {
+                    //charger une photo de substitution
+                }
 
-                    myScreen = new ScreenDetailModel();
+                //get titre restaurant
+                myScreen.setTitle(restaurants.get(x).getName());
 
-                    //get photo
-                    try {
-                        myScreen.setUrlPhoto(restaurants.get(x).getPhotos().get(0).getPhotoReference());
-                    } catch (Exception e) {
-                        //charger une photo de substitution
+                //get address
+                myScreen.setAddress(restaurants.get(x).getVicinity());
+
+                //get rating
+                try {
+                    //on google we have a rating from 1 to 5 but we want 1 to 3...
+                    //Double ratingDouble = map(restaurants.get(x).getRating(), 1.0, 5.0, 1.0, 3.0);
+                    double ratingDouble = (restaurants.get(x).getRating() - 1.0) * (3.0 - 1.0) / (5.0 - 1.0) + 1.0;
+                    //private Double map(double value, double in_min, double in_max, double out_min, double out_max) {
+                    //return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+
+                    int ratingInt = (int) Math.round(ratingDouble);
+
+                    if (ratingInt == 1) {
+                        myScreen.setRating(1);
+                    } else if (ratingInt == 2) {
+                        myScreen.setRating(2);
+                    } else if (ratingInt == 3) {
+                        myScreen.setRating(3);
                     }
+                } catch (Exception e) {
+                    myScreen.setRating(0);
+                }
 
-                    //get titre restaurant
-                    myScreen.setTitle(restaurants.get(x).getName());
+                //get favorite
+                //if (workmates != null) {
 
-                    //get address
-                    myScreen.setAddress(restaurants.get(x).getVicinity());
+                if (workmates.size() > 0) {
 
-                    //get rating
-                    try {
-                        //on google we have a rating from 1 to 5 but we want 1 to 3...
-                        //Double ratingDouble = map(restaurants.get(x).getRating(), 1.0, 5.0, 1.0, 3.0);
-                        double ratingDouble = (restaurants.get(x).getRating() - 1.0) * (3.0 - 1.0) / (5.0 - 1.0) + 1.0;
-                        //private Double map(double value, double in_min, double in_max, double out_min, double out_max) {
-                        //return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+                    //Boolean fav =false;
 
-                        int ratingInt = (int) Math.round(ratingDouble);
+                    //we scann list of workmates
+                    for (int i = 0; i < workmates.size(); i++) {
 
-                        if (ratingInt == 1) {
-                            myScreen.setRating(1);
-                        } else if (ratingInt == 2) {
-                            myScreen.setRating(2);
-                        } else if (ratingInt == 3) {
-                            myScreen.setRating(3);
-                        }
-                    } catch (Exception e) {
-                        myScreen.setRating(0);
-                    }
+                        //restaurant is favorite, update button
+                        if (workmates.get(i).getUid().equals(myUserBase.getUid())) {
 
-                    //get favorite
-                    //if (workmates != null) {
+                            //check if favorite
+                            //myScreen.setFavorite(workmates.get(i).getFavoriteRestaurant().indexOf(placeIdGen)>0);
 
-                        if (workmates.size() > 0) {
-
-                            for (int i = 0; i < workmates.size(); i++) {
-
-                                //restaurant is favorite, update button
-                                if (myUserBase != null && workmates.get(i).getUid().equals(myUserBase.getUid())) {
-
-                                    //check if favorite
-                                    //myScreen.setFavorite(workmates.get(i).getFavoriteRestaurant().indexOf(placeIdGen)>0);
-
-                                    if (workmates.get(i).getFavoriteRestaurant().equals(placeIdGen)) {
-                                        myScreen.setFavorite(true);
-                                        // break;
-                                    } else {
-                                        myScreen.setFavorite(false);
-                                    }
-
-                                    //get list of liked restaurants
-
-
-                                    //TODO: check if list is empty or null
-                                    if (workmates.get(i).getRestaurant_liked().size() > 0) {
-
-                                        List<String> myTempRestaurant = new ArrayList<>(workmates.get(i).getRestaurant_liked());
-                                        //set bool to true or false if placeId exist in list
-                                        myScreen.setLiked(myTempRestaurant.indexOf(placeIdGen) > 0);
-
-                                    } else {
-                                        myScreen.setLiked(false);
-                                    }
-
-                                    break;
-
-                                } else {
-                                    //no data from workmates set bool by default
-                                    myScreen.setFavorite(false);
-                                    myScreen.setLiked(false);
-
-                                }
-
+                            if (workmates.get(i).getFavoriteRestaurant().equals(placeIdGen)) {
+                                myScreen.setFavorite(true);
+                                //break;//loop
+                            } else {
+                                myScreen.setFavorite(false);
                             }
+
+                            //get list of liked restaurants
+
+                            //TODO: check if list is empty or null
+                            if (workmates.get(i).getRestaurant_liked().size() > 0) {
+
+                                List<String> myTempRestaurant = new ArrayList<>(workmates.get(i).getRestaurant_liked());
+                                //set bool to true or false if placeId exist in list
+                                myScreen.setLiked(myTempRestaurant.indexOf(placeIdGen) > 0);
+
+                            } else {
+                                myScreen.setLiked(false);
+                            }
+
+                            break;
 
                         } else {
                             //no data from workmates set bool by default
                             myScreen.setFavorite(false);
                             myScreen.setLiked(false);
+
                         }
+
+                    }
+
+                } else {
+                    //no data from workmates set bool by default
+                    myScreen.setFavorite(false);
+                    myScreen.setLiked(false);
+                }
 
 //                    } else {
 //                        //no data from workmates set bool by default
@@ -168,42 +167,33 @@ public class ViewModelDetail extends ViewModel {
 //                        myScreen.setLiked(false);
 //                    }
 
-                    //if we have the detail then ...
-                    if (detail != null) {
+                //get phone number
+                myScreen.setCall(detail.getFormattedPhoneNumber());
 
-                        //get phone number
-                        myScreen.setCall(detail.getFormattedPhoneNumber());
+                //get url web
+                myScreen.setWebsite(detail.getUrl());
 
-                        //get url web
-                        myScreen.setWebsite(detail.getUrl());
+                //if we have workmates then ...
+                List<User> myWorkMatesDetailList = new ArrayList<>();
+
+                for (User myWorkMate : workmates) {
+                    //if detail have a workmate
+                    if (myWorkMate.getFavoriteRestaurant().equals(placeIdGen)) {
+                        myWorkMatesDetailList.add(myWorkMate);
                     }
-
-                    //if we have workmates then ...
-                    List<User> myWorkMatesDetailList = new ArrayList<>();
-
-                    if (workmates != null) {
-
-                        for (User myWorkMate : workmates) {
-                            //if detail have a workmate
-                            if (myWorkMate.getFavoriteRestaurant().equals(placeIdGen)) {
-                                myWorkMatesDetailList.add(myWorkMate);
-                            }
-
-                        }
-
-                        myScreen.setListWorkMates(myWorkMatesDetailList);
-
-                    }
-
-                    myScreenDetailMediator.setValue(myScreen);
-
-                    //add break here?
 
                 }
 
+                myScreen.setListWorkMates(myWorkMatesDetailList);
+
+                //set mediator
+                myScreenDetailMediator.setValue(myScreen);
+
+                //add break here?
+
             }
 
-        //}fin si
+        }
 
     }
     //**********************************************************************************************
@@ -231,9 +221,6 @@ public class ViewModelDetail extends ViewModel {
 
     //like a restaurant
     public void adLikedRestaurant(String uid, String myPlaces) {
-
-
-
         UserHelper.addLikedRestaurant(uid, myPlaces);
     }
 

@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
+import com.hoarauthomas.go4lunchthp7.repository.AlarmRepository;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
@@ -29,6 +30,7 @@ public class ViewModelMain extends ViewModel {
     private WorkMatesRepository myWorkMatesRepoVM;
     private PlaceAutocompleteRepository myPlaceAutocompleteRepoVM;
     private PositionRepository myPositionRepoVM;
+    private AlarmRepository myAlarmRepoVM;
 
     //livedata...
     private MutableLiveData<FirebaseUser> myUserLiveData;
@@ -41,7 +43,7 @@ public class ViewModelMain extends ViewModel {
     MediatorLiveData<ViewMainState> myAppMapMediator = new MediatorLiveData<>();
 
     //constructor...
-    public ViewModelMain(FirebaseAuthRepository firebaseAuthRepository, WorkMatesRepository workMatesRepository, PlaceAutocompleteRepository placeAutocompleteRepository, PositionRepository myPositionRepoVM) {
+    public ViewModelMain(FirebaseAuthRepository firebaseAuthRepository, WorkMatesRepository workMatesRepository, PlaceAutocompleteRepository placeAutocompleteRepository, PositionRepository myPositionRepoVM, AlarmRepository myAlarmRepoVM) {
 
         //get data from Auth repository...
         this.myFirebaseAuthRepoVM = firebaseAuthRepository;
@@ -57,6 +59,9 @@ public class ViewModelMain extends ViewModel {
 
         //get position for autocomplete request
         this.myPositionRepoVM = myPositionRepoVM;
+
+        //get alarm data
+        this.myAlarmRepoVM = myAlarmRepoVM;
 
         //add source
         myAppMapMediator.addSource(myUserStateNew, new Observer<Boolean>() {
@@ -223,12 +228,13 @@ public class ViewModelMain extends ViewModel {
     }
 
 
+    public void setNotification() {
+        myAlarmRepoVM.setAlarm();
+    }
 
-
-
-
-
-
+    public void removeNotification() {
+        myAlarmRepoVM.removeAlarm();
+    }
 }
 
 

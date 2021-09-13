@@ -1,7 +1,5 @@
 package com.hoarauthomas.go4lunchthp7.ui.settings;
 
-import static android.content.Context.MODE_PRIVATE;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,7 +7,6 @@ import android.os.Bundle;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
-import androidx.preference.SwitchPreference;
 
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
@@ -29,6 +26,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         setupViewModel();
 
 
+     //   addPreferencesFromResource(R.xml.root_preferences);
 
 
 
@@ -39,6 +37,20 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
 
         Context context = getActivity();
+
+
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        boolean cfhk = sp.getBoolean("notification",true);
+
+        if (cfhk){
+//            myViewModel.setNotification();
+        }else
+        {
+  //          myViewModel.removeNotification();
+        }
+
 
     }
 

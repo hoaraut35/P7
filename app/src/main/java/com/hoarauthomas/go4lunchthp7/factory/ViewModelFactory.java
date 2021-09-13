@@ -10,13 +10,14 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
 import com.hoarauthomas.go4lunchthp7.MainApplication;
-import com.hoarauthomas.go4lunchthp7.ui.ViewModelMain;
 import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
+import com.hoarauthomas.go4lunchthp7.repository.AlarmRepository;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
+import com.hoarauthomas.go4lunchthp7.ui.ViewModelMain;
 import com.hoarauthomas.go4lunchthp7.ui.detail.ViewModelDetail;
 import com.hoarauthomas.go4lunchthp7.ui.map.ViewModelMap;
 import com.hoarauthomas.go4lunchthp7.ui.restaurant.ViewModelRestaurant;
@@ -38,6 +39,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final WorkMatesRepository workMatesRepository;
     private final PermissionChecker permissionChecker;
     private final PlaceAutocompleteRepository placeAutocompleteRepository;
+    private final AlarmRepository alarmRepository;
 
     //Get an instance of ViewModelFactory ... see pattern singleton
     public static ViewModelFactory getInstance() {
@@ -53,7 +55,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                             new RestaurantsRepository(),
                             new PositionRepository(LocationServices.getFusedLocationProviderClient(application)),
                             new WorkMatesRepository(),
-                            new PlaceAutocompleteRepository()
+                            new PlaceAutocompleteRepository(),
+                            new AlarmRepository(application)
                     );
                 } else {
                     Log.i("[FACTORY]", "[VIEWMODELFACTORY OBJECT ALREADY EXIST]");
@@ -71,7 +74,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             @NonNull RestaurantsRepository restaurantsRepository,
             PositionRepository positionRepository,
             WorkMatesRepository workMatesRepository,
-            PlaceAutocompleteRepository placeAutocompleteRepository
+            PlaceAutocompleteRepository placeAutocompleteRepository,
+            AlarmRepository alarmRepository
     ) {
         this.permissionChecker = permissionChecker;
         this.firebaseAuthRepository = firebaseAuthRepository;
@@ -79,6 +83,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.restaurantsRepository = restaurantsRepository;
         this.workMatesRepository = workMatesRepository;
         this.placeAutocompleteRepository = placeAutocompleteRepository;
+        this.alarmRepository = alarmRepository;
 
     }
 
@@ -92,34 +97,29 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     firebaseAuthRepository,
                     workMatesRepository,
                     placeAutocompleteRepository,
-                    positionRepository);
-        }else
+                    positionRepository,
+                    alarmRepository);
 
-        if (modelClass.isAssignableFrom(ViewModelMap.class)) {
+        } else if (modelClass.isAssignableFrom(ViewModelMap.class)) {
             return (T) new ViewModelMap(
                     permissionChecker,
                     positionRepository,
                     restaurantsRepository,
                     workMatesRepository);
 
-        }else
-
-        if (modelClass.isAssignableFrom(ViewModelDetail.class)) {
+        } else if (modelClass.isAssignableFrom(ViewModelDetail.class)) {
             return (T) new ViewModelDetail(
                     firebaseAuthRepository,
                     restaurantsRepository,
                     workMatesRepository);
 
-        }else
-        if (modelClass.isAssignableFrom(ViewModelRestaurant.class)) {
+        } else if (modelClass.isAssignableFrom(ViewModelRestaurant.class)) {
             return (T) new ViewModelRestaurant(
                     positionRepository,
                     restaurantsRepository,
                     workMatesRepository);
 
-        }else
-
-        if (modelClass.isAssignableFrom(ViewModelWorkMates.class)) {
+        } else if (modelClass.isAssignableFrom(ViewModelWorkMates.class)) {
             return (T) new ViewModelWorkMates(
                     restaurantsRepository,
                     workMatesRepository);

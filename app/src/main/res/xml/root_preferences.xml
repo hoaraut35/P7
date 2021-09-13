@@ -5,8 +5,10 @@
     <PreferenceCategory app:title="@string/sync_header">
 
         <SwitchPreferenceCompat
-            app:key="notifications"
-            app:title="@string/langage_mode" />
+            app:key="notifications2"
+            app:title="@string/langage_mode"
+            app:summaryOn="Receive notification at 12:00"
+            app:summaryOff="Don't receive notification"/>
 
     </PreferenceCategory>
 
