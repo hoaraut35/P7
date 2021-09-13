@@ -3,7 +3,9 @@ package com.hoarauthomas.go4lunchthp7.ui;
 import static androidx.core.view.GravityCompat.START;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +27,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkRequest;
 
@@ -63,10 +66,19 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
+    /**
+     * for binding views
+     */
     public ActivityMainBinding binding;
 
+    /**
+     * for viewModel
+     */
     public ViewModelMain myViewModel;
 
+    /**
+     *  List of providers for authentification
+     */
     private final List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.TwitterBuilder().build(),
             new AuthUI.IdpConfig.EmailBuilder().build(),
@@ -93,6 +105,19 @@ public class MainActivity extends AppCompatActivity {
         loadWork();
         setupAutocomplete();
 
+
+        setupSettings();
+
+    }
+
+    private void setupSettings() {
+
+
+      //  SharedPreferences preferences = getApplication().getSharedPreferences(Context.MODE_PRIVATE);
+
+        //Boolean result = getResources().getBoolean(R.bool.xml.root_preferences.bool.notifications);
+
+       // if (preferences.getString("notifications") == "true"){
     }
 
     private void setupAutocomplete() {

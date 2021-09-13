@@ -26,59 +26,47 @@ public class UserHelper {
 
     // --- COLLECTION REFERENCE ---
 
-    public static void getListenerOnUser(String uid) {
-
-        DocumentReference docRef = FirebaseFirestore.getInstance().document(uid).collection(COLLECTION_NAME).document(uid);
-
-        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable @org.jetbrains.annotations.Nullable DocumentSnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
-
-                if (error != null) {
-
-                    return;
-                }
-
-                if (value != null && value.exists()) {
-                    Log.i("FIRE", "Event on user" + value.getData());
-                } else {
-                    Log.i("FIRE", "Event null on user firestore");
-                }
-
-            }
-        });
-
-    }
+//    public static void getListenerOnUser(String uid) {
+//
+//        DocumentReference docRef = FirebaseFirestore.getInstance().document(uid).collection(COLLECTION_NAME).document(uid);
+//
+//        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+//            @Override
+//            public void onEvent(@Nullable @org.jetbrains.annotations.Nullable DocumentSnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
+//
+//                if (error != null) {
+//
+//                    return;
+//                }
+//
+//                if (value != null && value.exists()) {
+//                    Log.i("FIRE", "Event on user" + value.getData());
+//
+//
+//
+//
+//                } else {
+//                    Log.i("FIRE", "Event null on user firestore");
+//                }
+//
+//            }
+//        });
+//
+//    }
 
 
     public static CollectionReference getUsersCollection() {
         return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
     }
 
-    // --- CREATE ---
-
     public static Task<Void> createUser(String uid, String username, String avatar, String restaurant, List<String> restaurant_liked) {
         User userToCreate = new User(uid, username, avatar, restaurant, restaurant_liked);
         return UserHelper.getUsersCollection().document(uid).set(userToCreate);
     }
 
-    // --- GET ---
-
     public static Task<DocumentSnapshot> getUser(String uid) {
         return UserHelper.getUsersCollection().document(uid).get();
     }
-
-
-    // --- UPDATE ---
-
-    public static Task<Void> updateUsername(String username, String uid) {
-        return UserHelper.getUsersCollection().document(uid).update("username", username);
-    }
-
-    public static Task<Void> updateIsMentor(String uid, Boolean isMentor) {
-        return UserHelper.getUsersCollection().document(uid).update("isMentor", isMentor);
-    }
-
 
     public static Task<Void> updateFavRestaurant(String uid, String placeId) {
         return UserHelper.getUsersCollection().document(uid).update("favoriteRestaurant", placeId);
@@ -111,9 +99,6 @@ public class UserHelper {
                     //
             }
         });
-
-      //  return true;
-        //    return null;
     }
 
     public static Task<Void> getLikedRestaurant(String uid) {
@@ -121,20 +106,11 @@ public class UserHelper {
         return null;
     }
 
-
-    // --- DELETE ---
-
-    public static Task<Void> deleteUser(String uid) {
-        return UserHelper.getUsersCollection().document(uid).delete();
-    }
-
-
     public static Task<Void> deleteFavRestaurant(String uid) {
         return UserHelper.getUsersCollection().document(uid).update("favoriteRestaurant", "");
     }
 
     public static Task<Void> deleteLikedRestaurant(String uid, String placeId) {
         return UserHelper.getUsersCollection().document(uid).update("restaurant_liked", FieldValue.arrayRemove(placeId));
-
     }
 }

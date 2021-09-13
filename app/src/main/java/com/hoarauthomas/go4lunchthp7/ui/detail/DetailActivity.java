@@ -180,12 +180,12 @@ public class DetailActivity extends AppCompatActivity {
 
             if (state)
             {
-                showSnackBar(getString(R.string.like_delete_msg));
+                showSnackBar(getString(R.string.like_delete_msg) + myViewModelDetail.getCurrentUser().getUid() + " " + myViewModelDetail.getPlaceId());
                 myViewModelDetail.deleteLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
 
             }else
             {
-                showSnackBar(getString(R.string.like_add_msg) );
+                showSnackBar(getString(R.string.like_add_msg)  + myViewModelDetail.getCurrentUser().getUid() + " " + myViewModelDetail.getPlaceId());
                 myViewModelDetail.adLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
             }
 

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
+import androidx.preference.SwitchPreference;
 
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
@@ -25,13 +26,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
-
         setupViewModel();
 
 
-
-
-       // SharedPreferences sharedPref = getActivity().getSharedPreferences(Context.MODE_PRIVATE);
 
 
 
@@ -41,14 +38,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
 
-
         Context context = getActivity();
 
-
-
-
-
-
-
     }
+
+
+
 }
