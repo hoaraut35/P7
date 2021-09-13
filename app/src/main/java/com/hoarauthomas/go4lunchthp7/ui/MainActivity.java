@@ -3,6 +3,9 @@ package com.hoarauthomas.go4lunchthp7.ui;
 import static androidx.core.view.GravityCompat.START;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,6 +28,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
@@ -91,6 +96,11 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityResultLauncher<Intent> openFirebaseAuthForResult;
 
+    /**
+     * Main methof for initialise application
+     * @param savedInstanceState
+     */
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,22 +116,26 @@ public class MainActivity extends AppCompatActivity {
         setupNavigationDrawer();
         setupBottomBAr();
         setupViewPager();
-     //   loadWork();
+        loadWork();
         setupAutocomplete();
-
-     //   loadtest();
-
-
         setupSettings();
+
+
+     //   testNotification();
+
+    loadtest();
 
     }
 
+    private void testNotification(String myRestaurant) {
+        //TODO: check settings boolean and if enable load notification
+        myViewModel.testNotification(myRestaurant);
 
+    }
 
     private void loadtest() {
 
         AlarmManager newAlarm= new AlarmManager();
-
         newAlarm.getAlarmManager(this);
         newAlarm.setAlarm();
 
@@ -129,12 +143,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupSettings() {
 
+       // SharedPreferences preferences = getApplication().getSharedPreferences(Context.MODE_PRIVATE);
 
-      //  SharedPreferences preferences = getApplication().getSharedPreferences(Context.MODE_PRIVATE);
 
-        //Boolean result = getResources().getBoolean(R.bool.xml.root_preferences.bool.notifications);
-
-       // if (preferences.getString("notifications") == "true"){
+//        Boolean result = getResources().getBoolean(R.xml.root_preferences..bool.notifications);
+//
+//        if (preferences.getString("notifications") == "true"){
+//
+//            showSnackBar("notification on");
+//
+//        }else
+//        {
+//            showSnackBar("notification off");
+//        }
     }
 
     private void setupAutocomplete() {
@@ -266,6 +287,10 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(ViewMainState viewStateMain) {
                 if (viewStateMain.LoginState) {
                     request_user_info(viewStateMain.getMyUser());
+
+                    testNotification(viewStateMain.myRestaurant.toString());
+
+
                 } else {
                     request_login();
                 }

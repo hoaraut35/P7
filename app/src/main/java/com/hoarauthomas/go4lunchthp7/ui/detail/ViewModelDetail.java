@@ -27,6 +27,8 @@ public class ViewModelDetail extends ViewModel {
     //ViewState for ui
     private final MediatorLiveData<ScreenDetailModel> myScreenDetailMediator = new MediatorLiveData<>();
 
+    ScreenDetailModel myPublicDetailUser = new ScreenDetailModel();
+
     //placeId selected for detail
     private String placeIdGen = null;
 
@@ -63,10 +65,11 @@ public class ViewModelDetail extends ViewModel {
     //logic method for mediatorLiveData
     private void logicWork(@Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates, @Nullable ResultDetailRestaurant detail, @Nullable FirebaseUser myUserBase) {
 
-        //if we have null data we abord
+        //if we have null data we cancel work
         if (restaurants == null || workmates == null || detail == null || myUserBase == null)
             return;
 
+        //search the restaurant attached to user
         for (int x = 0; x < restaurants.size(); x++) {
 
             //we' get the restaurant to work with it
@@ -185,6 +188,8 @@ public class ViewModelDetail extends ViewModel {
                 }
 
                 myScreen.setListWorkMates(myWorkMatesDetailList);
+
+
 
                 //set mediator
                 myScreenDetailMediator.setValue(myScreen);

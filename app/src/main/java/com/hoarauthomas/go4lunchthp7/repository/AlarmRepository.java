@@ -1,18 +1,19 @@
 package com.hoarauthomas.go4lunchthp7.repository;
 
-import static java.util.jar.Pack200.Unpacker.PROGRESS;
-
+import android.app.Notification;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
-import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
 
+import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.workmanager.WorkManagerTest;
 
 import java.time.LocalDate;
@@ -27,13 +28,38 @@ public class AlarmRepository {
 
     androidx.work.WorkManager myWorkManager;
     Context myContext;
+    Notification myNotification = new Notification();
+    NotificationManagerCompat notificationManagerCompat;
 
-
-
-
+    //constructor
     public AlarmRepository(Context context) {
+
         this.myContext = context;
         this.myWorkManager = androidx.work.WorkManager.getInstance(context);
+
+        setupNotification("Go4Lunch","Démonstration notification");
+     //   setupChannel();
+     //   launchNotification();
+    }
+
+    //set channel
+    public void setupChannel(){
+        notificationManagerCompat = NotificationManagerCompat.from(myContext);
+        notificationManagerCompat.notify(1,myNotification);
+    }
+
+    public void setupNotification(String title, String content){
+        myNotification = new NotificationCompat.Builder(myContext,"Go4Lunch")
+                .setContentText(content)
+                .setContentTitle(title)
+                .setSmallIcon(R.drawable.ic_logo)
+                .setCategory(NotificationCompat.CATEGORY_ALARM)
+                .build();
+    }
+
+    public void launchNotification()
+    {
+        notificationManagerCompat.notify(1,myNotification);
     }
 
     //get an alarm
@@ -126,6 +152,8 @@ public class AlarmRepository {
     }
 
     public void removeAlarm() {
+
+
     }
 
 

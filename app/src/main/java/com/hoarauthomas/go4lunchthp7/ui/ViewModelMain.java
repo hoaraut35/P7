@@ -116,6 +116,10 @@ public class ViewModelMain extends ViewModel {
 
 
 
+
+
+
+
         if (bool) {
 
             createUser();
@@ -232,8 +236,14 @@ public class ViewModelMain extends ViewModel {
         myAlarmRepoVM.setAlarm();
     }
 
-    public void removeNotification() {
+    public void removeNotification()
+    {
         myAlarmRepoVM.removeAlarm();
+    }
+
+    public void testNotification(String myRestaurant) {
+        myAlarmRepoVM.setupNotification("Go4Lunch Alert",myRestaurant);
+        myAlarmRepoVM.setupChannel();
     }
 }
 
