@@ -109,44 +109,28 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-
         setupPermission();
+
         setupViewModel();
         Authentification();
+
         setupTopAppBar();
         setupNavigationDrawer();
         setupBottomBAr();
         setupViewPager();
-        loadWork();
+
+
         setupAutocomplete();
         setupSettings();
 
+    //    loadWork();//alarm
 
-     //   testNotification();
-
-    loadtest();
-
-
-    readSettings();
-
+     //   loadtest();
 
     }
 
-    private void readSettings() {
 
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-
-        Boolean myBool = sharedPref.getBoolean("notifications2", false);
-        showSnackBar(myBool.toString());
-
-    }
-
-    private void testNotification(String myRestaurant) {
-        //TODO: check settings boolean and if enable load notification
-        myViewModel.testNotification(myRestaurant);
-
-    }
 
     private void loadtest() {
 
@@ -156,21 +140,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Get notification state from settings fragments and send it to viewmodel
+     */
     private void setupSettings() {
-
-       // SharedPreferences preferences = getApplication().getSharedPreferences(Context.MODE_PRIVATE);
-
-
-//        Boolean result = getResources().getBoolean(R.xml.root_preferences..bool.notifications);
-//
-//        if (preferences.getString("notifications") == "true"){
-//
-//            showSnackBar("notification on");
-//
-//        }else
-//        {
-//            showSnackBar("notification off");
-//        }
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean myBool = sharedPref.getBoolean("notifications2", false);
+        myViewModel.setNotification(myBool);
+        //for debug only
+        showSnackBar("Notification is : " + Boolean.toString(myBool));
     }
 
     private void setupAutocomplete() {
@@ -303,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
                 if (viewStateMain.LoginState) {
                     request_user_info(viewStateMain.getMyUser());
 
-                    testNotification(viewStateMain.myRestaurant.toString());
+                    //testNotification(viewStateMain.myRestaurant.toString());
 
 
                 } else {

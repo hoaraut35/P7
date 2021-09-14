@@ -49,7 +49,7 @@ public class WorkManagerTest extends Worker {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "123")
                 .setSmallIcon(R.drawable.ic_logo)
-                .setContentTitle("Go4Lunch")
+                .setContentTitle("Go4Lunch from dowork")
                 .setContentText("Message de test")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 

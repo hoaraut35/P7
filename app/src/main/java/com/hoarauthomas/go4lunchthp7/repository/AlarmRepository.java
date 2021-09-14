@@ -31,22 +31,28 @@ public class AlarmRepository {
     Notification myNotification = new Notification();
     NotificationManagerCompat notificationManagerCompat;
 
-    //constructor
+    /**
+     * constructor
+     */
     public AlarmRepository(Context context) {
-
         this.myContext = context;
         this.myWorkManager = androidx.work.WorkManager.getInstance(context);
-
-        setupNotification("Go4Lunch","Démonstration notification");
-
+       // setupNotification("Go4Lunch","Démonstration notification");
     }
 
-    //set channel
+    /**
+     *  Setup channel for notification
+     */
     public void setupChannel(){
         notificationManagerCompat = NotificationManagerCompat.from(myContext);
         notificationManagerCompat.notify(1,myNotification);
     }
 
+    /**
+     * make a notification
+     * @param title title of notifica&tion
+     * @param content content of notification
+     */
     public void setupNotification(String title, String content){
         myNotification = new NotificationCompat.Builder(myContext,"Go4Lunch")
                 .setContentText(content)
@@ -54,12 +60,10 @@ public class AlarmRepository {
                 .setSmallIcon(R.drawable.ic_logo)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .build();
+
+        setupChannel();
     }
 
-    public void launchNotification()
-    {
-        notificationManagerCompat.notify(1,myNotification);
-    }
 
     //get an alarm
     public void getAlarm(String idAlarm){
@@ -150,27 +154,36 @@ public class AlarmRepository {
 
     }
 
+    /**
+     * Stop all work with the tag parameter
+     */
     public void removeAlarm() {
-
-
+        myWorkManager.cancelAllWorkByTag("popup12h00");
     }
 
 
-    public void getAlarmState(String idalarm){
-//        myWorkManager.getWorkInfoByIdLiveData(UUID.fromString(idalarm))
-//                .observe(, new Observer<WorkInfo>() {
-//                    @Override
-//                    public void onChanged(WorkInfo workInfo) {
-//
-//                        if (workInfo != null){
-//
-//                            Data progress = workInfo.getProgress();
-//                            int val = progress.getInt(PROGRESS,0);
-//                            Log.i("[JOB]","progression" +val);
-//                        }
-//                    }
-//                });
-//    }
-}
+
+
+
+    /**
+     * Enable or disable notification with state parameter from viewmodel
+     * @param state
+     */
+    public void setNotification(Boolean state) {
+
+        if (state){
+            setupNotification("Go4Lunch","contenu");    
+        }else
+        {
+            removeNotification();
+        }
+    }
+
+    /**
+     * Remove all notification with tag id
+     */
+    private void removeNotification() {
+        myWorkManager.cancelAllWorkByTag("popup12h00");
+    }
 
 }

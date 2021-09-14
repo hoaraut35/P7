@@ -11,6 +11,12 @@
     app:showAsAction="ifRoom" />
 
 
+    <item
+        android:id="@+id/autoComplete"
+        android:icon="@color/background_light"
+        android:actionViewClass="android.widget.AutoCompleteTextView"
+
+
 </menu>
 
 

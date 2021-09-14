@@ -232,19 +232,20 @@ public class ViewModelMain extends ViewModel {
     }
 
 
+    //not used
     public void setNotification() {
         myAlarmRepoVM.setAlarm();
     }
 
-    public void removeNotification()
-    {
-        myAlarmRepoVM.removeAlarm();
+
+    /**
+     * To enable or disable notification
+     * @param state
+     */
+    public void setNotification(Boolean state){
+        myAlarmRepoVM.setNotification(state);
     }
 
-    public void testNotification(String myRestaurant) {
-        myAlarmRepoVM.setupNotification("Go4Lunch Alert",myRestaurant);
-        myAlarmRepoVM.setupChannel();
-    }
 }
 
 
