@@ -11,7 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.facebook.internal.Mutable;
+import com.hoarauthomas.go4lunchthp7.SingleLiveEvent;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
+
+import rx.Single;
 
 public class ViewModelMap extends ViewModel {
 
@@ -39,6 +41,8 @@ public class ViewModelMap extends ViewModel {
 
     private final MutableLiveData<String> myPositionFromAutoComplete = new MutableLiveData<>();
 
+    private final SingleLiveEvent<String> myPositionFromAutoSingleMode = new SingleLiveEvent<>();
+
     public ViewModelMap(PermissionChecker myPermission, PositionRepository myPositionRepository, RestaurantsRepository myRestaurantsRepository, WorkMatesRepository myWorkMatesRepository) {
         this.myPermission = myPermission;
         this.myPositionRepository = myPositionRepository;
@@ -52,9 +56,9 @@ public class ViewModelMap extends ViewModel {
         myViewStateMapMediator.addSource(myPosition, new Observer<Location>() {
             @Override
             public void onChanged(Location position) {
-             //   Log.i("[MAP]", "Event position");
+                //   Log.i("[MAP]", "Event position");
                 if (position != null) {
-                 //   Log.i("[MAP]", "Position trouvée" + position.getLatitude() + position.getLongitude());
+                    //   Log.i("[MAP]", "Position trouvée" + position.getLatitude() + position.getLongitude());
                     myRestaurantRepository.UpdateLngLat(position.getLongitude(), position.getLatitude());
                 }
                 //logicWork(position,myRestaurantsList.getValue());
@@ -64,9 +68,9 @@ public class ViewModelMap extends ViewModel {
         myViewStateMapMediator.addSource(myRestaurantsList, new Observer<List<RestaurantPojo>>() {
             @Override
             public void onChanged(List<RestaurantPojo> restaurantPojos) {
-             //   Log.i("[MAP]", "Event restaurants");
+                //   Log.i("[MAP]", "Event restaurants");
                 if (restaurantPojos != null) {
-                   // Log.i("[MAP]", "Liste restaura" + restaurantPojos.size());
+                    // Log.i("[MAP]", "Liste restaura" + restaurantPojos.size());
                     logicWork(myPosition.getValue(), restaurantPojos, myWorkMatesList.getValue());
                 }
 
@@ -76,9 +80,9 @@ public class ViewModelMap extends ViewModel {
         myViewStateMapMediator.addSource(myWorkMatesList, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
-            //    Log.i("[MAP]", "Event workmates list...");
+                //    Log.i("[MAP]", "Event workmates list...");
                 if (users != null) {
-                 //   Log.i("[MAP]", "Liste workmates" + users.size());
+                    //   Log.i("[MAP]", "Liste workmates" + users.size());
                     logicWork(myPosition.getValue(), myRestaurantsList.getValue(), users);
                 }
             }
@@ -91,8 +95,7 @@ public class ViewModelMap extends ViewModel {
     private void logicWork(@Nullable Location position, @Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates) {
 
         //abord if null
-        if (position == null || restaurants  == null || workmates == null ) return;
-
+        if (position == null || restaurants == null || workmates == null) return;
 
 
         if (position != null && restaurants != null && workmates != null && !restaurants.isEmpty() && !workmates.isEmpty()) {
@@ -108,8 +111,8 @@ public class ViewModelMap extends ViewModel {
 
                 for (int z = 0; z < workmates.size(); z++) {
 
-                    Log.i("[MAP]","id " + restaurants.get(i).getPlaceId() + " " + workmates.get(z).getFavoriteRestaurant());
-                  //  newRestau.setIcon("rouge");
+                    Log.i("[MAP]", "id " + restaurants.get(i).getPlaceId() + " " + workmates.get(z).getFavoriteRestaurant());
+                    //  newRestau.setIcon("rouge");
 
                     if (restaurants.get(i).getPlaceId().equals(workmates.get(z).getFavoriteRestaurant())) {
                         Log.i("[MAP]", "restaurant deja liké " + restaurants.get(i).getName());
@@ -118,12 +121,12 @@ public class ViewModelMap extends ViewModel {
                         break;
 
                     }
-                        //restaurants.set(i,se
-                       newRestau.setIcon("rouge");
+                    //restaurants.set(i,se
+                    newRestau.setIcon("rouge");
 
                 }
 
-                    newList.add(newRestau);
+                newList.add(newRestau);
 
             }
 
@@ -156,8 +159,18 @@ public class ViewModelMap extends ViewModel {
     }
 
 
-    public LiveData<String> getPositionFromAutoComplete(){
+    public LiveData<String> getPositionFromAutoComplete() {
         return myPositionFromAutoComplete;
         //
     }
+
+
+    public SingleLiveEvent<String> getMyPositionFromAutoSingleMode() {
+        return myPositionFromAutoSingleMode;
+    }
+
+    public void setMyPositionFromAutoSingleMode(String placeId){
+        myPositionFromAutoSingleMode.setValue(placeId);
+    }
+
 }

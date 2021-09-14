@@ -328,7 +328,37 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
+
         this.myViewModel.getMyPlaceListForUI().observe(this, new Observer<PlaceAutocomplete>() {
+            @Override
+            public void onChanged(PlaceAutocomplete placeAutocomplete) {
+                Toast.makeText(MainActivity.this,placeAutocomplete.getPredictions().get(0).getDescription(),Toast.LENGTH_LONG).show();
+            }
+        });
+
+/*        this.myViewModel.getMyPlaceListForUISingle().observe(this, new Observer<PlaceAutocomplete>() {
+            @Override
+            public void onChanged(PlaceAutocomplete placeAutocomplete) {
+                Toast.makeText(MainActivity.this,"test single" + placeAutocomplete.getPredictions().get(0).getDescription(),Toast.LENGTH_LONG).show();
+            }
+        });
+
+ */
+
+
+        //TODO: bug alertdialog
+
+        this.myViewModelMap.getMyPositionFromAutoSingleMode().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                Toast.makeText(MainActivity.this, s,Toast.LENGTH_LONG).show();
+            }
+        });
+
+
+
+     /*   this.myViewModel.getMyPlaceListForUI().observe(this, new Observer<PlaceAutocomplete>() {
             @Override
             public void onChanged(PlaceAutocomplete placeAutocomplete) {
 
@@ -341,6 +371,8 @@ public class MainActivity extends AppCompatActivity {
                 //transform list to array
                 String[] ArrayListForDialog = new String[placeAutoCompleteList.size()];
                 ArrayListForDialog = placeAutoCompleteList.toArray(ArrayListForDialog);
+
+                String[] test = {"un","deux","trois"};
 
                 //make dialog list
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -364,7 +396,8 @@ public class MainActivity extends AppCompatActivity {
 
                 builder.setTitle("Résultat recherche")
 
-                        .setItems(ArrayListForDialog, new DialogInterface.OnClickListener() {
+                        //.setItems(ArrayListForDialog, new DialogInterface.OnClickListener() {
+                        .setItems(test, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
@@ -387,6 +420,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+      */
 
     }
 
@@ -757,6 +792,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                     myViewModel.getResultAutocomplete(query, mypos);
+
 
                     //envoyer la requete au viewmodel
 

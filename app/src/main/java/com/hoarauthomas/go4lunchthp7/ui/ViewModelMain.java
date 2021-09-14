@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModel;
 import com.facebook.internal.Mutable;
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
+import com.hoarauthomas.go4lunchthp7.SingleLiveEvent;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.repository.AlarmRepository;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthRepository;
@@ -41,6 +42,9 @@ public class ViewModelMain extends ViewModel {
     private MutableLiveData<String> myUserRestaurantId = new MutableLiveData<>();
     private MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myPlaceAutocompleteList = new MutableLiveData<>();
 
+
+    private SingleLiveEvent<PlaceAutocomplete> myPlaceAutoCompleteListSingleEvent = new SingleLiveEvent<>();
+
     //to update ViewState...
     MediatorLiveData<ViewMainState> myAppMapMediator = new MediatorLiveData<>();
 
@@ -59,6 +63,8 @@ public class ViewModelMain extends ViewModel {
         //get data from place autocomplete repository...
         this.myPlaceAutocompleteRepoVM = placeAutocompleteRepository;
         this.myPlaceAutocompleteList = myPlaceAutocompleteRepoVM.getMyPlaceAutocompleteListForVM();
+
+        this.myPlaceAutoCompleteListSingleEvent = myPlaceAutocompleteRepoVM.getMyPlaceAutocompleteListForVMSingle();
 
         //get position for autocomplete request
         this.myPositionRepoVM = myPositionRepoVM;
@@ -183,6 +189,13 @@ public class ViewModelMain extends ViewModel {
         return myPlaceAutocompleteList;
     }
 
+    public SingleLiveEvent<PlaceAutocomplete> getMyPlaceListForUISingle(){
+
+        return myPlaceAutoCompleteListSingleEvent;
+    }
+
+
+
     //addedd
     public LiveData<Boolean> getMyLogin() {
         return myUserStateNew;
@@ -221,7 +234,8 @@ public class ViewModelMain extends ViewModel {
 
     //
     public void getResultAutocomplete(String query, Location location){
-        myPlaceAutocompleteRepoVM.getPlaceAutocomplete(query,location);
+      myPlaceAutocompleteRepoVM.getPlaceAutocomplete(query,location);
+      //  myPlaceAutocompleteRepoVM.getPlaceAutocompleteSingle(query,location);
         //return myPlaceAutocompleteList;
 
     }
