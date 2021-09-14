@@ -19,6 +19,7 @@ import com.hoarauthomas.go4lunchthp7.repository.AlarmRepository;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
+import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
 import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
 
 import java.util.List;
@@ -34,6 +35,7 @@ public class ViewModelMain extends ViewModel {
     private PlaceAutocompleteRepository myPlaceAutocompleteRepoVM;
     private PositionRepository myPositionRepoVM;
     private AlarmRepository myAlarmRepoVM;
+    private SharedRepository;
 
     //livedata...
     private MutableLiveData<FirebaseUser> myUserLiveData;
