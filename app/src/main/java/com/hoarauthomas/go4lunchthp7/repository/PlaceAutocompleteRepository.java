@@ -24,24 +24,19 @@ public class PlaceAutocompleteRepository {
     //constructor
     public PlaceAutocompleteRepository() {
         service = RetrofitRequest.getRetrofitInstance().create(GooglePlaceApi.class);
-        //getPlaceAutocomplete("pizza");
     }
 
-    public MutableLiveData<PlaceAutocomplete> getPlaceAutocomplete(String textSearch, Location position) {
+    public void getPlaceAutocomplete(String textSearch, Location position) {
+
         String positionstr =null;
 
-        if (!Double.isNaN(position.getLatitude()) && !Double.isNaN(position.getLongitude())){
+        if (!Double.isNaN(position.getLatitude()) && !Double.isNaN(position.getLongitude()) && textSearch != null && textSearch.length() > 3){
 
             positionstr = position.getLatitude() +  "," + position.getLongitude();
-        }
-
-        if (textSearch != null && textSearch.length() > 3) {
-
 
             service.getPlaceAutocomplete(BuildConfig.MAPS_API_KEY, textSearch, positionstr).enqueue(new Callback<PlaceAutocomplete>() {
                 @Override
                 public void onResponse(Call<PlaceAutocomplete> call, Response<PlaceAutocomplete> response) {
-
                     myPlaceAutocompleteList.setValue(response.body());
                 }
 
@@ -51,15 +46,16 @@ public class PlaceAutocompleteRepository {
                 }
             });
 
-            return myPlaceAutocompleteList;
-
         }else
         {
             myPlaceAutocompleteList.setValue(null);
-            return myPlaceAutocompleteList;
         }
 
     }
 
+
+    public MutableLiveData<PlaceAutocomplete> getMyPlaceAutocompleteListForVM() {
+        return myPlaceAutocompleteList;
+    }
 
 }

@@ -3,10 +3,8 @@ package com.hoarauthomas.go4lunchthp7.ui;
 import static androidx.core.view.GravityCompat.START;
 
 import android.Manifest;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -17,7 +15,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -28,13 +28,10 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 import androidx.work.OneTimeWorkRequest;
-import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
 
@@ -58,15 +55,9 @@ import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
-import com.hoarauthomas.go4lunchthp7.ui.settings.SettingsFragment;
 import com.hoarauthomas.go4lunchthp7.workmanager.AlarmManager;
 import com.hoarauthomas.go4lunchthp7.workmanager.WorkManagerTest;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -87,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
     public ViewModelMain myViewModel;
 
     /**
-     *  List of providers for authentification
+     * List of providers for authentification
      */
     private final List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.TwitterBuilder().build(),
@@ -99,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Main methof for initialise application
+     *
      * @param savedInstanceState
      */
 
@@ -120,21 +112,18 @@ public class MainActivity extends AppCompatActivity {
         setupViewPager();
 
 
-        setupAutocomplete();
         setupSettings();
 
-    //    loadWork();//alarm
+        //    loadWork();//alarm
 
-     //   loadtest();
-
+        //   loadtest();
+        setupAutocomplete();
     }
-
-
 
 
     private void loadtest() {
 
-        AlarmManager newAlarm= new AlarmManager();
+        AlarmManager newAlarm = new AlarmManager();
         newAlarm.getAlarmManager(this);
         newAlarm.setAlarm();
 
@@ -151,6 +140,9 @@ public class MainActivity extends AppCompatActivity {
         showSnackBar("Notification is : " + Boolean.toString(myBool));
     }
 
+    /**
+     * setup autocomplete api
+     */
     private void setupAutocomplete() {
         //initialize
         Places.initialize(getApplicationContext(), BuildConfig.MAPS_API_KEY);
@@ -158,48 +150,43 @@ public class MainActivity extends AppCompatActivity {
         PlacesClient placesClient = Places.createClient(this);
     }
 
-   // @RequiresApi(api = Build.VERSION_CODES.O)
+    // @RequiresApi(api = Build.VERSION_CODES.O)
     private void loadWork() {
 
 
         //get actual date
         Calendar currentDate = Calendar.getInstance();
-        Log.i("[JOB]","Calendar actual " + currentDate.getTime().toString());
+        Log.i("[JOB]", "Calendar actual " + currentDate.getTime().toString());
 
         //set target date
         Calendar targetDate = Calendar.getInstance();
         //targetDate.set(Calendar.HOUR_OF_DAY,12);
-       // targetDate.set(Calendar.MINUTE,0);
-       // targetDate.set(Calendar.SECOND,0);
-        Log.i("[JOB]","Calendar target " + targetDate.getTime().toString());
+        // targetDate.set(Calendar.MINUTE,0);
+        // targetDate.set(Calendar.SECOND,0);
+        Log.i("[JOB]", "Calendar target " + targetDate.getTime().toString());
 
         //to check
-       targetDate.set(Calendar.SECOND,30);
+        targetDate.set(Calendar.SECOND, 30);
 
         //add one day if target before current date
-        if (targetDate.before(currentDate)){
-            targetDate.add(Calendar.HOUR_OF_DAY,24);
-            Log.i("[JOB]","Calendar comparaison, one day added to the target " + targetDate.getTime());
+        if (targetDate.before(currentDate)) {
+            targetDate.add(Calendar.HOUR_OF_DAY, 24);
+            Log.i("[JOB]", "Calendar comparaison, one day added to the target " + targetDate.getTime());
         }
 
         //delay 60000 ms / minute
         long delayTime = targetDate.getTimeInMillis() - currentDate.getTimeInMillis();
-        Log.i("[JOB]","Calendar delay : " + Long.toString(delayTime));
+        Log.i("[JOB]", "Calendar delay : " + Long.toString(delayTime));
 
         //build request periodic
 
         WorkRequest newLoadPeriodicWork = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
-        .setInitialDelay(delayTime, TimeUnit.MILLISECONDS)
-        .addTag("popup12h00")// //constrains
-        .build();
+                .setInitialDelay(delayTime, TimeUnit.MILLISECONDS)
+                .addTag("popup12h00")// //constrains
+                .build();
 
         WorkManager.getInstance(this)
                 .enqueue(newLoadPeriodicWork);
-
-
-
-
-
 
 
 //
@@ -289,11 +276,87 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        this.myViewModel.getMyPlaceListForUI().observe(this, new Observer<PlaceAutocomplete>() {
+            @Override
+            public void onChanged(PlaceAutocomplete placeAutocomplete) {
+
+                List<String> test2 = new ArrayList();
+
+
+
+                String [] test = {"restau1","restaur2","restau3"};
+                Log.i("[COMPLETE]",""+ placeAutocomplete.getPredictions().toString());
+                // showSnackBar(placeAutocomplete.getPredictions().get(0).getDescription());
+
+
+                //ArrayList<PlaceAutocomplete> myListOfResult=  new ArrayList<PlaceAutocomplete>();
+
+                List<String> myList = new ArrayList<>();
+                //String [] String> myList=new ArrayList<>();
+
+
+
+
+                for (int i=0; i<placeAutocomplete.getPredictions().size();i++){
+
+                    test2.add(placeAutocomplete.getPredictions().get(i).getDescription());
+
+
+                }
+
+
+                String [] test3 = new String [test2.size()];
+                test3 = test2.toArray(test3);
+
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+
+                builder.setTitle("Résultat recherche")
+                        .setItems(test3, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                switch (which){
+                                    case 0:
+                                      //  showSnackBar(String.valueOf(which));
+                                    //    dialog.cancel();
+                                        break;
+                                    case 1:
+                                        //showSnackBar(String.valueOf(which));
+                                      //  dialog.cancel();
+                                        break;
+                                    case 2:
+                                        //showSnackBar(String.valueOf(which));
+                                        //dialog.cancel();
+
+                                        break;
+
+                                }
+
+                                dialog.cancel();
+
+                                //showSnackBar(String.valueOf(which));
+                            }
+                        });
+
+
+
+                AlertDialog dialoog = builder.create();
+                dialoog.show();
+
+                //TODO:map result to an list
+
+            }
+        });
+
+
     }
 
     private void Authentification() {
 
-      openFirebaseAuthForResult = registerForActivityResult(
+        openFirebaseAuthForResult = registerForActivityResult(
                 new FirebaseAuthUIActivityResultContract(),
                 new ActivityResultCallback<FirebaseAuthUIAuthenticationResult>() {
                     @Override
@@ -357,13 +420,10 @@ public class MainActivity extends AppCompatActivity {
     private void request_user_info(FirebaseUser myUserResult) {
 
 
-       // showSnackBar(myUserResult.getDisplayName());
+        // showSnackBar(myUserResult.getDisplayName());
 
         //if (mymyViewModel.getUser() != null) {
         if (myUserResult != null) {
-
-
-
 
 
             //showSnackBar(myViewModel.getUser().getDisplayName());
@@ -383,22 +443,20 @@ public class MainActivity extends AppCompatActivity {
             ImageView avatar = hv.findViewById(R.id.avatar);
 
 
-
-
             //avatar variable
             String avatar2 = "";
 
             //specific provider
-            for (UserInfo profile : myUserResult.getProviderData()){
+            for (UserInfo profile : myUserResult.getProviderData()) {
 
 
                 String photoProfile = Objects.requireNonNull(profile.getPhotoUrl()).toString();
-                Log.i("[PROFILE]","Profile photo url : " + profile.getPhotoUrl());
+                Log.i("[PROFILE]", "Profile photo url : " + profile.getPhotoUrl());
 
 
                 email.setText(profile.getEmail());
 
-                if (photoProfile == null){
+                if (photoProfile == null) {
 
                     String nom = this.myViewModel.getUser().getDisplayName();
                     String[] parts = nom.split(" ", 2);
@@ -409,16 +467,12 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     avatar2 = "https://eu.ui-avatars.com/api/?name=" + z;
-                }else
-                {
+                } else {
                     avatar2 = photoProfile;
                 }
 
 
             }
-
-
-
 
 
             //if (this.myViewModel.getUser().getPhotoUrl() == null) {
@@ -653,11 +707,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
 
-                if (query.length() > 3) {
+
+                if (myViewModel.getMyPosition() != null && query.length() > 3) {
 
                     Location mypos = myViewModel.getMyPosition();
-
-                    showSnackBar("test" + mypos.getLatitude() + " " + mypos.getLatitude());
 
                     String st = null;
 
@@ -665,49 +718,54 @@ public class MainActivity extends AppCompatActivity {
                     List<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myListResponse = new ArrayList<>();
 
 
-                    List<PlaceAutocomplete> myAutocompleteList = (List<PlaceAutocomplete>) myViewModel.getResultAutocomplete(query, mypos).getValue();
+                    myViewModel.getResultAutocomplete(query, mypos);
+
+                    //envoyer la requete au viewmodel
 
 
-                    if (myViewModel.getResultAutocomplete(query, mypos).getValue() != null) {
-
-
-                        for (int i = 0; i < myViewModel.getResultAutocomplete(query, mypos).getValue().getPredictions().size(); i++) {
-
-                            myListResponse.add(myViewModel.getResultAutocomplete(query, mypos).getValue());
-                            st = st + myViewModel.getResultAutocomplete(query, mypos).getValue().getPredictions().get(i).getDescription();
-
-
-                            Log.i("[AUTOCOMPLETE]", "" + myListResponse.size() + myListResponse.get(i).getPredictions().get(i).getDescription());
-                        }
-
-
-                    }
-
-
-                    if (myListResponse.size() > 0) {
-                        showSnackBar("Resultat autocomplete :" + myListResponse.size());
-
-                        Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
-                        intent.putExtra("TAG_ID", myListResponse.get(0).getPredictions().get(0).getPlaceId());
-                        startActivity(intent);
-
-
-//                       if (myListResponse.size()>0) {
-//                            Intent intent = new Intent(this, DetailActivity.class);
-//                            intent.putExtra("TAG_ID", myListResponse.get(0).getPredictions().get(0).getPlaceId());
-//                            startActivity(intent);
-//                        } else {
-//                            showSnackBar("Vous n'avez pas de favoris");
+//                    List<PlaceAutocomplete> myAutocompleteList = (List<PlaceAutocomplete>) myViewModel.getResultAutocomplete(query, mypos).getValue();
+//
+//
+//                    if (myViewModel.getResultAutocomplete(query, mypos).getValue() != null) {
+//
+//
+//                        for (int i = 0; i < myViewModel.getResultAutocomplete(query, mypos).getValue().getPredictions().size(); i++) {
+//
+//                            myListResponse.add(myViewModel.getResultAutocomplete(query, mypos).getValue());
+//                            st = st + myViewModel.getResultAutocomplete(query, mypos).getValue().getPredictions().get(i).getDescription();
+//
+//
+//                            Log.i("[AUTOCOMPLETE]", "" + myListResponse.size() + myListResponse.get(i).getPredictions().get(i).getDescription());
 //                        }
-
-
-                    } else {
-                        showSnackBar("Resultat vide autocomplete :");
-                    }
+//
+//
+//                    }
+//
+//
+//                    if (myListResponse.size() > 0) {
+//                        showSnackBar("Resultat autocomplete :" + myListResponse.size());
+//
+//                        Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+//                        intent.putExtra("TAG_ID", myListResponse.get(0).getPredictions().get(0).getPlaceId());
+//                        startActivity(intent);
+//
+//
+////                       if (myListResponse.size()>0) {
+////                            Intent intent = new Intent(this, DetailActivity.class);
+////                            intent.putExtra("TAG_ID", myListResponse.get(0).getPredictions().get(0).getPlaceId());
+////                            startActivity(intent);
+////                        } else {
+////                            showSnackBar("Vous n'avez pas de favoris");
+////                        }
+//
+//
+//                    } else {
+//                        showSnackBar("Resultat vide autocomplete :");
+//                    }
 
 
                 } else {
-                    showSnackBar("critere trop faible");
+                    showSnackBar("requete impossible actuellemtn");
                 }
 
                 return false;

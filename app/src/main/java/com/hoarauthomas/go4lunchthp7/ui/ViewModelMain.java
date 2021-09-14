@@ -10,7 +10,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.facebook.internal.Mutable;
 import com.google.firebase.auth.FirebaseUser;
+import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.repository.AlarmRepository;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthRepository;
@@ -56,6 +58,7 @@ public class ViewModelMain extends ViewModel {
 
         //get data from place autocomplete repository...
         this.myPlaceAutocompleteRepoVM = placeAutocompleteRepository;
+        this.myPlaceAutocompleteList = myPlaceAutocompleteRepoVM.getMyPlaceAutocompleteListForVM();
 
         //get position for autocomplete request
         this.myPositionRepoVM = myPositionRepoVM;
@@ -176,6 +179,10 @@ public class ViewModelMain extends ViewModel {
     //**********************************************************************************************
 
 
+    public MutableLiveData<PlaceAutocomplete> getMyPlaceListForUI(){
+        return myPlaceAutocompleteList;
+    }
+
     //addedd
     public LiveData<Boolean> getMyLogin() {
         return myUserStateNew;
@@ -212,19 +219,12 @@ public class ViewModelMain extends ViewModel {
     }
 
 
-
-    public MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> getResultAutocomplete(String query, Location location){
-        myPlaceAutocompleteList = getDataFromAutoCompleteRepo(query,location);
-        return myPlaceAutocompleteList;
+    //
+    public void getResultAutocomplete(String query, Location location){
+        myPlaceAutocompleteRepoVM.getPlaceAutocomplete(query,location);
+        //return myPlaceAutocompleteList;
 
     }
-
-
-    private MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> getDataFromAutoCompleteRepo(String query, Location location){
-        return myPlaceAutocompleteRepoVM.getPlaceAutocomplete(query, location);
-    }
-
-
 
 
     public Location getMyPosition(){
