@@ -62,7 +62,7 @@ public class ViewModelMain extends ViewModel {
 
         //get data from place autocomplete repository...
         this.myPlaceAutocompleteRepoVM = placeAutocompleteRepository;
-        this.myPlaceAutocompleteList = myPlaceAutocompleteRepoVM.getMyPlaceAutocompleteListForVM();
+      //  this.myPlaceAutocompleteList = myPlaceAutocompleteRepoVM.getMyPlaceAutocompleteListForVM();
 
         this.myPlaceAutoCompleteListSingleEvent = myPlaceAutocompleteRepoVM.getMyPlaceAutocompleteListForVMSingle();
 
@@ -234,8 +234,8 @@ public class ViewModelMain extends ViewModel {
 
     //
     public void getResultAutocomplete(String query, Location location){
-      myPlaceAutocompleteRepoVM.getPlaceAutocomplete(query,location);
-      //  myPlaceAutocompleteRepoVM.getPlaceAutocompleteSingle(query,location);
+     // myPlaceAutocompleteRepoVM.getPlaceAutocomplete(query,location);
+       myPlaceAutocompleteRepoVM.getPlaceAutocompleteSingle(query,location);
         //return myPlaceAutocompleteList;
 
     }

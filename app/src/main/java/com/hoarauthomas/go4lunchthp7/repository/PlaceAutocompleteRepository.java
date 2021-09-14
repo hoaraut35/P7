@@ -21,15 +21,16 @@ public class PlaceAutocompleteRepository {
     private final GooglePlaceApi service;
 
     //for data
-    private MutableLiveData<PlaceAutocomplete> myPlaceAutocompleteList = new MutableLiveData<>();
-    private SingleLiveEvent<PlaceAutocomplete> myPlaceAutoCompleteListSingle;
+   // private MutableLiveData<PlaceAutocomplete> myPlaceAutocompleteList = new MutableLiveData<>();
+
+    private SingleLiveEvent<PlaceAutocomplete> myPlaceAutoCompleteListSingle = new SingleLiveEvent<>();
 
     //constructor
     public PlaceAutocompleteRepository() {
         service = RetrofitRequest.getRetrofitInstance().create(GooglePlaceApi.class);
     }
 
-    public void getPlaceAutocomplete(String textSearch, Location position) {
+    /*public void getPlaceAutocomplete(String textSearch, Location position) {
 
         String positionstr =null;
 
@@ -55,6 +56,8 @@ public class PlaceAutocompleteRepository {
         }
 
     }
+
+     */
 
     public void getPlaceAutocompleteSingle(String textSearch, Location position) {
 
@@ -84,9 +87,11 @@ public class PlaceAutocompleteRepository {
 
     }
 
-    public MutableLiveData<PlaceAutocomplete> getMyPlaceAutocompleteListForVM() {
+  /*  public MutableLiveData<PlaceAutocomplete> getMyPlaceAutocompleteListForVM() {
         return myPlaceAutocompleteList;
     }
+
+   */
 
     public SingleLiveEvent<PlaceAutocomplete> getMyPlaceAutocompleteListForVMSingle() {
 

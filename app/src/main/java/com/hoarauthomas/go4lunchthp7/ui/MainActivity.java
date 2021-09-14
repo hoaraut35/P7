@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
      * for binding views
      */
     public ActivityMainBinding binding;
-
+    String myChoice = null;
     /**
      * for viewModel
      */
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         //   loadtest();
         setupAutocomplete();
 
-        testDialog();
+        //     testDialog();
 
     }
 
@@ -317,45 +317,89 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(ViewMainState viewStateMain) {
                 if (viewStateMain.LoginState) {
                     request_user_info(viewStateMain.getMyUser());
-
                     //testNotification(viewStateMain.myRestaurant.toString());
-
-
                 } else {
                     request_login();
                 }
             }
         });
 
-
-
-
-        this.myViewModel.getMyPlaceListForUI().observe(this, new Observer<PlaceAutocomplete>() {
+        this.myViewModel.getMyPlaceListForUISingle().observe(this, new Observer<PlaceAutocomplete>() {
             @Override
             public void onChanged(PlaceAutocomplete placeAutocomplete) {
-                Toast.makeText(MainActivity.this,placeAutocomplete.getPredictions().get(0).getDescription(),Toast.LENGTH_LONG).show();
+
+              //  Toast.makeText(MainActivity.this, "test single" + placeAutocomplete.getPredictions().get(0).getDescription(), Toast.LENGTH_LONG).show();
+
+                //get the list
+                List<String> placeAutoCompleteList = new ArrayList();
+                for (int i = 0; i < placeAutocomplete.getPredictions().size(); i++) {
+                    placeAutoCompleteList.add(placeAutocomplete.getPredictions().get(i).getDescription());
+                }
+
+                //transform list to array
+                String[] ArrayListForDialog = new String[placeAutoCompleteList.size()];
+                ArrayListForDialog = placeAutoCompleteList.toArray(ArrayListForDialog);
+
+
+
+
+                //make dialog list
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+                builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                     //   Toast.makeText(MainActivity.this, "annuler", Toast.LENGTH_LONG).show();
+                        dialog.cancel();
+                        //finish();
+                    }
+                });
+
+                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                       // Toast.makeText(MainActivity.this, "ok", Toast.LENGTH_LONG).show();
+                       // myChoice = placeAutocomplete.getPredictions().get(which).getDescription();
+                        dialog.cancel();
+                    }
+                });
+
+                builder.setTitle("Résultat recherche")
+
+                        //.setItems(ArrayListForDialog, new DialogInterface.OnClickListener() {
+                        .setItems(ArrayListForDialog, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                              //  Toast.makeText(MainActivity.this, "coiol", Toast.LENGTH_LONG).show();
+                          //      dialog.dismiss();
+                        //        dialog.cancel();
+                                //    myViewModelMap.setPositionWithPlaceId(placeAutocomplete.getPredictions().get(which).getPlaceId());
+                            }
+
+
+                        });
+
+
+                //Toast.makeText(MainActivity.this, myChoice, Toast.LENGTH_LONG).show();
+
+                builder.setCancelable(true);
+
+                AlertDialog dialoog = builder.create();
+                dialoog.show();
+
+
+
             }
         });
-
-/*        this.myViewModel.getMyPlaceListForUISingle().observe(this, new Observer<PlaceAutocomplete>() {
-            @Override
-            public void onChanged(PlaceAutocomplete placeAutocomplete) {
-                Toast.makeText(MainActivity.this,"test single" + placeAutocomplete.getPredictions().get(0).getDescription(),Toast.LENGTH_LONG).show();
-            }
-        });
-
- */
-
 
         //TODO: bug alertdialog
-
         this.myViewModelMap.getMyPositionFromAutoSingleMode().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                Toast.makeText(MainActivity.this, s,Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
             }
         });
-
 
 
      /*   this.myViewModel.getMyPlaceListForUI().observe(this, new Observer<PlaceAutocomplete>() {
