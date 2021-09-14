@@ -64,6 +64,16 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             });
 
 
+            myViewModelMap.getPositionFromAutoComplete().observe(getViewLifecycleOwner(), new Observer<String>() {
+                @Override
+                public void onChanged(String s) {
+                    Log.i("[COMPLETE]","reour sur frag map" + s);
+                }
+            });
+
+
+
+
             //to get an instance
             myMap = map;
 

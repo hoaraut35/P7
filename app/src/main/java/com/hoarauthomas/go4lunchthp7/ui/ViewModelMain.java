@@ -246,6 +246,10 @@ public class ViewModelMain extends ViewModel {
         myAlarmRepoVM.setNotification(state);
     }
 
+    public void setPositionWithPlaceId(String placeId) {
+
+
+    }
 }
 
 

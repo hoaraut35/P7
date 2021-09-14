@@ -9,20 +9,5 @@
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="ifRoom" />
 
-
-    <item
-        android:id="@+id/autoComplete"
-        android:icon="@color/background_light"
-        app:actionViewClass="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-
-        />
-
-    <fragment android:id="@+id/autocomplete_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-        />
 </menu>
 
-
-    <!-- app:actionViewClass="android.widget.SearchView"-->

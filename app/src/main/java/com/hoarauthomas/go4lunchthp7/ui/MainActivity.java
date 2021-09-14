@@ -15,9 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,6 +54,7 @@ import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
+import com.hoarauthomas.go4lunchthp7.ui.map.ViewModelMap;
 import com.hoarauthomas.go4lunchthp7.workmanager.AlarmManager;
 import com.hoarauthomas.go4lunchthp7.workmanager.WorkManagerTest;
 
@@ -77,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
      * for viewModel
      */
     public ViewModelMain myViewModel;
+    public ViewModelMap myViewModelMap;
 
     /**
      * List of providers for authentification
@@ -119,6 +119,52 @@ public class MainActivity extends AppCompatActivity {
 
         //   loadtest();
         setupAutocomplete();
+
+        testDialog();
+
+    }
+
+    private void testDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(MainActivity.this, "annuler", Toast.LENGTH_LONG).show();
+                dialog.cancel();
+                //finish();
+            }
+        });
+
+        builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(MainActivity.this, "ok", Toast.LENGTH_LONG).show();
+                dialog.cancel();
+            }
+        });
+
+        String[] test = {"choiix", " choix 2", "choix3"};
+
+        builder.setTitle("Résultat recherche")
+
+                .setItems(test, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //                    Toast.makeText(MainActivity.this,"coiol",Toast.LENGTH_LONG).show();
+                    }
+
+
+                });
+
+
+        builder.setCancelable(true);
+
+        AlertDialog dialoog = builder.create();
+        dialoog.show();
+
+
     }
 
 
@@ -262,7 +308,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupViewModel() {
+
+        this.myViewModelMap = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMap.class);
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
+
         this.myViewModel.myAppMapMediator.observe(this, new Observer<ViewMainState>() {
             @Override
             public void onChanged(ViewMainState viewStateMain) {
@@ -278,62 +327,62 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         this.myViewModel.getMyPlaceListForUI().observe(this, new Observer<PlaceAutocomplete>() {
             @Override
             public void onChanged(PlaceAutocomplete placeAutocomplete) {
 
-                List<String> test2 = new ArrayList();
-
-                for (int i=0; i<placeAutocomplete.getPredictions().size();i++){
-                    test2.add(placeAutocomplete.getPredictions().get(i).getDescription());
+                //get the list
+                List<String> placeAutoCompleteList = new ArrayList();
+                for (int i = 0; i < placeAutocomplete.getPredictions().size(); i++) {
+                    placeAutoCompleteList.add(placeAutocomplete.getPredictions().get(i).getDescription());
                 }
 
-                String [] test3 = new String [test2.size()];
-                test3 = test2.toArray(test3);
+                //transform list to array
+                String[] ArrayListForDialog = new String[placeAutoCompleteList.size()];
+                ArrayListForDialog = placeAutoCompleteList.toArray(ArrayListForDialog);
 
-
+                //make dialog list
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
+                builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(MainActivity.this, "annuler", Toast.LENGTH_LONG).show();
+                        dialog.cancel();
+                        //finish();
+                    }
+                });
+
+                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(MainActivity.this, "ok", Toast.LENGTH_LONG).show();
+                        dialog.cancel();
+                    }
+                });
+
                 builder.setTitle("Résultat recherche")
-                        .setItems(test3, new DialogInterface.OnClickListener() {
+
+                        .setItems(ArrayListForDialog, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
-
-
-
-                                switch (which){
-                                    case 0:
-
-
-                                      //  showSnackBar(test2.get(which).toString());
-                                        Toast.makeText(MainActivity.this,test2.get(which).toString(),Toast.LENGTH_LONG).show();
-                                    //    dialog.cancel();
-                                        break;
-                                    case 1:
-                                        //showSnackBar(String.valueOf(which));
-                                      //  dialog.cancel();
-                                        break;
-                                    case 2:
-                                        //showSnackBar(String.valueOf(which));
-                                        //dialog.cancel();
-
-                                        break;
-
-                                }
-
-                              //  dialog.cancel();
-
-                                //showSnackBar(String.valueOf(which));
+                                Toast.makeText(MainActivity.this, "coiol", Toast.LENGTH_LONG).show();
+                                dialog.dismiss();
+                                dialog.cancel();
+                                //    myViewModelMap.setPositionWithPlaceId(placeAutocomplete.getPredictions().get(which).getPlaceId());
                             }
+
+
                         });
 
 
+                builder.setCancelable(true);
 
                 AlertDialog dialoog = builder.create();
                 dialoog.show();
 
-                //TODO:map result to an list
 
             }
         });
@@ -690,6 +739,8 @@ public class MainActivity extends AppCompatActivity {
         MenuItem search = menu.findItem(R.id.searchView);
         SearchView searchView = (SearchView) search.getActionView();
         searchView.setQueryHint("Search restaurant ...");
+
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -749,13 +800,14 @@ public class MainActivity extends AppCompatActivity {
 //                    } else {
 //                        showSnackBar("Resultat vide autocomplete :");
 //                    }
-
+                    // return true;
 
                 } else {
                     showSnackBar("requete impossible actuellemtn");
+                    //    return true;
                 }
 
-                return false;
+                return true;
             }
 
             @Override

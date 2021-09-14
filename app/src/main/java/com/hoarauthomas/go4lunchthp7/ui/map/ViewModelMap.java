@@ -7,9 +7,11 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.facebook.internal.Mutable;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
@@ -34,6 +36,8 @@ public class ViewModelMap extends ViewModel {
 
     private LiveData<Location> myPosition = null;
     private final MediatorLiveData<ViewStateMap> myViewStateMapMediator = new MediatorLiveData<>();
+
+    private final MutableLiveData<String> myPositionFromAutoComplete = new MutableLiveData<>();
 
     public ViewModelMap(PermissionChecker myPermission, PositionRepository myPositionRepository, RestaurantsRepository myRestaurantsRepository, WorkMatesRepository myWorkMatesRepository) {
         this.myPermission = myPermission;
@@ -146,4 +150,14 @@ public class ViewModelMap extends ViewModel {
         return myViewStateMapMediator;
     }
 
+    public void setPositionWithPlaceId(String placeId) {
+        myPositionFromAutoComplete.setValue(placeId);
+
+    }
+
+
+    public LiveData<String> getPositionFromAutoComplete(){
+        return myPositionFromAutoComplete;
+        //
+    }
 }
