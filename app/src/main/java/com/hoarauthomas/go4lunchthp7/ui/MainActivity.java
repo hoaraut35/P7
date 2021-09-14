@@ -58,6 +58,7 @@ import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
+import com.hoarauthomas.go4lunchthp7.ui.settings.SettingsFragment;
 import com.hoarauthomas.go4lunchthp7.workmanager.AlarmManager;
 import com.hoarauthomas.go4lunchthp7.workmanager.WorkManagerTest;
 
@@ -124,6 +125,20 @@ public class MainActivity extends AppCompatActivity {
      //   testNotification();
 
     loadtest();
+
+
+    readSettings();
+
+
+    }
+
+    private void readSettings() {
+
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+        Boolean myBool = sharedPref.getBoolean("notifications2", false);
+        showSnackBar(myBool.toString());
 
     }
 

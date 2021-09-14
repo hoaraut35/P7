@@ -115,4 +115,6 @@ dependencies {
 
 //    implementation "'joda-time:joda-time:2.10.10"
 
+   implementation "com.android.support:preference-v7:25.0.1"
+
 }

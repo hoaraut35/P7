@@ -36,7 +36,6 @@ public class WorkMatesRepository {
 
     //init data on startup viewmodelfactory
     public WorkMatesRepository() {
-
         this.myBase = FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
         getRestaurantFromFirestore();
         setupListenerOnCollection();

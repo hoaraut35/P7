@@ -38,8 +38,7 @@ public class AlarmRepository {
         this.myWorkManager = androidx.work.WorkManager.getInstance(context);
 
         setupNotification("Go4Lunch","Démonstration notification");
-     //   setupChannel();
-     //   launchNotification();
+
     }
 
     //set channel
