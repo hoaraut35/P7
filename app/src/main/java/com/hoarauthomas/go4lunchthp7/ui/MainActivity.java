@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -283,28 +284,9 @@ public class MainActivity extends AppCompatActivity {
 
                 List<String> test2 = new ArrayList();
 
-
-
-                String [] test = {"restau1","restaur2","restau3"};
-                Log.i("[COMPLETE]",""+ placeAutocomplete.getPredictions().toString());
-                // showSnackBar(placeAutocomplete.getPredictions().get(0).getDescription());
-
-
-                //ArrayList<PlaceAutocomplete> myListOfResult=  new ArrayList<PlaceAutocomplete>();
-
-                List<String> myList = new ArrayList<>();
-                //String [] String> myList=new ArrayList<>();
-
-
-
-
                 for (int i=0; i<placeAutocomplete.getPredictions().size();i++){
-
                     test2.add(placeAutocomplete.getPredictions().get(i).getDescription());
-
-
                 }
-
 
                 String [] test3 = new String [test2.size()];
                 test3 = test2.toArray(test3);
@@ -312,15 +294,20 @@ public class MainActivity extends AppCompatActivity {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
-
                 builder.setTitle("Résultat recherche")
                         .setItems(test3, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
+
+
+
                                 switch (which){
                                     case 0:
-                                      //  showSnackBar(String.valueOf(which));
+
+
+                                      //  showSnackBar(test2.get(which).toString());
+                                        Toast.makeText(MainActivity.this,test2.get(which).toString(),Toast.LENGTH_LONG).show();
                                     //    dialog.cancel();
                                         break;
                                     case 1:
@@ -335,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 }
 
-                                dialog.cancel();
+                              //  dialog.cancel();
 
                                 //showSnackBar(String.valueOf(which));
                             }
