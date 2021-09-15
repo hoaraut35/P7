@@ -11,6 +11,8 @@ public class SharedRepository {
 
     public MutableLiveData<Prediction> myPlaceIdFromAutocomplete = new MutableLiveData<>(null);
 
+    public MutableLiveData<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantList = new MutableLiveData<>();
+
 
     /**
      * public method to get prediction in repository, for observe by sample

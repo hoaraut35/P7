@@ -73,7 +73,8 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                     //showMapWithPosition(prediction.);
                     //Toast.makeText(getContext(), "test", Toast.LENGTH_SHORT).show();
                     if (prediction != null){
-                        Log.i("[COMPLETE]","retour prediction" + prediction.getDescription());
+                        Toast.makeText(getContext(),"Move to this restaurant : " + prediction.getDescription(), Toast.LENGTH_SHORT).show();
+
 
                     }
 
