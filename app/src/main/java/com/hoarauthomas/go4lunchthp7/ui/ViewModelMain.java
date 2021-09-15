@@ -67,7 +67,8 @@ public class ViewModelMain extends ViewModel {
         this.myPlaceAutocompleteRepoVM = placeAutocompleteRepository;
       //  this.myPlaceAutocompleteList = myPlaceAutocompleteRepoVM.getMyPlaceAutocompleteListForVM();
 
-        this.myPlaceAutoCompleteListSingleEvent = myPlaceAutocompleteRepoVM.getMyPlaceAutocompleteListForVMSingle();
+        //this.myPlaceAutoCompleteListSingleEvent = myPlaceAutocompleteRepoVM.getMyPlaceAutocompleteListForVMSingle();
+
 
         //get position for autocomplete request
         this.myPositionRepoVM = myPositionRepoVM;
@@ -193,13 +194,15 @@ public class ViewModelMain extends ViewModel {
 
 
     public MutableLiveData<PlaceAutocomplete> getMyPlaceListForUI(){
-        return myPlaceAutocompleteList;
+        return myPlaceAutocompleteRepoVM.getPlaces();
     }
 
-    public SingleLiveEvent<PlaceAutocomplete> getMyPlaceListForUISingle(){
+  /*  public SingleLiveEvent<PlaceAutocomplete> getMyPlaceListForUISingle(){
 
         return myPlaceAutoCompleteListSingleEvent;
     }
+
+   */
 
 
 
@@ -271,7 +274,7 @@ public class ViewModelMain extends ViewModel {
      * Update the place prediction in repository shared
      * @param place
      */
-    public void setPositionWithPlaceId(Prediction place) {
+    public void setPredictionFromUIWithPlaceId(Prediction place) {
         mySharedRepoVM.setMyPlaceIdFromAutocomplete(place);
     }
 }

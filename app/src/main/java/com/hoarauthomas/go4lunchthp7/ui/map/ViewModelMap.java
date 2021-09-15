@@ -2,9 +2,7 @@ package com.hoarauthomas.go4lunchthp7.ui.map;
 
 import android.annotation.SuppressLint;
 import android.location.Location;
-import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -12,7 +10,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.hoarauthomas.go4lunchthp7.Prediction;
-import com.hoarauthomas.go4lunchthp7.SingleLiveEvent;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
@@ -26,8 +23,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import rx.Single;
-
 public class ViewModelMap extends ViewModel {
 
     private PermissionChecker myPermission;
@@ -36,21 +31,19 @@ public class ViewModelMap extends ViewModel {
     private WorkMatesRepository myWorkMatesRepository;
     private SharedRepository mySharedRepository;
 
-    private LiveData<Location> myPosition = null;
+    private LiveData<Location> myPosition;
     private final MediatorLiveData<ViewStateMap> myViewStateMapMediator = new MediatorLiveData<>();
 
-    private final MutableLiveData<String> myPositionFromAutoComplete = new MutableLiveData<>();
+   // private final MutableLiveData<String> myPositionFromAutoComplete = new MutableLiveData<>();
 
-    private SingleLiveEvent<Prediction> myPositionFromAutoSingleMode = new SingleLiveEvent<>();
+   // private SingleLiveEvent<Prediction> myPositionFromAutoSingleMode = new SingleLiveEvent<>();
 
     public ViewModelMap(PermissionChecker myPermission, PositionRepository myPositionRepository, RestaurantsRepository myRestaurantsRepository, WorkMatesRepository myWorkMatesRepository, SharedRepository mySharedRepository) {
         this.myPermission = myPermission;
         this.myPositionRepository = myPositionRepository;
         this.myRestaurantRepository = myRestaurantsRepository;
         this.myWorkMatesRepository = myWorkMatesRepository;
-
         this.mySharedRepository = mySharedRepository;
-        //myPositionFromAutoSingleMode = mySharedRepository.getMyPlaceIdFromAutocomplete();
 
         myPosition = myPositionRepository.getLocationLiveData();
         LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
@@ -97,43 +90,35 @@ public class ViewModelMap extends ViewModel {
     //**********************************************************************************************
     private void logicWork(@Nullable Location position, @Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates) {
 
-        //abord if null
         if (position == null || restaurants == null || workmates == null) return;
 
+        if (!restaurants.isEmpty() && !workmates.isEmpty()) {
 
-        if (position != null && restaurants != null && workmates != null && !restaurants.isEmpty() && !workmates.isEmpty()) {
-
-            List<RestaurantPojo> newList = new ArrayList<>();
-            RestaurantPojo newRestau;
-
-            newList.clear();
+            List<RestaurantPojo> newRestaurantList = new ArrayList<>();
+            RestaurantPojo newRestaurantItem;
 
             for (int i = 0; i < restaurants.size(); i++) {
 
-                newRestau = restaurants.get(i);
+                newRestaurantItem = restaurants.get(i);
 
+                //check if workmates has already liked a restaurant
                 for (int z = 0; z < workmates.size(); z++) {
 
-                    Log.i("[MAP]", "id " + restaurants.get(i).getPlaceId() + " " + workmates.get(z).getFavoriteRestaurant());
-                    //  newRestau.setIcon("rouge");
-
+                    //restaurant already liked
                     if (restaurants.get(i).getPlaceId().equals(workmates.get(z).getFavoriteRestaurant())) {
-                        Log.i("[MAP]", "restaurant deja liké " + restaurants.get(i).getName());
-
-                        newRestau.setIcon("vert");
+                        newRestaurantItem.setIcon("vert");
                         break;
-
                     }
                     //restaurants.set(i,se
-                    newRestau.setIcon("rouge");
+                    newRestaurantItem.setIcon("rouge");
 
                 }
 
-                newList.add(newRestau);
+                newRestaurantList.add(newRestaurantItem);
 
             }
 
-            myViewStateMapMediator.setValue(new ViewStateMap(position, newList));
+            myViewStateMapMediator.setValue(new ViewStateMap(position, newRestaurantList));
 
         }
 
@@ -142,6 +127,9 @@ public class ViewModelMap extends ViewModel {
     // End of logic work
     //**********************************************************************************************
 
+    /**
+     * check permissio
+     */
     @SuppressLint("MissingPermission")
     public void refresh() {
         // No GPS permission
@@ -152,23 +140,21 @@ public class ViewModelMap extends ViewModel {
         }
     }
 
-    public LiveData<ViewStateMap> getMediatorLiveData() {
+    /**
+     * return ViewState for Map fragment
+     * @return ViewState mediator
+     */
+    public LiveData<ViewStateMap> ViewStateForMapUI()
+    {
         return myViewStateMapMediator;
     }
 
-
     /**
-     * return the prediction from repository
-     * @return
+     * get Prediction from repository
+     * @return prediction from repository
      */
-    public MutableLiveData<Prediction> getMyPositionFromAutoSingleMode() {
+    public MutableLiveData<Prediction> getPredictionFromRepository() {
         return mySharedRepository.getMyPlaceIdFromAutocomplete();
     }
-
-  /*  public void setMyPositionFromAutoSingleMode(String placeId){
-        myPositionFromAutoSingleMode.setValue(placeId);
-    }
-
-   */
 
 }

@@ -15,10 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,7 +50,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
-import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
@@ -281,14 +277,31 @@ public class MainActivity extends AppCompatActivity {
         //build alertdialog
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
-        builder.setNegativeButton(R.string.cancel_btn_alert, new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.title_dialog_alert);
+
+        builder.setCancelable(true);
+
+        builder.setItems(ArrayListForDialog, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Toast.makeText(getApplicationContext(), "test", Toast.LENGTH_SHORT).show();
+                myViewModel.setPredictionFromUIWithPlaceId(placeAutocomplete.getPredictions().get(which));
+                dialog.cancel();
+            }
+        });
+
+
+
+     /*   builder.setNegativeButton(R.string.cancel_btn_alert, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }
         });
 
-        builder.setPositiveButton(R.string.btn_ok_dialogalert, new DialogInterface.OnClickListener() {
+      */
+
+        /*builder.setPositiveButton(R.string.btn_ok_dialogalert, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
        //         Toast.makeText(MainActivity.this, which, Toast.LENGTH_SHORT).show();
@@ -297,29 +310,40 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+         */
 
-        ListView testList = new ListView(this);
 
-        testList.setAdapter(new ArrayAdapter<>(this, android.R.layout.select_dialog_item, ArrayListForDialog));
+     //   ListView testList = new ListView(this);
 
-        testList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    //    testList.setAdapter(new ArrayAdapter<>(this, android.R.layout.select_dialog_item, ArrayListForDialog));
+
+     /*   testList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-             //   Toast.makeText(MainActivity.this, placeAutocomplete.getPredictions().get(position).getDescription(), Toast.LENGTH_LONG).show();
-               myViewModel.setPositionWithPlaceId(placeAutocomplete.getPredictions().get(position));
+               // Toast.makeText(getApplicationContext(), position, Toast.LENGTH_LONG).show();
+
+
+                // myViewModel.setPositionWithPlaceId(placeAutocomplete.getPredictions().get(position));
+
+
 
             }
         });
 
-        builder.setView(testList);
-        builder.setTitle(R.string.title_dialog_alert);
-        builder.setCancelable(true);
+      */
+
+      //  builder.setView(testList);
+
+
 
         AlertDialog myDialogBox = builder.create();
 
         myDialogBox.show();
     }
 
+    /**
+     * Setup ViewModel for MainActivity
+     */
     private void setupViewModel() {
 
         this.myViewModelMap = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMap.class);
@@ -337,7 +361,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        this.myViewModel.getMyPlaceListForUISingle().observe(this, new Observer<PlaceAutocomplete>() {
+/*        this.myViewModel.getMyPlaceListForUISingle().observe(this, new Observer<PlaceAutocomplete>() {
             @Override
             public void onChanged(PlaceAutocomplete placeAutocomplete) {
 
@@ -347,22 +371,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //TODO: bug alertdialog
-        this.myViewModelMap.getMyPositionFromAutoSingleMode().observe(this, new Observer<Prediction>() {
-            @Override
-            public void onChanged(Prediction prediction) {
-              //  Toast.makeText(MainActivity.this, "retour suite choix " +prediction.getDescription(), Toast.LENGTH_LONG).show();
-            }
-        });
-        /*
-        }new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
-            }
-        });
+ */
 
-         */
+
+        //popu an alert dialog when a place autocomplete return a result
+        this.myViewModel.getMyPlaceListForUI().observe(this, new Observer<PlaceAutocomplete>() {
+            @Override
+            public void onChanged(PlaceAutocomplete placeAutocomplete) {
+                if (placeAutocomplete != null) {
+                    alertDialogList(placeAutocomplete);
+                }
+
+            }
+        });
 
     }
 
@@ -734,7 +755,13 @@ public class MainActivity extends AppCompatActivity {
                     List<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myListResponse = new ArrayList<>();
 
 
-                    myViewModel.getResultAutocomplete(query, mypos);
+                    if (query != null && mypos != null){
+                        myViewModel.getResultAutocomplete(query, mypos);
+                    }else
+                    {
+                        Toast.makeText(getApplicationContext(), "Réessayer plus tard", Toast.LENGTH_SHORT).show();
+                    }
+
 
 
                     //envoyer la requete au viewmodel

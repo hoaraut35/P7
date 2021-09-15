@@ -9,6 +9,7 @@ import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.SingleLiveEvent;
 import com.hoarauthomas.go4lunchthp7.api.GooglePlaceApi;
 import com.hoarauthomas.go4lunchthp7.api.RetrofitRequest;
+import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,7 +24,7 @@ public class PlaceAutocompleteRepository {
     //for data
    // private MutableLiveData<PlaceAutocomplete> myPlaceAutocompleteList = new MutableLiveData<>();
 
-    private SingleLiveEvent<PlaceAutocomplete> myPlaceAutoCompleteListSingle = new SingleLiveEvent<>();
+    private MutableLiveData<PlaceAutocomplete> myPlaceAutoCompleteListSingle = new MutableLiveData<>();
 
     //constructor
     public PlaceAutocompleteRepository() {
@@ -87,14 +88,21 @@ public class PlaceAutocompleteRepository {
 
     }
 
+
+    public MutableLiveData<PlaceAutocomplete> getPlaces(){
+        return myPlaceAutoCompleteListSingle;
+    }
+
   /*  public MutableLiveData<PlaceAutocomplete> getMyPlaceAutocompleteListForVM() {
         return myPlaceAutocompleteList;
     }
 
    */
 
-    public SingleLiveEvent<PlaceAutocomplete> getMyPlaceAutocompleteListForVMSingle() {
+   /* public SingleLiveEvent<PlaceAutocomplete> getMyPlaceAutocompleteListForVMSingle() {
 
         return myPlaceAutoCompleteListSingle;
     }
+
+    */
 }
