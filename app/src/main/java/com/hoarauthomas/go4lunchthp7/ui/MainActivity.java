@@ -352,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
                 //   Toast.makeText(MainActivity.this, "ok", Toast.LENGTH_LONG).show();
                 //    myChoice = which;
                 myViewModel.setPositionWithPlaceId(placeAutocomplete.getPredictions().get(myChoice).getPlaceId());
-                dialog.cancel();
+                dialog.dismiss();
             }
         });
 
@@ -365,29 +365,22 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 myChoice = position;
                 Toast.makeText(MainActivity.this, placeAutocomplete.getPredictions().get(position).getDescription(), Toast.LENGTH_LONG).show();
+
             }
         });
 
         builder.setView(testList);
-
         builder.setTitle("Résultat recherche");
-
-                /*.setItems(test, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //                    Toast.makeText(MainActivity.this,"coiol",Toast.LENGTH_LONG).show();
-                    }
-
-
-                });
-
-                 */
-
-
         builder.setCancelable(true);
 
         AlertDialog dialoog = builder.create();
-        dialoog.show();
+
+
+        if (!dialoog.isShowing()){
+            dialoog.show();
+        }
+
+
     }
 
     private void setupViewModel() {
@@ -411,7 +404,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(PlaceAutocomplete placeAutocomplete) {
 
-                listV1(placeAutocomplete);
+                Log.i("[COMPLETE]","onChanged ");
+                if (placeAutocomplete != null){
+                    listV1(placeAutocomplete);
+                }
+                Toast.makeText(MainActivity.this, "onChanged", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -422,72 +419,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
             }
         });
-
-
-     /*   this.myViewModel.getMyPlaceListForUI().observe(this, new Observer<PlaceAutocomplete>() {
-            @Override
-            public void onChanged(PlaceAutocomplete placeAutocomplete) {
-
-                //get the list
-                List<String> placeAutoCompleteList = new ArrayList();
-                for (int i = 0; i < placeAutocomplete.getPredictions().size(); i++) {
-                    placeAutoCompleteList.add(placeAutocomplete.getPredictions().get(i).getDescription());
-                }
-
-                //transform list to array
-                String[] ArrayListForDialog = new String[placeAutoCompleteList.size()];
-                ArrayListForDialog = placeAutoCompleteList.toArray(ArrayListForDialog);
-
-                String[] test = {"un","deux","trois"};
-
-                //make dialog list
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-
-                builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(MainActivity.this, "annuler", Toast.LENGTH_LONG).show();
-                        dialog.cancel();
-                        //finish();
-                    }
-                });
-
-                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(MainActivity.this, "ok", Toast.LENGTH_LONG).show();
-                        dialog.cancel();
-                    }
-                });
-
-                builder.setTitle("Résultat recherche")
-
-                        //.setItems(ArrayListForDialog, new DialogInterface.OnClickListener() {
-                        .setItems(test, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                Toast.makeText(MainActivity.this, "coiol", Toast.LENGTH_LONG).show();
-                                dialog.dismiss();
-                                dialog.cancel();
-                                //    myViewModelMap.setPositionWithPlaceId(placeAutocomplete.getPredictions().get(which).getPlaceId());
-                            }
-
-
-                        });
-
-
-                builder.setCancelable(true);
-
-                AlertDialog dialoog = builder.create();
-                dialoog.show();
-
-
-            }
-        });
-
-
-      */
 
     }
 
@@ -842,9 +773,16 @@ public class MainActivity extends AppCompatActivity {
         searchView.setQueryHint("Search restaurant ...");
 
 
+
+
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+
+                searchView.clearFocus();
+
+
 
 
                 if (myViewModel.getMyPosition() != null && query.length() > 3) {
@@ -903,13 +841,14 @@ public class MainActivity extends AppCompatActivity {
 //                        showSnackBar("Resultat vide autocomplete :");
 //                    }
                     // return true;
-
+                    return true;
                 } else {
                     showSnackBar("requete impossible actuellemtn");
+                    return true;
                     //    return true;
                 }
 
-                return true;
+                //return true;
             }
 
             @Override
