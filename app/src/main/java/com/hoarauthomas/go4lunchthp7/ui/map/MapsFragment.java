@@ -3,7 +3,6 @@ package com.hoarauthomas.go4lunchthp7.ui.map;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,8 +28,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.R;
-import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
+import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -55,10 +54,6 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
         return view;
     }
-
-
-
-
 
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
@@ -88,33 +83,42 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
                     if (prediction == null) return;
 
-                    Toast.makeText(getContext(), prediction.getDescription() + "placeid : " + prediction.getPlaceId(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), prediction.getDescription() + "placeid : " + prediction.getPlaceId(), Toast.LENGTH_SHORT).show();
+
+                    Boolean findPlace = false;
+
+                    for (int i = 0; i < allMarkers.size(); i++) {
 
 
-
-                    Log.i("[COMPLETE]","" + allMarkers.toString());
-
-
-
-
-                    for (int i = 0 ; i< allMarkers.size();i++){
-
-
-                        if (prediction.getPlaceId().equals(allMarkers.get(i).getId())){
+                        if (prediction.getPlaceId().equals(allMarkers.get(i).getId())) {
 
                             Toast.makeText(getContext(), "trouvé: " + prediction.getPlaceId(), Toast.LENGTH_SHORT).show();
 
 //
 
-                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(allMarkers.get(i).getLocation().latitude,allMarkers.get(i).getLocation().longitude), 15));
-    //                        CameraUpdateFactory.zoomTo(20);
-                         //   myMap.moveCamera(CameraUpdateFactory.newLatLng(allMarkers.get(i).getLocation()));
-                         //   break;
+                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(allMarkers.get(i).getLocation().latitude, allMarkers.get(i).getLocation().longitude), 15));
+                            //                        CameraUpdateFactory.zoomTo(20);
+                            //   myMap.moveCamera(CameraUpdateFactory.newLatLng(allMarkers.get(i).getLocation()));
+                        findPlace =true;
+                               break;
                         }
 
+                        findPlace =false;
 
-//
                     }
+
+                    if (!findPlace){
+
+                        Toast.makeText(getContext(), "non trouvé: " + prediction.getPlaceId(), Toast.LENGTH_SHORT).show();
+
+                         Intent intent = new Intent(getContext(), DetailActivity.class);
+                         String restaurantTag = prediction.getPlaceId();
+                         intent.putExtra("TAG_ID", restaurantTag);
+                         startActivity(intent);
+
+                    }
+
+
 
 
 
@@ -186,10 +190,6 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
 
                      */
-
-
-
-
 
 
                 }
@@ -311,14 +311,10 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
            */
 
 
-
-
-
-
             //Setup Google Map
             map.getUiSettings().setZoomControlsEnabled(true);
 
-          //  map.setMinZoomPreference(DEFAULT_ZOOM);
+            //  map.setMinZoomPreference(DEFAULT_ZOOM);
 
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
@@ -337,7 +333,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     };
 
     private void showMapWithPosition(@NonNull LatLng position) {
-        if (myMap != null){
+        if (myMap != null) {
             myMap.moveCamera(CameraUpdateFactory.newLatLng(position));
             myMap.animateCamera(CameraUpdateFactory.zoomTo(DEFAULT_ZOOM));
         }
@@ -373,7 +369,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                 //myMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
                 myMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.baseline_unreserved_restaurant_24));
             } else {
-            //    myMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                //    myMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
                 myMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.baseline_booked_restaurant_24));
             }
 
@@ -420,7 +416,6 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     }
 
 
-
     public class MyMarkerObject {
 
         String id;
@@ -441,8 +436,6 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
         public void setId(String id) {
             this.id = id;
         }
-
-
 
 
         public MyMarkerObject(String id, LatLng location) {

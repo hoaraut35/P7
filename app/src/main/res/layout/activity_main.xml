@@ -42,8 +42,6 @@
                 />
 
 
-
-
         </com.google.android.material.appbar.AppBarLayout>
 
         <!--     <fragment android:id="@+id/autocomplete_fragment"

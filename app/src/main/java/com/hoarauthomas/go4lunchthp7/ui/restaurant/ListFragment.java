@@ -18,9 +18,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.R;
-import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
+import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,7 @@ public class ListFragment extends Fragment implements RecyclerViewAdapter.Restau
     public static ListFragment newInstance() {
         return new ListFragment();
     }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_fragment, container, false);
@@ -63,6 +65,7 @@ public class ListFragment extends Fragment implements RecyclerViewAdapter.Restau
     private void setupViewModel() {
 
         myViewModelRestaurant = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelRestaurant.class);
+
         myViewModelRestaurant.getMediatorLiveData().observe(getViewLifecycleOwner(), new Observer<ViewStateRestaurant>() {
             @Override
             public void onChanged(ViewStateRestaurant viewStateRestaurant) {
@@ -70,6 +73,15 @@ public class ListFragment extends Fragment implements RecyclerViewAdapter.Restau
                 showRestaurant(viewStateRestaurant.getMyRestaurantList());
             }
         });
+
+        myViewModelRestaurant.getPredictionFromVM().observe(getViewLifecycleOwner(), new Observer<Prediction>() {
+            @Override
+            public void onChanged(Prediction prediction) {
+
+
+            }
+        });
+
     }
 
     private void showRestaurant(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {

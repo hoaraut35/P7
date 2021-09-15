@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public ActivityMainBinding binding;
 
+
     /**
      * for viewModel
      */

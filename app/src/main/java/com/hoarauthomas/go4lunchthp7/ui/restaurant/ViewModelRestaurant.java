@@ -5,15 +5,17 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.protobuf.StringValue;
+import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
+import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
 import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
 
 import java.util.ArrayList;
@@ -30,14 +32,16 @@ public class ViewModelRestaurant extends ViewModel {
 
     private LiveData<Location> myPosition;
 
+    private SharedRepository mySharedRepository;
 
 
     private final MediatorLiveData<ViewStateRestaurant> myViewStateRestaurantMediator = new MediatorLiveData<>();
 
-    public ViewModelRestaurant(PositionRepository myPositionRepository, RestaurantsRepository myRestaurantRepository, WorkMatesRepository myWorkMatesRepository) {
+    public ViewModelRestaurant(PositionRepository myPositionRepository, RestaurantsRepository myRestaurantRepository, WorkMatesRepository myWorkMatesRepository, SharedRepository mySharedRepository) {
         this.myPositionRepository = myPositionRepository;
         this.myRestaurantRepository = myRestaurantRepository;
         this.myWorkMatesRepository = myWorkMatesRepository;
+        this.mySharedRepository = mySharedRepository;
 
         myPosition = myPositionRepository.getLocationLiveData();
         LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
@@ -85,12 +89,10 @@ public class ViewModelRestaurant extends ViewModel {
     private void logicWork(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants, List<User> workMates, @Nullable Location myPosition) {
 
 
-
         if (restaurants != null && myPosition != null && workMates != null && !restaurants.isEmpty() && !workMates.isEmpty()) {
 
             List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> newList = new ArrayList<>();
             RestaurantPojo myRestau;
-
 
 
             //calculer distance
@@ -115,15 +117,14 @@ public class ViewModelRestaurant extends ViewModel {
                 int compteur = 0;
 
                 //workmates number for an restaurant
-                for (int j=0; j<workMates.size();j++){
+                for (int j = 0; j < workMates.size(); j++) {
 
-                    if (restaurants.get(i).getPlaceId().equals(workMates.get(j).getFavoriteRestaurant())){
-                        Log.i("[compteur]","un collegue sur le restaur " + workMates.get(j).getUsername() + " " + restaurants.get(i).getName());
+                    if (restaurants.get(i).getPlaceId().equals(workMates.get(j).getFavoriteRestaurant())) {
+                        Log.i("[compteur]", "un collegue sur le restaur " + workMates.get(j).getUsername() + " " + restaurants.get(i).getName());
 
                         compteur = compteur + 1;
-                    }else
-                    {
-                        Log.i("[compteur]","compteur = " + restaurants.get(i).getPlaceId() + " " + workMates.get(j).getFavoriteRestaurant());
+                    } else {
+                        Log.i("[compteur]", "compteur = " + restaurants.get(i).getPlaceId() + " " + workMates.get(j).getFavoriteRestaurant());
                     }
                 }
 
@@ -151,5 +152,9 @@ public class ViewModelRestaurant extends ViewModel {
     }
 
 
+    public MutableLiveData<Prediction> getPredictionFromVM() {
+        return mySharedRepository.getMyPlaceIdFromAutocomplete();
 
+
+    }
 }
