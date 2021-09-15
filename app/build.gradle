@@ -1,7 +1,8 @@
+
+
+
 plugins {
     id 'com.android.application'
-
-
     id "com.google.secrets_gradle_plugin" version "0.6"
 }
 
@@ -24,9 +25,6 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    task wrapper(type: Wrapper) {
-        gradleVersion = '7.0.2'
-    }
 
     buildTypes {
 
@@ -49,6 +47,15 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+
+  /*  task wrapper(type: Wrapper) {
+        gradleVersion = '6.7.1'
+    }
+
+   */
+
+
 }
 
 dependencies {

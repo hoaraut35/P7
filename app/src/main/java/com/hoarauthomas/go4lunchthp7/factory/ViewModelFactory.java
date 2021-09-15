@@ -1,7 +1,6 @@
 package com.hoarauthomas.go4lunchthp7.factory;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
@@ -24,16 +23,22 @@ import com.hoarauthomas.go4lunchthp7.ui.map.ViewModelMap;
 import com.hoarauthomas.go4lunchthp7.ui.restaurant.ViewModelRestaurant;
 import com.hoarauthomas.go4lunchthp7.ui.workmates.ViewModelWorkMates;
 
-//Dependance injection with factory pattern
-//https://medium.com/koderlabs/viewmodel-with-viewmodelprovider-factory-the-creator-of-viewmodel-8fabfec1aa4f
-//ViewModelProvider.Factory is responsible to create the instance of ViewModels, one for all application
+/**
+ * https://medium.com/koderlabs/viewmodel-with-viewmodelprovider-factory-the-creator-of-viewmodel-8fabfec1aa4f
+ * ViewModelProvider.Factory is responsible to create the instance of ViewModels, one for all application
+ */
 
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
-    //ViewModelFactory
+    /**
+     * ViewModelFactory object
+     */
     private static ViewModelFactory myViewModelFactory;
 
-    //Add repository here...
+    /**
+     * Add all repositories here
+     */
+
     private final FirebaseAuthRepository firebaseAuthRepository;
     private final PositionRepository positionRepository;
     private final RestaurantsRepository restaurantsRepository;
@@ -43,13 +48,16 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final AlarmRepository alarmRepository;
     private final SharedRepository sharedRepository;
 
-    //Get an instance of ViewModelFactory ... see pattern singleton
+    /**
+     * return an instance of ViewModelFactory object with singleton pattern
+     *
+     * @return
+     */
+
     public static ViewModelFactory getInstance() {
-        Log.i("[FACTORY]", "[VIEWMODELFACTORY INIT]");
         if (myViewModelFactory == null) {
             synchronized (ViewModelFactory.class) {
                 if (myViewModelFactory == null) {
-                    Log.i("[FACTORY]", "[VIEWMODELFACTORY NEW OBJECT]");
                     Application application = MainApplication.getApplication();
                     myViewModelFactory = new ViewModelFactory(
                             new PermissionChecker(application),
@@ -61,20 +69,28 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                             new AlarmRepository(application),
                             new SharedRepository()
                     );
-                } else {
-                    Log.i("[FACTORY]", "[VIEWMODELFACTORY OBJECT ALREADY EXIST]");
                 }
             }
         }
-
         return myViewModelFactory;
     }
 
-    //constructor of ViewModelFactory ...
+    /**
+     * this is the constructor for ViewModelFactory object
+     *
+     * @param permissionChecker
+     * @param firebaseAuthRepository
+     * @param restaurantsRepository
+     * @param positionRepository
+     * @param workMatesRepository
+     * @param placeAutocompleteRepository
+     * @param alarmRepository
+     * @param sharedRepository
+     */
     private ViewModelFactory(
-            @NonNull PermissionChecker permissionChecker,
+            PermissionChecker permissionChecker,
             FirebaseAuthRepository firebaseAuthRepository,
-            @NonNull RestaurantsRepository restaurantsRepository,
+            RestaurantsRepository restaurantsRepository,
             PositionRepository positionRepository,
             WorkMatesRepository workMatesRepository,
             PlaceAutocompleteRepository placeAutocompleteRepository,
@@ -113,7 +129,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     restaurantsRepository,
                     workMatesRepository,
                     sharedRepository
-                    );
+            );
 
         } else if (modelClass.isAssignableFrom(ViewModelDetail.class)) {
             return (T) new ViewModelDetail(
