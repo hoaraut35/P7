@@ -53,6 +53,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
+import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
      * for binding views
      */
     public ActivityMainBinding binding;
-    int myChoice;
+
     /**
      * for viewModel
      */
@@ -119,76 +120,16 @@ public class MainActivity extends AppCompatActivity {
         setupSettings();
 
         //    loadWork();//alarm
-
         //   loadtest();
+
         setupAutocomplete();
 
-        //         testDialog();
-
     }
-
-    private void testDialog() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-
-        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //  Toast.makeText(MainActivity.this, "annuler", Toast.LENGTH_LONG).show();
-                //    dialog.cancel();
-                //finish();
-            }
-        });
-
-        builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Toast.makeText(MainActivity.this, "ok", Toast.LENGTH_LONG).show();
-                // dialog.cancel();
-            }
-        });
-
-        String[] test = {"choiix", " choyix 2", "choix3"};
-
-        ListView testList = new ListView(this);
-        testList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.select_dialog_item, test));
-        testList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-            }
-        });
-        builder.setView(testList);
-
-        builder.setTitle("Résultat recherche");
-
-                /*.setItems(test, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //                    Toast.makeText(MainActivity.this,"coiol",Toast.LENGTH_LONG).show();
-                    }
-
-
-                });
-
-                 */
-
-
-        builder.setCancelable(true);
-
-        AlertDialog dialoog = builder.create();
-        dialoog.show();
-
-
-    }
-
 
     private void loadtest() {
-
         AlarmManager newAlarm = new AlarmManager();
         newAlarm.getAlarmManager(this);
         newAlarm.setAlarm();
-
     }
 
     /**
@@ -323,64 +264,60 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void listV1(PlaceAutocomplete placeAutocomplete) {
+    private void alertDialogList(PlaceAutocomplete placeAutocomplete) {
 
-        //get the list
+        //create new list
         List<String> placeAutoCompleteList = new ArrayList();
+
+        //load the new list
         for (int i = 0; i < placeAutocomplete.getPredictions().size(); i++) {
             placeAutoCompleteList.add(placeAutocomplete.getPredictions().get(i).getDescription());
         }
 
-        //transform list to array
+        //map list to an array
         String[] ArrayListForDialog = new String[placeAutoCompleteList.size()];
         ArrayListForDialog = placeAutoCompleteList.toArray(ArrayListForDialog);
+
+        //build alertdialog
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
-
-        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.cancel_btn_alert, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(MainActivity.this, "annuler", Toast.LENGTH_LONG).show();
                 dialog.cancel();
-                //finish();
             }
         });
 
-        builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.btn_ok_dialogalert, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //   Toast.makeText(MainActivity.this, "ok", Toast.LENGTH_LONG).show();
-                //    myChoice = which;
-                myViewModel.setPositionWithPlaceId(placeAutocomplete.getPredictions().get(myChoice).getPlaceId());
+       //         Toast.makeText(MainActivity.this, which, Toast.LENGTH_SHORT).show();
+
                 dialog.dismiss();
             }
         });
 
+
         ListView testList = new ListView(this);
 
-        testList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.select_dialog_item, ArrayListForDialog));
+        testList.setAdapter(new ArrayAdapter<>(this, android.R.layout.select_dialog_item, ArrayListForDialog));
 
         testList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                myChoice = position;
-                Toast.makeText(MainActivity.this, placeAutocomplete.getPredictions().get(position).getDescription(), Toast.LENGTH_LONG).show();
+             //   Toast.makeText(MainActivity.this, placeAutocomplete.getPredictions().get(position).getDescription(), Toast.LENGTH_LONG).show();
+               myViewModel.setPositionWithPlaceId(placeAutocomplete.getPredictions().get(position));
 
             }
         });
 
         builder.setView(testList);
-        builder.setTitle("Résultat recherche");
+        builder.setTitle(R.string.title_dialog_alert);
         builder.setCancelable(true);
 
-        AlertDialog dialoog = builder.create();
+        AlertDialog myDialogBox = builder.create();
 
-
-        if (!dialoog.isShowing()){
-            dialoog.show();
-        }
-
-
+        myDialogBox.show();
     }
 
     private void setupViewModel() {
@@ -404,21 +341,28 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(PlaceAutocomplete placeAutocomplete) {
 
-                Log.i("[COMPLETE]","onChanged ");
-                if (placeAutocomplete != null){
-                    listV1(placeAutocomplete);
+                if (placeAutocomplete != null) {
+                    alertDialogList(placeAutocomplete);
                 }
-                Toast.makeText(MainActivity.this, "onChanged", Toast.LENGTH_SHORT).show();
             }
         });
 
         //TODO: bug alertdialog
-        this.myViewModelMap.getMyPositionFromAutoSingleMode().observe(this, new Observer<String>() {
+        this.myViewModelMap.getMyPositionFromAutoSingleMode().observe(this, new Observer<Prediction>() {
+            @Override
+            public void onChanged(Prediction prediction) {
+              //  Toast.makeText(MainActivity.this, "retour suite choix " +prediction.getDescription(), Toast.LENGTH_LONG).show();
+            }
+        });
+        /*
+        }new Observer<String>() {
             @Override
             public void onChanged(String s) {
                 Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
             }
         });
+
+         */
 
     }
 
@@ -773,16 +717,11 @@ public class MainActivity extends AppCompatActivity {
         searchView.setQueryHint("Search restaurant ...");
 
 
-
-
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
 
-                searchView.clearFocus();
-
-
+                //   searchView.clearFocus();
 
 
                 if (myViewModel.getMyPosition() != null && query.length() > 3) {

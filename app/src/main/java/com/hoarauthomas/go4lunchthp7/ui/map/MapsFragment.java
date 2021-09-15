@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +26,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
@@ -46,6 +48,8 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
         myViewModelMap = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMap.class);
+
+
         return view;
     }
 
@@ -63,13 +67,27 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                 }
             });
 
+            myViewModelMap.getMyPositionFromAutoSingleMode().observe(getViewLifecycleOwner(), new Observer<Prediction>() {
+                @Override
+                public void onChanged(Prediction prediction) {
+                    //showMapWithPosition(prediction.);
+                    //Toast.makeText(getContext(), "test", Toast.LENGTH_SHORT).show();
+                    if (prediction != null){
+                        Log.i("[COMPLETE]","retour prediction" + prediction.getDescription());
 
-            myViewModelMap.getPositionFromAutoComplete().observe(getViewLifecycleOwner(), new Observer<String>() {
+                    }
+
+                }
+            });
+
+          /*  myViewModelMap.getPositionFromAutoComplete().observe(getViewLifecycleOwner(), new Observer<String>() {
                 @Override
                 public void onChanged(String s) {
                     Log.i("[COMPLETE]","reour sur frag map" + s);
                 }
             });
+
+           */
 
 
 

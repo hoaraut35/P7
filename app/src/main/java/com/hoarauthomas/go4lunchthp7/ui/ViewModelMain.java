@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModel;
 import com.facebook.internal.Mutable;
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
+import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.SingleLiveEvent;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.repository.AlarmRepository;
@@ -51,7 +52,7 @@ public class ViewModelMain extends ViewModel {
     MediatorLiveData<ViewMainState> myAppMapMediator = new MediatorLiveData<>();
 
     //constructor...
-    public ViewModelMain(FirebaseAuthRepository firebaseAuthRepository, WorkMatesRepository workMatesRepository, PlaceAutocompleteRepository placeAutocompleteRepository, PositionRepository myPositionRepoVM, AlarmRepository myAlarmRepoVM) {
+    public ViewModelMain(FirebaseAuthRepository firebaseAuthRepository, WorkMatesRepository workMatesRepository, PlaceAutocompleteRepository placeAutocompleteRepository, PositionRepository myPositionRepoVM, AlarmRepository myAlarmRepoVM, SharedRepository mySharedRepoVM) {
 
         //get data from Auth repository...
         this.myFirebaseAuthRepoVM = firebaseAuthRepository;
@@ -73,6 +74,10 @@ public class ViewModelMain extends ViewModel {
 
         //get alarm data
         this.myAlarmRepoVM = myAlarmRepoVM;
+
+
+        this.mySharedRepoVM = mySharedRepoVM;
+
 
         //add source
         myAppMapMediator.addSource(myUserStateNew, new Observer<Boolean>() {
@@ -262,9 +267,12 @@ public class ViewModelMain extends ViewModel {
         myAlarmRepoVM.setNotification(state);
     }
 
-    public void setPositionWithPlaceId(String placeId) {
-
-
+    /**
+     * Update the place prediction in repository shared
+     * @param place
+     */
+    public void setPositionWithPlaceId(Prediction place) {
+        mySharedRepoVM.setMyPlaceIdFromAutocomplete(place);
     }
 }
 

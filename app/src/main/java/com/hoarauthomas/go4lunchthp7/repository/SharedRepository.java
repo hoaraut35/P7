@@ -3,20 +3,31 @@ package com.hoarauthomas.go4lunchthp7.repository;
 import androidx.lifecycle.MutableLiveData;
 
 import com.facebook.internal.Mutable;
+import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
+import com.hoarauthomas.go4lunchthp7.Prediction;
+import com.hoarauthomas.go4lunchthp7.SingleLiveEvent;
 
 public class SharedRepository {
 
-    public MutableLiveData myPlaceIdFromAutocomplete = new MutableLiveData();
+    public MutableLiveData<Prediction> myPlaceIdFromAutocomplete = new MutableLiveData<>(null);
 
 
-
-
-
-    public MutableLiveData getMyPlaceIdFromAutocomplete() {
+    /**
+     * public method to get prediction in repository, for observe by sample
+     * @return
+     */
+    public MutableLiveData<Prediction> getMyPlaceIdFromAutocomplete() {
         return myPlaceIdFromAutocomplete;
     }
 
-    public void setMyPlaceIdFromAutocomplete(MutableLiveData myPlaceIdFromAutocomplete) {
-        this.myPlaceIdFromAutocomplete = myPlaceIdFromAutocomplete;
+    /**
+     * public method to set prediction in repository
+     * @param myPlaceFromVM
+     */
+    public void setMyPlaceIdFromAutocomplete(Prediction myPlaceFromVM) {
+        if (myPlaceFromVM != null){
+            this.myPlaceIdFromAutocomplete.postValue(myPlaceFromVM);
+        }
+
     }
 }

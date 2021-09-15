@@ -16,6 +16,7 @@ import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
+import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
 import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
 import com.hoarauthomas.go4lunchthp7.ui.ViewModelMain;
 import com.hoarauthomas.go4lunchthp7.ui.detail.ViewModelDetail;
@@ -40,6 +41,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final PermissionChecker permissionChecker;
     private final PlaceAutocompleteRepository placeAutocompleteRepository;
     private final AlarmRepository alarmRepository;
+    private final SharedRepository sharedRepository;
 
     //Get an instance of ViewModelFactory ... see pattern singleton
     public static ViewModelFactory getInstance() {
@@ -56,7 +58,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                             new PositionRepository(LocationServices.getFusedLocationProviderClient(application)),
                             new WorkMatesRepository(),
                             new PlaceAutocompleteRepository(),
-                            new AlarmRepository(application)
+                            new AlarmRepository(application),
+                            new SharedRepository()
                     );
                 } else {
                     Log.i("[FACTORY]", "[VIEWMODELFACTORY OBJECT ALREADY EXIST]");
@@ -75,7 +78,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             PositionRepository positionRepository,
             WorkMatesRepository workMatesRepository,
             PlaceAutocompleteRepository placeAutocompleteRepository,
-            AlarmRepository alarmRepository
+            AlarmRepository alarmRepository,
+            SharedRepository sharedRepository
     ) {
         this.permissionChecker = permissionChecker;
         this.firebaseAuthRepository = firebaseAuthRepository;
@@ -84,6 +88,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.workMatesRepository = workMatesRepository;
         this.placeAutocompleteRepository = placeAutocompleteRepository;
         this.alarmRepository = alarmRepository;
+        this.sharedRepository = sharedRepository;
 
     }
 
@@ -98,14 +103,17 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     workMatesRepository,
                     placeAutocompleteRepository,
                     positionRepository,
-                    alarmRepository);
+                    alarmRepository,
+                    sharedRepository);
 
         } else if (modelClass.isAssignableFrom(ViewModelMap.class)) {
             return (T) new ViewModelMap(
                     permissionChecker,
                     positionRepository,
                     restaurantsRepository,
-                    workMatesRepository);
+                    workMatesRepository,
+                    sharedRepository
+                    );
 
         } else if (modelClass.isAssignableFrom(ViewModelDetail.class)) {
             return (T) new ViewModelDetail(

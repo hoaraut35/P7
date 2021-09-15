@@ -95,7 +95,9 @@
     <string name="langage_mode">Notifications On/Off : </string>
     <string name="descriptionForRestaurantImage">TODO</string>
     <string name="descriptionForWorkMatesIcon">TODO</string>
-
+    <string name="cancel_btn_alert">cancel</string>
+    <string name="btn_ok_dialogalert">ok</string>
+    <string name="title_dialog_alert">Résultat recherche</string>
 
 
 </resources>

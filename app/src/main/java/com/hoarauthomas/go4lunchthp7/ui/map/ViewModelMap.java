@@ -11,12 +11,14 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.SingleLiveEvent;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
+import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
 import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
 
 import java.util.ArrayList;
@@ -28,26 +30,27 @@ import rx.Single;
 
 public class ViewModelMap extends ViewModel {
 
-    @NonNull
     private PermissionChecker myPermission;
-    @NonNull
     private PositionRepository myPositionRepository;
-    @NonNull
     private RestaurantsRepository myRestaurantRepository;
     private WorkMatesRepository myWorkMatesRepository;
+    private SharedRepository mySharedRepository;
 
     private LiveData<Location> myPosition = null;
     private final MediatorLiveData<ViewStateMap> myViewStateMapMediator = new MediatorLiveData<>();
 
     private final MutableLiveData<String> myPositionFromAutoComplete = new MutableLiveData<>();
 
-    private final SingleLiveEvent<String> myPositionFromAutoSingleMode = new SingleLiveEvent<>();
+    private SingleLiveEvent<Prediction> myPositionFromAutoSingleMode = new SingleLiveEvent<>();
 
-    public ViewModelMap(PermissionChecker myPermission, PositionRepository myPositionRepository, RestaurantsRepository myRestaurantsRepository, WorkMatesRepository myWorkMatesRepository) {
+    public ViewModelMap(PermissionChecker myPermission, PositionRepository myPositionRepository, RestaurantsRepository myRestaurantsRepository, WorkMatesRepository myWorkMatesRepository, SharedRepository mySharedRepository) {
         this.myPermission = myPermission;
         this.myPositionRepository = myPositionRepository;
         this.myRestaurantRepository = myRestaurantsRepository;
         this.myWorkMatesRepository = myWorkMatesRepository;
+
+        this.mySharedRepository = mySharedRepository;
+        //myPositionFromAutoSingleMode = mySharedRepository.getMyPlaceIdFromAutocomplete();
 
         myPosition = myPositionRepository.getLocationLiveData();
         LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
@@ -153,24 +156,19 @@ public class ViewModelMap extends ViewModel {
         return myViewStateMapMediator;
     }
 
-    public void setPositionWithPlaceId(String placeId) {
-        myPositionFromAutoComplete.setValue(placeId);
 
+    /**
+     * return the prediction from repository
+     * @return
+     */
+    public MutableLiveData<Prediction> getMyPositionFromAutoSingleMode() {
+        return mySharedRepository.getMyPlaceIdFromAutocomplete();
     }
 
-
-    public LiveData<String> getPositionFromAutoComplete() {
-        return myPositionFromAutoComplete;
-        //
-    }
-
-
-    public SingleLiveEvent<String> getMyPositionFromAutoSingleMode() {
-        return myPositionFromAutoSingleMode;
-    }
-
-    public void setMyPositionFromAutoSingleMode(String placeId){
+  /*  public void setMyPositionFromAutoSingleMode(String placeId){
         myPositionFromAutoSingleMode.setValue(placeId);
     }
+
+   */
 
 }
