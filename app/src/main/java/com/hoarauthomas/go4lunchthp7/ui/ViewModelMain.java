@@ -35,7 +35,7 @@ public class ViewModelMain extends ViewModel {
     private PlaceAutocompleteRepository myPlaceAutocompleteRepoVM;
     private PositionRepository myPositionRepoVM;
     private AlarmRepository myAlarmRepoVM;
-    private SharedRepository;
+    private SharedRepository mySharedRepoVM;
 
     //livedata...
     private MutableLiveData<FirebaseUser> myUserLiveData;

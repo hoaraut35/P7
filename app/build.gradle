@@ -25,7 +25,7 @@ android {
     }
 
     task wrapper(type: Wrapper){
-        gradleVersion = '4.1.2'
+        gradleVersion = '7.0.2'
     }
 
     buildTypes {
