@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.application'
 
-    //Added for googlemap api
+
     id "com.google.secrets_gradle_plugin" version "0.6"
 }
 
@@ -24,13 +24,13 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    task wrapper(type: Wrapper){
+    task wrapper(type: Wrapper) {
         gradleVersion = '7.0.2'
     }
 
     buildTypes {
 
-        debug{
+        debug {
 
         }
 
@@ -84,7 +84,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.5.0-alpha02'
 
 
-    //Added for HTTP Clinet 14.06.21
+    //Added for HTTP Client 14.06.21
     implementation 'com.squareup.retrofit2:retrofit:2.7.1'
 
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
@@ -117,8 +117,7 @@ dependencies {
 
     implementation "androidx.core:core:1.6.0"
 
-//    implementation "'joda-time:joda-time:2.10.10"
 
-   implementation "com.android.support:preference-v7:25.0.1"
+    implementation "com.android.support:preference-v7:25.0.1"
 
 }

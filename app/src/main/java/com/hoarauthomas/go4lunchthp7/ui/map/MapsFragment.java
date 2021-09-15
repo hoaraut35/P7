@@ -109,7 +109,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
                     if (!findPlace){
 
-                        Toast.makeText(getContext(), "non trouvé: " + prediction.getPlaceId(), Toast.LENGTH_SHORT).show();
+                      //  Toast.makeText(getContext(), "non trouvé: " + prediction.getPlaceId(), Toast.LENGTH_SHORT).show();
 
                          Intent intent = new Intent(getContext(), DetailActivity.class);
                          String restaurantTag = prediction.getPlaceId();
