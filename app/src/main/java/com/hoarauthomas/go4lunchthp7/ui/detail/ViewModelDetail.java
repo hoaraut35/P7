@@ -77,7 +77,6 @@ public class ViewModelDetail extends ViewModel {
     //logic method for mediatorLiveData
     private void logicWork(@Nullable List<RestaurantPojo> restaurantsList, @Nullable List<User> workmatesList, @Nullable ResultDetailRestaurant Restaurantdetail, @Nullable FirebaseUser myUserBase, String placeIdRequested) {
 
-
         ViewStateDetail myScreen = new ViewStateDetail();
 
         //if we have null data we cancel work

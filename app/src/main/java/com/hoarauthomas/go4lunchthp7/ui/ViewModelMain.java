@@ -38,7 +38,7 @@ public class ViewModelMain extends ViewModel {
     private SharedRepository mySharedRepoVM;
 
     //livedata...
-    private MutableLiveData<FirebaseUser> myUserLiveData;
+    private MutableLiveData<FirebaseUser> myUserLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> myUserStateNew;
     private MutableLiveData<List<User>> myWorkMatesListLiveData = new MutableLiveData<>();
     private MutableLiveData<String> myUserRestaurantId = new MutableLiveData<>();
@@ -101,7 +101,7 @@ public class ViewModelMain extends ViewModel {
         });
 
         //add source
-      /*  myAppMapMediator.addSource(myWorkMatesListLiveData, new Observer<List<User>>() {
+        myAppMapMediator.addSource(myWorkMatesListLiveData, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
 
@@ -118,7 +118,7 @@ public class ViewModelMain extends ViewModel {
             }
         });
 
-       */
+
 
 
     }
@@ -150,15 +150,16 @@ public class ViewModelMain extends ViewModel {
                     for (int i = 0; i < workmates.size(); i++) {
 
                         if (workmates.get(i).getUid().equals(myUser.getUid())) {
-                            myUserRestaurantId.setValue(workmates.get(i).getFavoriteRestaurant());
-
+                            myUserRestaurantId.setValue(workmates.get(i).getFavoriteRestaurant().toString());
+                            Log.i("","");
+                            myUserLiveData = myFirebaseAuthRepoVM.getUserLiveDataNew();
                             break;
                         }
                     }
 
                     //getUser();
                     myAppMapMediator.setValue(new ViewMainState(true, myUserRestaurantId.getValue(), getUser()));
-
+//
                 } else {
                     //getUser();
                     myAppMapMediator.setValue(new ViewMainState(true, "pas de restau", getUser()));

@@ -4,7 +4,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -13,12 +12,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 
@@ -33,7 +30,7 @@ public class FirestoreDatabaseRepository {
     private final CollectionReference myBase;
     private static final String COLLECTION_NAME = "users";
 
-    private MutableLiveData<List<User>> myWorkMatesListMedia = new MutableLiveData<>();
+    private MutableLiveData<List<User>> myWorkMatesListFromRepo = new MutableLiveData<>();
 
     /**
      * constructor called by injection
@@ -41,7 +38,7 @@ public class FirestoreDatabaseRepository {
     public FirestoreDatabaseRepository() {
         this.myBase = FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
         getRestaurantFromFirestore();
-      //  setupListenerOnCollection();
+        setupListenerOnCollection();
     }
 
     /**
@@ -55,7 +52,7 @@ public class FirestoreDatabaseRepository {
             @Override
             public void onFailure(@NonNull @NotNull Exception e) {
                 Log.i("[WORK]","Fail to access workmates");
-                myWorkMatesListMedia.setValue(null);
+                myWorkMatesListFromRepo.setValue(null);
             }
         });
 
@@ -97,13 +94,13 @@ public class FirestoreDatabaseRepository {
 
                 }
 
-                myWorkMatesListMedia.setValue(allWorkMates);
+                myWorkMatesListFromRepo.setValue(allWorkMates);
 
             }
 
         });
 
-        return myWorkMatesListMedia;
+        return myWorkMatesListFromRepo;
 
     }
 
@@ -121,34 +118,7 @@ public class FirestoreDatabaseRepository {
                     return;
                 }
 
-                if (value != null && !value.isEmpty()){
-
                     getRestaurantFromFirestore();
-                }
-
-
-                /*
-
-                for (DocumentChange dc : value.getDocumentChanges()){
-
-                    switch (dc.getType()){
-                        case ADDED:
-                            Log.i("[FIRE]","add " );
-                            getRestaurantFromFirestore();
-                            break;
-                        case MODIFIED:
-                            Log.i("[FIRE]","modif "  );
-                            getRestaurantFromFirestore();
-                            break;
-                        case REMOVED:
-                            Log.i("[FIRE]","remove "  );
-                            getRestaurantFromFirestore();
-                            break;
-
-                    }
-                }
-
-                 */
 
                 Log.i("[FIRE]","Event on databse ...");
             }
@@ -158,8 +128,8 @@ public class FirestoreDatabaseRepository {
 
     public MutableLiveData<List<User>> getAllWorkMatesListFromRepo()
     {
-     //   return myWorkMatesListMedia;
-    return    getRestaurantFromFirestore();
+        return myWorkMatesListFromRepo;
+    //return    getRestaurantFromFirestore();
     }
 
     public Task<DocumentSnapshot> getWorkMates(String uid) {
