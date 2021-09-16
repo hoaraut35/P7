@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
      */
     public ActivityMainBinding binding;
 
-
     /**
      * for viewModel
      */
@@ -348,6 +347,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupViewModel() {
 
         this.myViewModelMap = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMap.class);
+
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
 
         this.myViewModel.myAppMapMediator.observe(this, new Observer<ViewMainState>() {
@@ -362,19 +362,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-/*        this.myViewModel.getMyPlaceListForUISingle().observe(this, new Observer<PlaceAutocomplete>() {
-            @Override
-            public void onChanged(PlaceAutocomplete placeAutocomplete) {
-
-                if (placeAutocomplete != null) {
-                    alertDialogList(placeAutocomplete);
-                }
-            }
-        });
-
- */
-
-
         //popu an alert dialog when a place autocomplete return a result
         this.myViewModel.getMyPlaceListForUI().observe(this, new Observer<PlaceAutocomplete>() {
             @Override
@@ -388,6 +375,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    /**
+     * Authentification
+     */
     private void Authentification() {
 
         openFirebaseAuthForResult = registerForActivityResult(
@@ -573,8 +564,6 @@ public class MainActivity extends AppCompatActivity {
             } else if (id == R.id.navigation_drawer_settings) {
                 binding.viewpager.setCurrentItem(4);
             } else if (id == R.id.navigation_drawer_logout) {
-                //myViewModel.logOut(this);
-
                 myViewModel.LogOut(this);
             }
 

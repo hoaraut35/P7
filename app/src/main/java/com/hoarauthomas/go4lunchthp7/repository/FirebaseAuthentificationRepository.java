@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 //Only to get data from Firestore, store and publish user and user state to ViewModel ...
 
-public class FirebaseAuthRepository {
+public class FirebaseAuthentificationRepository {
 
     private FirebaseAuth myFireBaseAuthInstance;
     private FirebaseUser myFireBaseUser;
@@ -28,7 +28,7 @@ public class FirebaseAuthRepository {
     private MutableLiveData<Boolean> myUserState = new MutableLiveData<>();
     private MutableLiveData<MyUser> myUserDetail = new MutableLiveData<>();
 
-    public FirebaseAuthRepository(FirebaseAuth firebaseAuthInstance) {
+    public FirebaseAuthentificationRepository(FirebaseAuth firebaseAuthInstance) {
         this.myFireBaseAuthInstance = firebaseAuthInstance;
         this.myFireBaseUser = myFireBaseAuthInstance.getCurrentUser();
         checkUser();

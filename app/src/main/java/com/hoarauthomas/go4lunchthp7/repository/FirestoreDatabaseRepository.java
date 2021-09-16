@@ -26,31 +26,35 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WorkMatesRepository {
+public class FirestoreDatabaseRepository {
 
     //added
-    private CollectionReference myBase;
+    private final CollectionReference myBase;
     private static final String COLLECTION_NAME = "users";
 
-    private MutableLiveData<List<User>> myWorkMAtesListMedia = new MutableLiveData<>();
+    private MutableLiveData<List<User>> myWorkMatesListMedia = new MutableLiveData<>();
 
-    //init data on startup viewmodelfactory
-    public WorkMatesRepository() {
+    /**
+     * constructor called by injection
+     */
+    public FirestoreDatabaseRepository() {
         this.myBase = FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
         getRestaurantFromFirestore();
         setupListenerOnCollection();
-
     }
 
+    /**
+     * get data from firebase
+     * @return
+     */
     private MutableLiveData<List<User>> getRestaurantFromFirestore()
     {
-
-        Log.i("[MAP]", "- Appel du repository WorkMates ...");
 
         myBase.get().addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull @NotNull Exception e) {
                 Log.i("[WORK]","Fail to access workmates");
+                myWorkMatesListMedia.setValue(null);
             }
         });
 
@@ -92,15 +96,31 @@ public class WorkMatesRepository {
 
                 }
 
-                myWorkMAtesListMedia.setValue(allWorkMates);
+                myWorkMatesListMedia.setValue(allWorkMates);
 
             }
 
         });
 
-        return myWorkMAtesListMedia;
+        return myWorkMatesListMedia;
 
     }
+
+
+
+
+
+
+
+
+    /**
+     * Public method
+     * @return
+     */
+    public MutableLiveData<List<User>> getAllWorkMatesFromRepo(){
+        return myWorkMatesListMedia;
+    }
+
 
     private void setupListenerOnCollection() {
 
@@ -141,6 +161,9 @@ public class WorkMatesRepository {
         });
 
     }
+
+
+
 
     public MutableLiveData<List<User>> getAllWorkMatesList()
     {

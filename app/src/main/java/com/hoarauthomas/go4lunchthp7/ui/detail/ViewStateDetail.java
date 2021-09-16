@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-public class ScreenDetailModel {
+public class ViewStateDetail {
 
     String urlPhoto;
 
@@ -22,7 +22,7 @@ public class ScreenDetailModel {
 
     List<User> listWorkMates;
 
-    public ScreenDetailModel(@Nullable String urlPhoto, @Nullable String title, @Nullable String address, @Nullable int rating, @Nullable String call, @Nullable Boolean liked, @Nullable String website, @Nullable Boolean favorite, @Nullable List<User> listWorkMates) {
+    public ViewStateDetail(@Nullable String urlPhoto, @Nullable String title, @Nullable String address, @Nullable int rating, @Nullable String call, @Nullable Boolean liked, @Nullable String website, @Nullable Boolean favorite, @Nullable List<User> listWorkMates) {
         this.urlPhoto = urlPhoto;
         this.title = title;
         this.address = address;
@@ -34,7 +34,7 @@ public class ScreenDetailModel {
         this.listWorkMates = listWorkMates;
     }
 
-    public ScreenDetailModel() {
+    public ViewStateDetail() {
 
     }
 

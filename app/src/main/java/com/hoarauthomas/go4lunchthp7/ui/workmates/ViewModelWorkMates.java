@@ -11,7 +11,7 @@ import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
-import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreDatabaseRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,18 +19,18 @@ import java.util.List;
 public class ViewModelWorkMates extends ViewModel {
 
 
-    private WorkMatesRepository myWorkMatesRepository;
+    private FirestoreDatabaseRepository myFirestoreDatabaseRepository;
     private RestaurantsRepository myRestaurantRepository;
     private List<SpecialWorkMates> mySpecialWorkMatesList = new ArrayList<>();
 
     private final MediatorLiveData<ViewStateWorkMates> myViewStateWorkMatesMediator = new MediatorLiveData<>();
     private final RestaurantPojo myRestauResult = new RestaurantPojo();
 
-    public ViewModelWorkMates(RestaurantsRepository myRestaurantRepository, WorkMatesRepository myWorkMatesRepository) {
+    public ViewModelWorkMates(RestaurantsRepository myRestaurantRepository, FirestoreDatabaseRepository myFirestoreDatabaseRepository) {
         this.myRestaurantRepository = myRestaurantRepository;
-        this.myWorkMatesRepository = myWorkMatesRepository;
+        this.myFirestoreDatabaseRepository = myFirestoreDatabaseRepository;
 
-        LiveData<List<User>> myWorkMatesList = this.myWorkMatesRepository.getAllWorkMatesList();
+        LiveData<List<User>> myWorkMatesList = this.myFirestoreDatabaseRepository.getAllWorkMatesList();
         LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantList = this.myRestaurantRepository.getMyRestaurantsList();
 
         myViewStateWorkMatesMediator.addSource(myWorkMatesList, new Observer<List<User>>() {

@@ -9,9 +9,9 @@ import com.hoarauthomas.go4lunchthp7.api.UserHelper;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
-import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthRepository;
+import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthentificationRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
-import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreDatabaseRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,18 +22,16 @@ public class ViewModelDetail extends ViewModel {
 
     //declare repo here...
     private final RestaurantsRepository myRestaurantRepository;
-    private final WorkMatesRepository myWorkMatesRepository;
+    private final FirestoreDatabaseRepository myFirestoreDatabaseRepository;
 
     //ViewState for ui
-    private final MediatorLiveData<ScreenDetailModel> myScreenDetailMediator = new MediatorLiveData<>();
-
-    ScreenDetailModel myPublicDetailUser = new ScreenDetailModel();
+    private final MediatorLiveData<ViewStateDetail> myScreenDetailMediator = new MediatorLiveData<>();
 
     //placeId selected for detail
     private String placeIdGen = null;
 
     //constructor
-    public ViewModelDetail(FirebaseAuthRepository myAuthRepository, RestaurantsRepository myRestaurantRepository, WorkMatesRepository myWorkMatesRepository) {
+    public ViewModelDetail(FirebaseAuthentificationRepository myAuthRepository, RestaurantsRepository myRestaurantRepository, FirestoreDatabaseRepository myFirestoreDatabaseRepository) {
 
         //get actual user authentification
         LiveData<FirebaseUser> myUserFromRepo = myAuthRepository.getUserLiveDataNew();
@@ -44,9 +42,9 @@ public class ViewModelDetail extends ViewModel {
         //get restaurant detail
         LiveData<ResultDetailRestaurant> myRestaurantDetail = this.myRestaurantRepository.getMyRestaurantDetail();
 
-        this.myWorkMatesRepository = myWorkMatesRepository;
+        this.myFirestoreDatabaseRepository = myFirestoreDatabaseRepository;
         //get workmates list
-        LiveData<List<User>> myWorkMatesList = this.myWorkMatesRepository.getAllWorkMatesList();
+        LiveData<List<User>> myWorkMatesList = this.myFirestoreDatabaseRepository.getAllWorkMatesList();
 
         //observe for list of restaurant
         myScreenDetailMediator.addSource(myRestaurantsList, restaurantPojo -> logicWork(restaurantPojo, myWorkMatesList.getValue(), myRestaurantDetail.getValue(), myUserFromRepo.getValue()));
@@ -75,7 +73,7 @@ public class ViewModelDetail extends ViewModel {
             //we' get the restaurant to work with it
             if (restaurants.get(x).getPlaceId().equals(placeIdGen)) {
 
-                ScreenDetailModel myScreen = new ScreenDetailModel();
+                ViewStateDetail myScreen = new ViewStateDetail();
 
                 //get photo
                 try {
@@ -118,7 +116,7 @@ public class ViewModelDetail extends ViewModel {
 
                     //Boolean fav =false;
 
-                    //we scann list of workmates
+                    //we scan list of workmates
                     for (int i = 0; i < workmates.size(); i++) {
 
                         //restaurant is favorite, update button
@@ -216,11 +214,11 @@ public class ViewModelDetail extends ViewModel {
     }
 
     public FirebaseUser getCurrentUser() {
-        return myWorkMatesRepository.getCurrentUser();
+        return myFirestoreDatabaseRepository.getCurrentUser();
     }
 
     //publish data to UI
-    public LiveData<ScreenDetailModel> getMediatorScreen() {
+    public LiveData<ViewStateDetail> getMediatorScreen() {
         return myScreenDetailMediator;
     }
 

@@ -49,24 +49,22 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_maps, container, false);
-        myViewModelMap = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMap.class);
-
-
+        setupViewModel();
         return view;
     }
 
+    private void setupViewModel() {
+        myViewModelMap = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMap.class);
+    }
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
 
         @Override
         public void onMapReady(GoogleMap map) {
 
-
             //to get an instance
             myMap = map;
-
             myMap.clear();
-
 
             //myViewModelMap.refresh();
             myViewModelMap.ViewStateForMapUI().observe(getViewLifecycleOwner(), new Observer<ViewStateMap>() {
@@ -99,22 +97,22 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                             map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(allMarkers.get(i).getLocation().latitude, allMarkers.get(i).getLocation().longitude), 15));
                             //                        CameraUpdateFactory.zoomTo(20);
                             //   myMap.moveCamera(CameraUpdateFactory.newLatLng(allMarkers.get(i).getLocation()));
-                        findPlace =true;
-                               break;
+                            findPlace = true;
+                            break;
                         }
 
-                        findPlace =false;
+                        findPlace = false;
 
                     }
 
-                    if (!findPlace){
+                    if (!findPlace) {
 
-                      //  Toast.makeText(getContext(), "non trouvé: " + prediction.getPlaceId(), Toast.LENGTH_SHORT).show();
+                        //  Toast.makeText(getContext(), "non trouvé: " + prediction.getPlaceId(), Toast.LENGTH_SHORT).show();
 
-                         Intent intent = new Intent(getContext(), DetailActivity.class);
-                         String restaurantTag = prediction.getPlaceId();
-                         intent.putExtra("TAG_ID", restaurantTag);
-                         startActivity(intent);
+                        Intent intent = new Intent(getContext(), DetailActivity.class);
+                        String restaurantTag = prediction.getPlaceId();
+                        intent.putExtra("TAG_ID", restaurantTag);
+                        startActivity(intent);
 
                     }
 
@@ -414,36 +412,6 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     public boolean onMarkerClick(@NonNull @NotNull Marker marker) {
         return false;
     }
-
-
-    public class MyMarkerObject {
-
-        String id;
-        LatLng location;
-
-        public LatLng getLocation() {
-            return location;
-        }
-
-        public void setLocation(LatLng location) {
-            this.location = location;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-
-        public MyMarkerObject(String id, LatLng location) {
-            this.id = id;
-            this.location = location;
-        }
-    }
-
 
 }
 

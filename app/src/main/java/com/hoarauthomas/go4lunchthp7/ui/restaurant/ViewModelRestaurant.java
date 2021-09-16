@@ -16,7 +16,7 @@ import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
-import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreDatabaseRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public class ViewModelRestaurant extends ViewModel {
 
     private PositionRepository myPositionRepository;
     private RestaurantsRepository myRestaurantRepository;
-    private WorkMatesRepository myWorkMatesRepository;
+    private FirestoreDatabaseRepository myFirestoreDatabaseRepository;
 
     private LiveData<Location> myPosition;
 
@@ -37,15 +37,15 @@ public class ViewModelRestaurant extends ViewModel {
 
     private final MediatorLiveData<ViewStateRestaurant> myViewStateRestaurantMediator = new MediatorLiveData<>();
 
-    public ViewModelRestaurant(PositionRepository myPositionRepository, RestaurantsRepository myRestaurantRepository, WorkMatesRepository myWorkMatesRepository, SharedRepository mySharedRepository) {
+    public ViewModelRestaurant(PositionRepository myPositionRepository, RestaurantsRepository myRestaurantRepository, FirestoreDatabaseRepository myFirestoreDatabaseRepository, SharedRepository mySharedRepository) {
         this.myPositionRepository = myPositionRepository;
         this.myRestaurantRepository = myRestaurantRepository;
-        this.myWorkMatesRepository = myWorkMatesRepository;
+        this.myFirestoreDatabaseRepository = myFirestoreDatabaseRepository;
         this.mySharedRepository = mySharedRepository;
 
         myPosition = myPositionRepository.getLocationLiveData();
         LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
-        LiveData<List<User>> myWorkMatesList = this.myWorkMatesRepository.getAllWorkMatesList();
+        LiveData<List<User>> myWorkMatesList = this.myFirestoreDatabaseRepository.getAllWorkMatesList();
 
 
         myViewStateRestaurantMediator.addSource(myPosition, new Observer<Location>() {

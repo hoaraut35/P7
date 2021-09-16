@@ -10,18 +10,17 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.facebook.internal.Mutable;
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.SingleLiveEvent;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.repository.AlarmRepository;
-import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthRepository;
+import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthentificationRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
-import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreDatabaseRepository;
 
 import java.util.List;
 
@@ -31,8 +30,8 @@ import javax.annotation.Nullable;
 public class ViewModelMain extends ViewModel {
 
     //repository...
-    private FirebaseAuthRepository myFirebaseAuthRepoVM;
-    private WorkMatesRepository myWorkMatesRepoVM;
+    private FirebaseAuthentificationRepository myFirebaseAuthRepoVM;
+    private FirestoreDatabaseRepository myWorkMatesRepoVM;
     private PlaceAutocompleteRepository myPlaceAutocompleteRepoVM;
     private PositionRepository myPositionRepoVM;
     private AlarmRepository myAlarmRepoVM;
@@ -52,15 +51,15 @@ public class ViewModelMain extends ViewModel {
     MediatorLiveData<ViewMainState> myAppMapMediator = new MediatorLiveData<>();
 
     //constructor...
-    public ViewModelMain(FirebaseAuthRepository firebaseAuthRepository, WorkMatesRepository workMatesRepository, PlaceAutocompleteRepository placeAutocompleteRepository, PositionRepository myPositionRepoVM, AlarmRepository myAlarmRepoVM, SharedRepository mySharedRepoVM) {
+    public ViewModelMain(FirebaseAuthentificationRepository firebaseAuthentificationRepository, FirestoreDatabaseRepository firestoreDatabaseRepository, PlaceAutocompleteRepository placeAutocompleteRepository, PositionRepository myPositionRepoVM, AlarmRepository myAlarmRepoVM, SharedRepository mySharedRepoVM) {
 
         //get data from Auth repository...
-        this.myFirebaseAuthRepoVM = firebaseAuthRepository;
+        this.myFirebaseAuthRepoVM = firebaseAuthentificationRepository;
         myUserLiveData = myFirebaseAuthRepoVM.getUserLiveDataNew();
         myUserStateNew = myFirebaseAuthRepoVM.getLoggedOutLiveDataNew();
 
         //get data from workmates repository...
-        this.myWorkMatesRepoVM = workMatesRepository;
+        this.myWorkMatesRepoVM = firestoreDatabaseRepository;
         myWorkMatesListLiveData = myWorkMatesRepoVM.getAllWorkMatesList();
 
         //get data from place autocomplete repository...

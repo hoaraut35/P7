@@ -13,10 +13,10 @@ import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreDatabaseRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
-import com.hoarauthomas.go4lunchthp7.repository.WorkMatesRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,75 +28,79 @@ public class ViewModelMap extends ViewModel {
     private PermissionChecker myPermission;
     private PositionRepository myPositionRepository;
     private RestaurantsRepository myRestaurantRepository;
-    private WorkMatesRepository myWorkMatesRepository;
+    private FirestoreDatabaseRepository myFirestoreDatabaseRepository;
     private SharedRepository mySharedRepository;
 
     private LiveData<Location> myPosition;
     private final MediatorLiveData<ViewStateMap> myViewStateMapMediator = new MediatorLiveData<>();
 
-   // private final MutableLiveData<String> myPositionFromAutoComplete = new MutableLiveData<>();
-
-   // private SingleLiveEvent<Prediction> myPositionFromAutoSingleMode = new SingleLiveEvent<>();
-
-    public ViewModelMap(PermissionChecker myPermission, PositionRepository myPositionRepository, RestaurantsRepository myRestaurantsRepository, WorkMatesRepository myWorkMatesRepository, SharedRepository mySharedRepository) {
+    /**
+     * constructor called by dependance injection
+     *
+     * @param myPermission
+     * @param myPositionRepository
+     * @param myRestaurantsRepository
+     * @param myFirestoreDatabaseRepository
+     * @param mySharedRepository
+     */
+    public ViewModelMap(PermissionChecker myPermission, PositionRepository myPositionRepository, RestaurantsRepository myRestaurantsRepository, FirestoreDatabaseRepository myFirestoreDatabaseRepository, SharedRepository mySharedRepository) {
+        //init repository
         this.myPermission = myPermission;
         this.myPositionRepository = myPositionRepository;
         this.myRestaurantRepository = myRestaurantsRepository;
-        this.myWorkMatesRepository = myWorkMatesRepository;
+        this.myFirestoreDatabaseRepository = myFirestoreDatabaseRepository;
         this.mySharedRepository = mySharedRepository;
 
+        //init position
         myPosition = myPositionRepository.getLocationLiveData();
+        //init list of restaurants
         LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
-        LiveData<List<User>> myWorkMatesList = this.myWorkMatesRepository.getAllWorkMatesList();
+        //init list of workmates
+        LiveData<List<User>> myWorkMatesList = this.myFirestoreDatabaseRepository.getAllWorkMatesList();
 
-        myViewStateMapMediator.addSource(myPosition, new Observer<Location>() {
-            @Override
-            public void onChanged(Location position) {
-                //   Log.i("[MAP]", "Event position");
-                if (position != null) {
-                    //   Log.i("[MAP]", "Position trouvée" + position.getLatitude() + position.getLongitude());
-                    myRestaurantRepository.UpdateLngLat(position.getLongitude(), position.getLatitude());
-                }
-                //logicWork(position,myRestaurantsList.getValue());
+        //add listener for new position
+        myViewStateMapMediator.addSource(myPosition, position -> {
+            if (position != null) {
+                //TODO: rename method to setNewLatLngPosition()
+                myRestaurantRepository.UpdateLngLat(position.getLongitude(), position.getLatitude());
             }
         });
 
-        myViewStateMapMediator.addSource(myRestaurantsList, new Observer<List<RestaurantPojo>>() {
-            @Override
-            public void onChanged(List<RestaurantPojo> restaurantPojos) {
-                //   Log.i("[MAP]", "Event restaurants");
-                if (restaurantPojos != null) {
-                    // Log.i("[MAP]", "Liste restaura" + restaurantPojos.size());
-                    logicWork(myPosition.getValue(), restaurantPojos, myWorkMatesList.getValue());
-                }
-
+        //add listener for list of restaurants
+        myViewStateMapMediator.addSource(myRestaurantsList, restaurantsList -> {
+            if (restaurantsList != null) {
+                logicWork(myPosition.getValue(),
+                        restaurantsList,
+                        myWorkMatesList.getValue());
             }
         });
 
-        myViewStateMapMediator.addSource(myWorkMatesList, new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> users) {
-                //    Log.i("[MAP]", "Event workmates list...");
-                if (users != null) {
-                    //   Log.i("[MAP]", "Liste workmates" + users.size());
-                    logicWork(myPosition.getValue(), myRestaurantsList.getValue(), users);
-                }
+        //add listener for workmates list
+        myViewStateMapMediator.addSource(myWorkMatesList, workmates -> {
+            if (workmates != null) {
+                logicWork(myPosition.getValue(), myRestaurantsList.getValue(), workmates);
             }
         });
     }
 
-    //**********************************************************************************************
-    // Logic work
-    //**********************************************************************************************
+    /**
+     * This is the logic work
+     * @param position
+     * @param restaurants
+     * @param workmates
+     */
     private void logicWork(@Nullable Location position, @Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates) {
 
+        //if one of three values is null then we cancel the job
         if (position == null || restaurants == null || workmates == null) return;
 
+        //
         if (!restaurants.isEmpty() && !workmates.isEmpty()) {
 
             List<RestaurantPojo> newRestaurantList = new ArrayList<>();
             RestaurantPojo newRestaurantItem;
 
+            //for the amount of result restaurants
             for (int i = 0; i < restaurants.size(); i++) {
 
                 newRestaurantItem = restaurants.get(i);
@@ -109,23 +113,20 @@ public class ViewModelMap extends ViewModel {
                         newRestaurantItem.setIcon("vert");
                         break;
                     }
-                    //restaurants.set(i,se
+                    //restaurant is not favorite
                     newRestaurantItem.setIcon("rouge");
-
                 }
 
                 newRestaurantList.add(newRestaurantItem);
 
             }
 
+            //we set the viewstate for ui
             myViewStateMapMediator.setValue(new ViewStateMap(position, newRestaurantList));
 
         }
 
     }
-    //**********************************************************************************************
-    // End of logic work
-    //**********************************************************************************************
 
     /**
      * check permissio
@@ -142,15 +143,16 @@ public class ViewModelMap extends ViewModel {
 
     /**
      * return ViewState for Map fragment
+     *
      * @return ViewState mediator
      */
-    public LiveData<ViewStateMap> ViewStateForMapUI()
-    {
+    public LiveData<ViewStateMap> ViewStateForMapUI() {
         return myViewStateMapMediator;
     }
 
     /**
      * get Prediction from repository
+     *
      * @return prediction from repository
      */
     public MutableLiveData<Prediction> getPredictionFromRepository() {
