@@ -17,10 +17,10 @@ import com.hoarauthomas.go4lunchthp7.SingleLiveEvent;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.repository.AlarmRepository;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthentificationRepository;
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreDatabaseRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
-import com.hoarauthomas.go4lunchthp7.repository.FirestoreDatabaseRepository;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class ViewModelMain extends ViewModel {
     //livedata...
     private MutableLiveData<FirebaseUser> myUserLiveData;
     private MutableLiveData<Boolean> myUserStateNew;
-    private MutableLiveData<List<User>> myWorkMatesListLiveData;
+    private MutableLiveData<List<User>> myWorkMatesListLiveData = new MutableLiveData<>();
     private MutableLiveData<String> myUserRestaurantId = new MutableLiveData<>();
     private MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myPlaceAutocompleteList = new MutableLiveData<>();
 
@@ -60,11 +60,11 @@ public class ViewModelMain extends ViewModel {
 
         //get data from workmates repository...
         this.myWorkMatesRepoVM = firestoreDatabaseRepository;
-        myWorkMatesListLiveData = myWorkMatesRepoVM.getAllWorkMatesList();
+        myWorkMatesListLiveData = myWorkMatesRepoVM.getAllWorkMatesListFromRepo();
 
         //get data from place autocomplete repository...
         this.myPlaceAutocompleteRepoVM = placeAutocompleteRepository;
-      //  this.myPlaceAutocompleteList = myPlaceAutocompleteRepoVM.getMyPlaceAutocompleteListForVM();
+        //  this.myPlaceAutocompleteList = myPlaceAutocompleteRepoVM.getMyPlaceAutocompleteListForVM();
 
         //this.myPlaceAutoCompleteListSingleEvent = myPlaceAutocompleteRepoVM.getMyPlaceAutocompleteListForVMSingle();
 
@@ -101,7 +101,7 @@ public class ViewModelMain extends ViewModel {
         });
 
         //add source
-        myAppMapMediator.addSource(myWorkMatesListLiveData, new Observer<List<User>>() {
+      /*  myAppMapMediator.addSource(myWorkMatesListLiveData, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
 
@@ -118,6 +118,8 @@ public class ViewModelMain extends ViewModel {
             }
         });
 
+       */
+
 
     }
 
@@ -126,11 +128,10 @@ public class ViewModelMain extends ViewModel {
 
         Log.i("MEDIA", "Logic work ...");
 
+        //  if (myUser == null) return;
+        //   if (workmates == null) return;
 
-      //  if (myUser == null) return;
-     //   if (workmates == null) return;
-
-
+        //TODO: bug rafraichissement user
 
 
 
@@ -144,39 +145,38 @@ public class ViewModelMain extends ViewModel {
             if (myUser != null && workmates != null) {
 
 
-                        if (!myUser.getUid().isEmpty()) {
+                if (!myUser.getUid().isEmpty()) {
 
-                            for (int i = 0; i < workmates.size(); i++) {
+                    for (int i = 0; i < workmates.size(); i++) {
 
-                                if (workmates.get(i).getUid().equals(myUser.getUid())) {
-                                    myUserRestaurantId.setValue(workmates.get(i).getFavoriteRestaurant());
+                        if (workmates.get(i).getUid().equals(myUser.getUid())) {
+                            myUserRestaurantId.setValue(workmates.get(i).getFavoriteRestaurant());
 
-                                    break;
-                                }
-                            }
-
-                            //getUser();
-                            myAppMapMediator.setValue(new ViewMainState(true, myUserRestaurantId.getValue(),getUser()));
-
-                        } else {
-                            //getUser();
-                            myAppMapMediator.setValue(new ViewMainState(true, "pas de restau",getUser()));
-
+                            break;
                         }
+                    }
 
-            }else
-            {
-                if (myUser != null && workmates == null){
+                    //getUser();
+                    myAppMapMediator.setValue(new ViewMainState(true, myUserRestaurantId.getValue(), getUser()));
+
+                } else {
+                    //getUser();
+                    myAppMapMediator.setValue(new ViewMainState(true, "pas de restau", getUser()));
+
+                }
+
+            } else {
+                if (myUser != null && workmates == null) {
                     createUser();
 
                 }
             }
 
-            myAppMapMediator.setValue(new ViewMainState(true, "liste restaur non chargée",getUser()));
+            myAppMapMediator.setValue(new ViewMainState(true, "liste restaur non chargée", getUser()));
 
 
         } else {
-            myAppMapMediator.setValue(new ViewMainState(false, "echec login",getUser()));
+            myAppMapMediator.setValue(new ViewMainState(false, "echec login", getUser()));
             //myUserRestaurantId.setValue("text");
         }
 
@@ -192,7 +192,7 @@ public class ViewModelMain extends ViewModel {
     //**********************************************************************************************
 
 
-    public MutableLiveData<PlaceAutocomplete> getMyPlaceListForUI(){
+    public MutableLiveData<PlaceAutocomplete> getMyPlaceListForUI() {
         return myPlaceAutocompleteRepoVM.getPlaces();
     }
 
@@ -204,7 +204,6 @@ public class ViewModelMain extends ViewModel {
    */
 
 
-
     //addedd
     public LiveData<Boolean> getMyLogin() {
         return myUserStateNew;
@@ -213,9 +212,11 @@ public class ViewModelMain extends ViewModel {
     //added
     public void LogOut(Context context) {
         myFirebaseAuthRepoVM.logOut(context);
+
+
     }
 
-    public FirebaseUser getUser(){
+    public FirebaseUser getUser() {
         return myUserLiveData.getValue();
     }
 
@@ -242,15 +243,15 @@ public class ViewModelMain extends ViewModel {
 
 
     //
-    public void getResultAutocomplete(String query, Location location){
-     // myPlaceAutocompleteRepoVM.getPlaceAutocomplete(query,location);
-       myPlaceAutocompleteRepoVM.getPlaceAutocompleteSingle(query,location);
+    public void getResultAutocomplete(String query, Location location) {
+        // myPlaceAutocompleteRepoVM.getPlaceAutocomplete(query,location);
+        myPlaceAutocompleteRepoVM.getPlaceAutocompleteSingle(query, location);
         //return myPlaceAutocompleteList;
 
     }
 
 
-    public Location getMyPosition(){
+    public Location getMyPosition() {
         return myPositionRepoVM.getLocationLiveData().getValue();
     }
 
@@ -263,14 +264,16 @@ public class ViewModelMain extends ViewModel {
 
     /**
      * To enable or disable notification
+     *
      * @param state
      */
-    public void setNotification(Boolean state){
+    public void setNotification(Boolean state) {
         myAlarmRepoVM.setNotification(state);
     }
 
     /**
      * Update the place prediction in repository shared
+     *
      * @param place
      */
     public void setPredictionFromUIWithPlaceId(Prediction place) {

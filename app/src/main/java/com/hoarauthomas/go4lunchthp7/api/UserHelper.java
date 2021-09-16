@@ -15,6 +15,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 
 import java.util.List;
@@ -68,37 +69,64 @@ public class UserHelper {
         return UserHelper.getUsersCollection().document(uid).get();
     }
 
-    public static Task<Void> updateFavRestaurant(String uid, String placeId) {
-        return UserHelper.getUsersCollection().document(uid).update("favoriteRestaurant", placeId);
+
+
+
+
+
+
+
+
+    public static Task<Void> addRestaurantLiked(String uid, String place){
+
+
+        return UserHelper.getUsersCollection().document(uid).update("restaurant_liked",FieldValue.arrayUnion(place));
     }
 
-
-    //TODO : tableau favoris
     public static void addLikedRestaurant(String uid, String placeId) {
 
-        //get user collection
-        Task<DocumentSnapshot> myDoc = getUsersCollection().document(uid).get();
 
 
-        //add listener
-        myDoc.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        //get workmate document
+        Task<DocumentSnapshot> myWorkMateDocument = getUsersCollection().document(uid).get();
+
+        //add listener to this request
+        myWorkMateDocument.addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                List<String> restaurant_liked_list = (List<String>) myDoc.getResult().get("restaurant_liked");
-                restaurant_liked_list.add(placeId);
-                Log.i("[LOGIN]", "restaura liké" + myDoc.getResult().get("restaurant_liked") + restaurant_liked_list.size());
+
+                if (documentSnapshot.contains("restaurant_liked")){
+
+                //    documentSnapshot.toObject()get
+
+                    //documentSnapshot.get("restaurant_liked").
+                        }
+
+
+
+
+//                List<String> myRestaurantsListUser = documentSnapshot.getData().get("restaurant_liked");
+
+         //       List<String> restaurant_liked_list = (List<String>) myWorkMateDocument.getResult().get("restaurant_liked");
+           //     restaurant_liked_list.add(placeId);
+             //   Log.i("[LOGIN]", "restaura liké" + myWorkMateDocument.getResult().get("restaurant_liked") + restaurant_liked_list.size());
                 //UserHelper.getUsersCollection().document(uid).collection("restaurant_liked").add(temp);
                 UserHelper.getUsersCollection().document(uid).update("restaurant_liked", FieldValue.arrayUnion(placeId));
             }
         });
 
-        myDoc.addOnFailureListener(new OnFailureListener() {
+
+        myWorkMateDocument.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                     //
             }
         });
+
+
+       // myWorkMateDocument.getResult()
+
     }
 
     public static Task<Void> getLikedRestaurant(String uid) {
@@ -106,10 +134,32 @@ public class UserHelper {
         return null;
     }
 
+
+    /**
+     * update favorite restaurant
+     * @param uid user id
+     * @param placeId place id
+     * @return
+     */
+    public static Task<Void> addFavRestaurant(String uid, String placeId) {
+        return UserHelper.getUsersCollection().document(uid).update("favoriteRestaurant", placeId);
+    }
+
+    /**
+     * delete a restaurant in firesotree database
+     * @param uid
+     * @return
+     */
     public static Task<Void> deleteFavRestaurant(String uid) {
         return UserHelper.getUsersCollection().document(uid).update("favoriteRestaurant", "");
     }
 
+    /**
+     * delete liked restaurant in firestore database
+     * @param uid user id
+     * @param placeId restaurant id
+     * @return
+     */
     public static Task<Void> deleteLikedRestaurant(String uid, String placeId) {
         return UserHelper.getUsersCollection().document(uid).update("restaurant_liked", FieldValue.arrayRemove(placeId));
     }

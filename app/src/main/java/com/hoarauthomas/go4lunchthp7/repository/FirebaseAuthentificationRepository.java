@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.model.MyUser;
 
 import org.jetbrains.annotations.NotNull;
@@ -67,6 +68,10 @@ public class FirebaseAuthentificationRepository {
     public void logOut(Context context){
         myFireBaseAuthInstance.signOut();
         checkUser();
+
+
+
+
     }
 
 

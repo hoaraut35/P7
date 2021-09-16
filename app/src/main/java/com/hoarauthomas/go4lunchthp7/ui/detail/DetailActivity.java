@@ -35,6 +35,7 @@ public class DetailActivity extends AppCompatActivity {
         binding = ActivityDetailRestaurantBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
+
         setupViewModel();
         setupIntent();
     }
@@ -53,13 +54,6 @@ public class DetailActivity extends AppCompatActivity {
         myViewModelDetail = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelDetail.class);
 
         myViewModelDetail.getMediatorScreen().observe(this, screenDetailModel -> {
-
-
-            //si aucun placeif alors on prend cleui de l'utilisateur actuel
-            /*if (getIntent().getStringExtra("TAG_ID") == null){
-                myViewModelDetail.setPlaceId(viewStateDetail.myUser.getMyFavoriteRestaurantId());
-            }
-             */
 
             //get photo
             try {
@@ -97,7 +91,6 @@ public class DetailActivity extends AppCompatActivity {
             //get choice
             setupButtonChoice(screenDetailModel.getFavorite());
 
-            //TODO: don't work
             setupButtonLike(screenDetailModel.getLiked());
 
             //get list of workmates
@@ -142,6 +135,8 @@ public class DetailActivity extends AppCompatActivity {
 
     private void setupButtonChoice(Boolean state) {
 
+        if (state == null) return;
+
         //for view
         if (state) {
             binding.choiceBtn.setImageResource(R.drawable.checked_favorite_restaurant);
@@ -154,13 +149,13 @@ public class DetailActivity extends AppCompatActivity {
 
             if (state){
                 //disable
-                showSnackBar(getString(R.string.delete_fav_msg));
+                showSnackBar(getString(R.string.delete_fav_msg) + myViewModelDetail.getCurrentUser().getUid());
                 myViewModelDetail.deleteFavRestaurant(myViewModelDetail.getCurrentUser().getUid());
             }else
             {
                 //enable
-                showSnackBar(getString(R.string.add_fav_msg));
-                myViewModelDetail.setFavRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
+                showSnackBar(getString(R.string.add_fav_msg)+ myViewModelDetail.getCurrentUser().getUid());
+                myViewModelDetail.addtFavRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
             }
 
         });
@@ -183,11 +178,11 @@ public class DetailActivity extends AppCompatActivity {
             {
                 showSnackBar(getString(R.string.like_delete_msg) + myViewModelDetail.getCurrentUser().getUid() + " " + myViewModelDetail.getPlaceId());
                 myViewModelDetail.deleteLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
-
+//
             }else
             {
                 showSnackBar(getString(R.string.like_add_msg)  + myViewModelDetail.getCurrentUser().getUid() + " " + myViewModelDetail.getPlaceId());
-                myViewModelDetail.adLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
+                myViewModelDetail.addLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
             }
 
         });

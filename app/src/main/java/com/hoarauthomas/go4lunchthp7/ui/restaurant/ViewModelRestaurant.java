@@ -45,7 +45,7 @@ public class ViewModelRestaurant extends ViewModel {
 
         myPosition = myPositionRepository.getLocationLiveData();
         LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
-        LiveData<List<User>> myWorkMatesList = this.myFirestoreDatabaseRepository.getAllWorkMatesList();
+        LiveData<List<User>> myWorkMatesList = this.myFirestoreDatabaseRepository.getAllWorkMatesListFromRepo();
 
 
         myViewStateRestaurantMediator.addSource(myPosition, new Observer<Location>() {

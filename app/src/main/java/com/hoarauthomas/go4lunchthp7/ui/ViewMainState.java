@@ -17,7 +17,7 @@ public class ViewMainState {
     }
 
     public ViewMainState(Boolean loginState, String myRestaurant, FirebaseUser fbUser) {
-        LoginState = loginState;
+        this.LoginState = loginState;
         this.myRestaurant = myRestaurant;
         this.myUser = fbUser;
     }

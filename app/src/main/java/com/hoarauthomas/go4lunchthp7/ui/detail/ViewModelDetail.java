@@ -2,6 +2,7 @@ package com.hoarauthomas.go4lunchthp7.ui.detail;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
@@ -10,8 +11,8 @@ import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthentificationRepository;
-import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreDatabaseRepository;
+import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,15 +21,22 @@ import javax.annotation.Nullable;
 
 public class ViewModelDetail extends ViewModel {
 
-    //declare repo here...
+    /**
+     * we set repository here
+     */
     private final RestaurantsRepository myRestaurantRepository;
     private final FirestoreDatabaseRepository myFirestoreDatabaseRepository;
 
-    //ViewState for ui
+    /**
+     * this ViewState for UI
+     */
     private final MediatorLiveData<ViewStateDetail> myScreenDetailMediator = new MediatorLiveData<>();
 
     //placeId selected for detail
-    private String placeIdGen = null;
+    // private String placeIdGen = null;
+
+
+    private MutableLiveData<String> placeIdRequest = new MutableLiveData<>(null);
 
     //constructor
     public ViewModelDetail(FirebaseAuthentificationRepository myAuthRepository, RestaurantsRepository myRestaurantRepository, FirestoreDatabaseRepository myFirestoreDatabaseRepository) {
@@ -44,173 +52,204 @@ public class ViewModelDetail extends ViewModel {
 
         this.myFirestoreDatabaseRepository = myFirestoreDatabaseRepository;
         //get workmates list
-        LiveData<List<User>> myWorkMatesList = this.myFirestoreDatabaseRepository.getAllWorkMatesList();
+        LiveData<List<User>> myWorkMatesList = this.myFirestoreDatabaseRepository.getAllWorkMatesListFromRepo();
 
         //observe for list of restaurant
-        myScreenDetailMediator.addSource(myRestaurantsList, restaurantPojo -> logicWork(restaurantPojo, myWorkMatesList.getValue(), myRestaurantDetail.getValue(), myUserFromRepo.getValue()));
+        myScreenDetailMediator.addSource(myRestaurantsList, restaurantPojo -> logicWork(restaurantPojo, myWorkMatesList.getValue(), myRestaurantDetail.getValue(), myUserFromRepo.getValue(), placeIdRequest.getValue()));
 
         //observe detail of restaurant
-        myScreenDetailMediator.addSource(myRestaurantDetail, resultDetailRestaurant -> logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), resultDetailRestaurant, myUserFromRepo.getValue()));
+        myScreenDetailMediator.addSource(myRestaurantDetail, resultDetailRestaurant -> logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), resultDetailRestaurant, myUserFromRepo.getValue(), placeIdRequest.getValue()));
 
         //observe workmates list
-        myScreenDetailMediator.addSource(myWorkMatesList, workmates -> logicWork(myRestaurantsList.getValue(), workmates, myRestaurantDetail.getValue(), myUserFromRepo.getValue()));
+        myScreenDetailMediator.addSource(myWorkMatesList, workmates -> logicWork(myRestaurantsList.getValue(), workmates, myRestaurantDetail.getValue(), myUserFromRepo.getValue(), placeIdRequest.getValue()));
 
         //observe user
-        myScreenDetailMediator.addSource(myUserFromRepo, firebaseUser -> logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), myRestaurantDetail.getValue(), firebaseUser));
+        myScreenDetailMediator.addSource(myUserFromRepo, firebaseUser -> logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), myRestaurantDetail.getValue(), firebaseUser, placeIdRequest.getValue()));
+
+        myScreenDetailMediator.addSource(placeIdRequest, s -> {
+
+            myRestaurantRepository.setPlaceId(s);
+            //logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), myRestaurantDetail.getValue(), myUserFromRepo.getValue(), s);
+        });
 
     }
 
     //logic method for mediatorLiveData
-    private void logicWork(@Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates, @Nullable ResultDetailRestaurant detail, @Nullable FirebaseUser myUserBase) {
+    private void logicWork(@Nullable List<RestaurantPojo> restaurantsList, @Nullable List<User> workmatesList, @Nullable ResultDetailRestaurant Restaurantdetail, @Nullable FirebaseUser myUserBase, String placeIdRequested) {
+
+
+        ViewStateDetail myScreen = new ViewStateDetail();
 
         //if we have null data we cancel work
-        if (restaurants == null || workmates == null || detail == null || myUserBase == null)
+        if (restaurantsList == null || workmatesList == null || Restaurantdetail == null || myUserBase == null || placeIdRequested == null) {
             return;
+        } else {
+            //search the restaurant attached to user
+            outMasterLoop:
+            for (int x = 0; x < restaurantsList.size(); x++) {
 
-        //search the restaurant attached to user
-        for (int x = 0; x < restaurants.size(); x++) {
+                //we' get the restaurant to work with it
+                if (restaurantsList.get(x).getPlaceId().equals(placeIdRequested)) {
 
-            //we' get the restaurant to work with it
-            if (restaurants.get(x).getPlaceId().equals(placeIdGen)) {
 
-                ViewStateDetail myScreen = new ViewStateDetail();
-
-                //get photo
-                try {
-                    myScreen.setUrlPhoto(restaurants.get(x).getPhotos().get(0).getPhotoReference());
-                } catch (Exception e) {
-                    //charger une photo de substitution
-                }
-
-                //get titre restaurant
-                myScreen.setTitle(restaurants.get(x).getName());
-
-                //get address
-                myScreen.setAddress(restaurants.get(x).getVicinity());
-
-                //get rating
-                try {
-                    //on google we have a rating from 1 to 5 but we want 1 to 3...
-                    //Double ratingDouble = map(restaurants.get(x).getRating(), 1.0, 5.0, 1.0, 3.0);
-                    double ratingDouble = (restaurants.get(x).getRating() - 1.0) * (3.0 - 1.0) / (5.0 - 1.0) + 1.0;
-                    //private Double map(double value, double in_min, double in_max, double out_min, double out_max) {
-                    //return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-
-                    int ratingInt = (int) Math.round(ratingDouble);
-
-                    if (ratingInt == 1) {
-                        myScreen.setRating(1);
-                    } else if (ratingInt == 2) {
-                        myScreen.setRating(2);
-                    } else if (ratingInt == 3) {
-                        myScreen.setRating(3);
+                    //get photo
+                    try {
+                        myScreen.setUrlPhoto(restaurantsList.get(x).getPhotos().get(0).getPhotoReference());
+                    } catch (Exception e) {
+                        //charger une photo de substitution
                     }
-                } catch (Exception e) {
-                    myScreen.setRating(0);
-                }
 
-                //get favorite
-                //if (workmates != null) {
+                    //get titre restaurant
+                    myScreen.setTitle(restaurantsList.get(x).getName());
 
-                if (workmates.size() > 0) {
+                    //get address
+                    myScreen.setAddress(restaurantsList.get(x).getVicinity());
 
-                    //Boolean fav =false;
+                    //get rating
+                    try {
+                        //on google we have a rating from 1 to 5 but we want 1 to 3...
+                        //Double ratingDouble = map(restaurants.get(x).getRating(), 1.0, 5.0, 1.0, 3.0);
+                        double ratingDouble = (restaurantsList.get(x).getRating() - 1.0) * (3.0 - 1.0) / (5.0 - 1.0) + 1.0;
+                        //private Double map(double value, double in_min, double in_max, double out_min, double out_max) {
+                        //return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 
-                    //we scan list of workmates
-                    for (int i = 0; i < workmates.size(); i++) {
+                        int ratingInt = (int) Math.round(ratingDouble);
 
-                        //restaurant is favorite, update button
-                        if (workmates.get(i).getUid().equals(myUserBase.getUid())) {
+                        if (ratingInt == 1) {
+                            myScreen.setRating(1);
+                        } else if (ratingInt == 2) {
+                            myScreen.setRating(2);
+                        } else if (ratingInt == 3) {
+                            myScreen.setRating(3);
+                        }
+                    } catch (Exception e) {
+                        myScreen.setRating(0);
+                    }
+
+                    //get favorite ansliked
+                    if (workmatesList.size() > 0) {
+
+
+                        //we scan list of workmates
+                        for (int i = 0; i < workmatesList.size(); i++) {
+
+                            //restaurant is favorite, update button
+                            // if (workmatesList.get(i).getUid().equals(myUserBase.getUid())) {
 
                             //check if favorite
                             //myScreen.setFavorite(workmates.get(i).getFavoriteRestaurant().indexOf(placeIdGen)>0);
 
-                            if (workmates.get(i).getFavoriteRestaurant().equals(placeIdGen)) {
-                                myScreen.setFavorite(true);
-                                //break;//loop
+
+                            if (workmatesList.get(i).getFavoriteRestaurant() != null && !workmatesList.get(i).getFavoriteRestaurant().isEmpty()) {
+
+                                if (workmatesList.get(i).getFavoriteRestaurant().equals(placeIdRequested)) {
+
+                                    myScreen.setFavorite(true);
+                                    break;
+                                }
+
+
                             } else {
                                 myScreen.setFavorite(false);
                             }
 
-                            //get list of liked restaurants
 
-                            //TODO: check if list is empty or null
-                            if (workmates.get(i).getRestaurant_liked().size() > 0) {
+                            // }
+                        }
 
-                                List<String> myTempRestaurant = new ArrayList<>(workmates.get(i).getRestaurant_liked());
-                                //set bool to true or false if placeId exist in list
-                                myScreen.setLiked(myTempRestaurant.indexOf(placeIdGen) > 0);
+                        //check liked
+
+                        outDoubleLoop:
+                        for (int i = 0; i < workmatesList.size(); i++) {
+
+                            //we have liked restaurant
+                            if (workmatesList.get(i).getRestaurant_liked() != null && !workmatesList.get(i).getRestaurant_liked().isEmpty()) {
+
+
+                                if (workmatesList.get(i).getUid().equals(myUserBase.getUid())){
+
+                                    List<String> myTempRestaurant = new ArrayList<>(workmatesList.get(i).getRestaurant_liked());
+//
+                                    for (int z = 0; z < myTempRestaurant.size(); z++) {
+
+                                        if (workmatesList.get(i).getRestaurant_liked().get(z).equals(placeIdRequested)) {
+                                            myScreen.setLiked(true);
+                                            break outDoubleLoop;
+                                        } else
+                                            myScreen.setLiked(false);
+                                    }
+
+                                }
+
+
+
+                            /*if (myScreen.getLiked() != null) {
+                                if (myScreen.getLiked()) {
+                                    break;
+                                }
+
+                            }
+
+                             */
 
                             } else {
                                 myScreen.setLiked(false);
                             }
 
-                            break;
+                        }
 
-                        } else {
-                            //no data from workmates set bool by default
-                            myScreen.setFavorite(false);
-                            myScreen.setLiked(false);
+                    } else {
+                        //no data from workmates set bool by default
+                        myScreen.setFavorite(false);
+                        myScreen.setLiked(false);
 
+                    }
+
+                    //get phone number
+                    myScreen.setCall(Restaurantdetail.getFormattedPhoneNumber());
+
+                    //get url web
+                    myScreen.setWebsite(Restaurantdetail.getUrl());
+
+                    //if we have workmates then ...
+                    List<User> myWorkMatesDetailList = new ArrayList<>();
+
+                    for (User myWorkMate : workmatesList) {
+
+                        if (myWorkMate.getFavoriteRestaurant().equals(placeIdRequested)) {
+                            myWorkMatesDetailList.add(myWorkMate);
                         }
 
                     }
+                    myScreen.setListWorkMates(myWorkMatesDetailList);
 
-                } else {
-                    //no data from workmates set bool by default
-                    myScreen.setFavorite(false);
-                    myScreen.setLiked(false);
+                    break outMasterLoop;
                 }
 
-//                    } else {
-//                        //no data from workmates set bool by default
-//                        myScreen.setFavorite(false);
-//                        myScreen.setLiked(false);
-//                    }
-
-                //get phone number
-                myScreen.setCall(detail.getFormattedPhoneNumber());
-
-                //get url web
-                myScreen.setWebsite(detail.getUrl());
-
-                //if we have workmates then ...
-                List<User> myWorkMatesDetailList = new ArrayList<>();
-
-                for (User myWorkMate : workmates) {
-                    //if detail have a workmate
-                    if (myWorkMate.getFavoriteRestaurant().equals(placeIdGen)) {
-                        myWorkMatesDetailList.add(myWorkMate);
-                    }
-
-                }
-
-                myScreen.setListWorkMates(myWorkMatesDetailList);
-
-
-
-                //set mediator
-                myScreenDetailMediator.setValue(myScreen);
-
-                //add break here?
 
             }
 
+            //set mediator
+            myScreenDetailMediator.setValue(myScreen);
+            //
         }
 
+
     }
-    //**********************************************************************************************
-    // End of logic work
-    //**********************************************************************************************
+//**********************************************************************************************
+// End of logic work
+//**********************************************************************************************
 
     //setup place id before open detail activity
     public void setPlaceId(String placeId) {
-        placeIdGen = myRestaurantRepository.setPlaceId(placeId);
+        //placeIdGen = myRestaurantRepository.setPlaceId(placeId);
+        // myRestaurantRepository.setPlaceId(placeId);
+        placeIdRequest.setValue(placeId);
     }
 
     //get placeId before open detail activity
     public String getPlaceId() {
-        return placeIdGen;
+        return placeIdRequest.getValue();
     }
 
     public FirebaseUser getCurrentUser() {
@@ -223,20 +262,46 @@ public class ViewModelDetail extends ViewModel {
     }
 
     //like a restaurant
-    public void adLikedRestaurant(String uid, String myPlaces) {
-        UserHelper.addLikedRestaurant(uid, myPlaces);
+
+    /**
+     * add liked restaurant to firestore
+     *
+     * @param uid
+     * @param myPlaces
+     */
+    public void addLikedRestaurant(String uid, String myPlaces) {
+
+        UserHelper.addRestaurantLiked(uid,myPlaces);
+        //UserHelper.addLikedRestaurant(uid, myPlaces);
     }
 
-    //delete a liked restaurant
+    /**
+     * delete liked restaurant
+     *
+     * @param uid
+     * @param placeId
+     */
     public void deleteLikedRestaurant(String uid, String placeId) {
         UserHelper.deleteLikedRestaurant(uid, placeId);
     }
 
     //set a favorite restaurant
-    public void setFavRestaurant(String uid, String placeId) {
-        UserHelper.updateFavRestaurant(uid, placeId);
+
+    /**
+     * add restaurant to favorite
+     *
+     * @param uid     user id
+     * @param placeId place id
+     */
+    public void addtFavRestaurant(String uid, String placeId) {
+        UserHelper.addFavRestaurant(uid, placeId);
     }
 
+    /**
+     * delete a favorite restaurant
+     *
+     * @param uid user id
+     */
     //delete a favorite restaurant
     public void deleteFavRestaurant(String uid) {
         UserHelper.deleteFavRestaurant(uid);

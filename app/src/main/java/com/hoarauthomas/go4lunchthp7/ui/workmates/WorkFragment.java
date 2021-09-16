@@ -74,6 +74,7 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.WorkMates
     }
 
     private void setupViewModel() {
+
         this.myViewModelWorkMates = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelWorkMates.class);
         this.myViewModelWorkMates.getMediatorLiveData().observe(getViewLifecycleOwner(), new Observer<ViewStateWorkMates>() {
             @Override
@@ -81,6 +82,7 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.WorkMates
                 showWorkMates(viewStateWorkMates.getMySpecialWorkMAtes());
             }
         });
+
     }
 
     private void setupRecyclerView(View view) {

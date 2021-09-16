@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         setupViewPager();
 
 
-        setupSettings();
+     //   setupSettings();
 
         //    loadWork();//alarm
         //   loadtest();
@@ -498,6 +498,8 @@ public class MainActivity extends AppCompatActivity {
 
 
             }
+
+
 
 
             //if (this.myViewModel.getUser().getPhotoUrl() == null) {

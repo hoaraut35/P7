@@ -6,7 +6,6 @@ import android.location.Location;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.hoarauthomas.go4lunchthp7.Prediction;
@@ -56,7 +55,7 @@ public class ViewModelMap extends ViewModel {
         //init list of restaurants
         LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
         //init list of workmates
-        LiveData<List<User>> myWorkMatesList = this.myFirestoreDatabaseRepository.getAllWorkMatesList();
+        LiveData<List<User>> myWorkMatesList = this.myFirestoreDatabaseRepository.getAllWorkMatesListFromRepo();
 
         //add listener for new position
         myViewStateMapMediator.addSource(myPosition, position -> {

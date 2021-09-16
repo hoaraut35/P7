@@ -30,7 +30,7 @@ public class ViewModelWorkMates extends ViewModel {
         this.myRestaurantRepository = myRestaurantRepository;
         this.myFirestoreDatabaseRepository = myFirestoreDatabaseRepository;
 
-        LiveData<List<User>> myWorkMatesList = this.myFirestoreDatabaseRepository.getAllWorkMatesList();
+        LiveData<List<User>> myWorkMatesList = this.myFirestoreDatabaseRepository.getAllWorkMatesListFromRepo();
         LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantList = this.myRestaurantRepository.getMyRestaurantsList();
 
         myViewStateWorkMatesMediator.addSource(myWorkMatesList, new Observer<List<User>>() {
@@ -59,6 +59,8 @@ public class ViewModelWorkMates extends ViewModel {
     }
 
     private void logicWork(List<User> myList, List<RestaurantPojo> myRestaurant) {
+
+
 
         if (myList != null && myRestaurant != null) {
 

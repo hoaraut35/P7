@@ -321,7 +321,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                     String restaurantTag = marker.getTag().toString();
                     intent.putExtra("TAG_ID", restaurantTag);
                     startActivity(intent);
-                    return false;
+                    return true;
                 }
             });
 

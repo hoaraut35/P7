@@ -18,6 +18,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 
@@ -40,7 +41,7 @@ public class FirestoreDatabaseRepository {
     public FirestoreDatabaseRepository() {
         this.myBase = FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
         getRestaurantFromFirestore();
-        setupListenerOnCollection();
+      //  setupListenerOnCollection();
     }
 
     /**
@@ -106,22 +107,6 @@ public class FirestoreDatabaseRepository {
 
     }
 
-
-
-
-
-
-
-
-    /**
-     * Public method
-     * @return
-     */
-    public MutableLiveData<List<User>> getAllWorkMatesFromRepo(){
-        return myWorkMatesListMedia;
-    }
-
-
     private void setupListenerOnCollection() {
 
         CollectionReference collectionReference = myBase;
@@ -130,12 +115,19 @@ public class FirestoreDatabaseRepository {
             @Override
             public void onEvent(@Nullable @org.jetbrains.annotations.Nullable QuerySnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
 
-
                 if (error != null)
                 {
                     Log.i("[FIRE]","Erreur " , error );
                     return;
                 }
+
+                if (value != null && !value.isEmpty()){
+
+                    getRestaurantFromFirestore();
+                }
+
+
+                /*
 
                 for (DocumentChange dc : value.getDocumentChanges()){
 
@@ -156,23 +148,19 @@ public class FirestoreDatabaseRepository {
                     }
                 }
 
+                 */
+
                 Log.i("[FIRE]","Event on databse ...");
             }
         });
 
     }
 
-
-
-
-    public MutableLiveData<List<User>> getAllWorkMatesList()
+    public MutableLiveData<List<User>> getAllWorkMatesListFromRepo()
     {
-        return getRestaurantFromFirestore();
+     //   return myWorkMatesListMedia;
+    return    getRestaurantFromFirestore();
     }
-
-
-    //----------------------------------------------------------------------------------------------
-    //CRUD
 
     public Task<DocumentSnapshot> getWorkMates(String uid) {
         if (uid != null) {
@@ -197,12 +185,11 @@ public class FirestoreDatabaseRepository {
 
      */
 
-    public void removeRestaurant() {
 
-    }
 
 
     public FirebaseUser getCurrentUser() {
+
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
@@ -298,7 +285,6 @@ public class FirestoreDatabaseRepository {
 
     }
 
-
     public Task<DocumentSnapshot> getUserData() {
         String uid = this.getCurrentUserUID();
         if (uid != null) {
@@ -313,41 +299,12 @@ public class FirestoreDatabaseRepository {
         return (user != null) ? user.getUid() : null;
     }
 
+    public void getDetailPlaceWithId(String placeIdRequested) {
 
-    public LiveData<List<User>> getAllWorkMatesByRestaurant(String id) {
-
-     /*   getUsersCollection().get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                for (DocumentSnapshot docs : queryDocumentSnapshots) {
-
-                    User user = new User();
-
-                    //  if (docs.get("urlPicture").toString() != null){
-                    //  user.setUrlPicture(docs.get("urlPicture").toString());
-                    //  }
-
-
-//                    user.setUsername(docs.get("fullName").toString());
-
-                    //    user.setFavoriteRestaurant((docs.get("favoriteRestaurant").toString()));
-
-                  //  allWorkMatesBy.add(user);
-
-
-
-                    Log.i("[WORK]", "" + allWorkMates.size());
-
-                }
-            }
-
-
-        });
-
-      */
-        //return (LiveData<List<User>>) allWorkMates;
-        return null;
-
+//        CollectionReference users = myBase.document().collection("users");
+//
+//        Query query =
+//        Task<QuerySnapshot> myQuery = this.myBase..getDoc.document(getCurrentUserUID()).get();
+//
     }
 }
