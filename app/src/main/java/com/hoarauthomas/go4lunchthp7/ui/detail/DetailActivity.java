@@ -28,14 +28,12 @@ public class DetailActivity extends AppCompatActivity {
     private ActivityDetailRestaurantBinding binding;
     private ViewModelDetail myViewModelDetail;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityDetailRestaurantBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-
         setupViewModel();
         setupIntent();
 
