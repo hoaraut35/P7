@@ -44,15 +44,21 @@ public class FirestoreDatabaseRepository {
 
     /**
      * get data from firebase
+     *
      * @return
      */
-    private void getRestaurantFromFirestore()
-    {
+    private Task<Void> getRestaurantFromFirestore() {
+
+
+
+
+
+
 
         myBase.get().addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull @NotNull Exception e) {
-                Log.i("[WORK]","Fail to access workmates");
+                Log.i("[WORK]", "Fail to access workmates");
                 myWorkMatesListFromRepo.setValue(null);
             }
         });
@@ -84,10 +90,10 @@ public class FirestoreDatabaseRepository {
                     }
 
                     //TODO: coorect this
-                    if(docs.get("restaurant_liked") != null){
+                    if (docs.get("restaurant_liked") != null) {
 
                         List<String> mylist = new ArrayList<>();
-                        mylist.addAll((List<String>)docs.get("restaurant_liked"));
+                        mylist.addAll((List<String>) docs.get("restaurant_liked"));
                         myUser.setRestaurant_liked(mylist);
                     }
 
@@ -101,7 +107,7 @@ public class FirestoreDatabaseRepository {
 
         });
 
-     //   return myWorkMatesListFromRepo;
+           return null;// myWorkMatesListFromRepo.getValue();
 
     }
 
@@ -113,24 +119,22 @@ public class FirestoreDatabaseRepository {
             @Override
             public void onEvent(@Nullable @org.jetbrains.annotations.Nullable QuerySnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
 
-                if (error != null)
-                {
-                    Log.i("[FIRE]","Erreur " , error );
+                if (error != null) {
+                    Log.i("[FIRE]", "Erreur ", error);
                     return;
                 }
 
-                    getRestaurantFromFirestore();
+                getRestaurantFromFirestore();
 
-                Log.i("[FIRE]","Event on databse ...");
+                Log.i("[FIRE]", "Event on databse ...");
             }
         });
 
     }
 
-    public MutableLiveData<List<User>> getAllWorkMatesListFromRepo()
-    {
+    public MutableLiveData<List<User>> getAllWorkMatesListFromRepo() {
         return myWorkMatesListFromRepo;
-    //return    getRestaurantFromFirestore();
+        //return    getRestaurantFromFirestore();
     }
 
     public Task<DocumentSnapshot> getWorkMates(String uid) {
@@ -157,13 +161,10 @@ public class FirestoreDatabaseRepository {
      */
 
 
-
-
     public FirebaseUser getCurrentUser() {
 
         return FirebaseAuth.getInstance().getCurrentUser();
     }
-
 
 
     public void createUser() {
@@ -185,21 +186,17 @@ public class FirestoreDatabaseRepository {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                    if (documentSnapshot.exists()){
-                        Log.i("[CREATE]","deja existant");
-                    }else
-                    {
-                        Log.i("[CREATE]","a créer");
+                    if (documentSnapshot.exists()) {
+                        Log.i("[CREATE]", "deja existant");
+                    } else {
+                        Log.i("[CREATE]", "a créer");
                         myBase.document(uid).set(userToCreate);
 
                     }
 
 
-
                 }
             });
-
-
 
 
             Task<DocumentSnapshot> userData = getUserData();
@@ -232,10 +229,8 @@ public class FirestoreDatabaseRepository {
                 */
 
 
-              //
-          //  });
-
-
+            //
+            //  });
 
 
         }
@@ -244,13 +239,11 @@ public class FirestoreDatabaseRepository {
     }
 
 
-    public Task<DocumentSnapshot> checkUser()
-    {
+    public Task<DocumentSnapshot> checkUser() {
         String uid = this.getCurrentUserUID();
-        if (uid!= null){
+        if (uid != null) {
             return this.myBase.document(uid).get();
-        }else
-        {
+        } else {
             return null;
         }
 
@@ -286,8 +279,7 @@ public class FirestoreDatabaseRepository {
         return myBase.document(uid).update("restaurant_liked", FieldValue.arrayRemove(placeId));
     }
 
-    public Task<DocumentSnapshot> getUserFromDB(String uid){
-
+    public Task<DocumentSnapshot> getUserFromDB(String uid) {
 
 
         return myBase.document(uid).get();
@@ -305,7 +297,7 @@ public class FirestoreDatabaseRepository {
 
     */
 
-    public CollectionReference getFiresotre(){
+    public CollectionReference getFirestore() {
         return this.myBase;
     }
 
