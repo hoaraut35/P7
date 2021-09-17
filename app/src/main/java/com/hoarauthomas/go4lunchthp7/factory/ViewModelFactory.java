@@ -75,18 +75,6 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         return myViewModelFactory;
     }
 
-    /**
-     * this is the constructor for ViewModelFactory object
-     *
-     * @param permissionChecker
-     * @param firebaseAuthentificationRepository
-     * @param restaurantsRepository
-     * @param positionRepository
-     * @param firestoreDatabaseRepository
-     * @param placeAutocompleteRepository
-     * @param alarmRepository
-     * @param sharedRepository
-     */
     private ViewModelFactory(
             PermissionChecker permissionChecker,
             FirebaseAuthentificationRepository firebaseAuthentificationRepository,

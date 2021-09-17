@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -45,7 +46,7 @@ public class FirestoreDatabaseRepository {
      * get data from firebase
      * @return
      */
-    private MutableLiveData<List<User>> getRestaurantFromFirestore()
+    private void getRestaurantFromFirestore()
     {
 
         myBase.get().addOnFailureListener(new OnFailureListener() {
@@ -100,7 +101,7 @@ public class FirestoreDatabaseRepository {
 
         });
 
-        return myWorkMatesListFromRepo;
+     //   return myWorkMatesListFromRepo;
 
     }
 
@@ -269,12 +270,43 @@ public class FirestoreDatabaseRepository {
         return (user != null) ? user.getUid() : null;
     }
 
-    public void getDetailPlaceWithId(String placeIdRequested) {
-
-//        CollectionReference users = myBase.document().collection("users");
-//
-//        Query query =
-//        Task<QuerySnapshot> myQuery = this.myBase..getDoc.document(getCurrentUserUID()).get();
-//
+    public Task<Void> addLikedRestaurant(String uid, String placeId) {
+        return myBase.document(uid).update("restaurant_liked", FieldValue.arrayUnion(placeId));
     }
+
+    public Task<Void> addFavRestaurant(String uid, String placeId) {
+        return myBase.document(uid).update("favoriteRestaurant", placeId);
+    }
+
+    public Task<Void> deleteFavRestaurant(String uid) {
+        return myBase.document(uid).update("favoriteRestaurant", "");
+    }
+
+    public Task<Void> deleteLikedRestaurant(String uid, String placeId) {
+        return myBase.document(uid).update("restaurant_liked", FieldValue.arrayRemove(placeId));
+    }
+
+    public Task<DocumentSnapshot> getUserFromDB(String uid){
+
+
+
+        return myBase.document(uid).get();
+    }
+
+    public Task<DocumentSnapshot> getUser(String uid) {
+        return myBase.document(uid).get();
+    }
+
+
+   /* public static Task<Void> createUser(String uid, String username, String avatar, String restaurant, List<String> restaurant_liked) {
+        User userToCreate = new User(uid, username, avatar, restaurant, restaurant_liked);
+        return UserHelper.getUsersCollection().document(uid).set(userToCreate);
+    }
+
+    */
+
+    public CollectionReference getFiresotre(){
+        return this.myBase;
+    }
+
 }

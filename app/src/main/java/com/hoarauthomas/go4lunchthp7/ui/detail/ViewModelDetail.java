@@ -1,12 +1,15 @@
 package com.hoarauthomas.go4lunchthp7.ui.detail;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseUser;
-import com.hoarauthomas.go4lunchthp7.api.UserHelper;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
@@ -61,7 +64,9 @@ public class ViewModelDetail extends ViewModel {
         myScreenDetailMediator.addSource(myRestaurantDetail, resultDetailRestaurant -> logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), resultDetailRestaurant, myUserFromRepo.getValue(), placeIdRequest.getValue()));
 
         //observe workmates list
-        myScreenDetailMediator.addSource(myWorkMatesList, workmates -> logicWork(myRestaurantsList.getValue(), workmates, myRestaurantDetail.getValue(), myUserFromRepo.getValue(), placeIdRequest.getValue()));
+        myScreenDetailMediator.addSource(myWorkMatesList, workmates -> {
+            logicWork(myRestaurantsList.getValue(), workmates, myRestaurantDetail.getValue(), myUserFromRepo.getValue(), placeIdRequest.getValue());
+        });
 
         //observe user
         myScreenDetailMediator.addSource(myUserFromRepo, firebaseUser -> logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), myRestaurantDetail.getValue(), firebaseUser, placeIdRequest.getValue()));
@@ -76,22 +81,27 @@ public class ViewModelDetail extends ViewModel {
 
     //logic method for mediatorLiveData
     private void logicWork(@Nullable List<RestaurantPojo> restaurantsList, @Nullable List<User> workmatesList, @Nullable ResultDetailRestaurant Restaurantdetail, @Nullable FirebaseUser myUserBase, String placeIdRequested) {
-
+        //create an viewstate detail for ui
         ViewStateDetail myScreen = new ViewStateDetail();
+
 
         //if we have null data we cancel work
         if (restaurantsList == null || workmatesList == null || Restaurantdetail == null || myUserBase == null || placeIdRequested == null) {
             return;
         } else {
-            //search the restaurant attached to user
-            outMasterLoop:
+
+
+            //recherche durestaurant à afficher sur l'écran
             for (int x = 0; x < restaurantsList.size(); x++) {
 
-                //we' get the restaurant to work with it
+                //recherche du restaurant en fonction de l'id recherché (clic sur map, liste restau ou liste workmates
                 if (restaurantsList.get(x).getPlaceId().equals(placeIdRequested)) {
 
 
-                    //get photo
+
+                    Log.i("[FIRESTORE]", "restaurant trouvé dans la liste : " + restaurantsList.get(x).getName());
+
+                    //extraction photo
                     try {
                         myScreen.setUrlPhoto(restaurantsList.get(x).getPhotos().get(0).getPhotoReference());
                     } catch (Exception e) {
@@ -125,87 +135,169 @@ public class ViewModelDetail extends ViewModel {
                         myScreen.setRating(0);
                     }
 
-                    //get favorite ansliked
-                    if (workmatesList.size() > 0) {
-
-
-                        //we scan list of workmates
-                        for (int i = 0; i < workmatesList.size(); i++) {
-
-                            //restaurant is favorite, update button
-                            // if (workmatesList.get(i).getUid().equals(myUserBase.getUid())) {
-
-                            //check if favorite
-                            //myScreen.setFavorite(workmates.get(i).getFavoriteRestaurant().indexOf(placeIdGen)>0);
-
-
-                            if (workmatesList.get(i).getFavoriteRestaurant() != null && !workmatesList.get(i).getFavoriteRestaurant().isEmpty()) {
-
-                                if (workmatesList.get(i).getFavoriteRestaurant().equals(placeIdRequested)) {
-
-                                    myScreen.setFavorite(true);
-                                    break;
-                                }
-
-
-                            } else {
-                                myScreen.setFavorite(false);
-                            }
-
-
-                            // }
-                        }
-
-                        //check liked
-
-                        outDoubleLoop:
-                        for (int i = 0; i < workmatesList.size(); i++) {
-
-                            //we have liked restaurant
-                            if (workmatesList.get(i).getRestaurant_liked() != null && !workmatesList.get(i).getRestaurant_liked().isEmpty()) {
-
-
-                                if (workmatesList.get(i).getUid().equals(myUserBase.getUid())){
-
-                                    List<String> myTempRestaurant = new ArrayList<>(workmatesList.get(i).getRestaurant_liked());
-//
-                                    for (int z = 0; z < myTempRestaurant.size(); z++) {
-
-                                        if (workmatesList.get(i).getRestaurant_liked().get(z).equals(placeIdRequested)) {
-                                            myScreen.setLiked(true);
-                                            break outDoubleLoop;
-                                        } else
-                                            myScreen.setLiked(false);
-                                    }
-
-                                }
-
-
-
-                            /*if (myScreen.getLiked() != null) {
-                                if (myScreen.getLiked()) {
-                                    break;
-                                }
-
-                            }
-
-                             */
-
-                            } else {
-                                myScreen.setLiked(false);
-                            }
-
-                        }
-
-                    } else {
-                        //no data from workmates set bool by default
-                        myScreen.setFavorite(false);
-                        myScreen.setLiked(false);
-
+                    //get photo
+                    try {
+                        myScreen.setUrlPhoto(restaurantsList.get(x).getPhotos().get(0).getPhotoReference());
+                    } catch (Exception e) {
+                        //charger une photo de substitution
                     }
 
+
+                    //extraction firestore
+                    myFirestoreDatabaseRepository.getFiresotre().document(myUserBase.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                            if (documentSnapshot.exists()) {
+
+                                Log.i("[FIRESTORE]", "username : " + documentSnapshot.getData().get("username").toString());
+                                Log.i("[FIRESTORE]", "uid : " + documentSnapshot.getData().get("uid").toString());
+                                Log.i("[FIRESTORE]", "restaurant favorite :" + documentSnapshot.getData().get("favoriteRestaurant").toString());
+                                Log.i("[FIRESTORE]", "restaurant liked " + documentSnapshot.getData().get("restaurant_liked").toString());
+
+                                if (documentSnapshot.getData().get("favoriteRestaurant").equals(placeIdRequested)) {
+                                    Log.i("[FIRESTORE]", "Le restaurant est déjà favoris");
+                                    myScreen.setFavorite(true);
+                                    // mettre le bouton fav en true;
+
+                                } else {
+                                    Log.i("[FIRESTORE]", "Le restaurant n'est pas encorefavoris !!");
+                                    myScreen.setFavorite(false);
+                                    //mettre le bouton fav en false
+                                }
+
+                                if (documentSnapshot.getData().containsValue(placeIdRequested)) {
+
+                                    Log.i("[FIRESTORE]", "Le restaurant est liké");
+                                    myScreen.setLiked(true);
+                                    //mettre bouton en jaune
+                                } else {
+                                    Log.i("[FIRESTORE]", "Le restaurant n'est pas encore liké !!");
+                                    myScreen.setLiked(false);
+                                    //mettre bouton en rouge
+                                }
+
+                                Log.i("[FIRESTORE]","Détail object viewstate : " + " fav : " +myScreen.getFavorite() + " lik:" + myScreen.getLiked());
+                                myScreenDetailMediator.setValue(myScreen);
+
+                            }
+                        }
+                    });
+
+
+
+
+
+                    //
+
+                }//end if
+
+            }//end for
+
+        }
+
+
+            //search the restaurant attached to user
+//            outMasterLoop:
+//            for (int x = 0; x < restaurantsList.size(); x++) {
+//
+//                //we' get the restaurant to work with it
+//                if (restaurantsList.get(x).getPlaceId().equals(placeIdRequested)) {
+
+
+
+
+
+
+//                    //get favorite ansliked
+//                    if (workmatesList.size() > 0) {
+//
+//
+//                        //we scan list of workmates
+//                        for (int i = 0; i < workmatesList.size(); i++) {
+//
+//                            //restaurant is favorite, update button
+//                            // if (workmatesList.get(i).getUid().equals(myUserBase.getUid())) {
+//
+//                            //check if favorite
+//                            //myScreen.setFavorite(workmates.get(i).getFavoriteRestaurant().indexOf(placeIdGen)>0);
+//
+//
+//                            //restaurant favoris enregistré
+//                            if (workmatesList.get(i).getFavoriteRestaurant() != null && !workmatesList.get(i).getFavoriteRestaurant().isEmpty()) {
+//
+//
+//                                if (workmatesList.get(i).getFavoriteRestaurant().equals(placeIdRequested)) {
+//
+//                                    if (workmatesList.get(i).getUid().equals(myUserBase.getUid())) {
+//
+//                                 //       myScreen.setFavorite(true);
+//                                        break;
+//                                    } else {
+//                                        //poas de trestaurant
+//                                   //     myScreen.setFavorite(false);
+//                                        break;
+//
+//                                    }
+//
+//
+//                                }
+//
+//                            }
+//
+//
+//                        }
+//
+//                        //check liked
+//
+//                        outDoubleLoop:
+//                        for (int i = 0; i < workmatesList.size(); i++) {
+//
+//                            //we have liked restaurant
+//                            if (workmatesList.get(i).getRestaurant_liked() != null && !workmatesList.get(i).getRestaurant_liked().isEmpty()) {
+//
+//
+//                                if (workmatesList.get(i).getUid().equals(myUserBase.getUid())) {
+//
+//                                    List<String> myTempRestaurant = new ArrayList<>(workmatesList.get(i).getRestaurant_liked());
+////
+//                                    for (int z = 0; z < myTempRestaurant.size(); z++) {
+//
+//                                        if (workmatesList.get(i).getRestaurant_liked().get(z).equals(placeIdRequested)) {
+//                                            myScreen.setLiked(true);
+//                                            break outDoubleLoop;
+//                                        } else
+//                        //                    myScreen.setLiked(false);
+//                                    }
+//
+//                                }
+//
+//
+//
+//                            /*if (myScreen.getLiked() != null) {
+//                                if (myScreen.getLiked()) {
+//                                    break;
+//                                }
+//
+//                            }
+//
+//                             */
+//
+//                            } else {
+//                                myScreen.setLiked(false);
+//                            }
+//
+//                        }
+//
+//                    } else {
+//                        //no data from workmates set bool by default
+//                        myScreen.setFavorite(false);
+//                        myScreen.setLiked(false);
+//
+//                    }
+
                     //get phone number
-                    myScreen.setCall(Restaurantdetail.getFormattedPhoneNumber());
+            /*        myScreen.setCall(Restaurantdetail.getFormattedPhoneNumber());
 
                     //get url web
                     myScreen.setWebsite(Restaurantdetail.getUrl());
@@ -234,6 +326,8 @@ public class ViewModelDetail extends ViewModel {
         }
 
 
+             */
+
     }
 //**********************************************************************************************
 // End of logic work
@@ -255,55 +349,31 @@ public class ViewModelDetail extends ViewModel {
         return myFirestoreDatabaseRepository.getCurrentUser();
     }
 
-    //publish data to UI
+    /**
+     * ViewState object for UI
+     *
+     * @return
+     */
     public LiveData<ViewStateDetail> getMediatorScreen() {
         return myScreenDetailMediator;
     }
 
-    //like a restaurant
-
-    /**
-     * add liked restaurant to firestore
-     *
-     * @param uid
-     * @param myPlaces
-     */
     public void addLikedRestaurant(String uid, String myPlaces) {
-
-        UserHelper.addRestaurantLiked(uid,myPlaces);
-        //UserHelper.addLikedRestaurant(uid, myPlaces);
+        myFirestoreDatabaseRepository.addLikedRestaurant(uid, myPlaces);
     }
 
-    /**
-     * delete liked restaurant
-     *
-     * @param uid
-     * @param placeId
-     */
     public void deleteLikedRestaurant(String uid, String placeId) {
-        UserHelper.deleteLikedRestaurant(uid, placeId);
+        myFirestoreDatabaseRepository.deleteLikedRestaurant(uid, placeId);
     }
 
-    //set a favorite restaurant
-
-    /**
-     * add restaurant to favorite
-     *
-     * @param uid     user id
-     * @param placeId place id
-     */
     public void addtFavRestaurant(String uid, String placeId) {
-        UserHelper.addFavRestaurant(uid, placeId);
+        myFirestoreDatabaseRepository.addFavRestaurant(uid, placeId);
+        setPlaceId(placeId);
     }
 
-    /**
-     * delete a favorite restaurant
-     *
-     * @param uid user id
-     */
-    //delete a favorite restaurant
-    public void deleteFavRestaurant(String uid) {
-        UserHelper.deleteFavRestaurant(uid);
+    public void deleteFavRestaurant(String uid, String placeId) {
+        myFirestoreDatabaseRepository.deleteFavRestaurant(uid);
+        setPlaceId(placeId);
     }
 
 }

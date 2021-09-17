@@ -420,7 +420,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void request_login() {
 
-        //setup layout
         AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
                 .Builder(R.layout.custom_layout_login)
                 .setTwitterButtonId(R.id.twitter_button)

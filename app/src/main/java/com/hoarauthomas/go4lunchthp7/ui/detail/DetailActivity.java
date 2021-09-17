@@ -38,6 +38,7 @@ public class DetailActivity extends AppCompatActivity {
 
         setupViewModel();
         setupIntent();
+
     }
 
     //update placeId to ViewModel from intent
@@ -54,6 +55,9 @@ public class DetailActivity extends AppCompatActivity {
         myViewModelDetail = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelDetail.class);
 
         myViewModelDetail.getMediatorScreen().observe(this, screenDetailModel -> {
+
+
+            binding.textBug.setText(" user : " + myViewModelDetail.getCurrentUser().getUid().toString() + " fav:" + screenDetailModel.getFavorite() + " lik: " + screenDetailModel.getLiked() + "place : "+ myViewModelDetail.getPlaceId());
 
             //get photo
             try {
@@ -149,13 +153,14 @@ public class DetailActivity extends AppCompatActivity {
 
             if (state){
                 //disable
-                showSnackBar(getString(R.string.delete_fav_msg) + myViewModelDetail.getCurrentUser().getUid());
-                myViewModelDetail.deleteFavRestaurant(myViewModelDetail.getCurrentUser().getUid());
+           //     showSnackBar(getString(R.string.delete_fav_msg) + myViewModelDetail.getCurrentUser().getUid());
+                myViewModelDetail.deleteFavRestaurant(myViewModelDetail.getCurrentUser().getUid(),myViewModelDetail.getPlaceId());
             }else
             {
                 //enable
-                showSnackBar(getString(R.string.add_fav_msg)+ myViewModelDetail.getCurrentUser().getUid());
+              //  showSnackBar(getString(R.string.add_fav_msg)+ myViewModelDetail.getCurrentUser().getUid());
                 myViewModelDetail.addtFavRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
+
             }
 
         });
@@ -176,12 +181,14 @@ public class DetailActivity extends AppCompatActivity {
 
             if (state)
             {
-                showSnackBar(getString(R.string.like_delete_msg) + myViewModelDetail.getCurrentUser().getUid() + " " + myViewModelDetail.getPlaceId());
+                //showSnackBar(getString(R.string.like_delete_msg) + myViewModelDetail.getCurrentUser().getUid() + " " + myViewModelDetail.getPlaceId());
                 myViewModelDetail.deleteLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
+
+
 //
             }else
             {
-                showSnackBar(getString(R.string.like_add_msg)  + myViewModelDetail.getCurrentUser().getUid() + " " + myViewModelDetail.getPlaceId());
+               // showSnackBar(getString(R.string.like_add_msg)  + myViewModelDetail.getCurrentUser().getUid() + " " + myViewModelDetail.getPlaceId());
                 myViewModelDetail.addLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
             }
 

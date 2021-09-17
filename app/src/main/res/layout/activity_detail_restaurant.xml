@@ -169,6 +169,15 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+        <TextView
+            android:id="@+id/text_bug"
+            android:layout_width="match_parent"
+            android:textAlignment="center"
+            android:text="bug"
+            android:layout_height="40dp">
+
+        </TextView>
+
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

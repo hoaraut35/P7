@@ -41,7 +41,13 @@ public class ViewModelMain extends ViewModel {
     private MutableLiveData<FirebaseUser> myUserLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> myUserStateNew;
     private MutableLiveData<List<User>> myWorkMatesListLiveData = new MutableLiveData<>();
+
+
     private MutableLiveData<String> myUserRestaurantId = new MutableLiveData<>();
+
+
+
+
     private MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myPlaceAutocompleteList = new MutableLiveData<>();
 
 
@@ -125,16 +131,6 @@ public class ViewModelMain extends ViewModel {
 
     // Logic work
     private void logicWork(@Nullable FirebaseUser myUser, @Nullable List<User> workmates, Boolean bool) {
-
-        Log.i("MEDIA", "Logic work ...");
-
-        //  if (myUser == null) return;
-        //   if (workmates == null) return;
-
-        //TODO: bug rafraichissement user
-
-
-
 
 
         if (bool) {
