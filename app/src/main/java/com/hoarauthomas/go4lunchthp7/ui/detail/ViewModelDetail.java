@@ -140,10 +140,20 @@ public class ViewModelDetail extends ViewModel {
                 }
 
                 //get phone number
-                myScreen.setCall(Restaurantdetail.getFormattedPhoneNumber());
+                try {
+                    myScreen.setCall(Restaurantdetail.getFormattedPhoneNumber());
+                } catch (Exception e) {
+                    myScreen.setCall("inconnu");
+                }
+
 
                 //get url web
-                myScreen.setWebsite(Restaurantdetail.getUrl());
+                try {
+                    myScreen.setWebsite(Restaurantdetail.getUrl());
+                } catch (Exception e) {
+                    myScreen.setWebsite("");
+                }
+
 
                 //if we have workmates then ...
                 List<User> myWorkMatesDetailList = new ArrayList<>();
@@ -213,28 +223,14 @@ public class ViewModelDetail extends ViewModel {
                         }
                     }
                 });
-
-
-                //
-
-            }//end if
-
-        }//end for
-
-
+            }
+        }
     }
-//**********************************************************************************************
-// End of logic work
-//**********************************************************************************************
 
-    //setup place id before open detail activity
     public void setPlaceId(String placeId) {
-        //placeIdGen = myRestaurantRepository.setPlaceId(placeId);
-        // myRestaurantRepository.setPlaceId(placeId);
         placeIdRequest.setValue(placeId);
     }
 
-    //get placeId before open detail activity
     public String getPlaceId() {
         return placeIdRequest.getValue();
     }
@@ -243,11 +239,6 @@ public class ViewModelDetail extends ViewModel {
         return myFirestoreDatabaseRepository.getCurrentUser();
     }
 
-    /**
-     * ViewState object for UI
-     *
-     * @return
-     */
     public LiveData<ViewStateDetail> getMediatorScreen() {
         return myScreenDetailMediator;
     }
@@ -262,12 +253,10 @@ public class ViewModelDetail extends ViewModel {
 
     public void addtFavRestaurant(String uid, String placeId) {
         myFirestoreDatabaseRepository.addFavRestaurant(uid, placeId);
-        setPlaceId(placeId);
     }
 
     public void deleteFavRestaurant(String uid, String placeId) {
         myFirestoreDatabaseRepository.deleteFavRestaurant(uid);
-        setPlaceId(placeId);
     }
 
 }
