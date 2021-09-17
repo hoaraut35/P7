@@ -475,27 +475,35 @@ public class MainActivity extends AppCompatActivity {
             for (UserInfo profile : myUserResult.getProviderData()) {
 
 
-                String photoProfile = Objects.requireNonNull(profile.getPhotoUrl()).toString();
+         /*       String photoProfile = Objects.requireNonNull(profile.getPhotoUrl()).toString();
                 Log.i("[PROFILE]", "Profile photo url : " + profile.getPhotoUrl());
 
 
+          */
+
                 email.setText(profile.getEmail());
 
-                if (photoProfile == null) {
+              /* if (profile.getPhotoUrl() != null){
 
-                    String nom = this.myViewModel.getUser().getDisplayName();
-                    String[] parts = nom.split(" ", 2);
-                    String z = "";
 
-                    for (int i = 0; i < parts.length; i++) {
-                        z = parts[i].charAt(0) + z;
+                        String nom = this.myViewModel.getUser().getDisplayName();
+                        String[] parts = nom.split(" ", 2);
+                        String z = "";
+
+                        for (int i = 0; i < parts.length; i++) {
+                            z = parts[i].charAt(0) + z;
+                        }
+
+                        avatar2 = "https://eu.ui-avatars.com/api/?name=" + z;
+                    } else {
+                        avatar2 = photoProfile;
                     }
 
-                    avatar2 = "https://eu.ui-avatars.com/api/?name=" + z;
-                } else {
-                    avatar2 = photoProfile;
+
                 }
 
+
+               */
 
             }
 
