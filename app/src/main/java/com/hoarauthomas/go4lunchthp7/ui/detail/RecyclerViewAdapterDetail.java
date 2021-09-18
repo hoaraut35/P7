@@ -22,7 +22,7 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
 
     //variables ...
 
-    private List<User> mResults;
+    private List<User> myWorkMatesResult;
     private LatLng myPosition;
 
 
@@ -37,7 +37,7 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
     //the constructor
     //public RecyclerViewAdapter(int mode, List<Result> myList, Listener callback) {
     public RecyclerViewAdapterDetail(List<User> myList, LatLng myLatLng) {
-        this.mResults = myList;
+        this.myWorkMatesResult = myList;
 
         this.myPosition = myLatLng;
 
@@ -46,7 +46,7 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
     }
 
     public RecyclerViewAdapterDetail(List<User> myList) {
-        this.mResults = myList;
+        this.myWorkMatesResult = myList;
     }
 
     //for holder
@@ -68,11 +68,11 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
 
         //SpecialWorkMates result = mResults.get(position);
 
-        User userResult = mResults.get(position);
+        User userResult = myWorkMatesResult.get(position);
 
 
         //show the name of restaurant
-        holder.nameOfWorkMate.setText(mResults.get(position).getUsername() + " " );
+        holder.nameOfWorkMate.setText(myWorkMatesResult.get(position).getUsername() + " " );
                 //.getNameOfWorkMates());
 
         //show avatar
@@ -127,7 +127,7 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public int getItemCount() {
-        return mResults.size();
+        return myWorkMatesResult.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

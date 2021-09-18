@@ -152,12 +152,20 @@ public class DetailActivity extends AppCompatActivity {
             if (state){
                 //disable
            //     showSnackBar(getString(R.string.delete_fav_msg) + myViewModelDetail.getCurrentUser().getUid());
-                myViewModelDetail.deleteFavRestaurant(myViewModelDetail.getCurrentUser().getUid(),myViewModelDetail.getPlaceId());
+                try {
+                    myViewModelDetail.deleteFavRestaurant(myViewModelDetail.getCurrentUser().getUid(),myViewModelDetail.getPlaceId());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }else
             {
                 //enable
               //  showSnackBar(getString(R.string.add_fav_msg)+ myViewModelDetail.getCurrentUser().getUid());
-                myViewModelDetail.addtFavRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
+                try {
+                    myViewModelDetail.addtFavRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
             }
 
@@ -180,14 +188,22 @@ public class DetailActivity extends AppCompatActivity {
             if (state)
             {
                 //showSnackBar(getString(R.string.like_delete_msg) + myViewModelDetail.getCurrentUser().getUid() + " " + myViewModelDetail.getPlaceId());
-                myViewModelDetail.deleteLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
+                try {
+                    myViewModelDetail.deleteLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
 
 //
             }else
             {
                // showSnackBar(getString(R.string.like_add_msg)  + myViewModelDetail.getCurrentUser().getUid() + " " + myViewModelDetail.getPlaceId());
-                myViewModelDetail.addLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
+                try {
+                    myViewModelDetail.addLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
         });

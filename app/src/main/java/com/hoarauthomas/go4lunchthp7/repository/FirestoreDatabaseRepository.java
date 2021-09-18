@@ -30,6 +30,7 @@ public class FirestoreDatabaseRepository {
     //added
     private final CollectionReference myBase;
     private static final String COLLECTION_NAME = "users";
+    int millis = 1000;
 
     private MutableLiveData<List<User>> myWorkMatesListFromRepo = new MutableLiveData<>();
 
@@ -48,11 +49,6 @@ public class FirestoreDatabaseRepository {
      * @return
      */
     private Task<Void> getRestaurantFromFirestore() {
-
-
-
-
-
 
 
         myBase.get().addOnFailureListener(new OnFailureListener() {
@@ -107,7 +103,7 @@ public class FirestoreDatabaseRepository {
 
         });
 
-           return null;// myWorkMatesListFromRepo.getValue();
+        return null;// myWorkMatesListFromRepo.getValue();
 
     }
 
@@ -263,20 +259,28 @@ public class FirestoreDatabaseRepository {
         return (user != null) ? user.getUid() : null;
     }
 
-    public Task<Void> addLikedRestaurant(String uid, String placeId) {
+    public Task<Void> addLikedRestaurant(String uid, String placeId) throws InterruptedException {
+        myFirestorePause();
         return myBase.document(uid).update("restaurant_liked", FieldValue.arrayUnion(placeId));
     }
 
-    public Task<Void> addFavRestaurant(String uid, String placeId) {
+    public Task<Void> addFavRestaurant(String uid, String placeId) throws InterruptedException {
+        myFirestorePause();
         return myBase.document(uid).update("favoriteRestaurant", placeId);
     }
 
-    public Task<Void> deleteFavRestaurant(String uid) {
+    public Task<Void> deleteFavRestaurant(String uid) throws InterruptedException {
+        myFirestorePause();
         return myBase.document(uid).update("favoriteRestaurant", "");
     }
 
-    public Task<Void> deleteLikedRestaurant(String uid, String placeId) {
+    public Task<Void> deleteLikedRestaurant(String uid, String placeId) throws InterruptedException {
+        myFirestorePause();
         return myBase.document(uid).update("restaurant_liked", FieldValue.arrayRemove(placeId));
+    }
+
+    private void myFirestorePause() throws InterruptedException {
+        Thread.sleep(millis);
     }
 
     public Task<DocumentSnapshot> getUserFromDB(String uid) {

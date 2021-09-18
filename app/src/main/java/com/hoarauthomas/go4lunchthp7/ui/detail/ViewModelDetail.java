@@ -39,35 +39,28 @@ public class ViewModelDetail extends ViewModel {
     //constructor
     public ViewModelDetail(FirebaseAuthentificationRepository myAuthRepository, RestaurantsRepository myRestaurantRepository, FirestoreDatabaseRepository myFirestoreDatabaseRepository) {
 
-        //get actual user authentification
         LiveData<FirebaseUser> myUserFromRepo = myAuthRepository.getUserLiveDataNew();
 
         this.myRestaurantRepository = myRestaurantRepository;
-        //get restaurant list
+
         LiveData<List<RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
-        //get restaurant detail
         LiveData<ResultDetailRestaurant> myRestaurantDetail = this.myRestaurantRepository.getMyRestaurantDetail();
 
         this.myFirestoreDatabaseRepository = myFirestoreDatabaseRepository;
-        //get workmates list
         LiveData<List<User>> myWorkMatesList = this.myFirestoreDatabaseRepository.getAllWorkMatesListFromRepo();
 
-        //observe for list of restaurant
         myScreenDetailMediator.addSource(myRestaurantsList, (List<RestaurantPojo> restaurantPojo) -> {
             if (myRestaurantsList == null) return;
             logicWork(restaurantPojo, myWorkMatesList.getValue(), myRestaurantDetail.getValue(), myUserFromRepo.getValue(), placeIdRequest.getValue());
         });
 
-        //observe detail of restaurant
         myScreenDetailMediator.addSource(myRestaurantDetail, (ResultDetailRestaurant resultDetailRestaurant) ->
-
         {
             if (myRestaurantDetail == null) return;
             logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), resultDetailRestaurant, myUserFromRepo.getValue(), placeIdRequest.getValue());
         })
         ;
 
-        //observe workmates list
         myScreenDetailMediator.addSource(myWorkMatesList, workmates -> {
             if (myWorkMatesList == null) return;
             logicWork(myRestaurantsList.getValue(), workmates, myRestaurantDetail.getValue(), myUserFromRepo.getValue(), placeIdRequest.getValue());
@@ -155,16 +148,17 @@ public class ViewModelDetail extends ViewModel {
                 }
 
 
-                //if we have workmates then ...
-                List<User> myWorkMatesDetailList = new ArrayList<>();
 
-                for (User myWorkMate : workmatesList) {
+
+              /*  for (User myWorkMate : workmatesList) {
 
                     if (myWorkMate.getFavoriteRestaurant().equals(placeIdRequested)) {
                         myWorkMatesDetailList.add(myWorkMate);
                     }
 
                 }
+
+               */
 
                 myFirestoreDatabaseRepository.getFirestore().document().get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
@@ -180,6 +174,33 @@ public class ViewModelDetail extends ViewModel {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
 
                         if (documentSnapshot.exists()) {
+
+                            //List<String> group = (List<String>) documentSnapshot.get("restaurant_liked");
+
+                            //if we have workmates then ...
+                            List<User> myWorkMatesDetailList = new ArrayList<>();
+                            //List<String> myWorkMatesDetailList = new ArrayList<>();
+
+
+                            for (int z = 0; z < workmatesList.size(); z++) {
+
+                                for (int y = 0; y < restaurantsList.size(); y++) {
+
+
+                                    if (workmatesList.get(z).getFavoriteRestaurant().equals(restaurantsList.get(y).getPlaceId())) {
+                                        myWorkMatesDetailList.add(workmatesList.get(z));
+                                        // }
+                                        //   if (workmatesList.get(z).getFavoriteRestaurant().equals(placeIdRequested)) {
+
+                                        //            User test = new User();
+                                        //                              test.setUsername("place id : " + placeIdRequested + " wokr place : " + workmatesList.get(z).getFavoriteRestaurant());
+                                        //                                myWorkMatesDetailList.add(test);
+                                        //myWorkMatesDetailList.add("place id : " + placeIdRequested + " wokr place : " + workmatesList.get(z).getFavoriteRestaurant());
+
+                                    }
+                                }
+                            }
+
 
                             Log.i("[FIRESTORE]", "username : " + documentSnapshot.getData().get("username").toString());
                             Log.i("[FIRESTORE]", "uid : " + documentSnapshot.getData().get("uid").toString());
@@ -243,19 +264,19 @@ public class ViewModelDetail extends ViewModel {
         return myScreenDetailMediator;
     }
 
-    public void addLikedRestaurant(String uid, String myPlaces) {
+    public void addLikedRestaurant(String uid, String myPlaces) throws InterruptedException {
         myFirestoreDatabaseRepository.addLikedRestaurant(uid, myPlaces);
     }
 
-    public void deleteLikedRestaurant(String uid, String placeId) {
+    public void deleteLikedRestaurant(String uid, String placeId) throws InterruptedException {
         myFirestoreDatabaseRepository.deleteLikedRestaurant(uid, placeId);
     }
 
-    public void addtFavRestaurant(String uid, String placeId) {
+    public void addtFavRestaurant(String uid, String placeId) throws InterruptedException {
         myFirestoreDatabaseRepository.addFavRestaurant(uid, placeId);
     }
 
-    public void deleteFavRestaurant(String uid, String placeId) {
+    public void deleteFavRestaurant(String uid, String placeId) throws InterruptedException {
         myFirestoreDatabaseRepository.deleteFavRestaurant(uid);
     }
 
