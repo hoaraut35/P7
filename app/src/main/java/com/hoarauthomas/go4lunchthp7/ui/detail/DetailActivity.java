@@ -17,7 +17,6 @@ import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
-import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreUser;
 
 import java.util.List;
@@ -56,16 +55,12 @@ public class DetailActivity extends AppCompatActivity {
     private void setupViewModel() {
 
 
-
-
-
-
         myViewModelDetail = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelDetail.class);
 
         myViewModelDetail.getMediatorScreen().observe(this, screenDetailModel -> {
 
 
-            binding.textBug.setText(" user : " + myViewModelDetail.getCurrentUser().getUid().toString() + " fav:" + screenDetailModel.getFavorite() + " lik: " + screenDetailModel.getLiked() + "place : "+ myViewModelDetail.getPlaceId());
+            binding.textBug.setText(" user : " + myViewModelDetail.getCurrentUser().getUid().toString() + " fav:" + screenDetailModel.getFavorite() + " lik: " + screenDetailModel.getLiked() + "place : " + myViewModelDetail.getPlaceId());
 
             //get photo
             try {
@@ -112,15 +107,11 @@ public class DetailActivity extends AppCompatActivity {
             setupDataRC(screenDetailModel.getListWorkMates());
 
 
-
-
         });
     }
 
     private void setupDataRC(List<FirestoreUser> listWorkMates) {
-
-
-
+   //     myRecyclerViewAdapter.notifyDataSetChanged();
 
 
     }
@@ -130,18 +121,18 @@ public class DetailActivity extends AppCompatActivity {
 //        private void setupRecyclerView() {
 
         //if (myWorkmatesList == null) {
-          //  Log.i("[MONDETAIL]", "liste user nulle ou vide");
+        //  Log.i("[MONDETAIL]", "liste user nulle ou vide");
         //} else if (!myWorkmatesList.isEmpty()) {
 
-            RecyclerView recyclerView = binding.recyclerView;
-            recyclerView.setHasFixedSize(false);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            recyclerView.setAdapter(new RecyclerViewAdapterDetail(myWorkmatesList));
-            //recyclerView.setAdapter(new RecyclerViewAdapterDetail());
+        RecyclerView recyclerView = binding.recyclerView;
+        recyclerView.setHasFixedSize(false);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new RecyclerViewAdapterDetail(myWorkmatesList));
+        //recyclerView.setAdapter(new RecyclerViewAdapterDetail());
 
-       // } else {
+        // } else {
         //    Log.i("[MONDETAIL]", "liste user vide");
-       // }
+        // }
 
     }
 
@@ -174,18 +165,17 @@ public class DetailActivity extends AppCompatActivity {
         //for action
         binding.choiceBtn.setOnClickListener(v -> {
 
-            if (state){
+            if (state) {
                 //disable
-           //     showSnackBar(getString(R.string.delete_fav_msg) + myViewModelDetail.getCurrentUser().getUid());
+                //     showSnackBar(getString(R.string.delete_fav_msg) + myViewModelDetail.getCurrentUser().getUid());
                 try {
-                    myViewModelDetail.deleteFavRestaurant(myViewModelDetail.getCurrentUser().getUid(),myViewModelDetail.getPlaceId());
+                    myViewModelDetail.deleteFavRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            }else
-            {
+            } else {
                 //enable
-              //  showSnackBar(getString(R.string.add_fav_msg)+ myViewModelDetail.getCurrentUser().getUid());
+                //  showSnackBar(getString(R.string.add_fav_msg)+ myViewModelDetail.getCurrentUser().getUid());
                 try {
                     myViewModelDetail.addtFavRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
                 } catch (InterruptedException e) {
@@ -210,8 +200,7 @@ public class DetailActivity extends AppCompatActivity {
         //for action
         binding.likeBtn.setOnClickListener(v -> {
 
-            if (state)
-            {
+            if (state) {
                 //showSnackBar(getString(R.string.like_delete_msg) + myViewModelDetail.getCurrentUser().getUid() + " " + myViewModelDetail.getPlaceId());
                 try {
                     myViewModelDetail.deleteLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
@@ -221,9 +210,8 @@ public class DetailActivity extends AppCompatActivity {
 
 
 //
-            }else
-            {
-               // showSnackBar(getString(R.string.like_add_msg)  + myViewModelDetail.getCurrentUser().getUid() + " " + myViewModelDetail.getPlaceId());
+            } else {
+                // showSnackBar(getString(R.string.like_add_msg)  + myViewModelDetail.getCurrentUser().getUid() + " " + myViewModelDetail.getPlaceId());
                 try {
                     myViewModelDetail.addLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
                 } catch (InterruptedException e) {

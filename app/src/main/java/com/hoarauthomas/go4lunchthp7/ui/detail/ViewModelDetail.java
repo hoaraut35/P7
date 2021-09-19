@@ -103,6 +103,11 @@ public class ViewModelDetail extends ViewModel {
     //logic method for mediatorLiveData
     private void logicWork(@Nullable List<RestaurantPojo> restaurantsList, @Nullable List<FirestoreUser> workmatesList, @Nullable ResultDetailRestaurant Restaurantdetail, @Nullable FirebaseUser myUserBase, String placeIdRequested) {
 
+
+
+
+
+
         //create an ViewState detail object for ui
         ViewStateDetail myScreen = new ViewStateDetail();
 
