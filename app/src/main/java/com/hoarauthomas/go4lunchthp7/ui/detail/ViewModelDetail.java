@@ -11,8 +11,6 @@ import androidx.lifecycle.ViewModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthentificationRepository;
@@ -47,28 +45,30 @@ public class ViewModelDetail extends ViewModel {
         this.myRestaurantRepository = myRestaurantRepository;
 
         LiveData<List<RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
+
+
+
         LiveData<ResultDetailRestaurant> myRestaurantDetail = this.myRestaurantRepository.getMyRestaurantDetail();
-
-
 
 
         this.myFirestoreDatabaseRepository = myFirestoreDatabaseRepository;
         //old
-   //     LiveData<List<User>> myWorkMatesList = this.myFirestoreDatabaseRepository.getAllWorkMatesListFromRepo();
+        //     LiveData<List<User>> myWorkMatesList = this.myFirestoreDatabaseRepository.getAllWorkMatesListFromRepo();
         //new
         LiveData<List<FirestoreUser>> myWorkMatesListFromRepo = this.myFirestoreDatabaseRepository.getFirestoreWorkmates();
-
 
 
         myScreenDetailMediator.addSource(myWorkMatesListFromRepo, new Observer<List<FirestoreUser>>() {
             @Override
             public void onChanged(List<FirestoreUser> firestoreUsers) {
                 if (firestoreUsers == null) return;
-                logicWork(myRestaurantsList.getValue(), firestoreUsers, myRestaurantDetail.getValue(),myUserFromRepo.getValue(),placeIdRequest.getValue());
+                logicWork(myRestaurantsList.getValue(), firestoreUsers, myRestaurantDetail.getValue(), myUserFromRepo.getValue(), placeIdRequest.getValue());
 
             }
         });
 
+
+        //ici j'ecoute la liste des restaurants dans firestore
         myScreenDetailMediator.addSource(myRestaurantsList, (List<RestaurantPojo> restaurantPojo) -> {
             if (myRestaurantsList == null) return;
             logicWork(restaurantPojo, myWorkMatesListFromRepo.getValue(), myRestaurantDetail.getValue(), myUserFromRepo.getValue(), placeIdRequest.getValue());
@@ -102,9 +102,8 @@ public class ViewModelDetail extends ViewModel {
 
     //logic method for mediatorLiveData
     private void logicWork(@Nullable List<RestaurantPojo> restaurantsList, @Nullable List<FirestoreUser> workmatesList, @Nullable ResultDetailRestaurant Restaurantdetail, @Nullable FirebaseUser myUserBase, String placeIdRequested) {
-        //create an viewstate detail for ui
 
-
+        //create an ViewState detail object for ui
         ViewStateDetail myScreen = new ViewStateDetail();
 
         //recherche durestaurant à afficher sur l'écran
@@ -218,15 +217,17 @@ public class ViewModelDetail extends ViewModel {
 
                          */
 
-
-
+                            myWorkMatesDetailList.clear();
+                            //pour chaque utilisateur
                             for (int z = 0; z < workmatesList.size(); z++) {
 
-                                for (int y = 0; y < restaurantsList.size(); y++) {
+                                //pour chaque restaurant
+                              //  for (int y = 0; y < restaurantsList.size(); y++) {
 
 
-                                    if (workmatesList.get(z).getFavoriteRestaurant().equals(restaurantsList.get(y).getPlaceId())) {
-                                        myWorkMatesDetailList.add(workmatesList.get(z));
+                                //if (workmatesList.get(z).getFavoriteRestaurant().equals(getPlaceId()restaurantsList.get(y).getPlaceId())) {
+                                    if (workmatesList.get(z).getFavoriteRestaurant().equals(placeIdRequested)) {
+                                        myWorkMatesDetailList.add(workmatesList.get(z) );
                                         // }
                                         //   if (workmatesList.get(z).getFavoriteRestaurant().equals(placeIdRequested)) {
 
@@ -235,7 +236,7 @@ public class ViewModelDetail extends ViewModel {
                                         //                                myWorkMatesDetailList.add(test);
                                         //myWorkMatesDetailList.add("place id : " + placeIdRequested + " wokr place : " + workmatesList.get(z).getFavoriteRestaurant());
 
-                                    }
+
                                 }
                             }
 

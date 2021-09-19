@@ -36,7 +36,7 @@ public class FirestoreDatabaseRepository {
     //old version
     private MutableLiveData<List<User>> myWorkMatesListFromRepo = new MutableLiveData<>();
 
-    //new version
+    //new version ok
     private MutableLiveData<List<FirestoreUser>> myWorkMatesListFromFirestore = new MutableLiveData<>();
 
 
@@ -61,16 +61,12 @@ public class FirestoreDatabaseRepository {
 
                 List<FirestoreUser> myList = new ArrayList<>();
 
-
-
                 for (QueryDocumentSnapshot mydoc : queryDocumentSnapshots) {
 
+                    FirestoreUser myFirestoreUsersList = mydoc.toObject(FirestoreUser.class);
+                    myList.add(myFirestoreUsersList);
 
-                        FirestoreUser myFirestoreUsersList = mydoc.toObject(FirestoreUser.class);
-                        myList.add(myFirestoreUsersList);
-
-                    }
-
+                }
 
 
                 myWorkMatesListFromFirestore.setValue(myList);
@@ -153,12 +149,14 @@ public class FirestoreDatabaseRepository {
 
         collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable @org.jetbrains.annotations.Nullable QuerySnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
+            public void onEvent(@Nullable @org.jetbrains.annotations.Nullable QuerySnapshot value,
+                                @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
 
                 if (error != null) {
                     Log.i("[FIRE]", "Erreur ", error);
                     return;
                 }
+
 
                 //old
                 getRestaurantFromFirestore();

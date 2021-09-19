@@ -10,9 +10,9 @@ import androidx.lifecycle.ViewModel;
 import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreDatabaseRepository;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
-import com.hoarauthomas.go4lunchthp7.repository.FirestoreDatabaseRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,7 @@ public class ViewModelWorkMates extends ViewModel {
         LiveData<List<User>> myWorkMatesList = this.myFirestoreDatabaseRepository.getAllWorkMatesListFromRepo();
 
         //new version
-       LiveData<List<FirestoreUser>> myWorkMatesListFromRepo = this.myFirestoreDatabaseRepository.getFirestoreWorkmates();
+        LiveData<List<FirestoreUser>> myWorkMatesListFromRepo = this.myFirestoreDatabaseRepository.getFirestoreWorkmates();
 
         LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantList = this.myRestaurantRepository.getMyRestaurantsList();
 
@@ -81,9 +81,9 @@ public class ViewModelWorkMates extends ViewModel {
                 //TODO: bug passage objet restaurantr
                 //logicWork(myWorkMatesList.getValue(), restaurantPojos);
 
-                if (restaurantPojos == null) return;
+                if (restaurantPojos == null || restaurantPojos.isEmpty() ) return;
 
-                logicWork(myWorkMatesListFromRepo.getValue(),restaurantPojos);
+                logicWork(myWorkMatesListFromRepo.getValue(), restaurantPojos);
 
             }
         });
@@ -91,42 +91,43 @@ public class ViewModelWorkMates extends ViewModel {
 
     }
 
-    private void logicWork(List<FirestoreUser> myList, List<RestaurantPojo> myRestaurant) {
+    private void logicWork(List<FirestoreUser> myFirestoreWorkmatesList, List<RestaurantPojo> myRestaurant) {
 
 
+        if (myRestaurant == null || myRestaurant.isEmpty() ) return;
 
-        if (myList != null && myRestaurant != null) {
+        mySpecialWorkMatesList.clear();
 
-            mySpecialWorkMatesList.clear();
+        //pour l'ensemble des utilisateurs foirestore
+        for (int i = 0; i < myFirestoreWorkmatesList.size(); i++) {
 
-            for (int i = 0; i < myList.size(); i++) {
-
-                SpecialWorkMates myWorkMates = new SpecialWorkMates();
-
-
-                myWorkMates.setAvatar(myList.get(i).getUrlPicture());
+            //on créé un specialworkmates pour l'affichage
+            SpecialWorkMates myWorkMates = new SpecialWorkMates();
 
 
-                myWorkMates.setNameOfWorkMates(myList.get(i).getUsername());
-
-                for (int z = 0; z < myRestaurant.size(); z++) {
+            myWorkMates.setAvatar(myFirestoreWorkmatesList.get(i).getUrlPicture());
 
 
-                    if (myRestaurant.get(z).getPlaceId() != null) {
-                        if (myList.get(i).getFavoriteRestaurant().equals(myRestaurant.get(z).getPlaceId())) {
-                            myWorkMates.setNameOfRestaurant( myRestaurant.get(z).getName());
-                            myWorkMates.setPlaceId(myRestaurant.get(z).getPlaceId());
-                        }
+            myWorkMates.setNameOfWorkMates(myFirestoreWorkmatesList.get(i).getUsername());
+
+            for (int z = 0; z < myRestaurant.size(); z++) {
+
+
+                if (myRestaurant.get(z).getPlaceId() != null) {
+                    if (myFirestoreWorkmatesList.get(i).getFavoriteRestaurant().equals(myRestaurant.get(z).getPlaceId())) {
+                        myWorkMates.setNameOfRestaurant(myRestaurant.get(z).getName());
+                        myWorkMates.setPlaceId(myRestaurant.get(z).getPlaceId());
                     }
-
                 }
 
-                mySpecialWorkMatesList.add(myWorkMates);
-                Log.i("[NEW]", "" + mySpecialWorkMatesList.get(i).toString());
             }
 
-            myViewStateWorkMatesMediator.setValue(new ViewStateWorkMates(mySpecialWorkMatesList));
+            mySpecialWorkMatesList.add(myWorkMates);
+            Log.i("[NEW]", "" + mySpecialWorkMatesList.get(i).toString());
         }
+
+        myViewStateWorkMatesMediator.setValue(new ViewStateWorkMates(mySpecialWorkMatesList));
+
 
     }
 

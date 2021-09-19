@@ -29,6 +29,10 @@ public class DetailActivity extends AppCompatActivity {
     private ActivityDetailRestaurantBinding binding;
     private ViewModelDetail myViewModelDetail;
 
+
+    private RecyclerView myRecyclerView;
+    private RecyclerViewAdapterDetail myRecyclerViewAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +54,11 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void setupViewModel() {
+
+
+
+
+
 
         myViewModelDetail = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelDetail.class);
 
@@ -98,26 +107,41 @@ public class DetailActivity extends AppCompatActivity {
 
             //get list of workmates
             setupRecyclerView(screenDetailModel.getListWorkMates());
+            //dd
+
+            setupDataRC(screenDetailModel.getListWorkMates());
+
+
+
 
         });
     }
 
+    private void setupDataRC(List<FirestoreUser> listWorkMates) {
+
+
+
+
+
+    }
 
 
     private void setupRecyclerView(List<FirestoreUser> myWorkmatesList) {
+//        private void setupRecyclerView() {
 
-        if (myWorkmatesList == null) {
-            Log.i("[MONDETAIL]", "liste user nulle ou vide");
-        } else if (!myWorkmatesList.isEmpty()) {
+        //if (myWorkmatesList == null) {
+          //  Log.i("[MONDETAIL]", "liste user nulle ou vide");
+        //} else if (!myWorkmatesList.isEmpty()) {
+
             RecyclerView recyclerView = binding.recyclerView;
-            //     RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
             recyclerView.setHasFixedSize(false);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            //   recyclerView.addItemDecoration(itemDecoration);
             recyclerView.setAdapter(new RecyclerViewAdapterDetail(myWorkmatesList));
-        } else {
-            Log.i("[MONDETAIL]", "liste user vide");
-        }
+            //recyclerView.setAdapter(new RecyclerViewAdapterDetail());
+
+       // } else {
+        //    Log.i("[MONDETAIL]", "liste user vide");
+       // }
 
     }
 

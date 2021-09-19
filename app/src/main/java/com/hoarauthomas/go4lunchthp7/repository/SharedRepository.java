@@ -7,6 +7,14 @@ import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
 
 public class SharedRepository {
 
+
+
+
+
+
+
+
+
     public MutableLiveData<Prediction> myPlaceIdFromAutocomplete = new MutableLiveData<>();
 
     public MutableLiveData<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantList = new MutableLiveData<>();

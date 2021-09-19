@@ -46,8 +46,16 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
         //this.callback = callback;
     }
 
+    public RecyclerViewAdapterDetail() {
+        //this.myWorkMatesResult = myList;
+        //notifyDataSetChanged();
+    }
+
+
+
     public RecyclerViewAdapterDetail(List<FirestoreUser> myList) {
         this.myWorkMatesResult = myList;
+        //notifyDataSetChanged();
     }
 
     //for holder
