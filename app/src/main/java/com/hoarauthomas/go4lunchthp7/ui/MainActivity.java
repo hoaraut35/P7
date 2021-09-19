@@ -48,6 +48,7 @@ import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.R;
@@ -350,14 +351,40 @@ public class MainActivity extends AppCompatActivity {
 
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
 
+
+        this.myViewModel.getLoginState().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+
+                showSnackBar("Login : " + aBoolean.toString());
+
+                if (aBoolean){
+
+
+                    //request user from firebase ui
+                    //request user from firestore
+
+                    request_user_info(myViewModel.requestUserFromVM());
+
+                    //myViewModel.getMyUserData();
+
+
+                }else
+                {
+                    request_login();
+                }
+            }
+        });
+
+
         this.myViewModel.myAppMapMediator.observe(this, new Observer<ViewMainState>() {
             @Override
             public void onChanged(ViewMainState viewStateMain) {
                 if (viewStateMain.LoginState) {
-                    request_user_info(viewStateMain.getMyUser());
+                  //  request_user_info(viewStateMain.getMyUser());
                     //testNotification(viewStateMain.myRestaurant.toString());
                 } else {
-                    request_login();
+                //    request_login();
                 }
             }
         });
@@ -377,7 +404,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
-     * Authentification
+     * Authentification is load at startup
      */
     private void Authentification() {
 
@@ -387,11 +414,16 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onActivityResult(FirebaseAuthUIAuthenticationResult result) {
 
-                        showSnackBar(result.getIdpResponse().toString());
+                        Log.i("[LOGIN]","Retour réponse : " + result.getResultCode() + result.getIdpResponse());
 
-                        myViewModel.checkUserLogin();
+
+                     //   myViewModel.checkUserLogin();
                         if (result.getResultCode() == -1) {
                             Log.i("[Auth]", "login ok " + result.getResultCode());
+
+
+
+                        //    myViewModel.setUser();
 
                             myViewModel.checkUserLogin();
 
@@ -418,6 +450,9 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * lauch if no user login
+     */
     private void request_login() {
 
         AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
@@ -443,12 +478,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void request_user_info(FirebaseUser myUserResult) {
 
+        //TODO:18092021
+     //   myViewModel.getMyPlaceListForUI();
 
         // showSnackBar(myUserResult.getDisplayName());
 
         //if (mymyViewModel.getUser() != null) {
         if (myUserResult != null) {
 
+          //  DocumentSnapshot myDoc = myViewModel.requestUserForestoreFromVM(myUserResult.getUid()).getResult();
+
+
+
+            //myViewModel.setMyUserRestaurantId(myViewModel.getMyUserData().get("favorite_restaurant").toString());
 
             //showSnackBar(myViewModel.getUser().getDisplayName());
 
@@ -469,6 +511,14 @@ public class MainActivity extends AppCompatActivity {
 
             //avatar variable
             String avatar2 = "";
+
+
+
+            if (myUserResult.getProviderId().equals("twitter.com")){
+
+               // avatar2 = myUserResult.getProviderData().
+            }
+
 
             //specific provider
             for (UserInfo profile : myUserResult.getProviderData()) {
@@ -554,6 +604,11 @@ public class MainActivity extends AppCompatActivity {
 //                        .circleCrop()
 //                        .into(avatar);
 //            }
+
+
+            //TODO: 19092021
+            //myViewModel.getUser();
+          //  myViewModel.reload();
         }
 
     }

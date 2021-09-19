@@ -5,16 +5,19 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthentificationRepository;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreDatabaseRepository;
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 
 import java.util.ArrayList;
@@ -46,28 +49,48 @@ public class ViewModelDetail extends ViewModel {
         LiveData<List<RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
         LiveData<ResultDetailRestaurant> myRestaurantDetail = this.myRestaurantRepository.getMyRestaurantDetail();
 
+
+
+
         this.myFirestoreDatabaseRepository = myFirestoreDatabaseRepository;
-        LiveData<List<User>> myWorkMatesList = this.myFirestoreDatabaseRepository.getAllWorkMatesListFromRepo();
+        //old
+   //     LiveData<List<User>> myWorkMatesList = this.myFirestoreDatabaseRepository.getAllWorkMatesListFromRepo();
+        //new
+        LiveData<List<FirestoreUser>> myWorkMatesListFromRepo = this.myFirestoreDatabaseRepository.getFirestoreWorkmates();
+
+
+
+        myScreenDetailMediator.addSource(myWorkMatesListFromRepo, new Observer<List<FirestoreUser>>() {
+            @Override
+            public void onChanged(List<FirestoreUser> firestoreUsers) {
+                if (firestoreUsers == null) return;
+                logicWork(myRestaurantsList.getValue(), firestoreUsers, myRestaurantDetail.getValue(),myUserFromRepo.getValue(),placeIdRequest.getValue());
+
+            }
+        });
 
         myScreenDetailMediator.addSource(myRestaurantsList, (List<RestaurantPojo> restaurantPojo) -> {
             if (myRestaurantsList == null) return;
-            logicWork(restaurantPojo, myWorkMatesList.getValue(), myRestaurantDetail.getValue(), myUserFromRepo.getValue(), placeIdRequest.getValue());
+            logicWork(restaurantPojo, myWorkMatesListFromRepo.getValue(), myRestaurantDetail.getValue(), myUserFromRepo.getValue(), placeIdRequest.getValue());
         });
+
 
         myScreenDetailMediator.addSource(myRestaurantDetail, (ResultDetailRestaurant resultDetailRestaurant) ->
         {
             if (myRestaurantDetail == null) return;
-            logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), resultDetailRestaurant, myUserFromRepo.getValue(), placeIdRequest.getValue());
+            logicWork(myRestaurantsList.getValue(), myWorkMatesListFromRepo.getValue(), resultDetailRestaurant, myUserFromRepo.getValue(), placeIdRequest.getValue());
         })
         ;
 
-        myScreenDetailMediator.addSource(myWorkMatesList, workmates -> {
+      /*  myScreenDetailMediator.addSource(myWorkMatesList, workmates -> {
             if (myWorkMatesList == null) return;
             logicWork(myRestaurantsList.getValue(), workmates, myRestaurantDetail.getValue(), myUserFromRepo.getValue(), placeIdRequest.getValue());
         });
 
+       */
+
         //observe user
-        myScreenDetailMediator.addSource(myUserFromRepo, firebaseUser -> logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), myRestaurantDetail.getValue(), firebaseUser, placeIdRequest.getValue()));
+        myScreenDetailMediator.addSource(myUserFromRepo, firebaseUser -> logicWork(myRestaurantsList.getValue(), myWorkMatesListFromRepo.getValue(), myRestaurantDetail.getValue(), firebaseUser, placeIdRequest.getValue()));
 
         myScreenDetailMediator.addSource(placeIdRequest, s -> {
             if (myUserFromRepo == null) return;
@@ -78,8 +101,10 @@ public class ViewModelDetail extends ViewModel {
     }
 
     //logic method for mediatorLiveData
-    private void logicWork(@Nullable List<RestaurantPojo> restaurantsList, @Nullable List<User> workmatesList, @Nullable ResultDetailRestaurant Restaurantdetail, @Nullable FirebaseUser myUserBase, String placeIdRequested) {
+    private void logicWork(@Nullable List<RestaurantPojo> restaurantsList, @Nullable List<FirestoreUser> workmatesList, @Nullable ResultDetailRestaurant Restaurantdetail, @Nullable FirebaseUser myUserBase, String placeIdRequested) {
         //create an viewstate detail for ui
+
+
         ViewStateDetail myScreen = new ViewStateDetail();
 
         //recherche durestaurant à afficher sur l'écran
@@ -178,8 +203,21 @@ public class ViewModelDetail extends ViewModel {
                             //List<String> group = (List<String>) documentSnapshot.get("restaurant_liked");
 
                             //if we have workmates then ...
-                            List<User> myWorkMatesDetailList = new ArrayList<>();
+                            List<FirestoreUser> myWorkMatesDetailList = new ArrayList<>();
                             //List<String> myWorkMatesDetailList = new ArrayList<>();
+
+
+                        /*    List<User> myFirestoreUser = (List) myFirestoreDatabaseRepository.getFirestore().get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                                    List<User> myUserf = (List)queryDocumentSnapshots.getDocuments();
+                                    Log.i("[list]",""+ myUserf.size());
+                                }
+                            });
+
+                         */
+
 
 
                             for (int z = 0; z < workmatesList.size(); z++) {

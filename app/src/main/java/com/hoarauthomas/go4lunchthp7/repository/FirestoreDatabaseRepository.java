@@ -17,6 +17,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 
@@ -32,7 +33,12 @@ public class FirestoreDatabaseRepository {
     private static final String COLLECTION_NAME = "users";
     int millis = 1000;
 
+    //old version
     private MutableLiveData<List<User>> myWorkMatesListFromRepo = new MutableLiveData<>();
+
+    //new version
+    private MutableLiveData<List<FirestoreUser>> myWorkMatesListFromFirestore = new MutableLiveData<>();
+
 
     /**
      * constructor called by injection
@@ -41,6 +47,40 @@ public class FirestoreDatabaseRepository {
         this.myBase = FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
         getRestaurantFromFirestore();
         setupListenerOnCollection();
+    }
+
+    public MutableLiveData<List<FirestoreUser>> getFirestoreWorkmates() {
+        return myWorkMatesListFromFirestore;
+    }
+
+    private Task<Void> getWorkMatesFromFirestoreRepo() {
+
+        myBase.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                List<FirestoreUser> myList = new ArrayList<>();
+
+
+
+                for (QueryDocumentSnapshot mydoc : queryDocumentSnapshots) {
+
+
+                        FirestoreUser myFirestoreUsersList = mydoc.toObject(FirestoreUser.class);
+                        myList.add(myFirestoreUsersList);
+
+                    }
+
+
+
+                myWorkMatesListFromFirestore.setValue(myList);
+                Log.i("[FIRE]", "" + myList.size());
+
+            }
+
+
+        });
+        return null;
     }
 
     /**
@@ -120,7 +160,11 @@ public class FirestoreDatabaseRepository {
                     return;
                 }
 
+                //old
                 getRestaurantFromFirestore();
+
+                //new
+                getWorkMatesFromFirestoreRepo();
 
                 Log.i("[FIRE]", "Event on databse ...");
             }
@@ -289,6 +333,7 @@ public class FirestoreDatabaseRepository {
         return myBase.document(uid).get();
     }
 
+
     public Task<DocumentSnapshot> getUser(String uid) {
         return myBase.document(uid).get();
     }
@@ -305,4 +350,12 @@ public class FirestoreDatabaseRepository {
         return this.myBase;
     }
 
+    public Task<DocumentSnapshot> getUserFirestoreFromRepo(String uid) {
+
+        return getUser(uid);
+    }
+
+    public void reload() {
+        getWorkMatesFromFirestoreRepo();
+    }
 }

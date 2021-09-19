@@ -10,7 +10,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.SingleLiveEvent;
@@ -46,8 +48,6 @@ public class ViewModelMain extends ViewModel {
     private MutableLiveData<String> myUserRestaurantId = new MutableLiveData<>();
 
 
-
-
     private MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myPlaceAutocompleteList = new MutableLiveData<>();
 
 
@@ -72,8 +72,6 @@ public class ViewModelMain extends ViewModel {
         this.myPlaceAutocompleteRepoVM = placeAutocompleteRepository;
         //  this.myPlaceAutocompleteList = myPlaceAutocompleteRepoVM.getMyPlaceAutocompleteListForVM();
 
-        //this.myPlaceAutoCompleteListSingleEvent = myPlaceAutocompleteRepoVM.getMyPlaceAutocompleteListForVMSingle();
-
 
         //get position for autocomplete request
         this.myPositionRepoVM = myPositionRepoVM;
@@ -86,13 +84,18 @@ public class ViewModelMain extends ViewModel {
 
 
         //add source
-        myAppMapMediator.addSource(myUserStateNew, new Observer<Boolean>() {
+    /*    myAppMapMediator.addSource(myUserStateNew, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
+
+                if (aBoolean==null) return;
+
                 Log.i("MEDIA", "new event on state");
                 logicWork(myUserLiveData.getValue(), myWorkMatesListLiveData.getValue(), aBoolean);
             }
         });
+
+     */
 
         //add source
         myAppMapMediator.addSource(myUserLiveData, new Observer<FirebaseUser>() {
@@ -113,6 +116,7 @@ public class ViewModelMain extends ViewModel {
 
                 Log.i("MEDIA", "new event on list workmates");
 
+                if (users == null) return;
 
                 if (myWorkMatesListLiveData != null) {
                     if (!myWorkMatesListLiveData.getValue().isEmpty()) {
@@ -125,69 +129,62 @@ public class ViewModelMain extends ViewModel {
         });
 
 
+    }
 
+    public MutableLiveData<String> getMyUserRestaurantId() {
+        return myUserRestaurantId;
+    }
 
+    public void setMyUserRestaurantId(String myUserRestaurantId) {
+        this.myUserRestaurantId.setValue(myUserRestaurantId);
     }
 
     // Logic work
     private void logicWork(@Nullable FirebaseUser myUser, @Nullable List<User> workmates, Boolean bool) {
 
-
-        if (bool) {
-
-            createUser();
+        createUser();
 
 
-            if (myUser != null && workmates != null) {
+        if (myUser != null && workmates != null) {
 
 
-                if (!myUser.getUid().isEmpty()) {
+            if (!myUser.getUid().isEmpty()) {
 
-                    for (int i = 0; i < workmates.size(); i++) {
+                for (int i = 0; i < workmates.size(); i++) {
 
-                        if (workmates.get(i).getUid().equals(myUser.getUid())) {
-                            myUserRestaurantId.setValue(workmates.get(i).getFavoriteRestaurant().toString());
-                            Log.i("","");
-                            myUserLiveData = myFirebaseAuthRepoVM.getUserLiveDataNew();
-                            break;
-                        }
+                    if (workmates.get(i).getUid().equals(myUser.getUid())) {
+                        myUserRestaurantId.setValue(workmates.get(i).getFavoriteRestaurant());
+                        Log.i("", "");
+                        myUserLiveData = myFirebaseAuthRepoVM.getUserLiveDataNew();
+                        break;
                     }
+                }
 
-                    //getUser();
-                    myAppMapMediator.setValue(new ViewMainState(true, myUserRestaurantId.getValue(), getUser()));
+                //getUser();
+                myAppMapMediator.setValue(new ViewMainState(true, myUserRestaurantId.getValue(), getUser()));
 //
-                } else {
-                    //getUser();
-                    myAppMapMediator.setValue(new ViewMainState(true, "pas de restau", getUser()));
-
-                }
-
             } else {
-                if (myUser != null && workmates == null) {
-                    createUser();
+                //getUser();
+                myAppMapMediator.setValue(new ViewMainState(true, "pas de restau", getUser()));
 
-                }
             }
+
 
             myAppMapMediator.setValue(new ViewMainState(true, "liste restaur non chargée", getUser()));
 
 
-        } else {
-            myAppMapMediator.setValue(new ViewMainState(false, "echec login", getUser()));
-            //myUserRestaurantId.setValue("text");
         }
-
-
     }
-    //**********************************************************************************************
-    // End of logic work
-    //**********************************************************************************************
 
 
     //**********************************************************************************************
     // PUBLIC
     //**********************************************************************************************
 
+    public LiveData<Boolean> getLoginState() {
+
+        return myFirebaseAuthRepoVM.getLoginState();
+    }
 
     public MutableLiveData<PlaceAutocomplete> getMyPlaceListForUI() {
         return myPlaceAutocompleteRepoVM.getPlaces();
@@ -214,17 +211,24 @@ public class ViewModelMain extends ViewModel {
     }
 
     public FirebaseUser getUser() {
+
         return myUserLiveData.getValue();
     }
 
+    public FirebaseUser requestUserFromVM(){
+        return myFirebaseAuthRepoVM.requestUserFromRepo();
+    }
+
+
 
     public LiveData<String> getMyUserRestaurant() {
+
         return myUserRestaurantId;
     }
 
 
     public void checkUserLogin() {
-        myFirebaseAuthRepoVM.checkUser();
+        myFirebaseAuthRepoVM.checkActualUserFirebase();
         //return myUserState;
     }
 
@@ -275,6 +279,19 @@ public class ViewModelMain extends ViewModel {
      */
     public void setPredictionFromUIWithPlaceId(Prediction place) {
         mySharedRepoVM.setMyPlaceIdFromAutocomplete(place);
+    }
+
+
+    public void updataApp() {
+        myWorkMatesRepoVM.getAllWorkMatesListFromRepo();
+    }
+
+    public DocumentSnapshot getMyUserData() {
+        return myWorkMatesRepoVM.getUserData().getResult();
+    }
+
+    public Task<DocumentSnapshot> requestUserForestoreFromVM(String uid) {
+        return myWorkMatesRepoVM.getUserFirestoreFromRepo(uid);
     }
 }
 

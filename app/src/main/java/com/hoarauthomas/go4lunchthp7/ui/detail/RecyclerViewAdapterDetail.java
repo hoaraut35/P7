@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreUser;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
 
     //variables ...
 
-    private List<User> myWorkMatesResult;
+    private List<FirestoreUser> myWorkMatesResult;
     private LatLng myPosition;
 
 
@@ -36,7 +37,7 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
 
     //the constructor
     //public RecyclerViewAdapter(int mode, List<Result> myList, Listener callback) {
-    public RecyclerViewAdapterDetail(List<User> myList, LatLng myLatLng) {
+    public RecyclerViewAdapterDetail(List<FirestoreUser> myList, LatLng myLatLng) {
         this.myWorkMatesResult = myList;
 
         this.myPosition = myLatLng;
@@ -45,7 +46,7 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
         //this.callback = callback;
     }
 
-    public RecyclerViewAdapterDetail(List<User> myList) {
+    public RecyclerViewAdapterDetail(List<FirestoreUser> myList) {
         this.myWorkMatesResult = myList;
     }
 
@@ -68,7 +69,7 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
 
         //SpecialWorkMates result = mResults.get(position);
 
-        User userResult = myWorkMatesResult.get(position);
+        FirestoreUser userResult = myWorkMatesResult.get(position);
 
 
         //show the name of restaurant

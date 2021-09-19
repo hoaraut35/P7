@@ -76,6 +76,9 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.WorkMates
     private void setupViewModel() {
 
         this.myViewModelWorkMates = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelWorkMates.class);
+
+        this.myViewModelWorkMates.reload();
+
         this.myViewModelWorkMates.getMediatorLiveData().observe(getViewLifecycleOwner(), new Observer<ViewStateWorkMates>() {
             @Override
             public void onChanged(ViewStateWorkMates viewStateWorkMates) {

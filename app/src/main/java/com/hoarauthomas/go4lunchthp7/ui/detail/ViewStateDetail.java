@@ -1,6 +1,7 @@
 package com.hoarauthomas.go4lunchthp7.ui.detail;
 
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreUser;
 
 import java.util.List;
 
@@ -20,9 +21,9 @@ public class ViewStateDetail {
 
     Boolean favorite;
 
-    List<User> listWorkMates;
+    List<FirestoreUser> listWorkMates;
 
-    public ViewStateDetail(@Nullable String urlPhoto, @Nullable String title, @Nullable String address, @Nullable int rating, @Nullable String call, @Nullable Boolean liked, @Nullable String website, @Nullable Boolean favorite, @Nullable List<User> listWorkMates) {
+    public ViewStateDetail(@Nullable String urlPhoto, @Nullable String title, @Nullable String address, @Nullable int rating, @Nullable String call, @Nullable Boolean liked, @Nullable String website, @Nullable Boolean favorite, @Nullable List<FirestoreUser> listWorkMates) {
         this.urlPhoto = urlPhoto;
         this.title = title;
         this.address = address;
@@ -95,11 +96,11 @@ public class ViewStateDetail {
         this.favorite = favorite;
     }
 
-    public List<User> getListWorkMates() {
+    public List<FirestoreUser> getListWorkMates() {
         return listWorkMates;
     }
 
-    public void setListWorkMates(List<User> listWorkMates) {
+    public void setListWorkMates(List<FirestoreUser> listWorkMates) {
         this.listWorkMates = listWorkMates;
     }
 

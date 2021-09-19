@@ -18,6 +18,7 @@ import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreUser;
 
 import java.util.List;
 
@@ -103,7 +104,7 @@ public class DetailActivity extends AppCompatActivity {
 
 
 
-    private void setupRecyclerView(List<User> myWorkmatesList) {
+    private void setupRecyclerView(List<FirestoreUser> myWorkmatesList) {
 
         if (myWorkmatesList == null) {
             Log.i("[MONDETAIL]", "liste user nulle ou vide");
