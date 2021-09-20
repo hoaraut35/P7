@@ -20,14 +20,10 @@ public class FirebaseAuthentificationRepository {
     private MutableLiveData<FirebaseUser> myUser = new MutableLiveData<>();
     private MutableLiveData<Boolean> myUserState = new MutableLiveData<>();
 
-    //initial boot, just load once by DI
     public FirebaseAuthentificationRepository(FirebaseAuth firebaseAuthInstance) {
         this.myFireBaseAuthInstance = firebaseAuthInstance;
         this.myFireBaseUser = myFireBaseAuthInstance.getCurrentUser();
-
-
-
-         checkActualUserFirebase();
+        checkActualUserFirebase();
         //
     }
 

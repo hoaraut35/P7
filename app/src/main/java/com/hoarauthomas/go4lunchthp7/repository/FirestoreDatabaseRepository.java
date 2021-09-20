@@ -49,6 +49,8 @@ public class FirestoreDatabaseRepository {
         setupListenerOnCollection();
     }
 
+
+
     public MutableLiveData<List<FirestoreUser>> getFirestoreWorkmates() {
         return myWorkMatesListFromFirestore;
     }
@@ -157,14 +159,12 @@ public class FirestoreDatabaseRepository {
                     return;
                 }
 
+                if (!value.isEmpty()) {
+                    //new
+                    getWorkMatesFromFirestoreRepo();
 
-                //old
-                getRestaurantFromFirestore();
+                }
 
-                //new
-                getWorkMatesFromFirestoreRepo();
-
-                Log.i("[FIRE]", "Event on databse ...");
             }
         });
 
@@ -200,7 +200,6 @@ public class FirestoreDatabaseRepository {
 
 
     public FirebaseUser getCurrentUser() {
-
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
@@ -355,5 +354,9 @@ public class FirestoreDatabaseRepository {
 
     public void reload() {
         getWorkMatesFromFirestoreRepo();
+    }
+
+    public void updateUserSystem() {
+        getAllWorkMatesListFromRepo();
     }
 }

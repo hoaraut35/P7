@@ -479,7 +479,9 @@ public class MainActivity extends AppCompatActivity {
     private void request_user_info(FirebaseUser myUserResult) {
 
         //TODO:18092021
-     //   myViewModel.getMyPlaceListForUI();
+
+
+        myViewModel.updateUserSystem();
 
         // showSnackBar(myUserResult.getDisplayName());
 

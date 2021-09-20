@@ -37,6 +37,10 @@ public class ViewModelMain extends ViewModel {
     private PlaceAutocompleteRepository myPlaceAutocompleteRepoVM;
     private PositionRepository myPositionRepoVM;
     private AlarmRepository myAlarmRepoVM;
+
+
+
+    //shared beetween multiple view
     private SharedRepository mySharedRepoVM;
 
     //livedata...
@@ -292,6 +296,10 @@ public class ViewModelMain extends ViewModel {
 
     public Task<DocumentSnapshot> requestUserForestoreFromVM(String uid) {
         return myWorkMatesRepoVM.getUserFirestoreFromRepo(uid);
+    }
+
+    public void updateUserSystem() {
+        myWorkMatesRepoVM.updateUserSystem();
     }
 }
 

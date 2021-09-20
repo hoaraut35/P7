@@ -95,6 +95,7 @@ public class ViewModelWorkMates extends ViewModel {
 
 
         if (myRestaurant == null || myRestaurant.isEmpty() ) return;
+        if (myFirestoreWorkmatesList == null || myFirestoreWorkmatesList.isEmpty()) return;
 
         mySpecialWorkMatesList.clear();
 

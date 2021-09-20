@@ -28,7 +28,6 @@ public class DetailActivity extends AppCompatActivity {
     private ActivityDetailRestaurantBinding binding;
     private ViewModelDetail myViewModelDetail;
 
-
     private RecyclerView myRecyclerView;
     private RecyclerViewAdapterDetail myRecyclerViewAdapter;
 
@@ -60,7 +59,8 @@ public class DetailActivity extends AppCompatActivity {
         myViewModelDetail.getMediatorScreen().observe(this, screenDetailModel -> {
 
 
-            binding.textBug.setText(" user : " + myViewModelDetail.getCurrentUser().getUid().toString() + " fav:" + screenDetailModel.getFavorite() + " lik: " + screenDetailModel.getLiked() + "place : " + myViewModelDetail.getPlaceId());
+            binding.textBug.setText(    "user : " + myViewModelDetail.getCurrentUser().getUid().toString() + "\n " +
+                    "                   fav:" + screenDetailModel.getFavorite() + "\n lik: " + screenDetailModel.getLiked() + "place : " + myViewModelDetail.getPlaceId());
 
             //get photo
             try {

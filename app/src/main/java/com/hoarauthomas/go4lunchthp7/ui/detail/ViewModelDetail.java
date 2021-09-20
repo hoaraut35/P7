@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthentificationRepository;
@@ -35,6 +37,8 @@ public class ViewModelDetail extends ViewModel {
      * this ViewState for UI
      */
     private final MediatorLiveData<ViewStateDetail> myScreenDetailMediator = new MediatorLiveData<>();
+
+
     private MutableLiveData<String> placeIdRequest = new MutableLiveData<>(null);
 
     //constructor
@@ -45,7 +49,6 @@ public class ViewModelDetail extends ViewModel {
         this.myRestaurantRepository = myRestaurantRepository;
 
         LiveData<List<RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
-
 
 
         LiveData<ResultDetailRestaurant> myRestaurantDetail = this.myRestaurantRepository.getMyRestaurantDetail();
@@ -93,7 +96,7 @@ public class ViewModelDetail extends ViewModel {
         myScreenDetailMediator.addSource(myUserFromRepo, firebaseUser -> logicWork(myRestaurantsList.getValue(), myWorkMatesListFromRepo.getValue(), myRestaurantDetail.getValue(), firebaseUser, placeIdRequest.getValue()));
 
         myScreenDetailMediator.addSource(placeIdRequest, s -> {
-            if (myUserFromRepo == null) return;
+            if (placeIdRequest == null) return;
             myRestaurantRepository.setPlaceId(s);
             //logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), myRestaurantDetail.getValue(), myUserFromRepo.getValue(), s);
         });
@@ -104,15 +107,43 @@ public class ViewModelDetail extends ViewModel {
     private void logicWork(@Nullable List<RestaurantPojo> restaurantsList, @Nullable List<FirestoreUser> workmatesList, @Nullable ResultDetailRestaurant Restaurantdetail, @Nullable FirebaseUser myUserBase, String placeIdRequested) {
 
 
-
-
-
-
         //create an ViewState detail object for ui
         ViewStateDetail myScreen = new ViewStateDetail();
 
+
+        myFirestoreDatabaseRepository.getFirestore().document(myFirestoreDatabaseRepository.getCurrentUserUID()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@androidx.annotation.Nullable DocumentSnapshot value, @androidx.annotation.Nullable FirebaseFirestoreException error) {
+
+
+                if (value == null) return;
+
+                Log.i("[GOOD]", "Extraction environnement : ");
+                Log.i("[GOOD]", " - utilisateur connecté : " + value.get("username") + " " + value.get("uid"));
+                Log.i("[GOOD]", " - restaurant favoris : " + value.get("favoriteRestaurant"));
+                Log.i("[GOOD]", " - restaurant affiché : " + placeIdRequested);
+
+                if (value.get("favoriteRestaurant").equals(placeIdRequested)) {
+                    Log.i("[GOOD]", " - [FAVORIS] = TRUE");
+                } else {
+                    Log.i("[GOOD]", " - [FAVORIS] = FALSE");
+                }
+
+                //List<String> myFavorite = (List<String> value.getData().get(""))
+                if (value.getData().get("restaurant_liked").toString().contains(placeIdRequested)) {
+                    Log.i("[GOOD]", " - [LIKED] = TRUE");
+                } else {
+                    Log.i("[GOOD]", " - [LIKED] = FALSE " + value.getData().get("restaurant_liked").toString());
+                }
+
+
+            }
+        });
+
+
         //recherche durestaurant à afficher sur l'écran
-        for (int x = 0; x < restaurantsList.size(); x++) {
+        for (
+                int x = 0; x < restaurantsList.size(); x++) {
 
             //recherche du restaurant en fonction de l'id recherché (clic sur map, liste restau ou liste workmates
             if (restaurantsList.get(x).getPlaceId().equals(placeIdRequested)) {
@@ -176,19 +207,6 @@ public class ViewModelDetail extends ViewModel {
                     myScreen.setWebsite("");
                 }
 
-
-
-
-              /*  for (User myWorkMate : workmatesList) {
-
-                    if (myWorkMate.getFavoriteRestaurant().equals(placeIdRequested)) {
-                        myWorkMatesDetailList.add(myWorkMate);
-                    }
-
-                }
-
-               */
-
                 myFirestoreDatabaseRepository.getFirestore().document().get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -227,19 +245,19 @@ public class ViewModelDetail extends ViewModel {
                             for (int z = 0; z < workmatesList.size(); z++) {
 
                                 //pour chaque restaurant
-                              //  for (int y = 0; y < restaurantsList.size(); y++) {
+                                //  for (int y = 0; y < restaurantsList.size(); y++) {
 
 
                                 //if (workmatesList.get(z).getFavoriteRestaurant().equals(getPlaceId()restaurantsList.get(y).getPlaceId())) {
-                                    if (workmatesList.get(z).getFavoriteRestaurant().equals(placeIdRequested)) {
-                                        myWorkMatesDetailList.add(workmatesList.get(z) );
-                                        // }
-                                        //   if (workmatesList.get(z).getFavoriteRestaurant().equals(placeIdRequested)) {
+                                if (workmatesList.get(z).getFavoriteRestaurant().equals(placeIdRequested)) {
+                                    myWorkMatesDetailList.add(workmatesList.get(z));
+                                    // }
+                                    //   if (workmatesList.get(z).getFavoriteRestaurant().equals(placeIdRequested)) {
 
-                                        //            User test = new User();
-                                        //                              test.setUsername("place id : " + placeIdRequested + " wokr place : " + workmatesList.get(z).getFavoriteRestaurant());
-                                        //                                myWorkMatesDetailList.add(test);
-                                        //myWorkMatesDetailList.add("place id : " + placeIdRequested + " wokr place : " + workmatesList.get(z).getFavoriteRestaurant());
+                                    //            User test = new User();
+                                    //                              test.setUsername("place id : " + placeIdRequested + " wokr place : " + workmatesList.get(z).getFavoriteRestaurant());
+                                    //                                myWorkMatesDetailList.add(test);
+                                    //myWorkMatesDetailList.add("place id : " + placeIdRequested + " wokr place : " + workmatesList.get(z).getFavoriteRestaurant());
 
 
                                 }
@@ -250,6 +268,7 @@ public class ViewModelDetail extends ViewModel {
                             Log.i("[FIRESTORE]", "uid : " + documentSnapshot.getData().get("uid").toString());
                             Log.i("[FIRESTORE]", "restaurant favorite :" + documentSnapshot.getData().get("favoriteRestaurant").toString());
                             Log.i("[FIRESTORE]", "restaurant liked " + documentSnapshot.getData().get("restaurant_liked").toString());
+
 
                             if (documentSnapshot.getData().get("favoriteRestaurant").equals(placeIdRequested)) {
                                 Log.i("[FIRESTORE]", "Le restaurant est déjà favoris");
@@ -284,12 +303,14 @@ public class ViewModelDetail extends ViewModel {
 
                             Log.i("[FIRESTORE]", "Détail object viewstate : " + " fav : " + myScreen.getFavorite() + " lik:" + myScreen.getLiked());
                             myScreenDetailMediator.setValue(myScreen);
+                            Log.i("tt", "");
 
                         }
                     }
                 });
             }
         }
+
     }
 
     public void setPlaceId(String placeId) {
