@@ -30,12 +30,15 @@ import javax.annotation.Nullable;
 
 public class ViewModelDetail extends ViewModel {
 
+    //repositories
     private final FirebaseAuthentificationRepository myFirebaseAuth;
     private final RestaurantsRepository myRestaurantRepository;
     private final FirestoreDatabaseRepository myFirestoreDatabaseRepository;
 
+    //for ui
     private final MediatorLiveData<ViewStateDetail> myScreenDetailMediator = new MediatorLiveData<>();
 
+    //used to know the placeid requested
     private MutableLiveData<String> placeIdRequest = new MutableLiveData<>(null);
 
     //constructor
@@ -104,7 +107,6 @@ public class ViewModelDetail extends ViewModel {
     //logic method for mediatorLiveData
     private void logicWork(@Nullable List<RestaurantPojo> restaurantsList, @Nullable List<FirestoreUser> workmatesList, @Nullable ResultDetailRestaurant Restaurantdetail, @Nullable FirebaseUser myUserBase, String placeIdRequested) {
 
-
         //create an ViewState detail object for ui
         ViewStateDetail myScreen = new ViewStateDetail();
 
@@ -130,6 +132,28 @@ public class ViewModelDetail extends ViewModel {
             }
         });*/
 
+        myFirestoreDatabaseRepository.getFirestore().whereEqualTo("favoriteRestaurant",placeIdRequested).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@androidx.annotation.Nullable QuerySnapshot value, @androidx.annotation.Nullable FirebaseFirestoreException error) {
+
+                if (value == null || value.isEmpty()) {
+                    myScreen.setListWorkMates(myWorkMatesDetailList);
+                    return;
+                }
+
+                myWorkMatesDetailList.clear();
+
+                for (int i =0; i<value.size();i++){
+
+                    Log.i("[GOOD]", "extract workmates" + value.getDocuments().get(i).get("username"));
+                    myWorkMatesDetailList.add(value.getDocuments().get(i).toObject(FirestoreUser.class));
+
+
+                }
+                myScreen.setListWorkMates(myWorkMatesDetailList);
+
+            }
+        });
 
 
         myFirestoreDatabaseRepository.getFirestore().document(myFirestoreDatabaseRepository.getCurrentUserUID()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
