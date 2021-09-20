@@ -30,6 +30,7 @@ import javax.annotation.Nullable;
 
 public class ViewModelDetail extends ViewModel {
 
+    private final FirebaseAuthentificationRepository myFirebaseAuth;
     private final RestaurantsRepository myRestaurantRepository;
     private final FirestoreDatabaseRepository myFirestoreDatabaseRepository;
 
@@ -38,37 +39,45 @@ public class ViewModelDetail extends ViewModel {
     private MutableLiveData<String> placeIdRequest = new MutableLiveData<>(null);
 
     //constructor
-    public ViewModelDetail(FirebaseAuthentificationRepository myAuthRepository, RestaurantsRepository myRestaurantRepository, FirestoreDatabaseRepository myFirestoreDatabaseRepository) {
+    public ViewModelDetail(
+            FirebaseAuthentificationRepository myAuthRepository,
+            RestaurantsRepository myRestaurantRepository,
+            FirestoreDatabaseRepository myFirestoreDatabaseRepository) {
 
+        this.myFirebaseAuth = myAuthRepository;
         this.myRestaurantRepository = myRestaurantRepository;
         this.myFirestoreDatabaseRepository = myFirestoreDatabaseRepository;
 
-        LiveData<FirebaseUser> myUserFromRepo = myAuthRepository.getUserLiveDataNew();
-        LiveData<List<RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
-        LiveData<ResultDetailRestaurant> myRestaurantDetail = this.myRestaurantRepository.getMyRestaurantDetail();
+        //firebase auth user
+        LiveData<FirebaseUser> myUserFromRepo = this.myFirebaseAuth.getUserLiveDataNew();
+        //google api
+        LiveData<List<RestaurantPojo>> myRestaurantsListFromRepo = this.myRestaurantRepository.getMyRestaurantsList();
+        //google api
+        LiveData<ResultDetailRestaurant> myRestaurantDetailFromRepo = this.myRestaurantRepository.getMyRestaurantDetail();
+        //firestore
         LiveData<List<FirestoreUser>> myWorkMatesListFromRepo = this.myFirestoreDatabaseRepository.getFirestoreWorkmates();
 
         myScreenDetailMediator.addSource(myWorkMatesListFromRepo, new Observer<List<FirestoreUser>>() {
             @Override
             public void onChanged(List<FirestoreUser> firestoreUsers) {
                 if (firestoreUsers == null) return;
-                logicWork(myRestaurantsList.getValue(), firestoreUsers, myRestaurantDetail.getValue(), myUserFromRepo.getValue(), placeIdRequest.getValue());
+                logicWork(myRestaurantsListFromRepo.getValue(), firestoreUsers, myRestaurantDetailFromRepo.getValue(), myUserFromRepo.getValue(), placeIdRequest.getValue());
             }
         });
 
-        myScreenDetailMediator.addSource(myRestaurantsList, new Observer<List<RestaurantPojo>>() {
+        myScreenDetailMediator.addSource(myRestaurantsListFromRepo, new Observer<List<RestaurantPojo>>() {
             @Override
             public void onChanged(List<RestaurantPojo> restaurantPojo) {
-                if (myRestaurantsList == null) return;
-                ViewModelDetail.this.logicWork(restaurantPojo, myWorkMatesListFromRepo.getValue(), myRestaurantDetail.getValue(), myUserFromRepo.getValue(), placeIdRequest.getValue());
+                if (myRestaurantsListFromRepo == null) return;
+                ViewModelDetail.this.logicWork(restaurantPojo, myWorkMatesListFromRepo.getValue(), myRestaurantDetailFromRepo.getValue(), myUserFromRepo.getValue(), placeIdRequest.getValue());
             }
         });
 
-        myScreenDetailMediator.addSource(myRestaurantDetail, new Observer<ResultDetailRestaurant>() {
+        myScreenDetailMediator.addSource(myRestaurantDetailFromRepo, new Observer<ResultDetailRestaurant>() {
             @Override
             public void onChanged(ResultDetailRestaurant resultDetailRestaurant) {
-                if (myRestaurantDetail == null) return;
-                ViewModelDetail.this.logicWork(myRestaurantsList.getValue(), myWorkMatesListFromRepo.getValue(), resultDetailRestaurant, myUserFromRepo.getValue(), placeIdRequest.getValue());
+                if (myRestaurantDetailFromRepo == null) return;
+                ViewModelDetail.this.logicWork(myRestaurantsListFromRepo.getValue(), myWorkMatesListFromRepo.getValue(), resultDetailRestaurant, myUserFromRepo.getValue(), placeIdRequest.getValue());
             }
         })
         ;
@@ -76,7 +85,8 @@ public class ViewModelDetail extends ViewModel {
         myScreenDetailMediator.addSource(myUserFromRepo, new Observer<FirebaseUser>() {
             @Override
             public void onChanged(FirebaseUser firebaseUser) {
-                ViewModelDetail.this.logicWork(myRestaurantsList.getValue(), myWorkMatesListFromRepo.getValue(), myRestaurantDetail.getValue(), firebaseUser, placeIdRequest.getValue());
+                if (myUserFromRepo == null) return;
+                ViewModelDetail.this.logicWork(myRestaurantsListFromRepo.getValue(), myWorkMatesListFromRepo.getValue(), myRestaurantDetailFromRepo.getValue(), firebaseUser, placeIdRequest.getValue());
             }
         });
 

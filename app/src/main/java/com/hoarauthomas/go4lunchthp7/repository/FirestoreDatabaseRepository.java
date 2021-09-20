@@ -28,7 +28,6 @@ import java.util.List;
 
 public class FirestoreDatabaseRepository {
 
-    //added
     private final CollectionReference myBase;
     private static final String COLLECTION_NAME = "users";
     int millis = 1000;
@@ -87,7 +86,6 @@ public class FirestoreDatabaseRepository {
      * @return
      */
     private Task<Void> getRestaurantFromFirestore() {
-
 
         myBase.get().addOnFailureListener(new OnFailureListener() {
             @Override
