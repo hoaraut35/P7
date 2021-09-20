@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
@@ -21,6 +22,7 @@ import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
@@ -55,8 +57,14 @@ public class ViewModelDetail extends ViewModel {
         LiveData<ResultDetailRestaurant> myRestaurantDetailFromRepo = this.myRestaurantRepository.getMyRestaurantDetail();
         //firestore
         LiveData<List<FirestoreUser>> myWorkMatesListFromRepo = this.myFirestoreRepository.getFirestoreWorkmates();
-        //LiveData<List<FirestoreUser>> myWorkMatesListFromRepo = this.myFirestoreDatabaseRepository.getFirestoreWorkmates2();
+      //  LiveData<FirestoreUser> myWorkmateFromRepo = this.myFirestoreRepository.getWorkmateFromFirestoreRepo();
 
+    /*    myScreenDetailMediator.addSource(myWorkmateFromRepo, firestoreUser -> {
+            if (firestoreUser == null) return;
+            logicWork(myRestaurantsListFromRepo.getValue(), myWorkMatesListFromRepo.getValue(), myRestaurantDetailFromRepo.getValue(), myUserFromRepo.getValue(), placeIdRequest.getValue(), myWorkmateFromRepo.getValue());
+        });
+
+     */
 
         myScreenDetailMediator.addSource(myWorkMatesListFromRepo, firestoreUsers -> {
             if (firestoreUsers == null) return;
@@ -87,7 +95,17 @@ public class ViewModelDetail extends ViewModel {
     }
 
     //logic method for mediatorLiveData
-    private void logicWork(@Nullable List<RestaurantPojo> restaurantsList, @Nullable List<FirestoreUser> workmatesList, @Nullable ResultDetailRestaurant Restaurantdetail, @Nullable FirebaseUser myUserBase, String placeIdRequested) {
+    private void logicWork(
+            @Nullable List<RestaurantPojo> restaurantsList,
+            @Nullable List<FirestoreUser> workmatesList,
+            @Nullable ResultDetailRestaurant Restaurantdetail,
+            @Nullable FirebaseUser myUserBase,
+            String placeIdRequested){
+         //   @Nullable FirestoreUser myWorkmate) {
+
+
+     //   if (myWorkmate == null ) return;
+
 
         //create an ViewState detail object for ui
         ViewStateDetail myScreen = new ViewStateDetail();
@@ -95,8 +113,100 @@ public class ViewModelDetail extends ViewModel {
         //list of workmates
         List<FirestoreUser> myWorkMatesDetailList = new ArrayList<>();
 
+        for (FirestoreUser myItem : workmatesList){
+            if (myItem.getFavoriteRestaurant().equals(placeIdRequested)){
+                myWorkMatesDetailList.add(myItem);
+            }
+        }
+
+        myScreen.setListWorkMates(myWorkMatesDetailList);
+
+        //
+        for (RestaurantPojo myItem : restaurantsList){
+            if (myItem.getPlaceId().equals(placeIdRequested)){
+
+                //title
+                myScreen.setTitle(myItem.getName());
+
+                //adress
+                myScreen.setAddress(myItem.getVicinity());
+
+                //photo
+                try {
+                    myScreen.setUrlPhoto(myItem.getPhotos().get(0).getPhotoReference());
+                } catch (Exception e) {
+
+                }
+
+                break;
+            }
+        }
+
+        /*Log.i("[GOOD]", "Extraction environnement : ");
+        Log.i("[GOOD]", " - utilisateur connecté : " + value.get("username") + " " + value.get("uid"));
+        Log.i("[GOOD]", " - restaurant favoris : " + value.get("favoriteRestaurant"));
+        Log.i("[GOOD]", " - restaurant affiché : " + placeIdRequested);
+
+         */
+
+
+      /*  if (myFirestoreRepository.getWorkmateFromFirestoreRepo().getValue().getFavoriteRestaurant().equals(placeIdRequested)){
+       //if (myWorkmate.getFavoriteRestaurant().equals(placeIdRequested)){
+            myScreen.setFavorite(true);
+       }else
+        {
+         //   myScreen.setFavorite(false);
+        }
+
+       */
+
+
+     //   if (myWorkmate.getRestaurant_liked().contains(placeIdRequested)){
+            myScreen.setLiked(true);
+       // }else
+       // {
+          //  myScreen.setLiked(false);
+        //}
+
+
+        //favorite btn setup
+       /* if (value.get("favoriteRestaurant").equals(placeIdRequested)) {
+            Log.i("[GOOD]", " - [FAVORIS] = TRUE");
+            myScreen.setFavorite(true);
+        } else {
+            Log.i("[GOOD]", " - [FAVORIS] = FALSE");
+            myScreen.setFavorite(false);
+        }
+
+        //liked button setup
+        if (value.getData().get("restaurant_liked").toString().contains(placeIdRequested)) {
+            Log.i("[GOOD]", " - [LIKED] = TRUE");
+            myScreen.setLiked(true);
+        } else {
+            Log.i("[GOOD]", " - [LIKED] = FALSE " + value.getData().get("restaurant_liked").toString());
+            myScreen.setLiked(false);
+        }
+
+        */
+
+
+
+
+
+        //set empty list for recycler else it crash
+        myScreen.setListWorkMates(myWorkMatesDetailList);
+
+
+        //final result for viewstate object
+        myScreenDetailMediator.setValue(myScreen);
+
+
+
+
+
+
         //move to repository !
-        myFirestoreRepository.getFirestore().whereEqualTo("favoriteRestaurant",placeIdRequested).addSnapshotListener(new EventListener<QuerySnapshot>() {
+    /*    myFirestoreRepository.getFirestore().whereEqualTo("favoriteRestaurant",placeIdRequested).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@androidx.annotation.Nullable QuerySnapshot value, @androidx.annotation.Nullable FirebaseFirestoreException error) {
 
@@ -117,8 +227,10 @@ public class ViewModelDetail extends ViewModel {
             }
         });
 
+     */
+
         //move to repository!
-        myFirestoreRepository.getFirestore().document(myFirestoreRepository.getCurrentUserUID()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+/*        myFirestoreRepository.getFirestore().document(myFirestoreRepository.getCurrentUserUID()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@androidx.annotation.Nullable DocumentSnapshot value, @androidx.annotation.Nullable FirebaseFirestoreException error) {
 
@@ -193,6 +305,15 @@ public class ViewModelDetail extends ViewModel {
 
             }
         });
+
+
+
+
+
+
+ */
+
+
 
 
         //get rating

@@ -2,7 +2,6 @@ package com.hoarauthomas.go4lunchthp7.ui;
 
 import android.content.Context;
 import android.location.Location;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -16,7 +15,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.SingleLiveEvent;
-import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.repository.AlarmRepository;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthentificationRepository;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
