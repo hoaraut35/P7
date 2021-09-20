@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.common.base.Strings;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -111,10 +112,49 @@ public class ViewModelDetail extends ViewModel {
         ViewStateDetail myScreen = new ViewStateDetail();
 
 
+
+
+
+
         myFirestoreDatabaseRepository.getFirestore().document(myFirestoreDatabaseRepository.getCurrentUserUID()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@androidx.annotation.Nullable DocumentSnapshot value, @androidx.annotation.Nullable FirebaseFirestoreException error) {
 
+
+                for (RestaurantPojo myRestaurantIterate : restaurantsList ){
+                    if (myRestaurantIterate.getPlaceId().equals(placeIdRequested)){
+                        Log.i("[GOOD]", "Recherche restaurant à afficher trouvé  : " + myRestaurantIterate.getName());
+
+                        //title
+                        myScreen.setTitle(myRestaurantIterate.getName());
+
+                        //adress
+                        myScreen.setAddress(myRestaurantIterate.getVicinity());
+
+                        //photo
+                        try{
+                            myScreen.setUrlPhoto(myRestaurantIterate.getPhotos().get(0).getPhotoReference());
+                        }catch (Exception e){
+
+                        }
+
+                        //phone
+                       // if (!Strings.isNullOrEmpty(Restaurantdetail.getFormattedPhoneNumber())){
+                         //   myScreen.setCall(Restaurantdetail.getFormattedPhoneNumber());
+                       // }
+
+                        //set url
+                       // if (!Strings.isNullOrEmpty(Restaurantdetail.getUrl())){
+                         //   myScreen.setWebsite(Restaurantdetail.getUrl());
+                       // }
+
+
+
+
+
+                        break;
+                    }
+                }
 
                 if (value == null) return;
 
@@ -123,18 +163,38 @@ public class ViewModelDetail extends ViewModel {
                 Log.i("[GOOD]", " - restaurant favoris : " + value.get("favoriteRestaurant"));
                 Log.i("[GOOD]", " - restaurant affiché : " + placeIdRequested);
 
+                //favorite btn setup
                 if (value.get("favoriteRestaurant").equals(placeIdRequested)) {
                     Log.i("[GOOD]", " - [FAVORIS] = TRUE");
+                    myScreen.setFavorite(true);
                 } else {
                     Log.i("[GOOD]", " - [FAVORIS] = FALSE");
+                    myScreen.setFavorite(false);
                 }
 
-                //List<String> myFavorite = (List<String> value.getData().get(""))
+                //liked button setup
                 if (value.getData().get("restaurant_liked").toString().contains(placeIdRequested)) {
                     Log.i("[GOOD]", " - [LIKED] = TRUE");
+                    myScreen.setLiked(true);
                 } else {
                     Log.i("[GOOD]", " - [LIKED] = FALSE " + value.getData().get("restaurant_liked").toString());
+                    myScreen.setLiked(false);
                 }
+
+                //list of workmates
+                List<FirestoreUser> myWorkMatesDetailList = new ArrayList<>();
+
+                for (FirestoreUser myFirestoreIterate : workmatesList){
+                    if (myFirestoreIterate.getFavoriteRestaurant().equals(placeIdRequested)){
+                        myWorkMatesDetailList.add(myFirestoreIterate);
+                    }
+                }
+
+                myScreen.setListWorkMates(myWorkMatesDetailList);
+
+
+
+                myScreenDetailMediator.setValue(myScreen);
 
 
             }
@@ -149,20 +209,26 @@ public class ViewModelDetail extends ViewModel {
             if (restaurantsList.get(x).getPlaceId().equals(placeIdRequested)) {
 
 
-                Log.i("[FIRESTORE]", "restaurant trouvé dans la liste : " + restaurantsList.get(x).getName());
+              //  Log.i("[FIRESTORE]", "restaurant trouvé dans la liste : " + restaurantsList.get(x).getName());
 
                 //extraction photo
-                try {
+              /*  try {
                     myScreen.setUrlPhoto(restaurantsList.get(x).getPhotos().get(0).getPhotoReference());
                 } catch (Exception e) {
                     //charger une photo de substitution
                 }
 
-                //get titre restaurant
+               */
+
+              /*  //get titre restaurant
                 myScreen.setTitle(restaurantsList.get(x).getName());
 
-                //get address
+               */
+
+              /*  //get address
                 myScreen.setAddress(restaurantsList.get(x).getVicinity());
+
+               */
 
                 //get rating
                 try {
@@ -185,35 +251,35 @@ public class ViewModelDetail extends ViewModel {
                     myScreen.setRating(0);
                 }
 
-                //get photo
+             /*   //get photo
                 try {
                     myScreen.setUrlPhoto(restaurantsList.get(x).getPhotos().get(0).getPhotoReference());
                 } catch (Exception e) {
                     //charger une photo de substitution
                 }
 
-                //get phone number
+              */
+
+             /*   //get phone number
                 try {
                     myScreen.setCall(Restaurantdetail.getFormattedPhoneNumber());
                 } catch (Exception e) {
                     myScreen.setCall("inconnu");
                 }
 
+              */
+
 
                 //get url web
-                try {
+                /*try {
                     myScreen.setWebsite(Restaurantdetail.getUrl());
                 } catch (Exception e) {
                     myScreen.setWebsite("");
                 }
 
-                myFirestoreDatabaseRepository.getFirestore().document().get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                 */
 
 
-                    }
-                });
 
                 //extraction firestore
                 myFirestoreDatabaseRepository.getFirestore().document(myUserBase.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -225,7 +291,7 @@ public class ViewModelDetail extends ViewModel {
                             //List<String> group = (List<String>) documentSnapshot.get("restaurant_liked");
 
                             //if we have workmates then ...
-                            List<FirestoreUser> myWorkMatesDetailList = new ArrayList<>();
+                       //     List<FirestoreUser> myWorkMatesDetailList = new ArrayList<>();
                             //List<String> myWorkMatesDetailList = new ArrayList<>();
 
 
@@ -240,9 +306,9 @@ public class ViewModelDetail extends ViewModel {
 
                          */
 
-                            myWorkMatesDetailList.clear();
+                          //  myWorkMatesDetailList.clear();
                             //pour chaque utilisateur
-                            for (int z = 0; z < workmatesList.size(); z++) {
+                     /*       for (int z = 0; z < workmatesList.size(); z++) {
 
                                 //pour chaque restaurant
                                 //  for (int y = 0; y < restaurantsList.size(); y++) {
@@ -263,14 +329,18 @@ public class ViewModelDetail extends ViewModel {
                                 }
                             }
 
+                      */
 
-                            Log.i("[FIRESTORE]", "username : " + documentSnapshot.getData().get("username").toString());
+
+                        /*    Log.i("[FIRESTORE]", "username : " + documentSnapshot.getData().get("username").toString());
                             Log.i("[FIRESTORE]", "uid : " + documentSnapshot.getData().get("uid").toString());
                             Log.i("[FIRESTORE]", "restaurant favorite :" + documentSnapshot.getData().get("favoriteRestaurant").toString());
                             Log.i("[FIRESTORE]", "restaurant liked " + documentSnapshot.getData().get("restaurant_liked").toString());
 
+                         */
 
-                            if (documentSnapshot.getData().get("favoriteRestaurant").equals(placeIdRequested)) {
+
+                         /*   if (documentSnapshot.getData().get("favoriteRestaurant").equals(placeIdRequested)) {
                                 Log.i("[FIRESTORE]", "Le restaurant est déjà favoris");
                                 myScreen.setFavorite(true);
                                 // mettre le bouton fav en true;
@@ -281,12 +351,14 @@ public class ViewModelDetail extends ViewModel {
                                 //mettre le bouton fav en false
                             }
 
+                          */
+
                             //extract liked
 
                             List<String> group = (List<String>) documentSnapshot.get("restaurant_liked");
 
                             //pas bon car trouve le favori au lieu du liked ...
-                            if (group.contains(placeIdRequested)) {
+                      /*      if (group.contains(placeIdRequested)) {
 
                                 Log.i("[FIRESTORE]", "Le restaurant est liké");
                                 myScreen.setLiked(true);
@@ -297,13 +369,14 @@ public class ViewModelDetail extends ViewModel {
                                 //mettre bouton en rouge
                             }
 
+                       */
 
-                            myScreen.setListWorkMates(myWorkMatesDetailList);
 
 
-                            Log.i("[FIRESTORE]", "Détail object viewstate : " + " fav : " + myScreen.getFavorite() + " lik:" + myScreen.getLiked());
-                            myScreenDetailMediator.setValue(myScreen);
-                            Log.i("tt", "");
+
+
+                      //      myScreenDetailMediator.setValue(myScreen);
+
 
                         }
                     }
