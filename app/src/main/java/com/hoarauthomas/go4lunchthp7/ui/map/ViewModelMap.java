@@ -12,7 +12,8 @@ import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
-import com.hoarauthomas.go4lunchthp7.repository.FirestoreDatabaseRepository;
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
@@ -27,7 +28,7 @@ public class ViewModelMap extends ViewModel {
     private PermissionChecker myPermission;
     private PositionRepository myPositionRepository;
     private RestaurantsRepository myRestaurantRepository;
-    private FirestoreDatabaseRepository myFirestoreDatabaseRepository;
+    private FirestoreRepository myFirestoreRepository;
     private SharedRepository mySharedRepository;
 
     private LiveData<Location> myPosition;
@@ -39,15 +40,15 @@ public class ViewModelMap extends ViewModel {
      * @param myPermission
      * @param myPositionRepository
      * @param myRestaurantsRepository
-     * @param myFirestoreDatabaseRepository
+     * @param myFirestoreRepository
      * @param mySharedRepository
      */
-    public ViewModelMap(PermissionChecker myPermission, PositionRepository myPositionRepository, RestaurantsRepository myRestaurantsRepository, FirestoreDatabaseRepository myFirestoreDatabaseRepository, SharedRepository mySharedRepository) {
+    public ViewModelMap(PermissionChecker myPermission, PositionRepository myPositionRepository, RestaurantsRepository myRestaurantsRepository, FirestoreRepository myFirestoreRepository, SharedRepository mySharedRepository) {
         //init repository
         this.myPermission = myPermission;
         this.myPositionRepository = myPositionRepository;
         this.myRestaurantRepository = myRestaurantsRepository;
-        this.myFirestoreDatabaseRepository = myFirestoreDatabaseRepository;
+        this.myFirestoreRepository = myFirestoreRepository;
         this.mySharedRepository = mySharedRepository;
 
         //init position
@@ -55,7 +56,7 @@ public class ViewModelMap extends ViewModel {
         //init list of restaurants
         LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
         //init list of workmates
-        LiveData<List<User>> myWorkMatesList = this.myFirestoreDatabaseRepository.getAllWorkMatesListFromRepo();
+        LiveData<List<FirestoreUser>> myWorkMatesList = this.myFirestoreRepository.getFirestoreWorkmates();
 
         //add listener for new position
         myViewStateMapMediator.addSource(myPosition, position -> {
@@ -66,7 +67,7 @@ public class ViewModelMap extends ViewModel {
         });
 
         //add listener for list of restaurants
-        myViewStateMapMediator.addSource(myRestaurantsList, restaurantsList -> {
+        myViewStateMapMediator.addSource(myRestaurantsList, (List<RestaurantPojo> restaurantsList) -> {
             if (restaurantsList != null) {
                 logicWork(myPosition.getValue(),
                         restaurantsList,
@@ -88,7 +89,7 @@ public class ViewModelMap extends ViewModel {
      * @param restaurants
      * @param workmates
      */
-    private void logicWork(@Nullable Location position, @Nullable List<RestaurantPojo> restaurants, @Nullable List<User> workmates) {
+    private void logicWork(@Nullable Location position, @Nullable List<RestaurantPojo> restaurants, @Nullable List<FirestoreUser> workmates) {
 
         //if one of three values is null then we cancel the job
         if (position == null || restaurants == null || workmates == null) return;

@@ -4,9 +4,10 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,161 +22,115 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class FirestoreDatabaseRepository {
+public class FirestoreRepository {
 
     private final CollectionReference myBase;
     private static final String COLLECTION_NAME = "users";
     int millis = 1000;
 
-    //old version
-    private MutableLiveData<List<User>> myWorkMatesListFromRepo = new MutableLiveData<>();
-
-    //new version ok
-    private MutableLiveData<List<FirestoreUser>> myWorkMatesListFromFirestore = new MutableLiveData<>();
-
+    /**
+     * used to update livedate before publish
+     */
+    private MutableLiveData<FirestoreUser> myWorkmateFromRepo = new MutableLiveData<>();
+    private MutableLiveData<List<FirestoreUser>> myWorkmatesListFromFirestore = new MutableLiveData<>();
 
     /**
      * constructor called by injection
      */
-    public FirestoreDatabaseRepository() {
+    public FirestoreRepository() {
         this.myBase = FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
-        getRestaurantFromFirestore();
+        getAllWorkmatesFromFirestoreRepo();
         setupListenerOnCollection();
     }
 
-
-
-    public MutableLiveData<List<FirestoreUser>> getFirestoreWorkmates() {
-        return myWorkMatesListFromFirestore;
-    }
-
-    private Task<Void> getWorkMatesFromFirestoreRepo() {
-
-        myBase.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+    /**
+     * get an user from firestore
+     */
+    private void getWorkmateFromFirestoreRepo() {
+        myBase.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                List<FirestoreUser> myList = new ArrayList<>();
-
-                for (QueryDocumentSnapshot mydoc : queryDocumentSnapshots) {
-
-                    FirestoreUser myFirestoreUsersList = mydoc.toObject(FirestoreUser.class);
-                    myList.add(myFirestoreUsersList);
-
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    List<FirestoreUser> myList = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        FirestoreUser myFirestoreUsersList = document.toObject(FirestoreUser.class);
+                        myList.add(myFirestoreUsersList);
+                    }
+                } else {
+                    Log.i("[FIRESTORE]", "Error on getWorkmateFromFirestoreRepo " + task.getException());
                 }
-
-
-                myWorkMatesListFromFirestore.setValue(myList);
-                Log.i("[FIRE]", "" + myList.size());
-
             }
-
-
         });
-        return null;
     }
 
     /**
-     * get data from firebase
+     * return a user for viewmodel
+     * @return
+     */
+
+    public LiveData<FirestoreUser> getWorkmateFromRepo() {
+        return myWorkmateFromRepo;
+    }
+
+    /**
+     * get all workmates from firestore
+     */
+    private void getAllWorkmatesFromFirestoreRepo() {
+        myBase.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+
+                    List<FirestoreUser> allWorkMates = new ArrayList<>();
+
+                    for (QueryDocumentSnapshot workmateIterate : task.getResult()) {
+                        allWorkMates.add(workmateIterate.toObject(FirestoreUser.class));
+                    }
+
+                    myWorkmatesListFromFirestore.setValue(allWorkMates);
+                } else {
+                    myWorkmatesListFromFirestore.setValue(null);
+                    Log.i("[FIRESTORE]", "Error on getWorkmatesFromFirestore " + task.getException());
+                }
+            }
+        });
+    }
+
+    /**
+     * publish th elist of workmates for viewmodel
      *
      * @return
      */
-    private Task<Void> getRestaurantFromFirestore() {
 
-        myBase.get().addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull @NotNull Exception e) {
-                Log.i("[WORK]", "Fail to access workmates");
-                myWorkMatesListFromRepo.setValue(null);
-            }
-        });
-
-        myBase.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                List<User> allWorkMates = new ArrayList<>();
-
-                for (DocumentSnapshot docs : queryDocumentSnapshots) {
-
-                    User myUser = new User();
-
-                    if (docs.get("uid") != null) {
-                        myUser.setUid(docs.get("uid").toString());
-                    }
-
-                    if (docs.get("urlPicture") != null) {
-                        myUser.setUrlPicture(docs.get("urlPicture").toString());
-                    }
-
-                    if (docs.get("username") != null) {
-                        myUser.setUsername(docs.get("username").toString());
-                    }
-
-                    if (docs.get("favoriteRestaurant") != null) {
-                        myUser.setFavoriteRestaurant(docs.get("favoriteRestaurant").toString());
-                    }
-
-                    //TODO: coorect this
-                    if (docs.get("restaurant_liked") != null) {
-
-                        List<String> mylist = new ArrayList<>();
-                        mylist.addAll((List<String>) docs.get("restaurant_liked"));
-                        myUser.setRestaurant_liked(mylist);
-                    }
-
-                    allWorkMates.add(myUser);
-
-                }
-
-                myWorkMatesListFromRepo.setValue(allWorkMates);
-
-            }
-
-        });
-
-        return null;// myWorkMatesListFromRepo.getValue();
-
+    public LiveData<List<FirestoreUser>> getFirestoreWorkmates() {
+        return myWorkmatesListFromFirestore;
     }
 
+
+    /**
+     * thizsis the listener for all collection (to detect new favoreite)
+     */
     private void setupListenerOnCollection() {
 
-        CollectionReference collectionReference = myBase;
-
-        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        myBase.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable @org.jetbrains.annotations.Nullable QuerySnapshot value,
-                                @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
 
-                if (error != null) {
-                    Log.i("[FIRE]", "Erreur ", error);
-                    return;
+                if (error != null){
+                    Log.i("[FIRESTORE]","Error setupListenerOnCollection() " + error);
                 }
 
-                if (!value.isEmpty()) {
-                    //new
-                    getWorkMatesFromFirestoreRepo();
-
+                if (value != null && !value.isEmpty()){
+                    getAllWorkmatesFromFirestoreRepo();
                 }
-
             }
         });
-
     }
 
 
-
-
-
-    public MutableLiveData<List<User>> getAllWorkMatesListFromRepo() {
-        return myWorkMatesListFromRepo;
-        //return    getRestaurantFromFirestore();
-    }
 
     public Task<DocumentSnapshot> getWorkMates(String uid) {
         if (uid != null) {
@@ -185,20 +140,6 @@ public class FirestoreDatabaseRepository {
             return null;
         }
     }
-
- /*   public void updateFavorite(String place_id) {
-        if (place_id != null) {
-            this.getUsersCollection().document(uid).update(FAVORITE_RESTAURANT, place_id);
-        }
-    }
-
-  */
-
-    /*public void addRestaurant(String name) {
-        this.getUsersCollection().document().update(TAG_RESTAURANT, name);
-    }
-
-     */
 
 
     public FirebaseUser getCurrentUser() {
@@ -355,10 +296,13 @@ public class FirestoreDatabaseRepository {
     }
 
     public void reload() {
-        getWorkMatesFromFirestoreRepo();
+        //getWorkMatesFromFirestoreRepo();
+        getWorkmateFromFirestoreRepo();
+
     }
 
     public void updateUserSystem() {
-        getAllWorkMatesListFromRepo();
+        //getAllWorkMatesListFromRepo();
+        getFirestoreWorkmates();
     }
 }

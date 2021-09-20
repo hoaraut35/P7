@@ -2,15 +2,11 @@ package com.hoarauthomas.go4lunchthp7.ui.detail;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -19,7 +15,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthentificationRepository;
-import com.hoarauthomas.go4lunchthp7.repository.FirestoreDatabaseRepository;
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 
@@ -33,7 +29,7 @@ public class ViewModelDetail extends ViewModel {
     //repositories
     private final FirebaseAuthentificationRepository myFirebaseAuth;
     private final RestaurantsRepository myRestaurantRepository;
-    private final FirestoreDatabaseRepository myFirestoreDatabaseRepository;
+    private final FirestoreRepository myFirestoreRepository;
 
     //for ui
     private final MediatorLiveData<ViewStateDetail> myScreenDetailMediator = new MediatorLiveData<>();
@@ -45,11 +41,11 @@ public class ViewModelDetail extends ViewModel {
     public ViewModelDetail(
             FirebaseAuthentificationRepository myAuthRepository,
             RestaurantsRepository myRestaurantRepository,
-            FirestoreDatabaseRepository myFirestoreDatabaseRepository) {
+            FirestoreRepository myFirestoreRepository) {
 
         this.myFirebaseAuth = myAuthRepository;
         this.myRestaurantRepository = myRestaurantRepository;
-        this.myFirestoreDatabaseRepository = myFirestoreDatabaseRepository;
+        this.myFirestoreRepository = myFirestoreRepository;
 
         //firebase auth user
         LiveData<FirebaseUser> myUserFromRepo = this.myFirebaseAuth.getUserLiveDataNew();
@@ -58,48 +54,34 @@ public class ViewModelDetail extends ViewModel {
         //google api
         LiveData<ResultDetailRestaurant> myRestaurantDetailFromRepo = this.myRestaurantRepository.getMyRestaurantDetail();
         //firestore
-        LiveData<List<FirestoreUser>> myWorkMatesListFromRepo = this.myFirestoreDatabaseRepository.getFirestoreWorkmates();
+        LiveData<List<FirestoreUser>> myWorkMatesListFromRepo = this.myFirestoreRepository.getFirestoreWorkmates();
+        //LiveData<List<FirestoreUser>> myWorkMatesListFromRepo = this.myFirestoreDatabaseRepository.getFirestoreWorkmates2();
 
-        myScreenDetailMediator.addSource(myWorkMatesListFromRepo, new Observer<List<FirestoreUser>>() {
-            @Override
-            public void onChanged(List<FirestoreUser> firestoreUsers) {
-                if (firestoreUsers == null) return;
-                logicWork(myRestaurantsListFromRepo.getValue(), firestoreUsers, myRestaurantDetailFromRepo.getValue(), myUserFromRepo.getValue(), placeIdRequest.getValue());
-            }
+
+        myScreenDetailMediator.addSource(myWorkMatesListFromRepo, firestoreUsers -> {
+            if (firestoreUsers == null) return;
+            logicWork(myRestaurantsListFromRepo.getValue(), firestoreUsers, myRestaurantDetailFromRepo.getValue(), myUserFromRepo.getValue(), placeIdRequest.getValue());
         });
 
-        myScreenDetailMediator.addSource(myRestaurantsListFromRepo, new Observer<List<RestaurantPojo>>() {
-            @Override
-            public void onChanged(List<RestaurantPojo> restaurantPojo) {
-                if (myRestaurantsListFromRepo == null) return;
-                ViewModelDetail.this.logicWork(restaurantPojo, myWorkMatesListFromRepo.getValue(), myRestaurantDetailFromRepo.getValue(), myUserFromRepo.getValue(), placeIdRequest.getValue());
-            }
+        myScreenDetailMediator.addSource(myRestaurantsListFromRepo, restaurantPojo -> {
+            if (myRestaurantsListFromRepo == null) return;
+            ViewModelDetail.this.logicWork(restaurantPojo, myWorkMatesListFromRepo.getValue(), myRestaurantDetailFromRepo.getValue(), myUserFromRepo.getValue(), placeIdRequest.getValue());
         });
 
-        myScreenDetailMediator.addSource(myRestaurantDetailFromRepo, new Observer<ResultDetailRestaurant>() {
-            @Override
-            public void onChanged(ResultDetailRestaurant resultDetailRestaurant) {
-                if (myRestaurantDetailFromRepo == null) return;
-                ViewModelDetail.this.logicWork(myRestaurantsListFromRepo.getValue(), myWorkMatesListFromRepo.getValue(), resultDetailRestaurant, myUserFromRepo.getValue(), placeIdRequest.getValue());
-            }
+        myScreenDetailMediator.addSource(myRestaurantDetailFromRepo, resultDetailRestaurant -> {
+            if (myRestaurantDetailFromRepo == null) return;
+            ViewModelDetail.this.logicWork(myRestaurantsListFromRepo.getValue(), myWorkMatesListFromRepo.getValue(), resultDetailRestaurant, myUserFromRepo.getValue(), placeIdRequest.getValue());
         })
         ;
 
-        myScreenDetailMediator.addSource(myUserFromRepo, new Observer<FirebaseUser>() {
-            @Override
-            public void onChanged(FirebaseUser firebaseUser) {
-                if (myUserFromRepo == null) return;
-                ViewModelDetail.this.logicWork(myRestaurantsListFromRepo.getValue(), myWorkMatesListFromRepo.getValue(), myRestaurantDetailFromRepo.getValue(), firebaseUser, placeIdRequest.getValue());
-            }
+        myScreenDetailMediator.addSource(myUserFromRepo, firebaseUser -> {
+            if (myUserFromRepo == null) return;
+            ViewModelDetail.this.logicWork(myRestaurantsListFromRepo.getValue(), myWorkMatesListFromRepo.getValue(), myRestaurantDetailFromRepo.getValue(), firebaseUser, placeIdRequest.getValue());
         });
 
-        myScreenDetailMediator.addSource(placeIdRequest, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                if (placeIdRequest == null) return;
-                myRestaurantRepository.setPlaceId(s);
-                //logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), myRestaurantDetail.getValue(), myUserFromRepo.getValue(), s);
-            }
+        myScreenDetailMediator.addSource(placeIdRequest, s -> {
+            if (placeIdRequest == null) return;
+            myRestaurantRepository.setPlaceId(s);
         });
 
     }
@@ -113,26 +95,8 @@ public class ViewModelDetail extends ViewModel {
         //list of workmates
         List<FirestoreUser> myWorkMatesDetailList = new ArrayList<>();
 
-        //extract all users with the same restaurant favorite
-      /*  myFirestoreDatabaseRepository.getFirestore().whereEqualTo("favoriteRestaurant", placeIdRequested).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                for (QueryDocumentSnapshot myUser : queryDocumentSnapshots) {
-                    Log.i("[GOOD]", "extract workmates" + myUser.get("username"));
-
-                    myWorkMatesDetailList.add(myUser.toObject(FirestoreUser.class));
-                    //new FirestoreUser((myUser.get("username").toString()));
-                }
-
-                myScreen.setListWorkMates(myWorkMatesDetailList);
-
-
-
-            }
-        });*/
-
-        myFirestoreDatabaseRepository.getFirestore().whereEqualTo("favoriteRestaurant",placeIdRequested).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        //move to repository !
+        myFirestoreRepository.getFirestore().whereEqualTo("favoriteRestaurant",placeIdRequested).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@androidx.annotation.Nullable QuerySnapshot value, @androidx.annotation.Nullable FirebaseFirestoreException error) {
 
@@ -147,16 +111,14 @@ public class ViewModelDetail extends ViewModel {
 
                     Log.i("[GOOD]", "extract workmates" + value.getDocuments().get(i).get("username"));
                     myWorkMatesDetailList.add(value.getDocuments().get(i).toObject(FirestoreUser.class));
-
-
                 }
                 myScreen.setListWorkMates(myWorkMatesDetailList);
 
             }
         });
 
-
-        myFirestoreDatabaseRepository.getFirestore().document(myFirestoreDatabaseRepository.getCurrentUserUID()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+        //move to repository!
+        myFirestoreRepository.getFirestore().document(myFirestoreRepository.getCurrentUserUID()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@androidx.annotation.Nullable DocumentSnapshot value, @androidx.annotation.Nullable FirebaseFirestoreException error) {
 
@@ -315,7 +277,7 @@ public class ViewModelDetail extends ViewModel {
     }
 
     public FirebaseUser getCurrentUser() {
-        return myFirestoreDatabaseRepository.getCurrentUser();
+        return myFirestoreRepository.getCurrentUser();
     }
 
     public LiveData<ViewStateDetail> getMediatorScreen() {
@@ -323,19 +285,19 @@ public class ViewModelDetail extends ViewModel {
     }
 
     public void addLikedRestaurant(String uid, String myPlaces) throws InterruptedException {
-        myFirestoreDatabaseRepository.addLikedRestaurant(uid, myPlaces);
+        myFirestoreRepository.addLikedRestaurant(uid, myPlaces);
     }
 
     public void deleteLikedRestaurant(String uid, String placeId) throws InterruptedException {
-        myFirestoreDatabaseRepository.deleteLikedRestaurant(uid, placeId);
+        myFirestoreRepository.deleteLikedRestaurant(uid, placeId);
     }
 
     public void addtFavRestaurant(String uid, String placeId) throws InterruptedException {
-        myFirestoreDatabaseRepository.addFavRestaurant(uid, placeId);
+        myFirestoreRepository.addFavRestaurant(uid, placeId);
     }
 
     public void deleteFavRestaurant(String uid, String placeId) throws InterruptedException {
-        myFirestoreDatabaseRepository.deleteFavRestaurant(uid);
+        myFirestoreRepository.deleteFavRestaurant(uid);
     }
 
 }

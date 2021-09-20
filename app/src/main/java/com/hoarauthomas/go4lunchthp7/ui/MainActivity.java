@@ -364,7 +364,7 @@ public class MainActivity extends AppCompatActivity {
                     //request user from firebase ui
                     //request user from firestore
 
-                    request_user_info(myViewModel.requestUserFromVM());
+                    request_user_info(myViewModel.getUser());
 
                     //myViewModel.getMyUserData();
 
@@ -481,7 +481,7 @@ public class MainActivity extends AppCompatActivity {
         //TODO:18092021
 
 
-        myViewModel.updateUserSystem();
+    //    myViewModel.updateUserSystem();
 
         // showSnackBar(myUserResult.getDisplayName());
 

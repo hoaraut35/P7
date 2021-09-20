@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModel;
 import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
-import com.hoarauthomas.go4lunchthp7.repository.FirestoreDatabaseRepository;
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 
@@ -22,7 +22,7 @@ public class ViewModelWorkMates extends ViewModel {
     /**
      * declare repository here...
      */
-    private FirestoreDatabaseRepository myFirestoreDatabaseRepository;
+    private FirestoreRepository myFirestoreRepository;
     private RestaurantsRepository myRestaurantRepository;
 
 
@@ -36,16 +36,16 @@ public class ViewModelWorkMates extends ViewModel {
 
     private final RestaurantPojo myRestauResult = new RestaurantPojo();
 
-    public ViewModelWorkMates(RestaurantsRepository myRestaurantRepository, FirestoreDatabaseRepository myFirestoreDatabaseRepository) {
+    public ViewModelWorkMates(RestaurantsRepository myRestaurantRepository, FirestoreRepository myFirestoreRepository) {
 
         this.myRestaurantRepository = myRestaurantRepository;
-        this.myFirestoreDatabaseRepository = myFirestoreDatabaseRepository;
+        this.myFirestoreRepository = myFirestoreRepository;
 
         //old version
-        LiveData<List<User>> myWorkMatesList = this.myFirestoreDatabaseRepository.getAllWorkMatesListFromRepo();
+        LiveData<List<FirestoreUser>> myWorkMatesList = this.myFirestoreRepository.getFirestoreWorkmates();
 
         //new version
-        LiveData<List<FirestoreUser>> myWorkMatesListFromRepo = this.myFirestoreDatabaseRepository.getFirestoreWorkmates();
+        LiveData<List<FirestoreUser>> myWorkMatesListFromRepo = this.myFirestoreRepository.getFirestoreWorkmates();
 
         LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantList = this.myRestaurantRepository.getMyRestaurantsList();
 
@@ -138,6 +138,6 @@ public class ViewModelWorkMates extends ViewModel {
 
 
     public void reload() {
-        myFirestoreDatabaseRepository.reload();
+        myFirestoreRepository.reload();
     }
 }

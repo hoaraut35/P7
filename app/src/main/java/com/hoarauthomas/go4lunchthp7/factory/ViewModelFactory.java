@@ -16,7 +16,7 @@ import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
-import com.hoarauthomas.go4lunchthp7.repository.FirestoreDatabaseRepository;
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
 import com.hoarauthomas.go4lunchthp7.ui.ViewModelMain;
 import com.hoarauthomas.go4lunchthp7.ui.detail.ViewModelDetail;
 import com.hoarauthomas.go4lunchthp7.ui.map.ViewModelMap;
@@ -42,7 +42,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final FirebaseAuthentificationRepository firebaseAuthentificationRepository;
     private final PositionRepository positionRepository;
     private final RestaurantsRepository restaurantsRepository;
-    private final FirestoreDatabaseRepository firestoreDatabaseRepository;
+    private final FirestoreRepository firestoreRepository;
     private final PermissionChecker permissionChecker;
     private final PlaceAutocompleteRepository placeAutocompleteRepository;
     private final AlarmRepository alarmRepository;
@@ -64,7 +64,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                             new FirebaseAuthentificationRepository(FirebaseAuth.getInstance()),
                             new RestaurantsRepository(),
                             new PositionRepository(LocationServices.getFusedLocationProviderClient(application)),
-                            new FirestoreDatabaseRepository(),
+                            new FirestoreRepository(),
                             new PlaceAutocompleteRepository(),
                             new AlarmRepository(application),
                             new SharedRepository()
@@ -80,7 +80,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             FirebaseAuthentificationRepository firebaseAuthentificationRepository,
             RestaurantsRepository restaurantsRepository,
             PositionRepository positionRepository,
-            FirestoreDatabaseRepository firestoreDatabaseRepository,
+            FirestoreRepository firestoreRepository,
             PlaceAutocompleteRepository placeAutocompleteRepository,
             AlarmRepository alarmRepository,
             SharedRepository sharedRepository
@@ -89,7 +89,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.firebaseAuthentificationRepository = firebaseAuthentificationRepository;
         this.positionRepository = positionRepository;
         this.restaurantsRepository = restaurantsRepository;
-        this.firestoreDatabaseRepository = firestoreDatabaseRepository;
+        this.firestoreRepository = firestoreRepository;
         this.placeAutocompleteRepository = placeAutocompleteRepository;
         this.alarmRepository = alarmRepository;
         this.sharedRepository = sharedRepository;
@@ -104,7 +104,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(ViewModelMain.class)) {
             return (T) new ViewModelMain(
                     firebaseAuthentificationRepository,
-                    firestoreDatabaseRepository,
+                    firestoreRepository,
                     placeAutocompleteRepository,
                     positionRepository,
                     alarmRepository,
@@ -115,7 +115,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     permissionChecker,
                     positionRepository,
                     restaurantsRepository,
-                    firestoreDatabaseRepository,
+                    firestoreRepository,
                     sharedRepository
             );
 
@@ -123,19 +123,19 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new ViewModelDetail(
                     firebaseAuthentificationRepository,
                     restaurantsRepository,
-                    firestoreDatabaseRepository);
+                    firestoreRepository);
 
         } else if (modelClass.isAssignableFrom(ViewModelRestaurant.class)) {
             return (T) new ViewModelRestaurant(
                     positionRepository,
                     restaurantsRepository,
-                    firestoreDatabaseRepository,
+                    firestoreRepository,
                     sharedRepository);
 
         } else if (modelClass.isAssignableFrom(ViewModelWorkMates.class)) {
             return (T) new ViewModelWorkMates(
                     restaurantsRepository,
-                    firestoreDatabaseRepository);
+                    firestoreRepository);
         }
 
         throw new IllegalArgumentException("[V M F] Unknow ViewModel class");

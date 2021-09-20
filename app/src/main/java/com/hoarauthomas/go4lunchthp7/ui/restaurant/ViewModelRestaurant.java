@@ -13,7 +13,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
-import com.hoarauthomas.go4lunchthp7.repository.FirestoreDatabaseRepository;
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
@@ -27,23 +28,23 @@ public class ViewModelRestaurant extends ViewModel {
 
     private PositionRepository myPositionRepository;
     private RestaurantsRepository myRestaurantRepository;
-    private FirestoreDatabaseRepository myFirestoreDatabaseRepository;
+    private FirestoreRepository myFirestoreRepository;
     private LiveData<Location> myPosition;
     private SharedRepository mySharedRepository;
     private final MediatorLiveData<ViewStateRestaurant> myViewStateRestaurantMediator = new MediatorLiveData<>();
 
-    public ViewModelRestaurant(PositionRepository myPositionRepository, RestaurantsRepository myRestaurantRepository, FirestoreDatabaseRepository myFirestoreDatabaseRepository, SharedRepository mySharedRepository) {
+    public ViewModelRestaurant(PositionRepository myPositionRepository, RestaurantsRepository myRestaurantRepository, FirestoreRepository myFirestoreRepository, SharedRepository mySharedRepository) {
 
         this.myPositionRepository = myPositionRepository;
         this.myRestaurantRepository = myRestaurantRepository;
-        this.myFirestoreDatabaseRepository = myFirestoreDatabaseRepository;
+        this.myFirestoreRepository = myFirestoreRepository;
         this.mySharedRepository = mySharedRepository;
 
         myPosition = myPositionRepository.getLocationLiveData();
 
         LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
 
-        LiveData<List<User>> myWorkMatesList = this.myFirestoreDatabaseRepository.getAllWorkMatesListFromRepo();
+        LiveData<List<FirestoreUser>> myWorkMatesList = this.myFirestoreRepository.getFirestoreWorkmates();
 
 
         myViewStateRestaurantMediator.addSource(myPosition, new Observer<Location>() {
@@ -63,17 +64,20 @@ public class ViewModelRestaurant extends ViewModel {
             }
         });
 
-        myViewStateRestaurantMediator.addSource(myWorkMatesList, new Observer<List<User>>() {
+
+        myViewStateRestaurantMediator.addSource(myWorkMatesList, new Observer<List<FirestoreUser>>() {
             @Override
-            public void onChanged(List<User> users) {
-                if (users == null) return;
-                logicWork(myRestaurantsList.getValue(), users, myPosition.getValue());
+            public void onChanged(List<FirestoreUser> firestoreUsers) {
+                if (firestoreUsers == null) return;
+                logicWork(myRestaurantsList.getValue(), firestoreUsers, myPosition.getValue());
             }
         });
 
+
+
     }
 
-    private void logicWork(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants, List<User> workMates, @Nullable Location myPosition) {
+    private void logicWork(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants, List<FirestoreUser> workMates, @Nullable Location myPosition) {
 
         if (restaurants == null || workMates == null || myPosition == null) return;
 

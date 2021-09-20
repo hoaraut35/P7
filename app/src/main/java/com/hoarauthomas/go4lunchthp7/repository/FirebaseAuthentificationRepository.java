@@ -2,19 +2,18 @@ package com.hoarauthomas.go4lunchthp7.repository;
 
 import android.content.Context;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.hoarauthomas.go4lunchthp7.model.MyUser;
 
 //Only to get data from Firestore, store and publish user and user state to ViewModel ...
 
 public class FirebaseAuthentificationRepository {
 
     public FirebaseAuth myFireBaseAuthInstance;
+
     private FirebaseUser myFireBaseUser;
 
     private MutableLiveData<FirebaseUser> myUser = new MutableLiveData<>();
@@ -22,7 +21,7 @@ public class FirebaseAuthentificationRepository {
 
     public FirebaseAuthentificationRepository(FirebaseAuth firebaseAuthInstance) {
         this.myFireBaseAuthInstance = firebaseAuthInstance;
-        this.myFireBaseUser = myFireBaseAuthInstance.getCurrentUser();
+        this.myUser.setValue(myFireBaseAuthInstance.getCurrentUser());
         checkActualUserFirebase();
         //
     }
@@ -30,7 +29,7 @@ public class FirebaseAuthentificationRepository {
     //to update status user
     public void checkActualUserFirebase() {
 
-       this.myFireBaseUser = myFireBaseAuthInstance.getCurrentUser();
+        this.myFireBaseUser = myFireBaseAuthInstance.getCurrentUser();
 
         if (myFireBaseUser == null) {
             myUser.setValue(null);
@@ -42,7 +41,7 @@ public class FirebaseAuthentificationRepository {
     }
 
     //to get login state
-    public LiveData<Boolean> getLoginState(){
+    public LiveData<Boolean> getLoginState() {
         return myUserState;
     }
 
@@ -51,9 +50,7 @@ public class FirebaseAuthentificationRepository {
     }
 
     //to get user object
-    public MutableLiveData<FirebaseUser> getUserLiveDataNew() {
-
-
+    public LiveData<FirebaseUser> getUserLiveDataNew() {
         return myUser;
     }
 
@@ -62,8 +59,7 @@ public class FirebaseAuthentificationRepository {
         checkActualUserFirebase();
     }
 
-    public FirebaseUser requestUserFromRepo() {
-       // this.myFireBaseAuthInstance = firebaseAuthInstance;
-        return this.myFireBaseUser = myFireBaseAuthInstance.getCurrentUser();
+    public LiveData<FirebaseUser> getUserFromVM() {
+        return null;// myFireBaseAuthInstance.getCurrentUser();
     }
 }

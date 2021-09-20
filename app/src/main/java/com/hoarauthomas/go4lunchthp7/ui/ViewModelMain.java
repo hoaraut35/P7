@@ -19,7 +19,8 @@ import com.hoarauthomas.go4lunchthp7.SingleLiveEvent;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.repository.AlarmRepository;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthentificationRepository;
-import com.hoarauthomas.go4lunchthp7.repository.FirestoreDatabaseRepository;
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
@@ -33,7 +34,7 @@ public class ViewModelMain extends ViewModel {
 
     //repository...
     private FirebaseAuthentificationRepository myFirebaseAuthRepoVM;
-    private FirestoreDatabaseRepository myWorkMatesRepoVM;
+    private FirestoreRepository myWorkMatesRepoVM;
     private PlaceAutocompleteRepository myPlaceAutocompleteRepoVM;
     private PositionRepository myPositionRepoVM;
     private AlarmRepository myAlarmRepoVM;
@@ -44,9 +45,9 @@ public class ViewModelMain extends ViewModel {
     private SharedRepository mySharedRepoVM;
 
     //livedata...
-    private MutableLiveData<FirebaseUser> myUserLiveData = new MutableLiveData<>();
+    private LiveData<FirebaseUser> myUserLiveData;
     private MutableLiveData<Boolean> myUserStateNew;
-    private MutableLiveData<List<User>> myWorkMatesListLiveData = new MutableLiveData<>();
+    private LiveData<List<FirestoreUser>> myWorkMatesListLiveData = new MutableLiveData<>();
 
 
     private MutableLiveData<String> myUserRestaurantId = new MutableLiveData<>();
@@ -61,7 +62,7 @@ public class ViewModelMain extends ViewModel {
     MediatorLiveData<ViewMainState> myAppMapMediator = new MediatorLiveData<>();
 
     //constructor...
-    public ViewModelMain(FirebaseAuthentificationRepository firebaseAuthentificationRepository, FirestoreDatabaseRepository firestoreDatabaseRepository, PlaceAutocompleteRepository placeAutocompleteRepository, PositionRepository myPositionRepoVM, AlarmRepository myAlarmRepoVM, SharedRepository mySharedRepoVM) {
+    public ViewModelMain(FirebaseAuthentificationRepository firebaseAuthentificationRepository, FirestoreRepository firestoreRepository, PlaceAutocompleteRepository placeAutocompleteRepository, PositionRepository myPositionRepoVM, AlarmRepository myAlarmRepoVM, SharedRepository mySharedRepoVM) {
 
         //get data from Auth repository...
         this.myFirebaseAuthRepoVM = firebaseAuthentificationRepository;
@@ -69,8 +70,8 @@ public class ViewModelMain extends ViewModel {
         myUserStateNew = myFirebaseAuthRepoVM.getLoggedOutLiveDataNew();
 
         //get data from workmates repository...
-        this.myWorkMatesRepoVM = firestoreDatabaseRepository;
-        myWorkMatesListLiveData = myWorkMatesRepoVM.getAllWorkMatesListFromRepo();
+        this.myWorkMatesRepoVM = firestoreRepository;
+        myWorkMatesListLiveData = myWorkMatesRepoVM.getFirestoreWorkmates();
 
         //get data from place autocomplete repository...
         this.myPlaceAutocompleteRepoVM = placeAutocompleteRepository;
@@ -88,20 +89,6 @@ public class ViewModelMain extends ViewModel {
 
 
         //add source
-    /*    myAppMapMediator.addSource(myUserStateNew, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-
-                if (aBoolean==null) return;
-
-                Log.i("MEDIA", "new event on state");
-                logicWork(myUserLiveData.getValue(), myWorkMatesListLiveData.getValue(), aBoolean);
-            }
-        });
-
-     */
-
-        //add source
         myAppMapMediator.addSource(myUserLiveData, new Observer<FirebaseUser>() {
             @Override
             public void onChanged(FirebaseUser firebaseUser) {
@@ -114,11 +101,9 @@ public class ViewModelMain extends ViewModel {
         });
 
         //add source
-        myAppMapMediator.addSource(myWorkMatesListLiveData, new Observer<List<User>>() {
+        myAppMapMediator.addSource(myWorkMatesListLiveData, new Observer<List<FirestoreUser>>() {
             @Override
-            public void onChanged(List<User> users) {
-
-                Log.i("MEDIA", "new event on list workmates");
+            public void onChanged(List<FirestoreUser> users) {
 
                 if (users == null) return;
 
@@ -144,7 +129,7 @@ public class ViewModelMain extends ViewModel {
     }
 
     // Logic work
-    private void logicWork(@Nullable FirebaseUser myUser, @Nullable List<User> workmates, Boolean bool) {
+    private void logicWork(@Nullable FirebaseUser myUser, @Nullable List<FirestoreUser> workmates, Boolean bool) {
 
         createUser();
 
@@ -154,19 +139,21 @@ public class ViewModelMain extends ViewModel {
 
             if (!myUser.getUid().isEmpty()) {
 
-                for (int i = 0; i < workmates.size(); i++) {
+                /*for (int i = 0; i < workmates.size(); i++) {
 
-                    if (workmates.get(i).getUid().equals(myUser.getUid())) {
-                        myUserRestaurantId.setValue(workmates.get(i).getFavoriteRestaurant());
+                    if (workmates.get(i).getMyUID().equals(myUser.getUid())) {
+                   //     myUserRestaurantId.setValue(workmates.get(i).getFavoriteRestaurant());
                         Log.i("", "");
                         myUserLiveData = myFirebaseAuthRepoVM.getUserLiveDataNew();
                         break;
                     }
                 }
 
+                 */
+
                 //getUser();
-                myAppMapMediator.setValue(new ViewMainState(true, myUserRestaurantId.getValue(), getUser()));
-//
+                //myAppMapMediator.setValue(new ViewMainState(true, myUserRestaurantId.getValue(), getUser()));
+                // myAppMapMediator.setValue(new ViewMainState(true, "pas de restau", getUser()));
             } else {
                 //getUser();
                 myAppMapMediator.setValue(new ViewMainState(true, "pas de restau", getUser()));
@@ -214,13 +201,10 @@ public class ViewModelMain extends ViewModel {
 
     }
 
+
     public FirebaseUser getUser() {
-
+        //return myFirebaseAuthRepoVM.getUserFromVM();
         return myUserLiveData.getValue();
-    }
-
-    public FirebaseUser requestUserFromVM(){
-        return myFirebaseAuthRepoVM.requestUserFromRepo();
     }
 
 
@@ -287,7 +271,8 @@ public class ViewModelMain extends ViewModel {
 
 
     public void updataApp() {
-        myWorkMatesRepoVM.getAllWorkMatesListFromRepo();
+        myWorkMatesRepoVM.getFirestoreWorkmates();
+    //WorkMatesListFromRepo();
     }
 
     public DocumentSnapshot getMyUserData() {
@@ -298,9 +283,6 @@ public class ViewModelMain extends ViewModel {
         return myWorkMatesRepoVM.getUserFirestoreFromRepo(uid);
     }
 
-    public void updateUserSystem() {
-        myWorkMatesRepoVM.updateUserSystem();
-    }
 }
 
 
