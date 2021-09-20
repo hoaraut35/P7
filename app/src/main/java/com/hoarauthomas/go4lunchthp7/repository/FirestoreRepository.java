@@ -20,6 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Source;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class FirestoreRepository {
     private MutableLiveData<FirestoreUser> myWorkmateFromRepo = new MutableLiveData<>();
     private MutableLiveData<List<FirestoreUser>> myWorkmatesListFromFirestore = new MutableLiveData<>();
 
+
     /**
      * constructor called by injection
      */
@@ -49,18 +51,23 @@ public class FirestoreRepository {
     /**
      * get an user from firestore
      */
-    private void getWorkmateFromFirestoreRepo() {
-        myBase.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+    private void getWorkmateFromFirestoreRepo(String uid) {
+        myBase.document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    List<FirestoreUser> myList = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        FirestoreUser myFirestoreUsersList = document.toObject(FirestoreUser.class);
-                        myList.add(myFirestoreUsersList);
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                if (task.isSuccessful()){
+                    DocumentSnapshot myWorkmate = task.getResult();
+
+                    if (myWorkmate.exists()){
+                        myWorkmateFromRepo.setValue(myWorkmate.toObject(FirestoreUser.class));
+                    }else
+                    {
+                        Log.i("[FIRESTORE]","Error getWorkmateFromFiresotre on user object");
                     }
-                } else {
-                    Log.i("[FIRESTORE]", "Error on getWorkmateFromFirestoreRepo " + task.getException());
+                }else
+                {
+                    Log.i("[FIRESTORE]","Error getWorkmateFromFiresotre on result data empty");
                 }
             }
         });
@@ -70,7 +77,6 @@ public class FirestoreRepository {
      * return a user for viewmodel
      * @return
      */
-
     public LiveData<FirestoreUser> getWorkmateFromRepo() {
         return myWorkmateFromRepo;
     }
@@ -111,7 +117,7 @@ public class FirestoreRepository {
 
 
     /**
-     * thizsis the listener for all collection (to detect new favoreite)
+     * this is the listener for all collection (to detect new favoreite)
      */
     private void setupListenerOnCollection() {
 
@@ -132,21 +138,13 @@ public class FirestoreRepository {
 
 
 
-    public Task<DocumentSnapshot> getWorkMates(String uid) {
-        if (uid != null) {
-            return this.myBase.document(uid).get();
-
-        } else {
-            return null;
-        }
-    }
-
-
+//TODO: delete?
     public FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
 
+    //TODO:rebuild thios?
     public void createUser() {
 
         FirebaseUser user = getCurrentUser();
@@ -179,38 +177,13 @@ public class FirestoreRepository {
             });
 
 
-            Task<DocumentSnapshot> userData = getUserData();
+         //   Task<DocumentSnapshot> userData = getWorkmateFromFirestoreRepo(getCurrentUserUID());
 
 
 
-          /*      if (documentSnapshot.contains("uid")) ){
-                    Log.i("[CREATE]","a creer");
-                }else
-                {
-                    Log.i("[CREATE]","deja la");
-
-                }
-
-           */
 
 
-               /* if (documentSnapshot.contains("favoriteRestaurant")) {
-                //    userToCreate.setFavoriteRestaurant(restaurant);
 
-                } else if (documentSnapshot.contains("urlPicture")) {
-                    userToCreate.setUrlPicture(urlPicture);
-
-                } else if (documentSnapshot.contains("username")) {
-                    userToCreate.setUsername(username);
-                } else if (documentSnapshot.contains("restaurant_liked")) {
-        //            userToCreate.setRestaurant_liked(restaurant_liked);
-                }
-
-                */
-
-
-            //
-            //  });
 
 
         }
@@ -219,24 +192,8 @@ public class FirestoreRepository {
     }
 
 
-    public Task<DocumentSnapshot> checkUser() {
-        String uid = this.getCurrentUserUID();
-        if (uid != null) {
-            return this.myBase.document(uid).get();
-        } else {
-            return null;
-        }
 
-    }
 
-    public Task<DocumentSnapshot> getUserData() {
-        String uid = this.getCurrentUserUID();
-        if (uid != null) {
-            return this.myBase.document(uid).get();
-        } else {
-            return null;
-        }
-    }
 
     public String getCurrentUserUID() {
         FirebaseUser user = getCurrentUser();
@@ -297,7 +254,7 @@ public class FirestoreRepository {
 
     public void reload() {
         //getWorkMatesFromFirestoreRepo();
-        getWorkmateFromFirestoreRepo();
+        getWorkmateFromFirestoreRepo(getCurrentUserUID());
 
     }
 

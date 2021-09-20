@@ -275,9 +275,7 @@ public class ViewModelMain extends ViewModel {
     //WorkMatesListFromRepo();
     }
 
-    public DocumentSnapshot getMyUserData() {
-        return myWorkMatesRepoVM.getUserData().getResult();
-    }
+
 
     public Task<DocumentSnapshot> requestUserForestoreFromVM(String uid) {
         return myWorkMatesRepoVM.getUserFirestoreFromRepo(uid);

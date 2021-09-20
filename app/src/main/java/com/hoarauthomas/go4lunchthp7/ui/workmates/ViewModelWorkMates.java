@@ -138,6 +138,6 @@ public class ViewModelWorkMates extends ViewModel {
 
 
     public void reload() {
-        myFirestoreRepository.reload();
+        //myFirestoreRepository.reload();
     }
 }
