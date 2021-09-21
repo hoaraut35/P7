@@ -74,7 +74,7 @@ public class FirebaseAuthentificationRepository {
 
     public void logOut(Context context) {
         myFireBaseAuthInstance.signOut();
-        checkActualUserFirebase();
+      //  checkActualUserFirebase();
     }
 
     public LiveData<FirebaseUser> getUserFromVM() {
