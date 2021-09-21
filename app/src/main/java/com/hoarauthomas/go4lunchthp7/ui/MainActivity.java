@@ -48,7 +48,6 @@ import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.R;
@@ -114,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         setupViewPager();
 
 
-     //   setupSettings();
+        //   setupSettings();
 
         //    loadWork();//alarm
         //   loadtest();
@@ -314,9 +313,9 @@ public class MainActivity extends AppCompatActivity {
          */
 
 
-     //   ListView testList = new ListView(this);
+        //   ListView testList = new ListView(this);
 
-    //    testList.setAdapter(new ArrayAdapter<>(this, android.R.layout.select_dialog_item, ArrayListForDialog));
+        //    testList.setAdapter(new ArrayAdapter<>(this, android.R.layout.select_dialog_item, ArrayListForDialog));
 
      /*   testList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -333,8 +332,7 @@ public class MainActivity extends AppCompatActivity {
 
       */
 
-      //  builder.setView(testList);
-
+        //  builder.setView(testList);
 
 
         AlertDialog myDialogBox = builder.create();
@@ -356,22 +354,20 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(Boolean aBoolean) {
 
 
-
                 showSnackBar("Login : " + aBoolean.toString());
 
-                if (aBoolean){
+                if (aBoolean) {
 
 
                     //request user from firebase ui
                     //request user from firestore
 
-                  //  request_user_info(myViewModel.getUser());
+                    request_user_info(myViewModel.getUser());
 
                     //myViewModel.getMyUserData();
 
 
-                }else
-                {
+                } else {
                     request_login();
                 }
             }
@@ -382,11 +378,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(ViewMainState viewStateMain) {
                 if (viewStateMain.myUser != null) {
-                 // binding.debugTxt.setText(viewStateMain.myUser.getDisplayName());
+                    // binding.debugTxt.setText(viewStateMain.myUser.getDisplayName());
                     //  request_user_info(viewStateMain.getMyUser());
                     //testNotification(viewStateMain.myRestaurant.toString());
                 } else {
-                //    request_login();
+                    //    request_login();
                 }
             }
         });
@@ -416,18 +412,17 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onActivityResult(FirebaseAuthUIAuthenticationResult result) {
 
-                        Log.i("[LOGIN]","Retour réponse : " + result.getResultCode() + result.getIdpResponse());
+                        Log.i("[LOGIN]", "Retour réponse : " + result.getResultCode() + result.getIdpResponse());
 
 
-                     //   myViewModel.checkUserLogin();
+                        //   myViewModel.checkUserLogin();
                         if (result.getResultCode() == -1) {
                             Log.i("[Auth]", "login ok " + result.getResultCode());
 
 
-
                             myViewModel.setUser();
 
-                          //  myViewModel.checkUserLogin();
+                            //  myViewModel.checkUserLogin();
 
 
                         } else {
@@ -490,8 +485,8 @@ public class MainActivity extends AppCompatActivity {
         //if (mymyViewModel.getUser() != null) {
         if (myUserResult != null) {
 
-          //  DocumentSnapshot myDoc = myViewModel.requestUserForestoreFromVM(myUserResult.getUid()).getResult();
 
+            //  DocumentSnapshot myDoc = myViewModel.requestUserForestoreFromVM(myUserResult.getUid()).getResult();
 
 
             //myViewModel.setMyUserRestaurantId(myViewModel.getMyUserData().get("favorite_restaurant").toString());
@@ -502,117 +497,47 @@ public class MainActivity extends AppCompatActivity {
 
             TextView name = hv.findViewById(R.id.displayName);
 
-            //name.setText(Objects.requireNonNull(this.myViewModel.getUser().getDisplayName()));
+
+            //name of user profile
             name.setText(Objects.requireNonNull(myUserResult.getDisplayName()));
-
+            //email of user profile
             TextView email = hv.findViewById(R.id.email);
+            email.setText(myUserResult.getEmail());
 
-            //email.setText(this.myViewModel.getUser().getEmail());
+
+            if (myUserResult != null) {
+                for (UserInfo profile : myUserResult.getProviderData()) {
+                    email.setText(profile.getEmail());
+                }
+            }
 
 
             ImageView avatar = hv.findViewById(R.id.avatar);
 
-
             //avatar variable
             String avatar2 = "";
 
+            if (myUserResult.getPhotoUrl() == null) {
 
+                String nom = myUserResult.getDisplayName();
+                String[] parts = nom.split(" ", 2);
+                String z = "";
 
-            if (myUserResult.getProviderId().equals("twitter.com")){
-
-               // avatar2 = myUserResult.getProviderData().
-            }
-
-
-            //specific provider
-            for (UserInfo profile : myUserResult.getProviderData()) {
-
-
-         /*       String photoProfile = Objects.requireNonNull(profile.getPhotoUrl()).toString();
-                Log.i("[PROFILE]", "Profile photo url : " + profile.getPhotoUrl());
-
-
-          */
-
-                email.setText(profile.getEmail());
-
-              /* if (profile.getPhotoUrl() != null){
-
-
-                        String nom = this.myViewModel.getUser().getDisplayName();
-                        String[] parts = nom.split(" ", 2);
-                        String z = "";
-
-                        for (int i = 0; i < parts.length; i++) {
-                            z = parts[i].charAt(0) + z;
-                        }
-
-                        avatar2 = "https://eu.ui-avatars.com/api/?name=" + z;
-                    } else {
-                        avatar2 = photoProfile;
-                    }
-
-
+                for (int i = 0; i < parts.length; i++) {
+                    z = parts[i].charAt(0) + z;
                 }
-
-
-               */
-
+                avatar2 = "https://eu.ui-avatars.com/api/?name=" + z;
+            } else {
+                avatar2 = myUserResult.getPhotoUrl().toString();//+ "?access_token=<"+ AccessToken.getCurrentAccessToken()+">" ;
+                Log.i("[AVATAR]", "" + avatar2.toString());
             }
-
-
-
-
-            //if (this.myViewModel.getUser().getPhotoUrl() == null) {
-//            if (myUserResult.getPhotoUrl() == null) {
-//
-//                String nom = this.myViewModel.getUser().getDisplayName();
-//                String[] parts = nom.split(" ", 2);
-//                String z = "";
-//
-//                for (int i = 0; i < parts.length; i++) {
-//                    z = parts[i].charAt(0) + z;
-//                }
-//
-//                avatar2 = "https://eu.ui-avatars.com/api/?name=" + z;
-//            } else {
-//
-//
-//                           //     myUserResult.getProviderId();
-//                             //   if (myUserResult.getProviderId().equals(FacebookAuthProvider.PROVIDER_ID)){
-//                                    avatar2 = myUserResult.getPhotoUrl().toString() ;//+ "?access_token=<"+ AccessToken.getCurrentAccessToken()+">" ;
-//                                    //+ "?access_token=<facebook_access_token>"
-//                               // }else
-//                               // {
-//                                 //   avatar2 = myUserResult.getPhotoUrl().toString();
-//
-//                               // }//
-//                //avatar2 = this.myViewModel.getUser().getPhotoUrl().toString();
-//
-//                Log.i("[AVATAR]", "" + avatar2.toString());
-//
-//
-//            }
 
             Glide.with(avatar)
                     .load(avatar2)
                     .circleCrop()
                     .into(avatar);
 
-//            if (myViewModel.getUser().getPhotoUrl() == null) {
-//                Log.i("[LOGIN]", "Pas d'avatar");
-//            } else {
-//
-//                Glide.with(avatar)
-//                        .load(this.myViewModel.getUser().getPhotoUrl())
-//                        .circleCrop()
-//                        .into(avatar);
-//            }
 
-
-            //TODO: 19092021
-            //myViewModel.getUser();
-          //  myViewModel.reload();
         }
 
     }
@@ -813,13 +738,11 @@ public class MainActivity extends AppCompatActivity {
                     List<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myListResponse = new ArrayList<>();
 
 
-                    if (query != null && mypos != null){
+                    if (query != null && mypos != null) {
                         myViewModel.getResultAutocomplete(query, mypos);
-                    }else
-                    {
+                    } else {
                         Toast.makeText(getApplicationContext(), "Réessayer plus tard", Toast.LENGTH_SHORT).show();
                     }
-
 
 
                     //envoyer la requete au viewmodel
