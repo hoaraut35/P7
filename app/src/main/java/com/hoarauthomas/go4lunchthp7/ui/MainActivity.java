@@ -382,7 +382,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(ViewMainState viewStateMain) {
                 if (viewStateMain.myUser != null) {
-                  binding.debugTxt.setText(viewStateMain.myUser.getDisplayName());
+                 // binding.debugTxt.setText(viewStateMain.myUser.getDisplayName());
                     //  request_user_info(viewStateMain.getMyUser());
                     //testNotification(viewStateMain.myRestaurant.toString());
                 } else {
