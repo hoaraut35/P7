@@ -28,6 +28,9 @@ public class DetailActivity extends AppCompatActivity {
     private ActivityDetailRestaurantBinding binding;
     private ViewModelDetail myViewModelDetail;
 
+    private Boolean mFavorite;
+    private String mPlaceId;
+    private String mWorkmate;
     private RecyclerView myRecyclerView;
     private RecyclerViewAdapterDetail myRecyclerViewAdapter;
 
@@ -39,6 +42,8 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(view);
         setupViewModel();
         setupIntent();
+
+        setupOnClicFavoriteBtn();
 
     }
 
@@ -56,10 +61,14 @@ public class DetailActivity extends AppCompatActivity {
 
         myViewModelDetail = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelDetail.class);
 
+
         myViewModelDetail.getMediatorScreen().observe(this, screenDetailModel -> {
 
+            mFavorite = screenDetailModel.getFavorite();
+            mPlaceId = screenDetailModel.getPlaceId();
+            mWorkmate = screenDetailModel.getWorkmate();
 
-            binding.textBug.setText(    "user : " + myViewModelDetail.getCurrentUser().getUid().toString() + "\n " +
+            binding.textBug.setText("user : " + myViewModelDetail.getCurrentUser().getUid().toString() + "\n " +
                     "                   fav:" + screenDetailModel.getFavorite() + "\n lik: " + screenDetailModel.getLiked() + "place : " + myViewModelDetail.getPlaceId());
 
             //get photo
@@ -98,7 +107,7 @@ public class DetailActivity extends AppCompatActivity {
             //get choice
             setupButtonChoice(screenDetailModel.getFavorite());
 
-            setupButtonLike(screenDetailModel.getLiked());
+            //       setupButtonLike(screenDetailModel.getLiked());
 
             //get list of workmates
             setupRecyclerView(screenDetailModel.getListWorkMates());
@@ -110,8 +119,19 @@ public class DetailActivity extends AppCompatActivity {
         });
     }
 
+
+    private void setupOnClicFavoriteBtn() {
+        binding.choiceBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myViewModelDetail.updateFavRestaurant(mFavorite, mPlaceId, mWorkmate);
+            }
+        });
+    }
+
+
     private void setupDataRC(List<FirestoreUser> listWorkMates) {
-   //     myRecyclerViewAdapter.notifyDataSetChanged();
+        //     myRecyclerViewAdapter.notifyDataSetChanged();
 
 
     }
@@ -162,29 +182,6 @@ public class DetailActivity extends AppCompatActivity {
             binding.choiceBtn.setImageResource(R.drawable.unchecked_favori_restaurant);
         }
 
-        //for action
-        binding.choiceBtn.setOnClickListener(v -> {
-
-            if (state) {
-                //disable
-                //     showSnackBar(getString(R.string.delete_fav_msg) + myViewModelDetail.getCurrentUser().getUid());
-                try {
-                    myViewModelDetail.deleteFavRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                //enable
-                //  showSnackBar(getString(R.string.add_fav_msg)+ myViewModelDetail.getCurrentUser().getUid());
-                try {
-                    myViewModelDetail.addtFavRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-        });
 
     }
 

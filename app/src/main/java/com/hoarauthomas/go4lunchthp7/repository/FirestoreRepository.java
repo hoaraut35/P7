@@ -52,7 +52,8 @@ public class FirestoreRepository {
     /**
      * get an user from firestore
      */
-    public LiveData<FirestoreUser> getWorkmateFromFirestoreRepo() {
+    public void getWorkmateFromFirestoreRepo() {
+
         myBase.document(getCurrentUserUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -62,24 +63,23 @@ public class FirestoreRepository {
 
                     if (myWorkmate.exists()) {
                         myWorkmateFromRepo.setValue(myWorkmate.toObject(FirestoreUser.class));
-
+                        Log.i("","");
                         //return myWorkmate.toObject(FirestoreUser.class);
                     } else {
                         Log.i("[FIRESTORE]", "Error getWorkmateFromFiresotre on user object");
+
                     }
                 } else {
                     Log.i("[FIRESTORE]", "Error getWorkmateFromFiresotre on result data empty");
                 }
             }
         })
-        .addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.i("[FIRESTORE]", "Error getWorkmateFromFiresotre on result data empty" + e);
-            }
-        });
-
-        return myWorkmateFromRepo;
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.i("[FIRESTORE]", "Error getWorkmateFromFiresotre on result data empty" + e);
+                    }
+                });
     }
 
     /**
@@ -95,22 +95,21 @@ public class FirestoreRepository {
      * get all workmates from firestore
      */
     private void getAllWorkmatesFromFirestoreRepo() {
-        myBase.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
 
-                    List<FirestoreUser> allWorkMates = new ArrayList<>();
+        myBase.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
 
-                    for (QueryDocumentSnapshot workmateIterate : task.getResult()) {
-                        allWorkMates.add(workmateIterate.toObject(FirestoreUser.class));
-                    }
+                List<FirestoreUser> allWorkMates = new ArrayList<>();
 
-                    myWorkmatesListFromFirestore.setValue(allWorkMates);
-                } else {
-                    myWorkmatesListFromFirestore.setValue(null);
-                    Log.i("[FIRESTORE]", "Error on getWorkmatesFromFirestore " + task.getException());
+                for (QueryDocumentSnapshot workmateIterate : task.getResult()) {
+                    allWorkMates.add(workmateIterate.toObject(FirestoreUser.class));
                 }
+
+                Log.i("[FIRESTORE]", "Récupération des workmates  " + allWorkMates.size());
+                myWorkmatesListFromFirestore.setValue(allWorkMates);
+            } else {
+                myWorkmatesListFromFirestore.setValue(null);
+                Log.i("[FIRESTORE]", "Error on getWorkmatesFromFirestore " + task.getException());
             }
         });
     }
@@ -127,7 +126,7 @@ public class FirestoreRepository {
 
 
     /**
-     * this is the listener for all collection (to detect new favoreite)
+     * this is the listener for all collection (to detect new add remove event and refresh viewmodel)
      */
     private void setupListenerOnCollection() {
 
@@ -140,10 +139,17 @@ public class FirestoreRepository {
                 }
 
                 if (value != null && !value.isEmpty()) {
+                    Log.i("[FIRESTORE]", "Evenement sur la base ");
+
+                    //get new database from firestore to create an event in viewmodel
                     getAllWorkmatesFromFirestoreRepo();
                 }
             }
         });
+    }
+
+    private void refresh() {
+        getAllWorkmatesFromFirestoreRepo();
     }
 
 
@@ -191,20 +197,18 @@ public class FirestoreRepository {
 
     //CRUD
 
-    public List<QuerySnapshot> getWorkmatesByPlaceId(String placeId){
-        myBase.whereEqualTo("favorite_restaurant",placeId).addSnapshotListener(new EventListener<QuerySnapshot>() {
+    public List<QuerySnapshot> getWorkmatesByPlaceId(String placeId) {
+        myBase.whereEqualTo("favorite_restaurant", placeId).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (error!=null){
-                    Log.i("[FIRESTORE]","Error on getWorkmatesByPlaceId()");
-                }else {
+                if (error != null) {
+                    Log.i("[FIRESTORE]", "Error on getWorkmatesByPlaceId()");
+                } else {
 
-                  //  return value.getDocuments();
-
+                    //  return value.getDocuments();
 
 
                 }
-
 
 
             }
@@ -214,20 +218,44 @@ public class FirestoreRepository {
     }
 
 
-
     public Task<Void> addLikedRestaurant(String uid, String placeId) throws InterruptedException {
         myFirestorePause();
         return myBase.document(uid).update("restaurant_liked", FieldValue.arrayUnion(placeId));
     }
 
-    public Task<Void> addFavRestaurant(String uid, String placeId) throws InterruptedException {
-        myFirestorePause();
-        return myBase.document(uid).update("favoriteRestaurant", placeId);
+    public void addFavRestaurant(String uid, String placeId) {
+
+        myBase.document(uid).update("favoriteRestaurant", placeId).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Log.i("[FIRESTORE]", "Ajout du favoris ok");
+                //  refresh();
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.i("[FIRESTORE]", "Ajout favoris impossible : " + e);
+                    }
+                });
     }
 
-    public Task<Void> deleteFavRestaurant(String uid) throws InterruptedException {
-        myFirestorePause();
-        return myBase.document(uid).update("favoriteRestaurant", "");
+    public void deleteFavRestaurant(String uid) {
+
+        myBase.document(uid).update("favoriteRestaurant", "").addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Log.i("[FIRESTORE]", "Suppression du favoris ok");
+                //   refresh();
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.i("[FIRESTORE]", "Suppression favoris impossible : " + e);
+                    }
+                });
+
     }
 
     public Task<Void> deleteLikedRestaurant(String uid, String placeId) throws InterruptedException {
@@ -254,4 +282,49 @@ public class FirestoreRepository {
     }
 
 
+    /**
+     * add or remove favorite restaurant
+     *
+     * @param mFavorite true or false
+     * @param mPlaceId  id of place to add or remove
+     * @param mWorkmate id of workmate for the event
+     */
+    public void updateFavRestaurant(Boolean mFavorite, String mPlaceId, String mWorkmate) {
+
+        Log.i("","" +mFavorite + mPlaceId + mWorkmate);
+        if (!mFavorite) {
+
+            myBase.document(mWorkmate).update("favoriteRestaurant", "")
+
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Log.i("[FIRESTORE]", "Suppression du favoris ok");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.i("[FIRESTORE]", "Suppression favoris impossible : " + e);
+                        }
+                    });
+        } else {
+
+            myBase.document(mWorkmate).update("favoriteRestaurant", mPlaceId)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Log.i("[FIRESTORE]", "Ajout du favoris ok");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.i("[FIRESTORE]", "Ajout favoris impossible : " + e);
+                        }
+                    });
+
+        }
+
+    }
 }

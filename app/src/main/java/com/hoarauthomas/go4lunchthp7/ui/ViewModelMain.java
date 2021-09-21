@@ -129,7 +129,7 @@ public class ViewModelMain extends ViewModel {
     // Logic work
     private void logicWork(@Nullable FirebaseUser myUser, @Nullable List<FirestoreUser> workmates, Boolean bool) {
 
-        createUser();
+      //  createUser();
 
 
         if (myUser != null && workmates != null) {
