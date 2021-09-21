@@ -2,6 +2,7 @@ package com.hoarauthomas.go4lunchthp7.repository;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -13,7 +14,6 @@ import com.google.firebase.auth.FirebaseUser;
 public class FirebaseAuthentificationRepository {
 
     public FirebaseAuth myFireBaseAuthInstance;
-
     private FirebaseUser myFireBaseUser;
 
     private MutableLiveData<FirebaseUser> myUser = new MutableLiveData<>();
@@ -21,9 +21,33 @@ public class FirebaseAuthentificationRepository {
 
     public FirebaseAuthentificationRepository(FirebaseAuth firebaseAuthInstance) {
         this.myFireBaseAuthInstance = firebaseAuthInstance;
-        this.myUser.setValue(myFireBaseAuthInstance.getCurrentUser());
-        checkActualUserFirebase();
-        //
+        myUser.setValue(myFireBaseAuthInstance.getCurrentUser());
+        //this.myUser.setValue(myFireBaseAuthInstance.getCurrentUser());
+        loginListener();
+    }
+
+    public void loginListener() {
+
+        myFireBaseAuthInstance.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+                if (firebaseAuth.getCurrentUser() != null) {
+
+                    myUser.setValue(firebaseAuth.getCurrentUser());
+                    myUserState.setValue(true);
+                }                                                               //  Log.i("[Auth]", "Utilisateur : " + myFireBaseUser.getDisplayName());
+                else {
+
+                    myUser.setValue(null);
+                    myUserState.setValue(false);
+
+                }
+
+
+            }
+        });
+
     }
 
     //to update status user
@@ -31,13 +55,7 @@ public class FirebaseAuthentificationRepository {
 
         this.myFireBaseUser = myFireBaseAuthInstance.getCurrentUser();
 
-        if (myFireBaseUser == null) {
-            myUser.setValue(null);
-            myUserState.setValue(false);
-        } else {
-            myUser.setValue(myFireBaseUser);
-            myUserState.setValue(true);
-        }
+
     }
 
     //to get login state
@@ -61,5 +79,8 @@ public class FirebaseAuthentificationRepository {
 
     public LiveData<FirebaseUser> getUserFromVM() {
         return null;// myFireBaseAuthInstance.getCurrentUser();
+    }
+
+    public void updateUser() {
     }
 }

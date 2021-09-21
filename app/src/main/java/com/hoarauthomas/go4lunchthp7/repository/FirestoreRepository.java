@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -44,26 +43,33 @@ public class FirestoreRepository {
      */
     public FirestoreRepository() {
         this.myBase = FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
-        getAllWorkmatesFromFirestoreRepo();
-        getWorkmateFromFirestoreRepo();
+        // getAllWorkmatesFromFirestoreRepo();
+        //getWorkmateFromFirestoreRepo();
         setupListenerOnCollection();
+        setupListenerWorkmateFromFirestoreRepo();//getWorkmateFromFirestoreRepo();
 
+    }
+
+
+    public void setupListenerds() {
+        setupListenerOnCollection();
+        setupListenerWorkmateFromFirestoreRepo();
     }
 
     /**
      * get an user from firestore
      */
-    public void getWorkmateFromFirestoreRepo() {
+    public void setupListenerWorkmateFromFirestoreRepo() {
 
         myBase.document(getCurrentUser().getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
 
-                if (error != null){
-                    Log.i("[FIRESTORE]","Erorr on listener for user");
+                if (error != null) {
+                    Log.i("[FIRESTORE]", "Erorr on listener for user");
                 }
 
-                if (value != null && value.exists()){
+                if (value != null && value.exists()) {
                     myWorkmateFromRepo.setValue(value.toObject(FirestoreUser.class));
                 }
 
@@ -134,18 +140,17 @@ public class FirestoreRepository {
 
                     //get new database from firestore to create an event in viewmodel
 
+                    List<FirestoreUser> allWorkMates = new ArrayList<>();
 
+                    for (DocumentSnapshot workmateIterate : value.getDocuments()) {
+                        allWorkMates.add(workmateIterate.toObject(FirestoreUser.class));
+                    }
+                    myWorkmatesListFromFirestore.setValue(allWorkMates);
 
-
-
-                    getAllWorkmatesFromFirestoreRepo();
+                    //getAllWorkmatesFromFirestoreRepo();
                 }
             }
         });
-    }
-
-    private void refresh() {
-        getAllWorkmatesFromFirestoreRepo();
     }
 
 
@@ -166,12 +171,13 @@ public class FirestoreRepository {
 
         User userToCreate = new User(uid, username, urlPicture, restaurant, restaurant_liked);
 
-        myBase.document(myWorkmateToWrite.getUid()).set(userToCreate).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Log.i("[FIRESTORE]", "Ecriture utilisateur dans la base ok");
-            }
-        })
+        myBase.document(myWorkmateToWrite.getUid()).set(userToCreate)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.i("[FIRESTORE]", "Ecriture utilisateur dans la base ok");
+                    }
+                })
 
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -287,7 +293,7 @@ public class FirestoreRepository {
      */
     public void updateFavRestaurant(Boolean mFavorite, String mPlaceId, String mWorkmate) {
 
-        Log.i("","" +mFavorite + mPlaceId + mWorkmate);
+        Log.i("", "" + mFavorite + mPlaceId + mWorkmate);
         if (!mFavorite) {
 
             myBase.document(mWorkmate).update("favoriteRestaurant", mPlaceId)

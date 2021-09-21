@@ -2,6 +2,7 @@ package com.hoarauthomas.go4lunchthp7.ui;
 
 import android.content.Context;
 import android.location.Location;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -129,7 +130,7 @@ public class ViewModelMain extends ViewModel {
     // Logic work
     private void logicWork(@Nullable FirebaseUser myUser, @Nullable List<FirestoreUser> workmates, Boolean bool) {
 
-      //  createUser();
+        createUser();
 
 
         if (myUser != null && workmates != null) {
@@ -154,13 +155,13 @@ public class ViewModelMain extends ViewModel {
                 // myAppMapMediator.setValue(new ViewMainState(true, "pas de restau", getUser()));
             } else {
                 //getUser();
-                myAppMapMediator.setValue(new ViewMainState(true, "pas de restau", getUser()));
+                myAppMapMediator.setValue(new ViewMainState(true, "pas de restau", myUser));
 
             }
 
 
-            myAppMapMediator.setValue(new ViewMainState(true, "liste restaur non chargée", getUser()));
-
+            myAppMapMediator.setValue(new ViewMainState(true, "liste restaur non chargée", myUser));
+            Log.i("","");
 
         }
     }
@@ -200,12 +201,6 @@ public class ViewModelMain extends ViewModel {
     }
 
 
-    public FirebaseUser getUser() {
-        //return myFirebaseAuthRepoVM.getUserFromVM();
-        return myUserLiveData.getValue();
-    }
-
-
 
     public LiveData<String> getMyUserRestaurant() {
 
@@ -213,10 +208,7 @@ public class ViewModelMain extends ViewModel {
     }
 
 
-    public void checkUserLogin() {
-        myFirebaseAuthRepoVM.checkActualUserFirebase();
-        //return myUserState;
-    }
+
 
     //Create user to Firestore
     public void createUser() {
@@ -279,6 +271,13 @@ public class ViewModelMain extends ViewModel {
         return myWorkMatesRepoVM.getUserFirestoreFromRepo(uid);
     }
 
+    public void updateUserSystem() {
+        myFirebaseAuthRepoVM.updateUser();
+    }
+
+    public void setUser() {
+        myWorkMatesRepoVM.setupListenerds();
+    }
 }
 
 

@@ -351,10 +351,11 @@ public class MainActivity extends AppCompatActivity {
 
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
 
-
         this.myViewModel.getLoginState().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
+
+
 
                 showSnackBar("Login : " + aBoolean.toString());
 
@@ -364,7 +365,7 @@ public class MainActivity extends AppCompatActivity {
                     //request user from firebase ui
                     //request user from firestore
 
-                    request_user_info(myViewModel.getUser());
+                  //  request_user_info(myViewModel.getUser());
 
                     //myViewModel.getMyUserData();
 
@@ -380,8 +381,9 @@ public class MainActivity extends AppCompatActivity {
         this.myViewModel.myAppMapMediator.observe(this, new Observer<ViewMainState>() {
             @Override
             public void onChanged(ViewMainState viewStateMain) {
-                if (viewStateMain.LoginState) {
-                  //  request_user_info(viewStateMain.getMyUser());
+                if (viewStateMain.myUser != null) {
+                  binding.debugTxt.setText(viewStateMain.myUser.getDisplayName());
+                    //  request_user_info(viewStateMain.getMyUser());
                     //testNotification(viewStateMain.myRestaurant.toString());
                 } else {
                 //    request_login();
@@ -423,9 +425,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                        //    myViewModel.setUser();
+                            myViewModel.setUser();
 
-                            myViewModel.checkUserLogin();
+                          //  myViewModel.checkUserLogin();
 
 
                         } else {
@@ -481,7 +483,7 @@ public class MainActivity extends AppCompatActivity {
         //TODO:18092021
 
 
-    //    myViewModel.updateUserSystem();
+        myViewModel.updateUserSystem();
 
         // showSnackBar(myUserResult.getDisplayName());
 

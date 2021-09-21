@@ -12,10 +12,22 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+
+        <TextView
+            android:id="@+id/bug_detail"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="test"
+            android:gravity="center"
+            android:textAlignment="center">
+
+        </TextView>
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.37">
+
 
             <ImageView
                 android:id="@+id/background_image"
@@ -173,8 +185,9 @@
             android:id="@+id/text_bug"
             android:layout_width="match_parent"
             android:textAlignment="center"
+            android:gravity="center"
             android:text="bug"
-            android:layout_height="40dp">
+            android:layout_height="60dp">
 
         </TextView>
 

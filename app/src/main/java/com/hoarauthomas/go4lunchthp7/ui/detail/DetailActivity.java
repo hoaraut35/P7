@@ -64,6 +64,8 @@ public class DetailActivity extends AppCompatActivity {
 
         myViewModelDetail.getMediatorScreen().observe(this, screenDetailModel -> {
 
+
+            binding.bugDetail.setText(screenDetailModel.getWorkmate());
             mFavorite = screenDetailModel.getFavorite();
             mPlaceId = screenDetailModel.getPlaceId();
             mWorkmate = screenDetailModel.getWorkmate();

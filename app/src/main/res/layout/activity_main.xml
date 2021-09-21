@@ -17,6 +17,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/debug_txt"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:textAlignment="center"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </TextView>
+
+
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/mytopappbar"
             android:layout_width="match_parent"
@@ -25,7 +35,7 @@
             app:layout_constraintBottom_toTopOf="@id/viewpager"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@id/constraintL">
+            app:layout_constraintTop_toBottomOf="@id/debug_txt">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/topAppBar"
@@ -78,13 +88,6 @@
             app:menu="@menu/bottom_navigation_menu" />
 
 
-        <TextView
-            android:id="@+id/debug_txt"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:textAlignment="center">
-
-        </TextView>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
