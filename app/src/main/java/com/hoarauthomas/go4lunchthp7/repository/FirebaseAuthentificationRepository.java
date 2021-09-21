@@ -9,8 +9,6 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-//Only to get data from Firestore, store and publish user and user state to ViewModel ...
-
 public class FirebaseAuthentificationRepository {
 
     public FirebaseAuth myFireBaseAuthInstance;
@@ -27,35 +25,19 @@ public class FirebaseAuthentificationRepository {
     }
 
     public void loginListener() {
-
         myFireBaseAuthInstance.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
                 if (firebaseAuth.getCurrentUser() != null) {
-
                     myUser.setValue(firebaseAuth.getCurrentUser());
                     myUserState.setValue(true);
-                }                                                               //  Log.i("[Auth]", "Utilisateur : " + myFireBaseUser.getDisplayName());
+                }
                 else {
-
                     myUser.setValue(null);
                     myUserState.setValue(false);
-
                 }
-
-
             }
         });
-
-    }
-
-    //to update status user
-    public void checkActualUserFirebase() {
-
-        this.myFireBaseUser = myFireBaseAuthInstance.getCurrentUser();
-
-
     }
 
     //to get login state
@@ -74,7 +56,6 @@ public class FirebaseAuthentificationRepository {
 
     public void logOut(Context context) {
         myFireBaseAuthInstance.signOut();
-      //  checkActualUserFirebase();
     }
 
     public LiveData<FirebaseUser> getUserFromVM() {
