@@ -13,16 +13,6 @@
         android:orientation="vertical">
 
 
-        <TextView
-            android:id="@+id/bug_detail"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="test"
-            android:gravity="center"
-            android:textAlignment="center">
-
-        </TextView>
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -152,9 +142,8 @@
 
 
         <com.google.android.material.divider.MaterialDivider
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            />
+            android:layout_height="wrap_content" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -181,15 +170,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <TextView
-            android:id="@+id/text_bug"
-            android:layout_width="match_parent"
-            android:textAlignment="center"
-            android:gravity="center"
-            android:text="bug"
-            android:layout_height="60dp">
 
-        </TextView>
 
     </LinearLayout>
 

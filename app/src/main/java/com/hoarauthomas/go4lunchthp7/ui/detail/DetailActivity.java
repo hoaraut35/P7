@@ -65,13 +65,13 @@ public class DetailActivity extends AppCompatActivity {
         myViewModelDetail.getMediatorScreen().observe(this, screenDetailModel -> {
 
 
-            binding.bugDetail.setText(screenDetailModel.getWorkmate());
+           // binding.bugDetail.setText(screenDetailModel.getWorkmate());
             mFavorite = screenDetailModel.getFavorite();
             mPlaceId = screenDetailModel.getPlaceId();
             mWorkmate = screenDetailModel.getWorkmate();
 
-            binding.textBug.setText("user : " + myViewModelDetail.getCurrentUser().getUid().toString() + "\n " +
-                    "                   fav:" + screenDetailModel.getFavorite() + "\n lik: " + screenDetailModel.getLiked() + "place : " + myViewModelDetail.getPlaceId());
+        //    binding.textBug.setText("user : " + myViewModelDetail.getCurrentUser().getUid().toString() + "\n " +
+         //           "                   fav:" + screenDetailModel.getFavorite() + "\n lik: " + screenDetailModel.getLiked() + "place : " + myViewModelDetail.getPlaceId());
 
             //get photo
             try {
