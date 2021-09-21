@@ -161,30 +161,49 @@ public class FirestoreRepository {
      */
     public void createUser() {
 
-        FirebaseUser myWorkmateToWrite = getCurrentUser();
+        myBase.document(getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-        String urlPicture = (myWorkmateToWrite.getPhotoUrl() != null ? myWorkmateToWrite.getPhotoUrl().toString() : null);
-        String username = (myWorkmateToWrite.getDisplayName() != null ? myWorkmateToWrite.getDisplayName() : null);
-        String uid = (myWorkmateToWrite.getUid() != null ? myWorkmateToWrite.getUid() : null);
-        String restaurant = "";
-        List<String> restaurant_liked = new ArrayList<>();
 
-        User userToCreate = new User(uid, username, urlPicture, restaurant, restaurant_liked);
+                if (documentSnapshot.exists()){
 
-        myBase.document(myWorkmateToWrite.getUid()).set(userToCreate)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.i("[FIRESTORE]", "Ecriture utilisateur dans la base ok");
-                    }
-                })
+                }else
+                {
 
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.i("[FIRESTORE]", "Error on wrtiting new user to dabase with createUSer()");
-                    }
-                });
+
+                    FirebaseUser myWorkmateToWrite = getCurrentUser();
+
+                    String urlPicture = (myWorkmateToWrite.getPhotoUrl() != null ? myWorkmateToWrite.getPhotoUrl().toString() : null);
+                    String username = (myWorkmateToWrite.getDisplayName() != null ? myWorkmateToWrite.getDisplayName() : null);
+                    String uid = (myWorkmateToWrite.getUid() != null ? myWorkmateToWrite.getUid() : null);
+                    String restaurant = "";
+                    List<String> restaurant_liked = new ArrayList<>();
+
+                    User userToCreate = new User(uid, username, urlPicture, restaurant, restaurant_liked);
+
+                    myBase.document(myWorkmateToWrite.getUid()).set(userToCreate)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Log.i("[FIRESTORE]", "Ecriture utilisateur dans la base ok");
+                                }
+                            })
+
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.i("[FIRESTORE]", "Error on wrtiting new user to dabase with createUSer()");
+                                }
+                            });
+
+                }
+
+
+            }
+        });
+
+
 
     }
 
