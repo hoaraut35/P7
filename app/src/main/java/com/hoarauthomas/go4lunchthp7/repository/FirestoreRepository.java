@@ -47,6 +47,7 @@ public class FirestoreRepository {
         getAllWorkmatesFromFirestoreRepo();
         getWorkmateFromFirestoreRepo();
         setupListenerOnCollection();
+
     }
 
     /**
@@ -54,32 +55,22 @@ public class FirestoreRepository {
      */
     public void getWorkmateFromFirestoreRepo() {
 
-        myBase.document(getCurrentUserUID()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        myBase.document(getCurrentUser().getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
 
-                if (task.isSuccessful()) {
-                    DocumentSnapshot myWorkmate = task.getResult();
-
-                    if (myWorkmate.exists()) {
-                        myWorkmateFromRepo.setValue(myWorkmate.toObject(FirestoreUser.class));
-                        Log.i("","");
-                        //return myWorkmate.toObject(FirestoreUser.class);
-                    } else {
-                        Log.i("[FIRESTORE]", "Error getWorkmateFromFiresotre on user object");
-
-                    }
-                } else {
-                    Log.i("[FIRESTORE]", "Error getWorkmateFromFiresotre on result data empty");
+                if (error != null){
+                    Log.i("[FIRESTORE]","Erorr on listener for user");
                 }
+
+                if (value != null && value.exists()){
+                    myWorkmateFromRepo.setValue(value.toObject(FirestoreUser.class));
+                }
+
+
             }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.i("[FIRESTORE]", "Error getWorkmateFromFiresotre on result data empty" + e);
-                    }
-                });
+        });
+
     }
 
     /**
@@ -142,6 +133,11 @@ public class FirestoreRepository {
                     Log.i("[FIRESTORE]", "Evenement sur la base ");
 
                     //get new database from firestore to create an event in viewmodel
+
+
+
+
+
                     getAllWorkmatesFromFirestoreRepo();
                 }
             }
@@ -294,6 +290,22 @@ public class FirestoreRepository {
         Log.i("","" +mFavorite + mPlaceId + mWorkmate);
         if (!mFavorite) {
 
+            myBase.document(mWorkmate).update("favoriteRestaurant", mPlaceId)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Log.i("[FIRESTORE]", "Ajout du favoris ok");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.i("[FIRESTORE]", "Ajout favoris impossible : " + e);
+                        }
+                    });
+
+
+        } else {
             myBase.document(mWorkmate).update("favoriteRestaurant", "")
 
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -306,21 +318,6 @@ public class FirestoreRepository {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             Log.i("[FIRESTORE]", "Suppression favoris impossible : " + e);
-                        }
-                    });
-        } else {
-
-            myBase.document(mWorkmate).update("favoriteRestaurant", mPlaceId)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-                            Log.i("[FIRESTORE]", "Ajout du favoris ok");
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.i("[FIRESTORE]", "Ajout favoris impossible : " + e);
                         }
                     });
 

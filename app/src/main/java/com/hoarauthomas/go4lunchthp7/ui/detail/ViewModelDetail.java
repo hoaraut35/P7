@@ -240,19 +240,14 @@ public class ViewModelDetail extends ViewModel {
         myFirestoreRepository.deleteLikedRestaurant(uid, placeId);
     }
 
-
-
-
-    public void addtFavRestaurant(String uid, String placeId) {
-        myFirestoreRepository.addFavRestaurant(uid, placeId);
-    }
-
-    public void deleteFavRestaurant(String uid, String placeId) {
-        myFirestoreRepository.deleteFavRestaurant(uid);
-    }
+    /**
+     * add or remove a fovorite restaurant
+     * @param mFavorite
+     * @param mPlaceId
+     * @param mWorkmate
+     */
 
     public void updateFavRestaurant(Boolean mFavorite, String mPlaceId, String mWorkmate) {
-
         myFirestoreRepository.updateFavRestaurant(mFavorite,mPlaceId,mWorkmate);
     }
 }
