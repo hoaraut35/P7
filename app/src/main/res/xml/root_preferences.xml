@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- do not move to another directory -->
 
@@ -6,10 +7,19 @@
 
         <SwitchPreferenceCompat
             app:key="notifications2"
-            app:title="@string/langage_mode"
+            app:summaryOff="Don't receive notification"
             app:summaryOn="Receive notification at 12:00"
-            app:summaryOff="Don't receive notification"/>
-
+            app:title="@string/langage_mode" />
     </PreferenceCategory>
+
+    <SeekBarPreference
+        app:key="zoom"
+        app:title="Zoom"
+        app:defaultValue="12"
+        app:min="10"
+        android:max="15"
+        app:showSeekBarValue="true"
+        />
+
 
 </PreferenceScreen>

@@ -31,6 +31,7 @@ public class MainFragmentsAdapter extends FragmentStateAdapter {
                 return new ListFragment();//.newInstance();
             case 3:
 
+
                 return WorkFragment.newInstance();
 
             case 4:

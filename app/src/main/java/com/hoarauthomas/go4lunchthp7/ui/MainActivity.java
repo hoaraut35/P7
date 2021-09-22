@@ -25,7 +25,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -40,7 +39,6 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
-import com.firebase.ui.auth.data.model.User;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -78,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public ViewModelMain myViewModel;
     public ViewModelMap myViewModelMap;
+
 
     /**
      * List of providers for authentification
@@ -133,11 +132,18 @@ public class MainActivity extends AppCompatActivity {
      * Get notification state from settings fragments and send it to viewmodel
      */
     private void setupSettings() {
+
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         boolean myBool = sharedPref.getBoolean("notifications2", false);
         myViewModel.setNotification(myBool);
+
         //for debug only
         showSnackBar("Notification is : " + Boolean.toString(myBool));
+
+        //map zoom
+        Integer myZoom = sharedPref.getInt("zoom", 10);
+        myViewModel.setZoom(myZoom);
+
     }
 
     /**
@@ -468,26 +474,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void request_user_info(FirebaseUser myUserResult) {
 
-        //TODO:18092021
-
-
-        // showSnackBar(myUserResult.getDisplayName());
-
-        //if (mymyViewModel.getUser() != null) {
         if (myUserResult != null) {
 
-
-            //  DocumentSnapshot myDoc = myViewModel.requestUserForestoreFromVM(myUserResult.getUid()).getResult();
-
-
-            //myViewModel.setMyUserRestaurantId(myViewModel.getMyUserData().get("favorite_restaurant").toString());
-
-            //showSnackBar(myViewModel.getUser().getDisplayName());
-
             View hv = binding.navigationView.getHeaderView(0);
-
             TextView name = hv.findViewById(R.id.displayName);
-
 
             //name of user profile
             name.setText(Objects.requireNonNull(myUserResult.getDisplayName()));
@@ -496,7 +486,7 @@ public class MainActivity extends AppCompatActivity {
             email.setText(myUserResult.getEmail());
 
             //try email but don't work
-            for (UserInfo profile : myUserResult.getProviderData()){
+            for (UserInfo profile : myUserResult.getProviderData()) {
                 email.setText(profile.getEmail());
             }
 
@@ -504,12 +494,11 @@ public class MainActivity extends AppCompatActivity {
             String avatarSource = "";
             ImageView avatarView = hv.findViewById(R.id.avatar);
 
-            for (UserInfo profile : myUserResult.getProviderData()){
+            for (UserInfo profile : myUserResult.getProviderData()) {
 
-                if (!profile.getPhotoUrl().equals("")){
+                if (!profile.getPhotoUrl().equals("")) {
                     avatarSource = profile.getPhotoUrl().toString();
-                }else
-                {
+                } else {
                     //construc avatar
                     String nom = myUserResult.getDisplayName();
                     String[] parts = nom.split(" ", 2);
@@ -574,9 +563,12 @@ public class MainActivity extends AppCompatActivity {
 
             if (id == R.id.action_map) {
                 binding.viewpager.setCurrentItem(1);
+                binding.topAppBar.findViewById(R.id.searchView).setVisibility(View.VISIBLE);
             } else if (id == R.id.action_list) {
                 binding.viewpager.setCurrentItem(2);
+                binding.topAppBar.findViewById(R.id.searchView).setVisibility(View.VISIBLE);
             } else if (id == R.id.action_work) {
+                binding.topAppBar.findViewById(R.id.searchView).setVisibility(View.INVISIBLE);
                 binding.viewpager.setCurrentItem(3);
             }
             return true;
@@ -588,48 +580,26 @@ public class MainActivity extends AppCompatActivity {
         binding.viewpager.setAdapter(myFragmentAdapter);
         binding.viewpager.setCurrentItem(1);
         binding.viewpager.setUserInputEnabled(false);
+
+
     }
 
     private void setupTopAppBar() {
-
-
         setSupportActionBar(binding.topAppBar);
-
-        //work fine
-        binding.topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                binding.drawerLayout.openDrawer(START);
-            }
-        });
-
-
-        binding.topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-
-                return false;
-            }
-        });
+        binding.topAppBar.setNavigationOnClickListener(v -> binding.drawerLayout.openDrawer(START));
+        binding.topAppBar.setOnMenuItemClickListener(item -> false);
     }
 
-
     public void onSearchCalled() {
-
-
         // Set the fields to specify which types of place data to return.
         /*  List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG);
         // Start the autocomplete intent.
         Intent intent = new Autocomplete.IntentBuilder(
                 AutocompleteActivityMode.FULLSCREEN, fields).setCountry("FR") //NIGERIA
                 .build(this);
-
-
        */
         //  startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
-
     }
-
 
     //work fine but sdk with can't specify position
     public void startAutocompleteActivity(MenuItem item) {

@@ -12,6 +12,13 @@
     tools:context=".ui.MainActivity"
     tools:openDrawer="start">
 
+
+    <com.google.android.material.slider.Slider
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </com.google.android.material.slider.Slider>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintL"
         android:layout_width="match_parent"
@@ -27,6 +34,7 @@
             android:fitsSystemWindows="true"
             app:layout_constraintBottom_toTopOf="@id/viewpager"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:liftOnScroll="true"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 

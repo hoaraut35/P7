@@ -243,6 +243,9 @@ public class ViewModelMain extends ViewModel {
     public FirebaseUser getUser() {
         return myUserLiveData.getValue();
     }
+
+    public void setZoom(int myZoom) {
+        //TODO: setup zoom
+        mySharedRepoVM.setZoom(myZoom);
+    }
 }
-
-
