@@ -15,7 +15,7 @@ import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthentificationReposito
 import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
-import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
+import com.hoarauthomas.go4lunchthp7.ui.SharedViewModel;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
 import com.hoarauthomas.go4lunchthp7.ui.ViewModelMain;
 import com.hoarauthomas.go4lunchthp7.ui.detail.ViewModelDetail;
@@ -46,7 +46,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final PermissionChecker permissionChecker;
     private final PlaceAutocompleteRepository placeAutocompleteRepository;
     private final AlarmRepository alarmRepository;
-    private final SharedRepository sharedRepository;
+    private final SharedViewModel sharedRepository;
 
     /**
      * return an instance of ViewModelFactory object with singleton pattern
@@ -67,7 +67,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                             new FirestoreRepository(),
                             new PlaceAutocompleteRepository(),
                             new AlarmRepository(application),
-                            new SharedRepository()
+                            new SharedViewModel()
                     );
                 }
             }
@@ -83,7 +83,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             FirestoreRepository firestoreRepository,
             PlaceAutocompleteRepository placeAutocompleteRepository,
             AlarmRepository alarmRepository,
-            SharedRepository sharedRepository
+            SharedViewModel sharedRepository
     ) {
         this.permissionChecker = permissionChecker;
         this.firebaseAuthentificationRepository = firebaseAuthentificationRepository;

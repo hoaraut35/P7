@@ -1,11 +1,14 @@
-package com.hoarauthomas.go4lunchthp7.repository;
+package com.hoarauthomas.go4lunchthp7.ui;
+
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.hoarauthomas.go4lunchthp7.Prediction;
 
-public class SharedRepository {
+public class SharedViewModel {
 
 
 
@@ -34,6 +37,7 @@ public class SharedRepository {
     }
 
     public void setZoom(Integer myZoom) {
+        Log.i("[PREF]","Zoom setup to : " + myZoom);
         this.myZoom.setValue(myZoom);
     }
 

@@ -2,6 +2,7 @@ package com.hoarauthomas.go4lunchthp7.ui;
 
 import android.content.Context;
 import android.location.Location;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -19,7 +20,6 @@ import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
-import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class ViewModelMain extends ViewModel {
     private AlarmRepository myAlarmRepoVM;
 
     //shared beetween multiple view
-    private SharedRepository mySharedRepoVM;
+    private SharedViewModel mySharedRepoVM;
 
     //livedata...
     private LiveData<FirebaseUser> myUserLiveData;
@@ -68,7 +68,7 @@ public class ViewModelMain extends ViewModel {
             PlaceAutocompleteRepository placeAutocompleteRepository,
             PositionRepository myPositionRepoVM,
             AlarmRepository myAlarmRepoVM,
-            SharedRepository mySharedRepoVM) {
+            SharedViewModel mySharedRepoVM) {
 
         //get data from Auth repository...
         this.myFirebaseAuthRepoVM = firebaseAuthentificationRepository;
@@ -243,7 +243,6 @@ public class ViewModelMain extends ViewModel {
     }
 
     public void setZoom(int myZoom) {
-        //TODO: setup zoom
         mySharedRepoVM.setZoom(myZoom);
     }
 }

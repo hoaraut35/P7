@@ -3,6 +3,7 @@ package com.hoarauthomas.go4lunchthp7.ui.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceFragmentCompat;
@@ -10,13 +11,13 @@ import androidx.preference.PreferenceManager;
 
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
-import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
+import com.hoarauthomas.go4lunchthp7.ui.SharedViewModel;
 import com.hoarauthomas.go4lunchthp7.ui.ViewModelMain;
+import com.hoarauthomas.go4lunchthp7.ui.map.ViewModelMap;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
     public ViewModelMain myViewModel;
-    public SharedRepository mySharedRepo;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -25,24 +26,14 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
     private void setupViewModel() {
-
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
-        Context context = getActivity();
-
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
-
-        boolean cfhk = sp.getBoolean("notification",true);
-
-        if (cfhk){
-//            myViewModel.setNotification();
-        }else
-        {
-  //          myViewModel.removeNotification();
-        }
-
-
+        sp.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                myViewModel.setZoom(sharedPreferences.getInt("zoom",10));
+                myViewModel.setNotification(sharedPreferences.getBoolean("notifications2",true));
+            }
+        });
     }
-
-
-
 }
