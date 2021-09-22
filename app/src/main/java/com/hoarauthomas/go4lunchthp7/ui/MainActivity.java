@@ -40,6 +40,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
+import com.firebase.ui.auth.data.model.User;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
@@ -494,38 +495,37 @@ public class MainActivity extends AppCompatActivity {
             TextView email = hv.findViewById(R.id.email);
             email.setText(myUserResult.getEmail());
 
-
-            if (myUserResult != null) {
-                for (UserInfo profile : myUserResult.getProviderData()) {
-                    email.setText(profile.getEmail());
-                }
+            //try email but don't work
+            for (UserInfo profile : myUserResult.getProviderData()){
+                email.setText(profile.getEmail());
             }
 
+            //for photo avatar test
+            String avatarSource = "";
+            ImageView avatarView = hv.findViewById(R.id.avatar);
 
-            ImageView avatar = hv.findViewById(R.id.avatar);
+            for (UserInfo profile : myUserResult.getProviderData()){
 
-            //avatar variable
-            String avatar2 = "";
-
-            if (myUserResult.getPhotoUrl() == null) {
-
-                String nom = myUserResult.getDisplayName();
-                String[] parts = nom.split(" ", 2);
-                String z = "";
-
-                for (int i = 0; i < parts.length; i++) {
-                    z = parts[i].charAt(0) + z;
+                if (!profile.getPhotoUrl().equals("")){
+                    avatarSource = profile.getPhotoUrl().toString();
+                }else
+                {
+                    //construc avatar
+                    String nom = myUserResult.getDisplayName();
+                    String[] parts = nom.split(" ", 2);
+                    String z = "";
+                    for (int i = 0; i < parts.length; i++) {
+                        z = parts[i].charAt(0) + z;
+                    }
+                    avatarSource = "https://eu.ui-avatars.com/api/?name=" + z;
                 }
-                avatar2 = "https://eu.ui-avatars.com/api/?name=" + z;
-            } else {
-                avatar2 = myUserResult.getPhotoUrl().toString();//+ "?access_token=<"+ AccessToken.getCurrentAccessToken()+">" ;
-                Log.i("[AVATAR]", "" + avatar2.toString());
+
             }
 
-            Glide.with(avatar)
-                    .load(avatar2)
+            Glide.with(avatarView)
+                    .load(avatarSource)
                     .circleCrop()
-                    .into(avatar);
+                    .into(avatarView);
 
 
         }
