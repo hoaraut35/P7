@@ -88,15 +88,15 @@ public class ViewStateDetail {
         this.rating = rating;
     }
 
-    public String getCall() {
+    public String PhoneNumber() {
         return call;
     }
 
-    public void setCall(String call) {
+    public void setPhoneNumber(String call) {
         this.call = call;
     }
 
-    public Boolean getLiked() {
+    public Boolean getLike() {
         return liked;
     }
 
@@ -104,11 +104,11 @@ public class ViewStateDetail {
         this.liked = liked;
     }
 
-    public String getWebsite() {
+    public String getWebSite() {
         return website;
     }
 
-    public void setWebsite(String website) {
+    public void setWebSite(String website) {
         this.website = website;
     }
 

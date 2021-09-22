@@ -153,12 +153,6 @@ public class FirestoreRepository {
         });
     }
 
-
-    /**
-     * create a new user in Firestore
-     *
-     * @return
-     */
     public void createUser() {
 
         myBase.document(getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -166,10 +160,9 @@ public class FirestoreRepository {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
 
 
-                if (documentSnapshot.exists()){
+                if (documentSnapshot.exists()) {
 
-                }else
-                {
+                } else {
 
 
                     FirebaseUser myWorkmateToWrite = getCurrentUser();
@@ -204,7 +197,6 @@ public class FirestoreRepository {
         });
 
 
-
     }
 
     public FirebaseUser getCurrentUser() {
@@ -215,8 +207,6 @@ public class FirestoreRepository {
         FirebaseUser user = getCurrentUser();
         return (user != null) ? user.getUid() : null;
     }
-
-    //CRUD
 
     public List<QuerySnapshot> getWorkmatesByPlaceId(String placeId) {
         myBase.whereEqualTo("favorite_restaurant", placeId).addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -238,61 +228,13 @@ public class FirestoreRepository {
         return null;
     }
 
-
-    public Task<Void> addLikedRestaurant(String uid, String placeId) throws InterruptedException {
-        myFirestorePause();
-        return myBase.document(uid).update("restaurant_liked", FieldValue.arrayUnion(placeId));
-    }
-
-    public void addFavRestaurant(String uid, String placeId) {
-
-        myBase.document(uid).update("favoriteRestaurant", placeId).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Log.i("[FIRESTORE]", "Ajout du favoris ok");
-                //  refresh();
-            }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.i("[FIRESTORE]", "Ajout favoris impossible : " + e);
-                    }
-                });
-    }
-
-    public void deleteFavRestaurant(String uid) {
-
-        myBase.document(uid).update("favoriteRestaurant", "").addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                Log.i("[FIRESTORE]", "Suppression du favoris ok");
-                //   refresh();
-            }
-        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.i("[FIRESTORE]", "Suppression favoris impossible : " + e);
-                    }
-                });
-
-    }
-
-    public Task<Void> deleteLikedRestaurant(String uid, String placeId) throws InterruptedException {
-        myFirestorePause();
-        return myBase.document(uid).update("restaurant_liked", FieldValue.arrayRemove(placeId));
-    }
-
     private void myFirestorePause() throws InterruptedException {
         Thread.sleep(millis);
     }
 
-
     public Task<DocumentSnapshot> getUser(String uid) {
         return myBase.document(uid).get();
     }
-
 
     public CollectionReference getFirestore() {
         return this.myBase;
@@ -302,14 +244,6 @@ public class FirestoreRepository {
         return getUser(uid);
     }
 
-
-    /**
-     * add or remove favorite restaurant
-     *
-     * @param mFavorite true or false
-     * @param mPlaceId  id of place to add or remove
-     * @param mWorkmate id of workmate for the event
-     */
     public void updateFavRestaurant(Boolean mFavorite, String mPlaceId, String mWorkmate) {
 
         Log.i("", "" + mFavorite + mPlaceId + mWorkmate);
@@ -349,4 +283,40 @@ public class FirestoreRepository {
         }
 
     }
+
+    public void updateLikeRestaurant(Boolean mLike, String mPlaceId, String mWorkmate) {
+
+        if (!mLike ) {
+
+            myBase.document(mWorkmate).update("restaurant_liked", FieldValue.arrayUnion(mPlaceId))
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Log.i("[FIRESTORE]", "Ajout de like sur restaurant ok");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.i("[FIRESTORE]", "Ajout du like echec ");
+                        }
+                    });
+        } else {
+            myBase.document(mWorkmate).update("restaurant_liked", FieldValue.arrayRemove(mPlaceId))
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Log.i("[FIRESTORE]", "Retrait like ok");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.i("[FIRESTORE]", "Retrait like restaurant échec");
+                        }
+                    });
+        }
+    }
+
+
 }

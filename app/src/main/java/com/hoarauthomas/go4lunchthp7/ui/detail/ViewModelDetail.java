@@ -7,7 +7,6 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
@@ -191,13 +190,6 @@ public class ViewModelDetail extends ViewModel {
                 //adress
                 myScreen.setAddress(myItem.getVicinity());
 
-                //photo
-                try {
-                    myScreen.setUrlPhoto(myItem.getPhotos().get(0).getPhotoReference());
-                } catch (Exception e) {
-
-                }
-
                 //get photo
                 try {
                     String query = "https://maps.googleapis.com/maps/api/place/photo?key=" +
@@ -231,18 +223,18 @@ public class ViewModelDetail extends ViewModel {
                     myScreen.setRating(0);
                 }
 
+                //phone
+                myScreen.setPhoneNumber(Restaurantdetail.getFormattedPhoneNumber());
+
+                //website
+                myScreen.setWebSite(Restaurantdetail.getUrl());
 
                 break;
             }
         }
 
-        //set empty list for recycler else it crash
-        //myScreen.setListWorkMates(myWorkMatesDetailList);
-
-
         //update viewstate object
         myScreenDetailMediator.setValue(myScreen);
-
 
     }
 
@@ -262,23 +254,11 @@ public class ViewModelDetail extends ViewModel {
         return myScreenDetailMediator;
     }
 
-    public void addLikedRestaurant(String uid, String myPlaces) throws InterruptedException {
-        myFirestoreRepository.addLikedRestaurant(uid, myPlaces);
-    }
-
-    public void deleteLikedRestaurant(String uid, String placeId) throws InterruptedException {
-        myFirestoreRepository.deleteLikedRestaurant(uid, placeId);
-    }
-
-    /**
-     * add or remove a fovorite restaurant
-     *
-     * @param mFavorite
-     * @param mPlaceId
-     * @param mWorkmate
-     */
-
-    public void updateFavRestaurant(Boolean mFavorite, String mPlaceId, String mWorkmate) {
+    public void updateFavoriteRestaurant(Boolean mFavorite, String mPlaceId, String mWorkmate) {
         myFirestoreRepository.updateFavRestaurant(mFavorite, mPlaceId, mWorkmate);
+    }
+
+    public void updateLikeRestaurant(Boolean mLike, String mPlaceId, String mWorkmate) {
+        myFirestoreRepository.updateLikeRestaurant(mLike,mPlaceId,mWorkmate);
     }
 }

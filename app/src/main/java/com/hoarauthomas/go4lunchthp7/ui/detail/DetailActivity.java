@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.snackbar.Snackbar;
-import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
@@ -28,7 +27,7 @@ public class DetailActivity extends AppCompatActivity {
     private ActivityDetailRestaurantBinding binding;
     private ViewModelDetail myViewModelDetail;
 
-    private Boolean mFavorite;
+    //  private Boolean mFavorite, mLike;
     private String mPlaceId;
     private String mWorkmate;
     private RecyclerView myRecyclerView;
@@ -42,9 +41,6 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(view);
         setupViewModel();
         setupIntent();
-
-        setupOnClicFavoriteBtn();
-
     }
 
     //update placeId to ViewModel from intent
@@ -57,19 +53,12 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void setupViewModel() {
-
         myViewModelDetail = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelDetail.class);
-
         myViewModelDetail.getMediatorScreen().observe(this, screenDetailModel -> {
 
-            //debug
-            mFavorite = screenDetailModel.getFavorite();
             mPlaceId = screenDetailModel.getPlaceId();
             mWorkmate = screenDetailModel.getWorkmate();
 
-            //get photo
-
-            // binding.backgroundImage.setImageResource(screenDetailModel.);
             Glide.with(binding.backgroundImage)
                     .load(screenDetailModel.getUrlPhoto())
                     .centerCrop()
@@ -79,69 +68,41 @@ public class DetailActivity extends AppCompatActivity {
             binding.restaurantAddress.setText(screenDetailModel.getAddress());
             binding.ratingbar.setRating(screenDetailModel.getRating());
 
-            //get phone number
-            setupButtonPhone(screenDetailModel.getCall());
+            setupOnClickFavoriteBtn(screenDetailModel.getFavorite());
+            setupOnClickLikeBtn(screenDetailModel.getLike());
 
-            //get url
-            setupButtonWeb(screenDetailModel.getWebsite());
+            setupOnClickPhoneNumberBtn(screenDetailModel.PhoneNumber());
+            setupOnClickWebSiteBtn(screenDetailModel.getWebSite());
 
-            //get choice
-            setupButtonChoice(screenDetailModel.getFavorite());
-
-            //       setupButtonLike(screenDetailModel.getLiked());
-
-            //get list of workmates
+            setupDesignFavoriteBtn(screenDetailModel.getFavorite());
+            setupDesignLikeBtn(screenDetailModel.getLike());
             setupRecyclerView(screenDetailModel.getListWorkMates());
-            //dd
-
-            setupDataRC(screenDetailModel.getListWorkMates());
-
-
         });
     }
 
+    private void setupOnClickFavoriteBtn(Boolean favorite) {
+        binding.favoriteBtn.setOnClickListener(v -> {
+            myViewModelDetail.updateFavoriteRestaurant(favorite, mPlaceId, mWorkmate);
+        });
+    }
 
-    private void setupOnClicFavoriteBtn() {
-        binding.choiceBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myViewModelDetail.updateFavRestaurant(mFavorite, mPlaceId, mWorkmate);
+    private void setupOnClickPhoneNumberBtn(@Nullable String number) {
+        binding.phoneNumberBtn.setOnClickListener(v -> {
+            if (number != null) {
+                Intent makeCall = new Intent(Intent.ACTION_DIAL);
+                makeCall.setData(Uri.parse("tel:" + number));
+                DetailActivity.this.startActivity(makeCall);
+            } else {
+                DetailActivity.this.showSnackBar(DetailActivity.this.getString(R.string.no_phone_string));
             }
         });
     }
 
-
-    private void setupDataRC(List<FirestoreUser> listWorkMates) {
-        //     myRecyclerViewAdapter.notifyDataSetChanged();
-
-
-    }
-
-
-    private void setupRecyclerView(List<FirestoreUser> myWorkmatesList) {
-//        private void setupRecyclerView() {
-
-        //if (myWorkmatesList == null) {
-        //  Log.i("[MONDETAIL]", "liste user nulle ou vide");
-        //} else if (!myWorkmatesList.isEmpty()) {
-
-        RecyclerView recyclerView = binding.recyclerView;
-        recyclerView.setHasFixedSize(false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new RecyclerViewAdapterDetail(myWorkmatesList));
-        //recyclerView.setAdapter(new RecyclerViewAdapterDetail());
-
-        // } else {
-        //    Log.i("[MONDETAIL]", "liste user vide");
-        // }
-
-    }
-
-    private void setupButtonWeb(@Nullable String url) {
-
-        binding.website.setOnClickListener(v -> {
+    private void setupOnClickWebSiteBtn(@Nullable String url) {
+        binding.webSiteBtn.setOnClickListener(v -> {
             if (url != null) {
                 if (!url.isEmpty()) {
+                    Log.i("[URL]", "Url site xweb : " + url);
                     Intent makeURLBrowser = new Intent(Intent.ACTION_VIEW);
                     makeURLBrowser.setData(Uri.parse(url));
                     startActivity(makeURLBrowser);
@@ -152,65 +113,34 @@ public class DetailActivity extends AppCompatActivity {
         });
     }
 
-    private void setupButtonChoice(Boolean state) {
-
+    private void setupDesignFavoriteBtn(Boolean state) {
         if (state == null) return;
-
-        //for view
         if (state) {
-            binding.choiceBtn.setImageResource(R.drawable.checked_favorite_restaurant);
+            binding.favoriteBtn.setImageResource(R.drawable.checked_favorite_restaurant);
         } else {
-            binding.choiceBtn.setImageResource(R.drawable.unchecked_favori_restaurant);
+            binding.favoriteBtn.setImageResource(R.drawable.unchecked_favori_restaurant);
         }
-
-
     }
 
-    private void setupButtonLike(Boolean state) {
-
-        //for view
+    private void setupDesignLikeBtn(Boolean state) {
         if (state) {
             binding.likeBtn.setImageResource(R.drawable.ic_baseline_star_24_green);
         } else {
             binding.likeBtn.setImageResource(R.drawable.ic_baseline_star_24);
         }
+    }
 
-        //for action
+    public void setupOnClickLikeBtn(Boolean like) {
         binding.likeBtn.setOnClickListener(v -> {
-
-            if (state) {
-                //showSnackBar(getString(R.string.like_delete_msg) + myViewModelDetail.getCurrentUser().getUid() + " " + myViewModelDetail.getPlaceId());
-                try {
-                    myViewModelDetail.deleteLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-
-//
-            } else {
-                // showSnackBar(getString(R.string.like_add_msg)  + myViewModelDetail.getCurrentUser().getUid() + " " + myViewModelDetail.getPlaceId());
-                try {
-                    myViewModelDetail.addLikedRestaurant(myViewModelDetail.getCurrentUser().getUid(), myViewModelDetail.getPlaceId());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
+            myViewModelDetail.updateLikeRestaurant(like, mPlaceId, mWorkmate);
         });
     }
 
-    private void setupButtonPhone(@Nullable String number) {
-
-        binding.callBtn.setOnClickListener(v -> {
-            if (number != null) {
-                Intent makeCall = new Intent(Intent.ACTION_DIAL);
-                makeCall.setData(Uri.parse("tel:" + number));
-                startActivity(makeCall);
-            } else {
-                showSnackBar(getString(R.string.no_phone_string));
-            }
-        });
+    private void setupRecyclerView(List<FirestoreUser> myWorkmatesList) {
+        RecyclerView recyclerView = binding.recyclerView;
+        recyclerView.setHasFixedSize(false);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new RecyclerViewAdapterDetail(myWorkmatesList));
     }
 
     private void showSnackBar(String message) {
