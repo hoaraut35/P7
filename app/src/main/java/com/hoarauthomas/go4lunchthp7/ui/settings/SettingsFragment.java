@@ -10,35 +10,24 @@ import androidx.preference.PreferenceManager;
 
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
+import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
 import com.hoarauthomas.go4lunchthp7.ui.ViewModelMain;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 
-
-
-
     public ViewModelMain myViewModel;
-
+    public SharedRepository mySharedRepo;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
         setupViewModel();
-
-
-     //   addPreferencesFromResource(R.xml.root_preferences);
-
-
-
     }
 
     private void setupViewModel() {
 
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
-
         Context context = getActivity();
-
-
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
 
