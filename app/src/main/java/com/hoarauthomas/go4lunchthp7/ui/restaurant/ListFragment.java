@@ -56,8 +56,11 @@ public class ListFragment extends Fragment implements RecyclerViewAdapter.Restau
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_fragment, container, false);
+
+        setupRecyclerView(view);
         setupViewModel();
-        this.myView = view;
+
+
 
         return view;
     }
@@ -74,13 +77,7 @@ public class ListFragment extends Fragment implements RecyclerViewAdapter.Restau
             }
         });
 
-        myViewModelRestaurant.getPredictionFromVM().observe(getViewLifecycleOwner(), new Observer<Prediction>() {
-            @Override
-            public void onChanged(Prediction prediction) {
 
-
-            }
-        });
 
     }
 
@@ -94,9 +91,13 @@ public class ListFragment extends Fragment implements RecyclerViewAdapter.Restau
             Log.i("[media]", "media size" + restaurants.size());
             allResult.clear();
             allResult.addAll(restaurants);
-            setupRecyclerView(myView);
+            setupRecyclerViewData(myView);
             Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
         }
+    }
+
+    private void setupRecyclerViewData(View myView) {
+        recyclerView.setAdapter(new RecyclerViewAdapter(allResult, this));
     }
 
     private void setupRecyclerView(View view) {
@@ -105,7 +106,7 @@ public class ListFragment extends Fragment implements RecyclerViewAdapter.Restau
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         recyclerView.addItemDecoration(itemDecoration);
-        recyclerView.setAdapter(new RecyclerViewAdapter(allResult, this));
+
     }
 
 }

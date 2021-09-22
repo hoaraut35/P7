@@ -196,7 +196,7 @@ public class ViewModelDetail extends ViewModel {
 
                 }
 
-                //rating
+              /*  //rating
                 try {
                     //on google we have a rating from 1 to 5 but we want 1 to 3...
                     //Double ratingDouble = map(restaurants.get(x).getRating(), 1.0, 5.0, 1.0, 3.0);
@@ -216,6 +216,8 @@ public class ViewModelDetail extends ViewModel {
                 } catch (Exception e) {
                     myScreen.setRating(0);
                 }
+
+               */
 
 
                 break;

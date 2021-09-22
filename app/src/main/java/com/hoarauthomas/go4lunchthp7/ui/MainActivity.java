@@ -113,12 +113,12 @@ public class MainActivity extends AppCompatActivity {
         setupViewPager();
 
 
-        //   setupSettings();
+        setupSettings();
 
         //    loadWork();//alarm
         //   loadtest();
 
-        setupAutocomplete();
+        //     setupAutocomplete();
 
     }
 
@@ -354,19 +354,11 @@ public class MainActivity extends AppCompatActivity {
             public void onChanged(Boolean aBoolean) {
 
 
-                showSnackBar("Login : " + aBoolean.toString());
-
                 if (aBoolean) {
-
-
                     //request user from firebase ui
                     //request user from firestore
-
                     request_user_info(myViewModel.getUser());
-
                     //myViewModel.getMyUserData();
-
-
                 } else {
                     request_login();
                 }
@@ -476,7 +468,6 @@ public class MainActivity extends AppCompatActivity {
     private void request_user_info(FirebaseUser myUserResult) {
 
         //TODO:18092021
-
 
 
         // showSnackBar(myUserResult.getDisplayName());
