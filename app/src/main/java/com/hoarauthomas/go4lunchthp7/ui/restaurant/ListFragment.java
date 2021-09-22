@@ -56,35 +56,23 @@ public class ListFragment extends Fragment implements RecyclerViewAdapter.Restau
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.list_fragment, container, false);
-
         setupRecyclerView(view);
         setupViewModel();
-
-
-
         return view;
     }
 
     private void setupViewModel() {
-
         myViewModelRestaurant = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelRestaurant.class);
-
         myViewModelRestaurant.getMediatorLiveData().observe(getViewLifecycleOwner(), new Observer<ViewStateRestaurant>() {
             @Override
             public void onChanged(ViewStateRestaurant viewStateRestaurant) {
-
                 showRestaurant(viewStateRestaurant.getMyRestaurantList());
             }
         });
-
-
-
     }
 
     private void showRestaurant(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
-
         if (restaurants == null) {
-
             Log.i("[media]", "Liste restau vide");
             return;
         } else {

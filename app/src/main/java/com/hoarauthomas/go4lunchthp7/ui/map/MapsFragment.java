@@ -42,7 +42,6 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     public Marker myMarker;
     private static final int DEFAULT_ZOOM = 10;
     public List<MyMarkerObject> allMarkers = new ArrayList<MyMarkerObject>();
-
     private GoogleMap myMap;
 
     @Nullable

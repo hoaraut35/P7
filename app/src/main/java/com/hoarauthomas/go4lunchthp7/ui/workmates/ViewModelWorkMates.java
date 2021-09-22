@@ -24,75 +24,33 @@ public class ViewModelWorkMates extends ViewModel {
      */
     private FirestoreRepository myFirestoreRepository;
     private RestaurantsRepository myRestaurantRepository;
-
-
     private List<SpecialWorkMates> mySpecialWorkMatesList = new ArrayList<>();
-
 
     /**
      * for ui
      */
     private final MediatorLiveData<ViewStateWorkMates> myViewStateWorkMatesMediator = new MediatorLiveData<>();
-
     private final RestaurantPojo myRestauResult = new RestaurantPojo();
 
     public ViewModelWorkMates(RestaurantsRepository myRestaurantRepository, FirestoreRepository myFirestoreRepository) {
-
         this.myRestaurantRepository = myRestaurantRepository;
         this.myFirestoreRepository = myFirestoreRepository;
 
-        //old version
-        LiveData<List<FirestoreUser>> myWorkMatesList = this.myFirestoreRepository.getFirestoreWorkmates();
-
-        //new version
         LiveData<List<FirestoreUser>> myWorkMatesListFromRepo = this.myFirestoreRepository.getFirestoreWorkmates();
-
         LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantList = this.myRestaurantRepository.getMyRestaurantsList();
 
-
-        myViewStateWorkMatesMediator.addSource(myWorkMatesListFromRepo, new Observer<List<FirestoreUser>>() {
-            @Override
-            public void onChanged(List<FirestoreUser> firestoreUsers) {
-                if (firestoreUsers == null) return;
-
-                logicWork(firestoreUsers, myRestaurantList.getValue());
-            }
+        myViewStateWorkMatesMediator.addSource(myWorkMatesListFromRepo, firestoreUsers -> {
+            if (firestoreUsers == null) return;
+            logicWork(firestoreUsers, myRestaurantList.getValue());
         });
 
-
-    /*    myViewStateWorkMatesMediator.addSource(myWorkMatesList, new Observer<List<User>>() {
-            @Override
-            public void onChanged(List<User> users) {
-                Log.i("[WORKM]", "Event workmates list...");
-                if (users != null) {
-                    Log.i("[WORKM]", "Liste workmates" + users.size());
-                    logicWork(users, myRestaurantList.getValue());
-                }
-
-            }
+        myViewStateWorkMatesMediator.addSource(myRestaurantList, restaurantPojos -> {
+            if (restaurantPojos == null || restaurantPojos.isEmpty() ) return;
+            logicWork(myWorkMatesListFromRepo.getValue(), restaurantPojos);
         });
-
-     */
-
-        myViewStateWorkMatesMediator.addSource(myRestaurantList, new Observer<List<RestaurantPojo>>() {
-            @Override
-            public void onChanged(List<RestaurantPojo> restaurantPojos) {
-
-                //TODO: bug passage objet restaurantr
-                //logicWork(myWorkMatesList.getValue(), restaurantPojos);
-
-                if (restaurantPojos == null || restaurantPojos.isEmpty() ) return;
-
-                logicWork(myWorkMatesListFromRepo.getValue(), restaurantPojos);
-
-            }
-        });
-
-
     }
 
     private void logicWork(List<FirestoreUser> myFirestoreWorkmatesList, List<RestaurantPojo> myRestaurant) {
-
 
         if (myRestaurant == null || myRestaurant.isEmpty() ) return;
         if (myFirestoreWorkmatesList == null || myFirestoreWorkmatesList.isEmpty()) return;
@@ -104,23 +62,16 @@ public class ViewModelWorkMates extends ViewModel {
 
             //on créé un specialworkmates pour l'affichage
             SpecialWorkMates myWorkMates = new SpecialWorkMates();
-
-
             myWorkMates.setAvatar(myFirestoreWorkmatesList.get(i).getUrlPicture());
-
-
             myWorkMates.setNameOfWorkMates(myFirestoreWorkmatesList.get(i).getUsername());
 
             for (int z = 0; z < myRestaurant.size(); z++) {
-
-
                 if (myRestaurant.get(z).getPlaceId() != null) {
                     if (myFirestoreWorkmatesList.get(i).getFavoriteRestaurant().equals(myRestaurant.get(z).getPlaceId())) {
                         myWorkMates.setNameOfRestaurant(myRestaurant.get(z).getName());
                         myWorkMates.setPlaceId(myRestaurant.get(z).getPlaceId());
                     }
                 }
-
             }
 
             mySpecialWorkMatesList.add(myWorkMates);
@@ -128,16 +79,10 @@ public class ViewModelWorkMates extends ViewModel {
         }
 
         myViewStateWorkMatesMediator.setValue(new ViewStateWorkMates(mySpecialWorkMatesList));
-
-
     }
 
     public LiveData<ViewStateWorkMates> getMediatorLiveData() {
         return myViewStateWorkMatesMediator;
     }
 
-
-    public void reload() {
-        //myFirestoreRepository.reload();
-    }
 }

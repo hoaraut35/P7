@@ -246,10 +246,6 @@ public class ViewModelDetail extends ViewModel {
         return placeIdRequest.getValue();
     }
 
-    public FirebaseUser getCurrentUser() {
-        return myFirestoreRepository.getCurrentUser();
-    }
-
     public LiveData<ViewStateDetail> getMediatorScreen() {
         return myScreenDetailMediator;
     }
@@ -260,5 +256,9 @@ public class ViewModelDetail extends ViewModel {
 
     public void updateLikeRestaurant(Boolean mLike, String mPlaceId, String mWorkmate) {
         myFirestoreRepository.updateLikeRestaurant(mLike,mPlaceId,mWorkmate);
+    }
+
+    public void getUserPlaceFavoriteToShow() {
+        setPlaceId(myFirestoreRepository.getWorkmateFromRepo().getValue().getFavoriteRestaurant());
     }
 }

@@ -9,7 +9,6 @@ import java.util.List;
 
 public class ViewStateWorkMates {
 
-
     List<SpecialWorkMates> mySpecialWorkMAtes = new ArrayList<>();
     List<User> myWorkMatesList;
     List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantList;
@@ -18,7 +17,6 @@ public class ViewStateWorkMates {
     public List<User> getMyWorkMatesList() {
         return myWorkMatesList;
     }
-
 
     public void setMyWorkMatesList(List<User> myWorkMatesList) {
         this.myWorkMatesList = myWorkMatesList;
@@ -41,11 +39,6 @@ public class ViewStateWorkMates {
     }
 
     public ViewStateWorkMates(List<SpecialWorkMates> mySpecial) {
-        //Log.i("[WORKM]","ViewxStateWorkMAtes constructor " + myWorkMatesList.size());
-        //this.myWorkMatesList = myWorkMatesList;
-        //this.myRestaurantList = myRestaurantList;
-        //this.myRestauResult= myRestauResult;
-
         this.mySpecialWorkMAtes = mySpecial;
     }
 

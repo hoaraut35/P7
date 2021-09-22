@@ -19,6 +19,7 @@ import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreUser;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -26,12 +27,6 @@ public class DetailActivity extends AppCompatActivity {
 
     private ActivityDetailRestaurantBinding binding;
     private ViewModelDetail myViewModelDetail;
-
-    //  private Boolean mFavorite, mLike;
-    private String mPlaceId;
-    private String mWorkmate;
-    private RecyclerView myRecyclerView;
-    private RecyclerViewAdapterDetail myRecyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,21 +38,20 @@ public class DetailActivity extends AppCompatActivity {
         setupIntent();
     }
 
-    //update placeId to ViewModel from intent
     private void setupIntent() {
         Intent intent = getIntent();
         if (intent.getStringExtra("TAG_ID") != null) {
             myViewModelDetail.setPlaceId(intent.getStringExtra("TAG_ID"));
             showSnackBar("Place id selected for detail : " + intent.getStringExtra("TAG_ID"));
+        } else {
+            //search favorite restaurant for actual user don't work
+            myViewModelDetail.getUserPlaceFavoriteToShow();
         }
     }
 
     private void setupViewModel() {
         myViewModelDetail = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelDetail.class);
         myViewModelDetail.getMediatorScreen().observe(this, screenDetailModel -> {
-
-            mPlaceId = screenDetailModel.getPlaceId();
-            mWorkmate = screenDetailModel.getWorkmate();
 
             Glide.with(binding.backgroundImage)
                     .load(screenDetailModel.getUrlPhoto())
@@ -68,8 +62,8 @@ public class DetailActivity extends AppCompatActivity {
             binding.restaurantAddress.setText(screenDetailModel.getAddress());
             binding.ratingbar.setRating(screenDetailModel.getRating());
 
-            setupOnClickFavoriteBtn(screenDetailModel.getFavorite());
-            setupOnClickLikeBtn(screenDetailModel.getLike());
+            setupOnClickFavoriteBtn(screenDetailModel.getFavorite(), screenDetailModel.getPlaceId(), screenDetailModel.workmate);
+            setupOnClickLikeBtn(screenDetailModel.getLike(), screenDetailModel.getPlaceId(), screenDetailModel.workmate);
 
             setupOnClickPhoneNumberBtn(screenDetailModel.PhoneNumber());
             setupOnClickWebSiteBtn(screenDetailModel.getWebSite());
@@ -80,10 +74,8 @@ public class DetailActivity extends AppCompatActivity {
         });
     }
 
-    private void setupOnClickFavoriteBtn(Boolean favorite) {
-        binding.favoriteBtn.setOnClickListener(v -> {
-            myViewModelDetail.updateFavoriteRestaurant(favorite, mPlaceId, mWorkmate);
-        });
+    private void setupOnClickFavoriteBtn(Boolean favorite, String placeId, String workmate) {
+        Objects.requireNonNull(binding.favoriteBtn).setOnClickListener(v -> myViewModelDetail.updateFavoriteRestaurant(favorite, placeId, workmate));
     }
 
     private void setupOnClickPhoneNumberBtn(@Nullable String number) {
@@ -102,7 +94,7 @@ public class DetailActivity extends AppCompatActivity {
         binding.webSiteBtn.setOnClickListener(v -> {
             if (url != null) {
                 if (!url.isEmpty()) {
-                    Log.i("[URL]", "Url site xweb : " + url);
+                    Log.i("[URL]", "Url site web : " + url);
                     Intent makeURLBrowser = new Intent(Intent.ACTION_VIEW);
                     makeURLBrowser.setData(Uri.parse(url));
                     startActivity(makeURLBrowser);
@@ -130,10 +122,8 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
-    public void setupOnClickLikeBtn(Boolean like) {
-        binding.likeBtn.setOnClickListener(v -> {
-            myViewModelDetail.updateLikeRestaurant(like, mPlaceId, mWorkmate);
-        });
+    public void setupOnClickLikeBtn(Boolean like, String placeId, String workmate) {
+        binding.likeBtn.setOnClickListener(v -> myViewModelDetail.updateLikeRestaurant(like, placeId, workmate));
     }
 
     private void setupRecyclerView(List<FirestoreUser> myWorkmatesList) {
