@@ -113,17 +113,13 @@ public class ViewModelMain extends ViewModel {
             }
         });
 
-        myAppMapMediator.addSource(myWorkmate, new Observer<FirestoreUser>() {
-            @Override
-            public void onChanged(FirestoreUser firestoreUser) {
-                if (firestoreUser == null) return;
-                logicWork(myUserLiveData.getValue(),
-                        myWorkMatesListLiveData.getValue(),
-                        myUserStateNew.getValue(),
-                        firestoreUser);
-            }
+        myAppMapMediator.addSource(myWorkmate, firestoreUser -> {
+            if (firestoreUser == null) return;
+            logicWork(myUserLiveData.getValue(),
+                    myWorkMatesListLiveData.getValue(),
+                    myUserStateNew.getValue(),
+                    firestoreUser);
         });
-
 
     }
 
@@ -148,6 +144,9 @@ public class ViewModelMain extends ViewModel {
 
                 if (!myFirestoreUserData.getFavoriteRestaurant().isEmpty()){
                     myUserRestaurantId.setValue(myFirestoreUserData.getFavoriteRestaurant());
+                }else
+                {
+                    myUserRestaurantId.setValue(null);
                 }
 
             } else {

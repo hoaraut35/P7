@@ -76,9 +76,7 @@
             android:id="@+id/avatar"
             android:layout_width="60dp"
             android:layout_height="60dp"
-
             android:contentDescription="TODO"
-
             android:layout_marginLeft="18dp"
             android:color="@android:color/transparent"
             app:layout_constraintLeft_toLeftOf="parent"
