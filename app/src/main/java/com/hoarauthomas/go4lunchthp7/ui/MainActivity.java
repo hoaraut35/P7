@@ -563,12 +563,15 @@ public class MainActivity extends AppCompatActivity {
 
             if (id == R.id.action_map) {
                 binding.viewpager.setCurrentItem(1);
+                binding.topAppBar.setTitle("I'm Hungry!");
                 binding.topAppBar.findViewById(R.id.searchView).setVisibility(View.VISIBLE);
             } else if (id == R.id.action_list) {
                 binding.viewpager.setCurrentItem(2);
+                binding.topAppBar.setTitle("I'm Hungry!");
                 binding.topAppBar.findViewById(R.id.searchView).setVisibility(View.VISIBLE);
             } else if (id == R.id.action_work) {
                 binding.topAppBar.findViewById(R.id.searchView).setVisibility(View.INVISIBLE);
+                binding.topAppBar.setTitle("Available workmates");
                 binding.viewpager.setCurrentItem(3);
             }
             return true;

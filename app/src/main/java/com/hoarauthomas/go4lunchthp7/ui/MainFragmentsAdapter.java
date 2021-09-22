@@ -23,17 +23,11 @@ public class MainFragmentsAdapter extends FragmentStateAdapter {
 
         switch (position) {
             case 1:
-                //TODO : disable for test to prevent use of api map
                 return new MapsFragment();
-
             case 2:
-
                 return new ListFragment();//.newInstance();
             case 3:
-
-
                 return WorkFragment.newInstance();
-
             case 4:
                 return new SettingsFragment();
             default:
