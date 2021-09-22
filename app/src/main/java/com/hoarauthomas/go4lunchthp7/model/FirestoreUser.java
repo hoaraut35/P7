@@ -1,4 +1,4 @@
-package com.hoarauthomas.go4lunchthp7.repository;
+package com.hoarauthomas.go4lunchthp7.model;
 
 import androidx.annotation.Nullable;
 

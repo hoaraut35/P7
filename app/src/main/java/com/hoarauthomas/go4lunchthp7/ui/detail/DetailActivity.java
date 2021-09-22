@@ -16,7 +16,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityDetailRestaurantBinding;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
-import com.hoarauthomas.go4lunchthp7.repository.FirestoreUser;
+import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 
 import java.util.List;
 import java.util.Objects;

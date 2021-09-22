@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.R;
-import com.hoarauthomas.go4lunchthp7.repository.FirestoreUser;
+import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 
 import java.util.List;
 

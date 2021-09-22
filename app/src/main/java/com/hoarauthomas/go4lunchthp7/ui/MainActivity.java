@@ -682,6 +682,14 @@ public class MainActivity extends AppCompatActivity {
         SearchView searchView = (SearchView) search.getActionView();
         searchView.setQueryHint("Search restaurant ...");
 
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                //TODO: get new markers with place
+                showSnackBar("abandon recherche affichage par defaut ");
+                return false;
+            }
+        });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -766,6 +774,10 @@ public class MainActivity extends AppCompatActivity {
 
                 return false;
             }
+
+
+
+
         });
 
 

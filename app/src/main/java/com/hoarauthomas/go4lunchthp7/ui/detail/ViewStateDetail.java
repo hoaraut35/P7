@@ -2,7 +2,7 @@ package com.hoarauthomas.go4lunchthp7.ui.detail;
 
 import androidx.annotation.NonNull;
 
-import com.hoarauthomas.go4lunchthp7.repository.FirestoreUser;
+import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 
 import java.util.List;
 
