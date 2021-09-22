@@ -62,35 +62,21 @@ public class DetailActivity extends AppCompatActivity {
 
         myViewModelDetail.getMediatorScreen().observe(this, screenDetailModel -> {
 
+            //debug
             mFavorite = screenDetailModel.getFavorite();
             mPlaceId = screenDetailModel.getPlaceId();
             mWorkmate = screenDetailModel.getWorkmate();
 
             //get photo
-            try {
-                String base = "https://maps.googleapis.com/maps/api/place/photo?";
-                String key = "key=" + BuildConfig.MAPS_API_KEY;
-                String reference = "&photoreference=" + screenDetailModel.getUrlPhoto();
-                String maxH = "&maxheight=157";
-                String maxW = "&maxwidth=157";
-                String query = base + key + reference + maxH + maxW;
 
-                Glide.with(binding.backgroundImage)
-                        .load(query)
-                        .centerCrop()
-                        .into(binding.backgroundImage);
+            // binding.backgroundImage.setImageResource(screenDetailModel.);
+            Glide.with(binding.backgroundImage)
+                    .load(screenDetailModel.getUrlPhoto())
+                    .centerCrop()
+                    .into(binding.backgroundImage);
 
-            } catch (Exception e) {
-                Log.i("[IMAGE]", "Exception : " + e.getMessage());
-            }
-
-            //get title
             binding.restaurantTitre.setText(screenDetailModel.getTitle());
-
-            //get address
             binding.restaurantAddress.setText(screenDetailModel.getAddress());
-
-            //get rating
             binding.ratingbar.setRating(screenDetailModel.getRating());
 
             //get phone number

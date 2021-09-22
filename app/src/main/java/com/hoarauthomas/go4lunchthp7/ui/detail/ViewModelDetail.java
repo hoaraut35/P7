@@ -7,7 +7,9 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseUser;
+import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
 import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthentificationRepository;
@@ -146,7 +148,6 @@ public class ViewModelDetail extends ViewModel {
 
         //list of workmates
         List<FirestoreUser> myWorkMatesDetailList = new ArrayList<>();
-
         for (FirestoreUser myItem : workmatesList) {
             if (myItem.getFavoriteRestaurant().equals(placeIdRequested)) {
                 myWorkMatesDetailList.add(myItem);
@@ -154,31 +155,32 @@ public class ViewModelDetail extends ViewModel {
         }
         myScreen.setListWorkMates(myWorkMatesDetailList);
 
+        //?
         myScreen.setWorkmate(myUserFireAuth.getUid());
         myScreen.setPlaceId(placeIdRequested);
 
+
+        //setup favorite
         if (myUserFirtestore.getFavoriteRestaurant().equals(placeIdRequested)) {
             myScreen.setFavorite(true);
         } else {
             myScreen.setFavorite(false);
         }
 
+        //setup btn like
+        if (myUserFirtestore.getRestaurant_liked().contains(placeIdRequested)) {
+            myScreen.setLiked(true);
+        } else {
+            myScreen.setLiked(false);
+        }
 
+        //debug
         Log.i("[FIRESTORE]", " - utilisateur connecté : " + myUserFireAuth.getDisplayName());
         Log.i("[FIRESOTRE]", "  - utilisateur bdd : " + myUserFirtestore.getUsername());
         Log.i("[FIRESTORE]", " - restaurant favoris : " + myUserFirtestore.getFavoriteRestaurant());
         Log.i("[FIRESTORE]", " - restaurant affiché : " + placeIdRequested);
 
-
-
-
-
-
-        /* if (myItem.getMyUID().equals(myUserBase.getUid())) {
-
-         */
-
-
+        //setup general data in view object
         for (RestaurantPojo myItem : restaurantsList) {
 
             if (myItem.getPlaceId().equals(placeIdRequested)) {
@@ -196,7 +198,19 @@ public class ViewModelDetail extends ViewModel {
 
                 }
 
-              /*  //rating
+                //get photo
+                try {
+                    String query = "https://maps.googleapis.com/maps/api/place/photo?key=" +
+                            BuildConfig.MAPS_API_KEY + "&photoreference=" +
+                            myItem.getPhotos().get(0).getPhotoReference() + "&maxheight=157&maxwidth=157";
+                    myScreen.setUrlPhoto(query);
+
+
+                } catch (Exception e) {
+                    Log.i("[IMAGE]", "Exception : " + e.getMessage());
+                }
+
+                //rating
                 try {
                     //on google we have a rating from 1 to 5 but we want 1 to 3...
                     //Double ratingDouble = map(restaurants.get(x).getRating(), 1.0, 5.0, 1.0, 3.0);
@@ -217,30 +231,17 @@ public class ViewModelDetail extends ViewModel {
                     myScreen.setRating(0);
                 }
 
-               */
-
 
                 break;
             }
         }
 
-
-
-     /*   if (myUser.getRestaurant_liked().contains(placeIdRequested)) {
-            myScreen.setLiked(true);
-        } else {
-            myScreen.setLiked(false);
-        }
-
-      */
-
         //set empty list for recycler else it crash
-        myScreen.setListWorkMates(myWorkMatesDetailList);
+        //myScreen.setListWorkMates(myWorkMatesDetailList);
 
 
         //update viewstate object
         myScreenDetailMediator.setValue(myScreen);
-
 
 
     }

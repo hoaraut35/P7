@@ -58,7 +58,16 @@ public class FirebaseAuthentificationRepository {
 
     //to logout
     public void logOut(Context context) {
+
         myFireBaseAuthInstance.signOut();
+       /* myFireBaseAuthInstance.removeAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+            }
+        });
+
+        */
     }
 
 }
