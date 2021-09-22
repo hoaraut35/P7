@@ -37,7 +37,6 @@ public class ListFragment extends Fragment implements RecyclerViewAdapter.Restau
 
     @Override
     public void onClickDetailRestaurant(String restaurantId) {
-        Log.i("[WORK]", "Item cliqué : " + restaurantId);
         Intent intent = new Intent(getContext(), DetailActivity.class);
         intent.putExtra("TAG_ID", restaurantId);
         startActivity(intent);

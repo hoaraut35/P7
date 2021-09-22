@@ -39,41 +39,25 @@ public class ViewModelRestaurant extends ViewModel {
         this.myRestaurantRepository = myRestaurantRepository;
         this.myFirestoreRepository = myFirestoreRepository;
         this.mySharedRepository = mySharedRepository;
-
         myPosition = myPositionRepository.getLocationLiveData();
-
         LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
-
         LiveData<List<FirestoreUser>> myWorkMatesList = this.myFirestoreRepository.getFirestoreWorkmates();
 
-
-        myViewStateRestaurantMediator.addSource(myPosition, new Observer<Location>() {
-            @Override
-            public void onChanged(Location position) {
-                if (position == null) return;
-                myRestaurantRepository.UpdateLngLat(position.getLongitude(), position.getLatitude());
-                logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), position);
-            }
+        myViewStateRestaurantMediator.addSource(myPosition, position -> {
+            if (position == null) return;
+            myRestaurantRepository.UpdateLngLat(position.getLongitude(), position.getLatitude());
+            logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), position);
         });
 
-        myViewStateRestaurantMediator.addSource(myRestaurantsList, new Observer<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>>() {
-            @Override
-            public void onChanged(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurantPojos) {
-                if (restaurantPojos == null || restaurantPojos.isEmpty()) return;
-                logicWork(restaurantPojos, myWorkMatesList.getValue(), myPosition.getValue());
-            }
+        myViewStateRestaurantMediator.addSource(myRestaurantsList, restaurantPojos -> {
+            if (restaurantPojos == null || restaurantPojos.isEmpty()) return;
+            logicWork(restaurantPojos, myWorkMatesList.getValue(), myPosition.getValue());
         });
 
-
-        myViewStateRestaurantMediator.addSource(myWorkMatesList, new Observer<List<FirestoreUser>>() {
-            @Override
-            public void onChanged(List<FirestoreUser> firestoreUsers) {
-                if (firestoreUsers == null) return;
-                logicWork(myRestaurantsList.getValue(), firestoreUsers, myPosition.getValue());
-            }
+        myViewStateRestaurantMediator.addSource(myWorkMatesList, firestoreUsers -> {
+            if (firestoreUsers == null) return;
+            logicWork(myRestaurantsList.getValue(), firestoreUsers, myPosition.getValue());
         });
-
-
 
     }
 
@@ -135,15 +119,11 @@ public class ViewModelRestaurant extends ViewModel {
         return distance[0];
     }
 
-
     public LiveData<ViewStateRestaurant> getMediatorLiveData() {
         return myViewStateRestaurantMediator;
     }
 
-
     public MutableLiveData<Prediction> getPredictionFromVM() {
         return mySharedRepository.getMyPlaceIdFromAutocomplete();
-
-
     }
 }

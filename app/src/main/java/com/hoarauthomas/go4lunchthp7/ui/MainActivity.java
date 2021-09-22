@@ -557,7 +557,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openMyFavoriteRestaurant() {
-
         if (myViewModel.getMyUserRestaurant().getValue() != null && !myViewModel.getMyUserRestaurant().getValue().isEmpty()) {
             Intent intent = new Intent(this, DetailActivity.class);
             intent.putExtra("TAG_ID", myViewModel.getMyUserRestaurant().getValue());

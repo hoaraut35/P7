@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.Task;
@@ -50,7 +51,6 @@ public class ViewModelMain extends ViewModel {
         return myUserRestaurantId;
     }
 
-
     //to update ViewState...
     MediatorLiveData<ViewMainState> myAppMapMediator = new MediatorLiveData<>();
 
@@ -64,7 +64,13 @@ public class ViewModelMain extends ViewModel {
      * @param myAlarmRepoVM
      * @param mySharedRepoVM
      */
-    public ViewModelMain(FirebaseAuthentificationRepository firebaseAuthentificationRepository, FirestoreRepository firestoreRepository, PlaceAutocompleteRepository placeAutocompleteRepository, PositionRepository myPositionRepoVM, AlarmRepository myAlarmRepoVM, SharedRepository mySharedRepoVM) {
+    public ViewModelMain(
+            FirebaseAuthentificationRepository firebaseAuthentificationRepository,
+            FirestoreRepository firestoreRepository,
+            PlaceAutocompleteRepository placeAutocompleteRepository,
+            PositionRepository myPositionRepoVM,
+            AlarmRepository myAlarmRepoVM,
+            SharedRepository mySharedRepoVM) {
 
         //get data from Auth repository...
         this.myFirebaseAuthRepoVM = firebaseAuthentificationRepository;
@@ -74,6 +80,7 @@ public class ViewModelMain extends ViewModel {
         //get data from workmates repository...
         this.myWorkMatesRepoVM = firestoreRepository;
         myWorkMatesListLiveData = myWorkMatesRepoVM.getFirestoreWorkmates();
+        LiveData<FirestoreUser> myWorkmate = myWorkMatesRepoVM.getWorkmateFromRepo();
 
         //get data from place autocomplete repository...
         this.myPlaceAutocompleteRepoVM = placeAutocompleteRepository;
@@ -91,22 +98,33 @@ public class ViewModelMain extends ViewModel {
         myAppMapMediator.addSource(myUserLiveData, firebaseUser -> {
             if (firebaseUser != null) {
                 if (!firebaseUser.getUid().isEmpty()) {
-                    logicWork(firebaseUser, myWorkMatesListLiveData.getValue(), myUserStateNew.getValue());
+                    logicWork(firebaseUser, myWorkMatesListLiveData.getValue(), myUserStateNew.getValue(), myWorkmate.getValue());
                 }
             }
         });
 
         //add source
         myAppMapMediator.addSource(myWorkMatesListLiveData, users -> {
-
             if (users == null) return;
-
             if (myWorkMatesListLiveData != null) {
                 if (!myWorkMatesListLiveData.getValue().isEmpty()) {
-                    logicWork(myUserLiveData.getValue(), users, myUserStateNew.getValue());
+                    logicWork(myUserLiveData.getValue(), users, myUserStateNew.getValue(), myWorkmate.getValue());
                 }
             }
         });
+
+        myAppMapMediator.addSource(myWorkmate, new Observer<FirestoreUser>() {
+            @Override
+            public void onChanged(FirestoreUser firestoreUser) {
+                if (firestoreUser == null) return;
+                logicWork(myUserLiveData.getValue(),
+                        myWorkMatesListLiveData.getValue(),
+                        myUserStateNew.getValue(),
+                        firestoreUser);
+            }
+        });
+
+
     }
 
     /**
@@ -117,41 +135,25 @@ public class ViewModelMain extends ViewModel {
      * @param bool
      */
     // Logic work
-    private void logicWork(@Nullable FirebaseUser myUser, @Nullable List<FirestoreUser> workmates, Boolean bool) {
+    private void logicWork(
+            @Nullable FirebaseUser myUser,
+            @Nullable List<FirestoreUser> workmates,
+            Boolean bool, FirestoreUser myFirestoreUserData) {
 
         createUser();
 
-
-        if (myUser != null && workmates != null) {
-
+        if (myUser != null && workmates != null && myFirestoreUserData != null) {
 
             if (!myUser.getUid().isEmpty()) {
 
-                /*for (int i = 0; i < workmates.size(); i++) {
-
-                    if (workmates.get(i).getMyUID().equals(myUser.getUid())) {
-                   //     myUserRestaurantId.setValue(workmates.get(i).getFavoriteRestaurant());
-                        Log.i("", "");
-                        myUserLiveData = myFirebaseAuthRepoVM.getUserLiveDataNew();
-                        break;
-                    }
+                if (!myFirestoreUserData.getFavoriteRestaurant().isEmpty()){
+                    myUserRestaurantId.setValue(myFirestoreUserData.getFavoriteRestaurant());
                 }
 
-                 */
-
-                //getUser();
-                //myAppMapMediator.setValue(new ViewMainState(true, myUserRestaurantId.getValue(), getUser()));
-                // myAppMapMediator.setValue(new ViewMainState(true, "pas de restau", getUser()));
             } else {
-                //getUser();
                 myAppMapMediator.setValue(new ViewMainState(true, "pas de restau", myUser));
-
             }
-
-
             myAppMapMediator.setValue(new ViewMainState(true, "liste restaur non chargée", myUser));
-            Log.i("", "");
-
         }
     }
 
@@ -160,7 +162,6 @@ public class ViewModelMain extends ViewModel {
     }
 
     public LiveData<Boolean> getLoginState() {
-
         return myFirebaseAuthRepoVM.getLoginState();
     }
 
@@ -168,12 +169,10 @@ public class ViewModelMain extends ViewModel {
         return myPlaceAutocompleteRepoVM.getPlaces();
     }
 
-    //addedd
     public LiveData<Boolean> getMyLogin() {
         return myUserStateNew;
     }
 
-    //added
     public void LogOut(Context context) {
         myFirebaseAuthRepoVM.logOut(context);
     }
@@ -196,7 +195,6 @@ public class ViewModelMain extends ViewModel {
         // myPlaceAutocompleteRepoVM.getPlaceAutocomplete(query,location);
         myPlaceAutocompleteRepoVM.getPlaceAutocompleteSingle(query, location);
         //return myPlaceAutocompleteList;
-
     }
 
     public Location getMyPosition() {
@@ -207,7 +205,6 @@ public class ViewModelMain extends ViewModel {
     public void setNotification() {
         myAlarmRepoVM.setAlarm();
     }
-
 
     /**
      * To enable or disable notification
@@ -237,7 +234,7 @@ public class ViewModelMain extends ViewModel {
     }
 
     public void updateUserSystem() {
-    //    myFirebaseAuthRepoVM.updateUser();
+        //    myFirebaseAuthRepoVM.updateUser();
     }
 
     public void setUser() {
