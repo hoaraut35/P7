@@ -17,25 +17,26 @@ public class FirebaseAuthentificationRepository {
     private MutableLiveData<FirebaseUser> myUser = new MutableLiveData<>();
     private MutableLiveData<Boolean> myUserState = new MutableLiveData<>();
 
+    /**
+     * called by depandence injection
+     * @param firebaseAuthInstance
+     */
     public FirebaseAuthentificationRepository(FirebaseAuth firebaseAuthInstance) {
         this.myFireBaseAuthInstance = firebaseAuthInstance;
-        myUser.setValue(myFireBaseAuthInstance.getCurrentUser());
-        //this.myUser.setValue(myFireBaseAuthInstance.getCurrentUser());
-        loginListener();
+        setupAuthentificationListener();
     }
 
-    public void loginListener() {
-        myFireBaseAuthInstance.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if (firebaseAuth.getCurrentUser() != null) {
-                    myUser.setValue(firebaseAuth.getCurrentUser());
-                    myUserState.setValue(true);
-                }
-                else {
-                    myUser.setValue(null);
-                    myUserState.setValue(false);
-                }
+    /**
+     * setup listener for authentification event
+     */
+    public void setupAuthentificationListener() {
+        myFireBaseAuthInstance.addAuthStateListener(firebaseAuth -> {
+            if (firebaseAuth.getCurrentUser() != null) {
+                myUser.setValue(firebaseAuth.getCurrentUser());
+                myUserState.setValue(true);
+            } else {
+                myUser.setValue(null);
+                myUserState.setValue(false);
             }
         });
     }
@@ -45,7 +46,8 @@ public class FirebaseAuthentificationRepository {
         return myUserState;
     }
 
-    public MutableLiveData<Boolean> getLoggedOutLiveDataNew() {
+    //to publish
+    public LiveData<Boolean> getLoggedOutLiveDataNew() {
         return myUserState;
     }
 
@@ -54,14 +56,9 @@ public class FirebaseAuthentificationRepository {
         return myUser;
     }
 
+    //to logout
     public void logOut(Context context) {
         myFireBaseAuthInstance.signOut();
     }
 
-    public LiveData<FirebaseUser> getUserFromVM() {
-        return null;// myFireBaseAuthInstance.getCurrentUser();
-    }
-
-    public void updateUser() {
-    }
 }

@@ -41,7 +41,7 @@ public class ViewModelMain extends ViewModel {
 
     //livedata...
     private LiveData<FirebaseUser> myUserLiveData;
-    private MutableLiveData<Boolean> myUserStateNew;
+    private LiveData<Boolean> myUserStateNew;
     private LiveData<List<FirestoreUser>> myWorkMatesListLiveData = new MutableLiveData<>();
     private MutableLiveData<String> myUserRestaurantId = new MutableLiveData<>();
     private MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myPlaceAutocompleteList = new MutableLiveData<>();
@@ -237,7 +237,7 @@ public class ViewModelMain extends ViewModel {
     }
 
     public void updateUserSystem() {
-        myFirebaseAuthRepoVM.updateUser();
+    //    myFirebaseAuthRepoVM.updateUser();
     }
 
     public void setUser() {

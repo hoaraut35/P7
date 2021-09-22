@@ -70,7 +70,7 @@ public class ViewModelDetail extends ViewModel {
                     myRestaurantDetailFromRepo.getValue(),
                     myUserAuth.getValue(),
                     placeIdRequest.getValue(),
-                    firestoreUser );
+                    firestoreUser);
         });
 
         //authentification
@@ -138,7 +138,7 @@ public class ViewModelDetail extends ViewModel {
         if (workmatesList == null || restaurantsList == null || myUserFireAuth == null || Restaurantdetail == null || myUserFirtestore == null)
             return;
 
-        Log.i("[FIRESTORE]","Utilisateur datbase : " + myUserFirtestore.getUsername() +myUserFirtestore.getUid());
+        Log.i("[FIRESTORE]", "Utilisateur datbase : " + myUserFirtestore.getUsername() + myUserFirtestore.getUid());
 
 
         //create an ViewState detail object for ui
@@ -152,9 +152,9 @@ public class ViewModelDetail extends ViewModel {
                 myWorkMatesDetailList.add(myItem);
             }
         }
+        myScreen.setListWorkMates(myWorkMatesDetailList);
 
         myScreen.setWorkmate(myUserFireAuth.getUid());
-        myScreen.setListWorkMates(myWorkMatesDetailList);
         myScreen.setPlaceId(placeIdRequested);
 
         if (myUserFirtestore.getFavoriteRestaurant().equals(placeIdRequested)) {
@@ -164,9 +164,8 @@ public class ViewModelDetail extends ViewModel {
         }
 
 
-
         Log.i("[FIRESTORE]", " - utilisateur connecté : " + myUserFireAuth.getDisplayName());
-        Log.i("[FIRESOTRE]","  - utilisateur bdd : " + myUserFirtestore.getUsername());
+        Log.i("[FIRESOTRE]", "  - utilisateur bdd : " + myUserFirtestore.getUsername());
         Log.i("[FIRESTORE]", " - restaurant favoris : " + myUserFirtestore.getFavoriteRestaurant());
         Log.i("[FIRESTORE]", " - restaurant affiché : " + placeIdRequested);
 
@@ -175,12 +174,11 @@ public class ViewModelDetail extends ViewModel {
 
 
 
-       /* if (myItem.getMyUID().equals(myUserBase.getUid())) {
+        /* if (myItem.getMyUID().equals(myUserBase.getUid())) {
+
+         */
 
 
-
-
-        //
         for (RestaurantPojo myItem : restaurantsList) {
 
             if (myItem.getPlaceId().equals(placeIdRequested)) {
@@ -196,6 +194,27 @@ public class ViewModelDetail extends ViewModel {
                     myScreen.setUrlPhoto(myItem.getPhotos().get(0).getPhotoReference());
                 } catch (Exception e) {
 
+                }
+
+                //rating
+                try {
+                    //on google we have a rating from 1 to 5 but we want 1 to 3...
+                    //Double ratingDouble = map(restaurants.get(x).getRating(), 1.0, 5.0, 1.0, 3.0);
+                    double ratingDouble = (myItem.getRating() - 1.0) * (3.0 - 1.0) / (5.0 - 1.0) + 1.0;
+                    //private Double map(double value, double in_min, double in_max, double out_min, double out_max) {
+                    //return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+
+                    int ratingInt = (int) Math.round(ratingDouble);
+
+                    if (ratingInt == 1) {
+                        myScreen.setRating(1);
+                    } else if (ratingInt == 2) {
+                        myScreen.setRating(2);
+                    } else if (ratingInt == 3) {
+                        myScreen.setRating(3);
+                    }
+                } catch (Exception e) {
+                    myScreen.setRating(0);
                 }
 
 
@@ -216,36 +235,10 @@ public class ViewModelDetail extends ViewModel {
         //set empty list for recycler else it crash
         myScreen.setListWorkMates(myWorkMatesDetailList);
 
-        //final result for viewstate object
 
-
-       // if (myScreen.favorite == null) return;
-
+        //update viewstate object
         myScreenDetailMediator.setValue(myScreen);
 
-
-        //get rating
-             /*   try {
-                    //on google we have a rating from 1 to 5 but we want 1 to 3...
-                    //Double ratingDouble = map(restaurants.get(x).getRating(), 1.0, 5.0, 1.0, 3.0);
-                    double ratingDouble = (restaurantsList.get(x).getRating() - 1.0) * (3.0 - 1.0) / (5.0 - 1.0) + 1.0;
-                    //private Double map(double value, double in_min, double in_max, double out_min, double out_max) {
-                    //return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-
-                    int ratingInt = (int) Math.round(ratingDouble);
-
-                    if (ratingInt == 1) {
-                        myScreen.setRating(1);
-                    } else if (ratingInt == 2) {
-                        myScreen.setRating(2);
-                    } else if (ratingInt == 3) {
-                        myScreen.setRating(3);
-                    }
-                } catch (Exception e) {
-                    myScreen.setRating(0);
-                }
-
-              */
 
 
     }
@@ -276,12 +269,13 @@ public class ViewModelDetail extends ViewModel {
 
     /**
      * add or remove a fovorite restaurant
+     *
      * @param mFavorite
      * @param mPlaceId
      * @param mWorkmate
      */
 
     public void updateFavRestaurant(Boolean mFavorite, String mPlaceId, String mWorkmate) {
-        myFirestoreRepository.updateFavRestaurant(mFavorite,mPlaceId,mWorkmate);
+        myFirestoreRepository.updateFavRestaurant(mFavorite, mPlaceId, mWorkmate);
     }
 }

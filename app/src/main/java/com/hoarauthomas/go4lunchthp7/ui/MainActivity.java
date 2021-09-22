@@ -478,7 +478,6 @@ public class MainActivity extends AppCompatActivity {
         //TODO:18092021
 
 
-        myViewModel.updateUserSystem();
 
         // showSnackBar(myUserResult.getDisplayName());
 
