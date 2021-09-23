@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.Task;
@@ -14,10 +15,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.Prediction;
+import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.repository.AlarmRepository;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthentificationRepository;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
-import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 
@@ -84,6 +85,8 @@ public class ViewModelMain extends ViewModel {
         this.myPlaceAutocompleteRepoVM = placeAutocompleteRepository;
         //  this.myPlaceAutocompleteList = myPlaceAutocompleteRepoVM.getMyPlaceAutocompleteListForVM();
 
+        this.myPlaceAutocompleteList = myPlaceAutocompleteRepoVM.getPlaces();
+
         //get position for autocomplete request
         this.myPositionRepoVM = myPositionRepoVM;
 
@@ -92,11 +95,28 @@ public class ViewModelMain extends ViewModel {
 
         this.mySharedRepoVM = mySharedRepoVM;
 
+        //add source on onPlacesAutocomplete
+        myAppMapMediator.addSource(myPlaceAutocompleteList, new Observer<PlaceAutocomplete>() {
+            @Override
+            public void onChanged(PlaceAutocomplete placeAutocomplete) {
+                if (myPlaceAutocompleteList == null) return;
+                logicWork(myUserLiveData.getValue(),
+                        myWorkMatesListLiveData.getValue(),
+                        myUserStateNew.getValue(),
+                        myWorkmate.getValue(),
+                        placeAutocomplete);
+            }
+        });
+
+
         //add source
         myAppMapMediator.addSource(myUserLiveData, firebaseUser -> {
             if (firebaseUser != null) {
                 if (!firebaseUser.getUid().isEmpty()) {
-                    logicWork(firebaseUser, myWorkMatesListLiveData.getValue(), myUserStateNew.getValue(), myWorkmate.getValue());
+                    logicWork(firebaseUser, myWorkMatesListLiveData.getValue(),
+                            myUserStateNew.getValue(),
+                            myWorkmate.getValue(),
+                            myPlaceAutocompleteList.getValue());
                 }
             }
         });
@@ -106,7 +126,11 @@ public class ViewModelMain extends ViewModel {
             if (users == null) return;
             if (myWorkMatesListLiveData != null) {
                 if (!myWorkMatesListLiveData.getValue().isEmpty()) {
-                    logicWork(myUserLiveData.getValue(), users, myUserStateNew.getValue(), myWorkmate.getValue());
+                    logicWork(myUserLiveData.getValue(),
+                            users,
+                            myUserStateNew.getValue(),
+                            myWorkmate.getValue(),
+                            myPlaceAutocompleteList.getValue());
                 }
             }
         });
@@ -116,7 +140,8 @@ public class ViewModelMain extends ViewModel {
             logicWork(myUserLiveData.getValue(),
                     myWorkMatesListLiveData.getValue(),
                     myUserStateNew.getValue(),
-                    firestoreUser);
+                    firestoreUser,
+                    myPlaceAutocompleteList.getValue());
         });
 
     }
@@ -132,25 +157,50 @@ public class ViewModelMain extends ViewModel {
     private void logicWork(
             @Nullable FirebaseUser myUser,
             @Nullable List<FirestoreUser> workmates,
-            Boolean bool, FirestoreUser myFirestoreUserData) {
+            Boolean bool, FirestoreUser myFirestoreUserData,
+            PlaceAutocomplete myPlacesAuto) {
 
         createUser();
 
         if (myUser != null && workmates != null && myFirestoreUserData != null) {
 
-            if (!myUser.getUid().isEmpty()) {
+            if (myPlacesAuto != null ){
 
-                if (!myFirestoreUserData.getFavoriteRestaurant().isEmpty()){
-                    myUserRestaurantId.setValue(myFirestoreUserData.getFavoriteRestaurant());
-                }else
-                {
-                    myUserRestaurantId.setValue(null);
+                for (int z=0; z< myPlacesAuto.getPredictions().size();z++){
+
+
+
+
+                    Log.i("[SEARCH]","predic" + myPlacesAuto.getPredictions().get(z).getDescription().toString() +
+                            myPlacesAuto.getPredictions().get(z).getPlaceId()
+                            );
                 }
 
-            } else {
-                myAppMapMediator.setValue(new ViewMainState(true, "pas de restau", myUser));
+            }else
+            {
+
+                if (!myUser.getUid().isEmpty()) {
+
+                    if (!myFirestoreUserData.getFavoriteRestaurant().isEmpty()) {
+                        myUserRestaurantId.setValue(myFirestoreUserData.getFavoriteRestaurant());
+                    } else {
+                        myUserRestaurantId.setValue(null);
+                    }
+
+                } else {
+                    myAppMapMediator.setValue(new ViewMainState(true, "pas de restau", myUser));
+                }
+                myAppMapMediator.setValue(new ViewMainState(true, "liste restaur non chargée", myUser));
+
+
             }
-            myAppMapMediator.setValue(new ViewMainState(true, "liste restaur non chargée", myUser));
+
+
+
+
+
+
+
         }
     }
 
@@ -162,9 +212,6 @@ public class ViewModelMain extends ViewModel {
         return myFirebaseAuthRepoVM.getLoginState();
     }
 
-    public MutableLiveData<PlaceAutocomplete> getMyPlaceListForUI() {
-        return myPlaceAutocompleteRepoVM.getPlaces();
-    }
 
     public LiveData<Boolean> getMyLogin() {
         return myUserStateNew;

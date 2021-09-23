@@ -6,13 +6,13 @@ import android.util.LruCache;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
+import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.api.GooglePlaceApi;
 import com.hoarauthomas.go4lunchthp7.api.RetrofitRequest;
-import com.hoarauthomas.go4lunchthp7.model.placedetails2.MyDetailRestaurant;
-import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
-import com.hoarauthomas.go4lunchthp7.model.pojo.Place;
+import com.hoarauthomas.go4lunchthp7.model.NearbySearch.Place;
+import com.hoarauthomas.go4lunchthp7.model.PlaceDetails.PlaceDetailsFinal;
+import com.hoarauthomas.go4lunchthp7.model.PlaceDetails.ResultPlaceDetail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,25 +33,25 @@ public class RestaurantsRepository {
     private final GooglePlaceApi service;
 
     //this is the list for add all iteration in a list to send after in mutable
-    private final List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> allRestaurants = new ArrayList<>();
+    private  List<RestaurantPojo> allRestaurants = new ArrayList<>();
 
 
     /**
      * for detail restaurant publish, must be observe by viewmodel
      */
-    public MutableLiveData<ResultDetailRestaurant> myRestaurantDetailByPlaceId = new MutableLiveData<>();
+    public MutableLiveData<ResultPlaceDetail> myRestaurantDetailByPlaceId = new MutableLiveData<>();
 
 
-    private final MutableLiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> listOfRestaurantWithLongLat = new MutableLiveData<>();
-    private final MutableLiveData<ResultDetailRestaurant> restauDetailObj = new MutableLiveData<>();
-    private final MutableLiveData<MyDetailRestaurant> restauDetailObj2 = new MutableLiveData<>();
+    private final MutableLiveData<List<RestaurantPojo>> listOfRestaurantWithLongLat = new MutableLiveData<>();
+    private final MutableLiveData<PlaceDetailsFinal> restauDetailObj = new MutableLiveData<>();
+    private final MutableLiveData<PlaceDetailsFinal> restauDetailObj2 = new MutableLiveData<>();
     private final MutableLiveData<String> placeId = new MutableLiveData<String>();
 
 
     /**
      * trying to use cache with placeDetail API
      */
-    private final LruCache<String, ResultDetailRestaurant> myCache = new LruCache<>(2_000);
+    private final LruCache<String, PlaceDetailsFinal> myCache = new LruCache<>(2_000);
 
     //this is the constructor is called by factory...
     public RestaurantsRepository() {
@@ -61,7 +61,7 @@ public class RestaurantsRepository {
 
     //**********************************************************************************************
 
-    public LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> getMyRestaurantsList() {
+    public LiveData<List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo>> getMyRestaurantsList() {
         return listOfRestaurantWithLongLat;
     }
 
@@ -74,7 +74,7 @@ public class RestaurantsRepository {
     //**********************************************************************************************
 
     //this is livedata is publish to viewmodel
-    public LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> getAllRestaurants(@Nullable Double Long, @Nullable Double Lat) {
+    public LiveData<List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo>> getAllRestaurants(@Nullable Double Long, @Nullable Double Lat) {
 
         String myPositionStr = Lat + "," + Long;
         Log.i("[MAP]", "[REPOSITORY RESTAURANT] : Ma position : " + myPositionStr);
@@ -120,13 +120,13 @@ public class RestaurantsRepository {
      * @param placeId
      * @return
      */
-    private LiveData<ResultDetailRestaurant> getRestaurantById(String placeId) {
+    private LiveData<ResultPlaceDetail> getRestaurantById(String placeId) {
 
-        ResultDetailRestaurant existing = myCache.get(placeId);
+        PlaceDetailsFinal existing = myCache.get(placeId);
 
         //check cache
         if (existing != null) {
-            myRestaurantDetailByPlaceId.setValue(existing);
+            myRestaurantDetailByPlaceId.setValue(existing.getResult());
             Log.i("[CACHE]", "cache used !!");
         } else {
 
@@ -138,23 +138,27 @@ public class RestaurantsRepository {
 
                 Log.i("[RESTAURANT]", "detail restaurant avec id " + placeId);
 
-                service.getPlaceDetails2(BuildConfig.MAPS_API_KEY, placeId)
 
-                        .enqueue(new Callback<MyDetailRestaurant>() {
-                            @Override
-                            public void onResponse(Call<MyDetailRestaurant> call, Response<MyDetailRestaurant> response) {
-                                assert response.body() != null;
-                                Log.i("[MONDETAIL]", "recup detail... repository");
-                                myRestaurantDetailByPlaceId.setValue(response.body().getResult());
-                            }
+                service.getPlaceWithAllDetails(BuildConfig.MAPS_API_KEY,placeId)
+                        .enqueue(new Callback<ResultPlaceDetail>() {
+                                     @Override
+                                     public void onResponse(Call<ResultPlaceDetail> call, Response<ResultPlaceDetail> response) {
 
-                            @Override
-                            public void onFailure(Call<MyDetailRestaurant> call, Throwable t) {
-                                Log.i("[MONDETAIL]", "Erreur sur le detail... repository");
-                                myRestaurantDetailByPlaceId.setValue(null);
-                            }
-                        });
+                                         if (response.isSuccessful()){
+                                             myRestaurantDetailByPlaceId.setValue(response.body());
+                                         }
+                                     }
+
+                                     @Override
+                                     public void onFailure(Call<ResultPlaceDetail> call, Throwable t) {
+                                        myRestaurantDetailByPlaceId.setValue(null);
+                                     }
+                                 });
+
+
             }
+
+
         }
         return myRestaurantDetailByPlaceId;
     }
@@ -170,7 +174,7 @@ public class RestaurantsRepository {
         //return id;
     }
 
-    public LiveData<ResultDetailRestaurant> getMyRestaurantDetail() {
+    public LiveData<ResultPlaceDetail> getMyRestaurantDetail() {
         return myRestaurantDetailByPlaceId;
     }
 

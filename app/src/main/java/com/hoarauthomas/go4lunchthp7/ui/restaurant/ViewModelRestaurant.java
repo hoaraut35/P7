@@ -10,7 +10,8 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.Prediction;
-import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
+import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
+
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
@@ -38,7 +39,7 @@ public class ViewModelRestaurant extends ViewModel {
         this.myFirestoreRepository = myFirestoreRepository;
         this.mySharedRepository = mySharedRepository;
         myPosition = myPositionRepository.getLocationLiveData();
-        LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
+        LiveData<List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
         LiveData<List<FirestoreUser>> myWorkMatesList = this.myFirestoreRepository.getFirestoreWorkmates();
 
         myViewStateRestaurantMediator.addSource(myPosition, position -> {
@@ -59,11 +60,11 @@ public class ViewModelRestaurant extends ViewModel {
 
     }
 
-    private void logicWork(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants, List<FirestoreUser> workMates, @Nullable Location myPosition) {
+    private void logicWork(List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo> restaurants, List<FirestoreUser> workMates, @Nullable Location myPosition) {
 
         if (restaurants == null || workMates == null || myPosition == null) return;
 
-        List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> newList = new ArrayList<>();
+        List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo> newList = new ArrayList<>();
         RestaurantPojo myRestau;
 
 

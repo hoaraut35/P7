@@ -386,16 +386,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //popu an alert dialog when a place autocomplete return a result
-        this.myViewModel.getMyPlaceListForUI().observe(this, new Observer<PlaceAutocomplete>() {
-            @Override
-            public void onChanged(PlaceAutocomplete placeAutocomplete) {
-                if (placeAutocomplete != null) {
-                    alertDialogList(placeAutocomplete);
-                }
-
-            }
-        });
 
     }
 

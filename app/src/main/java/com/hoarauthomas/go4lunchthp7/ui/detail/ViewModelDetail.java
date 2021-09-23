@@ -9,8 +9,10 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
-import com.hoarauthomas.go4lunchthp7.model.placedetails2.ResultDetailRestaurant;
-import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
+
+import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
+import com.hoarauthomas.go4lunchthp7.model.PlaceDetails.PlaceDetailsFinal;
+import com.hoarauthomas.go4lunchthp7.model.PlaceDetails.ResultPlaceDetail;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthentificationRepository;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
@@ -53,7 +55,7 @@ public class ViewModelDetail extends ViewModel {
         LiveData<List<RestaurantPojo>> myRestaurantsListFromRepo = this.myRestaurantRepository.getMyRestaurantsList();
 
         //google api
-        LiveData<ResultDetailRestaurant> myRestaurantDetailFromRepo = this.myRestaurantRepository.getMyRestaurantDetail();
+        LiveData<ResultPlaceDetail> myRestaurantDetailFromRepo = this.myRestaurantRepository.getMyRestaurantDetail();
 
         //firestore
         LiveData<List<FirestoreUser>> myWorkMatesListFromRepo = this.myFirestoreRepository.getFirestoreWorkmates();
@@ -131,7 +133,7 @@ public class ViewModelDetail extends ViewModel {
     private void logicWork(
             @Nullable List<RestaurantPojo> restaurantsList,
             @Nullable List<FirestoreUser> workmatesList,
-            @Nullable ResultDetailRestaurant Restaurantdetail,
+            @Nullable ResultPlaceDetail Restaurantdetail,
             @Nullable FirebaseUser myUserFireAuth,
             String placeIdRequested,
             FirestoreUser myUserFirtestore) {
@@ -224,10 +226,10 @@ public class ViewModelDetail extends ViewModel {
                 }
 
                 //phone
-                myScreen.setPhoneNumber(Restaurantdetail.getFormattedPhoneNumber());
+            //    myScreen.setPhoneNumber(Restaurantdetail.getFormattedPhoneNumber());
 
                 //website
-                myScreen.setWebSite(Restaurantdetail.getUrl());
+              //  myScreen.setWebSite(Restaurantdetail.getUrl());
 
                 break;
             }

@@ -23,7 +23,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     //variables ...
 
-    private List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantResult;
+    private List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo> myRestaurantResult;
     private LatLng myPosition;
 
 
@@ -37,7 +37,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     //declare callbacl
     private final RestaurantListener callback;
 
-    public RecyclerViewAdapter(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myList, RestaurantListener callback) {
+    public RecyclerViewAdapter(List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo> myList, RestaurantListener callback) {
         this.callback = callback;
         this.myRestaurantResult = myList;
     }
@@ -59,7 +59,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewAdapter.ViewHolder holder, int position) {
 
-        com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo result = myRestaurantResult.get(position);
+        com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo result = myRestaurantResult.get(position);
 
         //show the name of restaurant
         holder.nameOfRestaurant.setText(myRestaurantResult.get(position).getName());

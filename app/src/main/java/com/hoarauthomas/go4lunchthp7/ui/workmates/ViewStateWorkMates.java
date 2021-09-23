@@ -2,7 +2,7 @@ package com.hoarauthomas.go4lunchthp7.ui.workmates;
 
 import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
-import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
+import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ public class ViewStateWorkMates {
 
     List<SpecialWorkMates> mySpecialWorkMAtes = new ArrayList<>();
     List<User> myWorkMatesList;
-    List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantList;
+    List<RestaurantPojo> myRestaurantList;
     RestaurantPojo myRestauResult;
 
     public List<User> getMyWorkMatesList() {

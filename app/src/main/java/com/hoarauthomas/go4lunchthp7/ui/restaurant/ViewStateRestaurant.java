@@ -1,7 +1,8 @@
 package com.hoarauthomas.go4lunchthp7.ui.restaurant;
 
+import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
-import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
+
 
 import java.util.List;
 

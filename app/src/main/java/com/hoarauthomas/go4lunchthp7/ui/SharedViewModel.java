@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 
 import com.hoarauthomas.go4lunchthp7.Prediction;
 
@@ -15,7 +16,7 @@ public class SharedViewModel {
     public MutableLiveData<Integer> myZoom = new MutableLiveData<Integer>();
 
     public MutableLiveData<Prediction> myPlaceIdFromAutocomplete = new MutableLiveData<>();
-    public MutableLiveData<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantList = new MutableLiveData<>();
+    public MutableLiveData<RestaurantPojo> myRestaurantList = new MutableLiveData<>();
 
 
     /**

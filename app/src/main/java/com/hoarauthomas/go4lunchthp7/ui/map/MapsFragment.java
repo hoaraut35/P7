@@ -337,7 +337,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
     }
 
-    private void showRestaurant(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
+    private void showRestaurant(List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo> restaurants) {
 
         if (restaurants.isEmpty()) {
             Log.i("[MAP]", "liste restauy à zero ds le fragment");

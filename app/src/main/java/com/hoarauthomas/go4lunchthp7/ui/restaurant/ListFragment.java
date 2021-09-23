@@ -30,7 +30,7 @@ import java.util.Objects;
 public class ListFragment extends Fragment implements RecyclerViewAdapter.RestaurantListener {
 
     private ViewModelRestaurant myViewModelRestaurant;
-    public ArrayList<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> allResult = new ArrayList<>();
+    public ArrayList<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo> allResult = new ArrayList<>();
     private RecyclerView recyclerView;
     private LatLng myPositionOnMap;
     private View myView;
@@ -70,7 +70,7 @@ public class ListFragment extends Fragment implements RecyclerViewAdapter.Restau
         });
     }
 
-    private void showRestaurant(List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
+    private void showRestaurant(List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo> restaurants) {
         if (restaurants == null) {
             Log.i("[media]", "Liste restau vide");
             return;

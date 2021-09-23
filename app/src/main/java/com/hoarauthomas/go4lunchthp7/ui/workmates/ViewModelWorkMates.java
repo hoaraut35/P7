@@ -6,8 +6,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
-import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
+
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
@@ -28,14 +29,14 @@ public class ViewModelWorkMates extends ViewModel {
      * for ui
      */
     private final MediatorLiveData<ViewStateWorkMates> myViewStateWorkMatesMediator = new MediatorLiveData<>();
-    private final RestaurantPojo myRestauResult = new RestaurantPojo();
+    private final com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo myRestauResult = new RestaurantPojo();
 
     public ViewModelWorkMates(RestaurantsRepository myRestaurantRepository, FirestoreRepository myFirestoreRepository) {
         this.myRestaurantRepository = myRestaurantRepository;
         this.myFirestoreRepository = myFirestoreRepository;
 
         LiveData<List<FirestoreUser>> myWorkMatesListFromRepo = this.myFirestoreRepository.getFirestoreWorkmates();
-        LiveData<List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo>> myRestaurantList = this.myRestaurantRepository.getMyRestaurantsList();
+        LiveData<List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo>> myRestaurantList = this.myRestaurantRepository.getMyRestaurantsList();
 
         myViewStateWorkMatesMediator.addSource(myWorkMatesListFromRepo, firestoreUsers -> {
             if (firestoreUsers == null) return;

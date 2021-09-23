@@ -3,7 +3,8 @@ package com.hoarauthomas.go4lunchthp7.ui.map;
 import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo;
+import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
+
 
 import java.util.List;
 
@@ -12,14 +13,14 @@ public class ViewStateMap {
     public Location myPosition;
     private LatLng myLatLng;
 
-    public List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> myRestaurantsList;
+    public List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo> myRestaurantsList;
 
     /**
      * Constructor for the ViewStateMap object
      * @param position return the position of user
      * @param restaurants return the list of restaurant
      */
-    public ViewStateMap(Location position, List<com.hoarauthomas.go4lunchthp7.pojo.RestaurantPojo> restaurants) {
+    public ViewStateMap(Location position, List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo> restaurants) {
         myPosition = position;
         myLatLng = new LatLng(position.getLatitude(), position.getLongitude());
         myRestaurantsList = restaurants;
