@@ -6,14 +6,16 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.Prediction;
-import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
-
-import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
+import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
+import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
@@ -30,84 +32,152 @@ public class ViewModelRestaurant extends ViewModel {
     private FirestoreRepository myFirestoreRepository;
     private LiveData<Location> myPosition;
     private SharedRepository mySharedRepository;
+    private PlaceAutocompleteRepository myPlaceAutocompleteRepository;
+
+
     private final MediatorLiveData<ViewStateRestaurant> myViewStateRestaurantMediator = new MediatorLiveData<>();
 
-    public ViewModelRestaurant(PositionRepository myPositionRepository, RestaurantsRepository myRestaurantRepository, FirestoreRepository myFirestoreRepository, SharedRepository mySharedRepository) {
+    public ViewModelRestaurant(PositionRepository myPositionRepository, RestaurantsRepository myRestaurantRepository, FirestoreRepository myFirestoreRepository, SharedRepository mySharedRepository, PlaceAutocompleteRepository placeAutocompleteRepository) {
 
         this.myPositionRepository = myPositionRepository;
         this.myRestaurantRepository = myRestaurantRepository;
         this.myFirestoreRepository = myFirestoreRepository;
         this.mySharedRepository = mySharedRepository;
+        this.myPlaceAutocompleteRepository = placeAutocompleteRepository;
+
         myPosition = myPositionRepository.getLocationLiveData();
         LiveData<List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
         LiveData<List<FirestoreUser>> myWorkMatesList = this.myFirestoreRepository.getFirestoreWorkmates();
 
+
+        //for autocomplete
+        LiveData<PlaceAutocomplete> myPlacesId = this.myPlaceAutocompleteRepository.getPlaces();
+        LiveData<Boolean> reloadMap = this.mySharedRepository.getReload();
+
+
+        myViewStateRestaurantMediator.addSource(reloadMap, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (reloadMap == null) return;
+                logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), myPosition.getValue(), myPlacesId.getValue(), aBoolean);
+            }
+        });
+
+        myViewStateRestaurantMediator.addSource(myPlacesId, new Observer<PlaceAutocomplete>() {
+            @Override
+            public void onChanged(PlaceAutocomplete placeAutocomplete) {
+                if (myPlacesId == null) return;
+                logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), myPosition.getValue(), placeAutocomplete, reloadMap.getValue());
+            }
+        });
+
+
         myViewStateRestaurantMediator.addSource(myPosition, position -> {
             if (position == null) return;
             myRestaurantRepository.UpdateLngLat(position.getLongitude(), position.getLatitude());
-            logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), position);
+            logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), position, myPlacesId.getValue(), reloadMap.getValue());
         });
 
         myViewStateRestaurantMediator.addSource(myRestaurantsList, restaurantPojos -> {
             if (restaurantPojos == null || restaurantPojos.isEmpty()) return;
-            logicWork(restaurantPojos, myWorkMatesList.getValue(), myPosition.getValue());
+            logicWork(restaurantPojos, myWorkMatesList.getValue(), myPosition.getValue(), myPlacesId.getValue(), reloadMap.getValue());
         });
 
         myViewStateRestaurantMediator.addSource(myWorkMatesList, firestoreUsers -> {
             if (firestoreUsers == null) return;
-            logicWork(myRestaurantsList.getValue(), firestoreUsers, myPosition.getValue());
+            logicWork(myRestaurantsList.getValue(), firestoreUsers, myPosition.getValue(), myPlacesId.getValue(), reloadMap.getValue());
         });
 
     }
 
-    private void logicWork(List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo> restaurants, List<FirestoreUser> workMates, @Nullable Location myPosition) {
+    private void logicWork(List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo> restaurants,
+                           List<FirestoreUser> workMates,
+                           @Nullable Location myPosition,
+                           PlaceAutocomplete myPlaceAuto,
+                           Boolean refresh) {
 
         if (restaurants == null || workMates == null || myPosition == null) return;
 
-        List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo> newList = new ArrayList<>();
-        RestaurantPojo myRestau;
+
+        if (refresh) {
 
 
-        //calculer distance
-        for (int i = 0; i < restaurants.size(); i++) {
+            List<RestaurantPojo> newList = new ArrayList<>();
+            RestaurantPojo myRestau;
 
 
-            myRestau = new RestaurantPojo();
-            myRestau = restaurants.get(i);
+            //calculer distance
+            for (int i = 0; i < restaurants.size(); i++) {
 
 
-            //modifier la distance du restaurant dans le pojo
-            LatLng restauPos = new LatLng(restaurants.get(i).getGeometry().getLocation().getLat(), restaurants.get(i).getGeometry().getLocation().getLng());
-            LatLng userPos = new LatLng(myPosition.getLatitude(), myPosition.getLongitude());
+                myRestau = new RestaurantPojo();
+                myRestau = restaurants.get(i);
 
-            float getDistance;
-            getDistance = distanceBetween(restauPos, userPos);
 
-            int distance = Math.round(getDistance);
+                //modifier la distance du restaurant dans le pojo
+                LatLng restauPos = new LatLng(restaurants.get(i).getGeometry().getLocation().getLat(), restaurants.get(i).getGeometry().getLocation().getLng());
+                LatLng userPos = new LatLng(myPosition.getLatitude(), myPosition.getLongitude());
 
-            myRestau.setMyDistance(Integer.toString(distance));
+                float getDistance;
+                getDistance = distanceBetween(restauPos, userPos);
 
-            int compteur = 0;
+                int distance = Math.round(getDistance);
 
-            //workmates number for an restaurant
-            for (int j = 0; j < workMates.size(); j++) {
+                myRestau.setMyDistance(Integer.toString(distance));
 
-                if (restaurants.get(i).getPlaceId().equals(workMates.get(j).getFavoriteRestaurant())) {
-                    Log.i("[compteur]", "un collegue sur le restaur " + workMates.get(j).getUsername() + " " + restaurants.get(i).getName());
+                int compteur = 0;
 
-                    compteur = compteur + 1;
-                } else {
-                    Log.i("[compteur]", "compteur = " + restaurants.get(i).getPlaceId() + " " + workMates.get(j).getFavoriteRestaurant());
+                //workmates number for an restaurant
+                for (int j = 0; j < workMates.size(); j++) {
+
+                    if (restaurants.get(i).getPlaceId().equals(workMates.get(j).getFavoriteRestaurant())) {
+                        Log.i("[compteur]", "un collegue sur le restaur " + workMates.get(j).getUsername() + " " + restaurants.get(i).getName());
+
+                        compteur = compteur + 1;
+                    } else {
+                        Log.i("[compteur]", "compteur = " + restaurants.get(i).getPlaceId() + " " + workMates.get(j).getFavoriteRestaurant());
+                    }
                 }
+
+
+                myRestau.setMyNumberOfWorkmates(Integer.toString(compteur));
+
+                newList.add(myRestau);
+            }
+
+            myViewStateRestaurantMediator.setValue(new ViewStateRestaurant(newList));
+
+
+        } else {
+            if (myPlaceAuto != null && restaurants != null) {
+
+
+                List<RestaurantPojo> newPredictionRestaurantList = new ArrayList<>();
+
+                for (RestaurantPojo myRestaurant : restaurants) {
+
+                    //si restauran = prediction on traite
+                    for (Prediction myPrediction : myPlaceAuto.getPredictions()) {
+
+                        if (myRestaurant.getPlaceId().equals(myPrediction.getPlaceId())) {
+
+                            Log.i("[PREDIC]", "new restau to add" + myRestaurant.getName());
+                            newPredictionRestaurantList.add(myRestaurant);
+
+
+                        }
+                    }
+
+
+                }
+
+                myViewStateRestaurantMediator.setValue(new ViewStateRestaurant(newPredictionRestaurantList));
+
+
             }
 
 
-            myRestau.setMyNumberOfWorkmates(Integer.toString(compteur));
-
-            newList.add(myRestau);
         }
-
-        myViewStateRestaurantMediator.setValue(new ViewStateRestaurant(newList));
 
 
     }

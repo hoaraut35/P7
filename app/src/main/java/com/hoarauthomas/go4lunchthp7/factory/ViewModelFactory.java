@@ -133,7 +133,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     positionRepository,
                     restaurantsRepository,
                     firestoreRepository,
-                    sharedRepository);
+                    sharedRepository,
+                    placeAutocompleteRepository);
 
         } else if (modelClass.isAssignableFrom(ViewModelWorkMates.class)) {
             return (T) new ViewModelWorkMates(
