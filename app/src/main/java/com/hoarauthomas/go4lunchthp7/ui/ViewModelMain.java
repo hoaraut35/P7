@@ -1,6 +1,5 @@
 package com.hoarauthomas.go4lunchthp7.ui;
 
-import android.content.Context;
 import android.location.Location;
 import android.util.Log;
 
@@ -16,7 +15,7 @@ import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.repository.AlarmRepository;
-import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthentificationRepository;
+import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthRepository;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
@@ -31,7 +30,7 @@ import javax.annotation.Nullable;
 public class ViewModelMain extends ViewModel {
 
     //repository...
-    private FirebaseAuthentificationRepository myFirebaseAuthRepoVM;
+    private FirebaseAuthRepository myFirebaseAuthRepoVM;
     private FirestoreRepository myWorkMatesRepoVM;
     private PlaceAutocompleteRepository myPlaceAutocompleteRepoVM;
     private PositionRepository myPositionRepoVM;
@@ -57,7 +56,7 @@ public class ViewModelMain extends ViewModel {
     /**
      * constructor called by viewmodelfactory
      *
-     * @param firebaseAuthentificationRepository
+     * @param firebaseAuthRepository
      * @param firestoreRepository
      * @param placeAutocompleteRepository
      * @param myPositionRepoVM
@@ -65,7 +64,7 @@ public class ViewModelMain extends ViewModel {
      * @param mySharedRepoVM
      */
     public ViewModelMain(
-            FirebaseAuthentificationRepository firebaseAuthentificationRepository,
+            FirebaseAuthRepository firebaseAuthRepository,
             FirestoreRepository firestoreRepository,
             PlaceAutocompleteRepository placeAutocompleteRepository,
             PositionRepository myPositionRepoVM,
@@ -73,9 +72,9 @@ public class ViewModelMain extends ViewModel {
             SharedRepository mySharedRepoVM) {
 
         //get data from Auth repository...
-        this.myFirebaseAuthRepoVM = firebaseAuthentificationRepository;
-        myUserLiveData = myFirebaseAuthRepoVM.getUserLiveDataNew();
-        myUserStateNew = myFirebaseAuthRepoVM.getLoggedOutLiveDataNew();
+        this.myFirebaseAuthRepoVM = firebaseAuthRepository;
+        myUserLiveData = myFirebaseAuthRepoVM.getFirebaseAuthUserFromRepo();
+        myUserStateNew = myFirebaseAuthRepoVM.getFirebaseAuthUserStateFromRepo();
 
         //get data from workmates repository...
         this.myWorkMatesRepoVM = firestoreRepository;
@@ -201,7 +200,7 @@ public class ViewModelMain extends ViewModel {
     }
 
     public LiveData<Boolean> getLoginState() {
-        return myFirebaseAuthRepoVM.getLoginState();
+        return myFirebaseAuthRepoVM.getFirebaseAuthUserStateFromRepo();
     }
 
 
@@ -209,8 +208,8 @@ public class ViewModelMain extends ViewModel {
         return myUserStateNew;
     }
 
-    public void LogOut(Context context) {
-        myFirebaseAuthRepoVM.logOut(context);
+    public void LogOut() {
+        myFirebaseAuthRepoVM.logOut();
     }
 
     public LiveData<String> getMyUserRestaurant() {
@@ -265,16 +264,18 @@ public class ViewModelMain extends ViewModel {
         //WorkMatesListFromRepo();
     }
 
-    public Task<DocumentSnapshot> requestUserForestoreFromVM(String uid) {
+ /*   public Task<DocumentSnapshot> requestUserForestoreFromVM(String uid) {
         return myWorkMatesRepoVM.getUserFirestoreFromRepo(uid);
     }
+
+  */
 
     public void updateUserSystem() {
         //    myFirebaseAuthRepoVM.updateUser();
     }
 
     public void setUser() {
-        myWorkMatesRepoVM.setupListenerds();
+        myWorkMatesRepoVM.setupListeners();
     }
 
     public FirebaseUser getUser() {

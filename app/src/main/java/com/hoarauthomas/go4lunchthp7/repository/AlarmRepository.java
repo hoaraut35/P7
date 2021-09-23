@@ -170,6 +170,7 @@ public class AlarmRepository {
      * @param state
      */
     public void setNotification(Boolean state) {
+
         Log.i("[PREF]","Notification pref : " + state);
         if (state){
             setupNotification("Go4Lunch","contenu");    
@@ -177,6 +178,7 @@ public class AlarmRepository {
         {
             removeNotification();
         }
+
     }
 
     /**

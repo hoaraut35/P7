@@ -11,9 +11,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
-import com.hoarauthomas.go4lunchthp7.model.PlaceDetails.PlaceDetailsFinal;
 import com.hoarauthomas.go4lunchthp7.model.PlaceDetails.ResultPlaceDetail;
-import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthentificationRepository;
+import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthRepository;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
@@ -26,7 +25,7 @@ import javax.annotation.Nullable;
 public class ViewModelDetail extends ViewModel {
 
     //repositories
-    private final FirebaseAuthentificationRepository myFirebaseAuth;
+    private final FirebaseAuthRepository myFirebaseAuth;
     private final RestaurantsRepository myRestaurantRepository;
     private final FirestoreRepository myFirestoreRepository;
 
@@ -39,7 +38,7 @@ public class ViewModelDetail extends ViewModel {
     //constructor
     public ViewModelDetail(
 
-            FirebaseAuthentificationRepository myAuthRepository,
+            FirebaseAuthRepository myAuthRepository,
             RestaurantsRepository myRestaurantRepository,
             FirestoreRepository myFirestoreRepository) {
 
@@ -49,7 +48,7 @@ public class ViewModelDetail extends ViewModel {
 
 
         //firebase auth user
-        LiveData<FirebaseUser> myUserAuth = this.myFirebaseAuth.getUserLiveDataNew();
+        LiveData<FirebaseUser> myUserAuth = this.myFirebaseAuth.getFirebaseAuthUserFromRepo();
 
         //google api
         LiveData<List<RestaurantPojo>> myRestaurantsListFromRepo = this.myRestaurantRepository.getMyRestaurantsList();

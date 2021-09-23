@@ -142,11 +142,8 @@ public class MainActivity extends AppCompatActivity {
                 Integer myZoom = sharedPreferences.getInt("zoom",10);
                 myViewModel.setZoom(myZoom);
 
-               // boolean myBool = sharedPref.getBoolean("notifications2", false);
-               // myViewModel.setNotification(myBool);
-
-
-
+                boolean myNotificationSetup = sharedPref.getBoolean("notifications2", false);
+                myViewModel.setNotification(myNotificationSetup);
             }
         });
     }
@@ -531,7 +528,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (id == R.id.navigation_drawer_settings) {
                 binding.viewpager.setCurrentItem(4);
             } else if (id == R.id.navigation_drawer_logout) {
-                myViewModel.LogOut(this);
+                myViewModel.LogOut();
             }
 
             binding.drawerLayout.closeDrawer(START);
