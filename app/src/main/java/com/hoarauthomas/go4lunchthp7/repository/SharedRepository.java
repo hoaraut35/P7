@@ -17,6 +17,8 @@ public class SharedRepository {
     public MutableLiveData<Prediction> myPlaceIdFromAutocomplete = new MutableLiveData<>();
     public MutableLiveData<List<String>> myRestaurantList = new MutableLiveData<>();
 
+    public MutableLiveData<Boolean> reloadMap = new MutableLiveData<>(true);
+
     public MutableLiveData<Prediction> getMyPlaceIdFromAutocomplete() {
         return myPlaceIdFromAutocomplete;
     }
@@ -44,4 +46,15 @@ public class SharedRepository {
     public LiveData<Integer> getMyZoom() {
         return myZoom;
     }
+
+
+    public void setReloadMap(Boolean bool){
+        reloadMap.setValue(bool);
+    }
+
+    public LiveData<Boolean> getReload() {
+        return reloadMap;
+    }
+
+
 }

@@ -77,6 +77,21 @@ public class ViewModelMap extends ViewModel {
         LiveData<PlaceAutocomplete> myPlacesId = this.myPlaceAutocompleteRepository.getPlaces();
 
 
+        LiveData<Boolean> reloadMap = this.mySharedRepository.getReload();
+
+
+        myViewStateMapMediator.addSource(reloadMap, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (reloadMap == null) return;
+                logicWork(myPosition.getValue(),
+                        myRestaurantsList.getValue(),
+                        myWorkMatesList.getValue(),
+                        myPlacesId.getValue(),
+                        aBoolean);
+            }
+        });
+
         myViewStateMapMediator.addSource(myPlacesId, new Observer<PlaceAutocomplete>() {
             @Override
             public void onChanged(PlaceAutocomplete placeAutocomplete) {
@@ -84,7 +99,8 @@ public class ViewModelMap extends ViewModel {
                 logicWork(myPosition.getValue(),
                         myRestaurantsList.getValue(),
                         myWorkMatesList.getValue(),
-                        placeAutocomplete);
+                        placeAutocomplete,
+                        reloadMap.getValue());
             }
         });
 
@@ -111,7 +127,8 @@ public class ViewModelMap extends ViewModel {
                 logicWork(myPosition.getValue(),
                         restaurantsList,
                         myWorkMatesList.getValue(),
-                        myPlacesId.getValue());
+                        myPlacesId.getValue(),
+                        reloadMap.getValue());
             }
         });
 
@@ -121,56 +138,24 @@ public class ViewModelMap extends ViewModel {
                 logicWork(myPosition.getValue(),
                         myRestaurantsList.getValue(),
                         workmates,
-                        myPlacesId.getValue());
+                        myPlacesId.getValue(),
+                        reloadMap.getValue());
             }
         });
     }
 
-    public LiveData<Integer> getMyZoom() {
-        return myZoomLive;
-    }
 
-    /**
-     * This is the logic work
-     *
-     * @param position
-     * @param restaurants
-     * @param workmates
-     */
     private void logicWork(@Nullable Location position,
                            @Nullable List<RestaurantPojo> restaurants,
                            @Nullable List<FirestoreUser> workmates,
-                           @Nullable PlaceAutocomplete myPlacesId) {
+                           @Nullable PlaceAutocomplete myPlacesId,
+                           Boolean reload) {
 
-        //if one of three values is null then we cancel the job
         if (position == null || restaurants == null || workmates == null) return;
 
 
-        if (myPlacesId != null && restaurants != null) {
+        if (reload) {
 
-            List<RestaurantPojo> newPredictionRestaurantList = new ArrayList<>();
-
-            for (RestaurantPojo myRestaurant : restaurants) {
-
-                for (Prediction myPrediction : myPlacesId.getPredictions()) {
-
-                    if (myRestaurant.getPlaceId().equals(myPrediction.getPlaceId())) {
-                        Log.i("[PREDIC]", "new restau to add" + myRestaurant.getName());
-                        newPredictionRestaurantList.add(myRestaurant);
-
-                    }
-
-                }
-
-
-            }
-
-            myViewStateMapMediator.setValue(new ViewStateMap(position, newPredictionRestaurantList));
-
-        } else {
-
-
-            //
             if (!restaurants.isEmpty() && !workmates.isEmpty()) {
 
                 List<RestaurantPojo> newRestaurantList = new ArrayList<>();
@@ -229,6 +214,31 @@ public class ViewModelMap extends ViewModel {
                 //we set the viewstate for ui
                 myViewStateMapMediator.setValue(new ViewStateMap(position, newRestaurantList));
 
+            }//fin si
+
+
+        } else {
+            //reset autocomplete ?
+            // myPlacesId = null;
+            //   mySharedRepository.setReloadMap(false);
+
+
+            if (myPlacesId != null && restaurants != null) {
+
+                List<RestaurantPojo> newPredictionRestaurantList = new ArrayList<>();
+
+                for (RestaurantPojo myRestaurant : restaurants) {
+                    for (Prediction myPrediction : myPlacesId.getPredictions()) {
+                        if (myRestaurant.getPlaceId().equals(myPrediction.getPlaceId())) {
+                            Log.i("[PREDIC]", "new restau to add" + myRestaurant.getName());
+                            newPredictionRestaurantList.add(myRestaurant);
+                        }
+                    }
+                }
+
+                myViewStateMapMediator.setValue(new ViewStateMap(position, newPredictionRestaurantList));
+
+
             }
 
 
@@ -237,9 +247,6 @@ public class ViewModelMap extends ViewModel {
 
     }
 
-    /**
-     * check permissio
-     */
     @SuppressLint("MissingPermission")
     public void refresh() {
         // No GPS permission
@@ -250,21 +257,10 @@ public class ViewModelMap extends ViewModel {
         }
     }
 
-    /**
-     * return ViewState for Map fragment
-     *
-     * @return ViewState mediator
-     */
     public LiveData<ViewStateMap> ViewStateForMapUI() {
         return myViewStateMapMediator;
     }
 
-
-    /**
-     * get Prediction from repository
-     *
-     * @return prediction from repository
-     */
     public MutableLiveData<Prediction> getPredictionFromRepository() {
         return mySharedRepository.getMyPlaceIdFromAutocomplete();
     }
@@ -273,5 +269,8 @@ public class ViewModelMap extends ViewModel {
         return mySharedRepository.getMyRestaurantList();
     }
 
+    public LiveData<Integer> getMyZoom() {
+        return myZoomLive;
+    }
 
 }

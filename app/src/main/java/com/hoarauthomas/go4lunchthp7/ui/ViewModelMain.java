@@ -1,18 +1,14 @@
 package com.hoarauthomas.go4lunchthp7.ui;
 
 import android.location.Location;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
-import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.repository.AlarmRepository;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthRepository;
@@ -85,7 +81,7 @@ public class ViewModelMain extends ViewModel {
         this.myPlaceAutocompleteRepoVM = placeAutocompleteRepository;
         //  this.myPlaceAutocompleteList = myPlaceAutocompleteRepoVM.getMyPlaceAutocompleteListForVM();
 
-      //  this.myPlaceAutocompleteList = myPlaceAutocompleteRepoVM.getPlaces();
+        //  this.myPlaceAutocompleteList = myPlaceAutocompleteRepoVM.getPlaces();
 
         //get position for autocomplete request
         this.myPositionRepoVM = myPositionRepoVM;
@@ -171,10 +167,10 @@ public class ViewModelMain extends ViewModel {
                 for (int z = 0; z < myPlacesAuto.getPredictions().size(); z++) {
                     myPlacesIdList.add(myPlacesAuto.getPredictions().get(z).getPlaceId());
 
-               //     Log.i("[SEARCH]", "predic" + myPlacesAuto.getPredictions().get(z).getDescription().toString() + myPlacesAuto.getPredictions().get(z).getPlaceId());
+                    //     Log.i("[SEARCH]", "predic" + myPlacesAuto.getPredictions().get(z).getDescription().toString() + myPlacesAuto.getPredictions().get(z).getPlaceId());
                 }
 
-               mySharedRepoVM.setMyRestaurantList(myPlacesIdList);
+                mySharedRepoVM.setMyRestaurantList(myPlacesIdList);
 
             } else {
 
@@ -230,9 +226,7 @@ public class ViewModelMain extends ViewModel {
     }
 
     public void getResultAutocomplete(String query, Location location) {
-        // myPlaceAutocompleteRepoVM.getPlaceAutocomplete(query,location);
         myPlaceAutocompleteRepoVM.getPlaceAutocompleteSingle(query, location);
-        //return myPlaceAutocompleteList;
     }
 
     public Location getMyPosition() {
@@ -263,7 +257,6 @@ public class ViewModelMain extends ViewModel {
     }
 
  */
-
     public void updataApp() {
         myWorkMatesRepoVM.getFirestoreWorkmates();
         //WorkMatesListFromRepo();
@@ -299,7 +292,7 @@ public class ViewModelMain extends ViewModel {
         myPositionRepoVM.startLocationRequest();
     }
 
-    public void reloadDataAfterQuery() {
-
+    public void reloadDataAfterQuery(Boolean bool) {
+        mySharedRepoVM.setReloadMap(bool);
     }
 }

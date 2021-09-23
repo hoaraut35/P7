@@ -657,7 +657,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onClose() {
                 //TODO: get new markers with place
                 showSnackBar("abandon recherche affichage par defaut ");
-                    myViewModel.reloadDataAfterQuery();
+                    myViewModel.reloadDataAfterQuery(true);
                 //myViewModel.startPositionListener();
                 return false;
             }
@@ -666,10 +666,10 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
+                myViewModel.reloadDataAfterQuery(false);
                 //   searchView.clearFocus();
 
-
+                //myViewModel.reloadDataAfterQuery(false);
                 if (myViewModel.getMyPosition() != null && query.length() > 3) {
 
                     Location mypos = myViewModel.getMyPosition();
