@@ -134,16 +134,21 @@ public class MainActivity extends AppCompatActivity {
     private void setupSettings() {
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean myBool = sharedPref.getBoolean("notifications2", false);
-        myViewModel.setNotification(myBool);
 
-        //for debug only
-        showSnackBar("Notification is : " + Boolean.toString(myBool));
+        sharedPref.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
-        //map zoom
-        Integer myZoom = sharedPref.getInt("zoom", 10);
-        myViewModel.setZoom(myZoom);
+                Integer myZoom = sharedPreferences.getInt("zoom",10);
+                myViewModel.setZoom(myZoom);
 
+               // boolean myBool = sharedPref.getBoolean("notifications2", false);
+               // myViewModel.setNotification(myBool);
+
+
+
+            }
+        });
     }
 
     /**

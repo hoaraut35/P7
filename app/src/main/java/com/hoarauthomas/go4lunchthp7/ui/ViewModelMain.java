@@ -7,7 +7,6 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.Task;
@@ -21,7 +20,9 @@ import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthentificationReposito
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
+import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -37,7 +38,7 @@ public class ViewModelMain extends ViewModel {
     private AlarmRepository myAlarmRepoVM;
 
     //shared beetween multiple view
-    private SharedViewModel mySharedRepoVM;
+    private SharedRepository mySharedRepoVM;
 
     //livedata...
     private LiveData<FirebaseUser> myUserLiveData;
@@ -69,7 +70,7 @@ public class ViewModelMain extends ViewModel {
             PlaceAutocompleteRepository placeAutocompleteRepository,
             PositionRepository myPositionRepoVM,
             AlarmRepository myAlarmRepoVM,
-            SharedViewModel mySharedRepoVM) {
+            SharedRepository mySharedRepoVM) {
 
         //get data from Auth repository...
         this.myFirebaseAuthRepoVM = firebaseAuthentificationRepository;
@@ -96,16 +97,13 @@ public class ViewModelMain extends ViewModel {
         this.mySharedRepoVM = mySharedRepoVM;
 
         //add source on onPlacesAutocomplete
-        myAppMapMediator.addSource(myPlaceAutocompleteList, new Observer<PlaceAutocomplete>() {
-            @Override
-            public void onChanged(PlaceAutocomplete placeAutocomplete) {
-                if (myPlaceAutocompleteList == null) return;
-                logicWork(myUserLiveData.getValue(),
-                        myWorkMatesListLiveData.getValue(),
-                        myUserStateNew.getValue(),
-                        myWorkmate.getValue(),
-                        placeAutocomplete);
-            }
+        myAppMapMediator.addSource(myPlaceAutocompleteList, placeAutocomplete -> {
+            if (myPlaceAutocompleteList == null) return;
+            logicWork(myUserLiveData.getValue(),
+                    myWorkMatesListLiveData.getValue(),
+                    myUserStateNew.getValue(),
+                    myWorkmate.getValue(),
+                    placeAutocomplete);
         });
 
 
@@ -164,20 +162,19 @@ public class ViewModelMain extends ViewModel {
 
         if (myUser != null && workmates != null && myFirestoreUserData != null) {
 
-            if (myPlacesAuto != null ){
+            if (myPlacesAuto != null) {
 
-                for (int z=0; z< myPlacesAuto.getPredictions().size();z++){
+                List<Prediction> myList = new ArrayList<>();
 
+                for (int z = 0; z < myPlacesAuto.getPredictions().size(); z++) {
+                    myList.add(myPlacesAuto.getPredictions().get(z));
 
-
-
-                    Log.i("[SEARCH]","predic" + myPlacesAuto.getPredictions().get(z).getDescription().toString() +
-                            myPlacesAuto.getPredictions().get(z).getPlaceId()
-                            );
+                    Log.i("[SEARCH]", "predic" + myPlacesAuto.getPredictions().get(z).getDescription().toString() + myPlacesAuto.getPredictions().get(z).getPlaceId());
                 }
 
-            }else
-            {
+                myPlaceAutocompleteRepoVM.setResult(myList);
+
+            } else {
 
                 if (!myUser.getUid().isEmpty()) {
 
@@ -194,11 +191,6 @@ public class ViewModelMain extends ViewModel {
 
 
             }
-
-
-
-
-
 
 
         }

@@ -31,7 +31,7 @@ public class MainFragmentsAdapter extends FragmentStateAdapter {
             case 4:
                 return new SettingsFragment();
             default:
-                return ListFragment.newInstance();
+                return new MapsFragment();
         }
     }
 

@@ -1,9 +1,7 @@
 package com.hoarauthomas.go4lunchthp7.ui.settings;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceFragmentCompat;
@@ -11,9 +9,7 @@ import androidx.preference.PreferenceManager;
 
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
-import com.hoarauthomas.go4lunchthp7.ui.SharedViewModel;
 import com.hoarauthomas.go4lunchthp7.ui.ViewModelMain;
-import com.hoarauthomas.go4lunchthp7.ui.map.ViewModelMap;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 

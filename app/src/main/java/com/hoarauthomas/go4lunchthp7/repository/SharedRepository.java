@@ -1,22 +1,20 @@
-package com.hoarauthomas.go4lunchthp7.ui;
+package com.hoarauthomas.go4lunchthp7.repository;
 
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 
 import com.hoarauthomas.go4lunchthp7.Prediction;
+import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 
-public class SharedViewModel {
+public class SharedRepository {
 
-
-
-    public MutableLiveData<Integer> myZoom = new MutableLiveData<Integer>();
-
+    private MutableLiveData<Integer> myZoom = new MutableLiveData<Integer>();
     public MutableLiveData<Prediction> myPlaceIdFromAutocomplete = new MutableLiveData<>();
     public MutableLiveData<RestaurantPojo> myRestaurantList = new MutableLiveData<>();
+
 
 
     /**
@@ -38,7 +36,7 @@ public class SharedViewModel {
     }
 
     public void setZoom(Integer myZoom) {
-        Log.i("[PREF]","Zoom setup to : " + myZoom);
+        Log.i("[PREF]", "Zoom setup to : " + myZoom);
         this.myZoom.setValue(myZoom);
     }
 

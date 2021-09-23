@@ -2,21 +2,22 @@ package com.hoarauthomas.go4lunchthp7.ui.map;
 
 import android.annotation.SuppressLint;
 import android.location.Location;
+import android.provider.MediaStore;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
-import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
-import com.hoarauthomas.go4lunchthp7.ui.SharedViewModel;
+import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +30,9 @@ public class ViewModelMap extends ViewModel {
     private PositionRepository myPositionRepository;
     private RestaurantsRepository myRestaurantRepository;
     private FirestoreRepository myFirestoreRepository;
-    private SharedViewModel mySharedRepository;
+    private SharedRepository mySharedRepository;
 
+    private MutableLiveData<Integer> myZoomLive = new MutableLiveData<>();
     private LiveData<Location> myPosition;
     private final MediatorLiveData<ViewStateMap> myViewStateMapMediator = new MediatorLiveData<>();
 
@@ -43,7 +45,7 @@ public class ViewModelMap extends ViewModel {
      * @param myFirestoreRepository
      * @param mySharedRepository
      */
-    public ViewModelMap(PermissionChecker myPermission, PositionRepository myPositionRepository, RestaurantsRepository myRestaurantsRepository, FirestoreRepository myFirestoreRepository, SharedViewModel mySharedRepository) {
+    public ViewModelMap(PermissionChecker myPermission, PositionRepository myPositionRepository, RestaurantsRepository myRestaurantsRepository, FirestoreRepository myFirestoreRepository, SharedRepository mySharedRepository) {
         //init repository
         this.myPermission = myPermission;
         this.myPositionRepository = myPositionRepository;
@@ -51,12 +53,26 @@ public class ViewModelMap extends ViewModel {
         this.myFirestoreRepository = myFirestoreRepository;
         this.mySharedRepository = mySharedRepository;
 
+
+        LiveData<Integer> myZoom = this.mySharedRepository.getMyZoom();
+
+
         //init position
         myPosition = myPositionRepository.getLocationLiveData();
         //init list of restaurants
         LiveData<List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
         //init list of workmates
         LiveData<List<FirestoreUser>> myWorkMatesList = this.myFirestoreRepository.getFirestoreWorkmates();
+
+
+        myViewStateMapMediator.addSource(myZoom, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                if (integer == null) return;
+                myZoomLive.setValue(integer);
+
+            }
+        });
 
         //add listener for new position
         myViewStateMapMediator.addSource(myPosition, position -> {
@@ -83,6 +99,10 @@ public class ViewModelMap extends ViewModel {
         });
     }
 
+    public LiveData<Integer> getMyZoom()
+    {
+      return myZoomLive;
+    }
     /**
      * This is the logic work
      * @param position

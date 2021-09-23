@@ -16,7 +16,7 @@ import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
-import com.hoarauthomas.go4lunchthp7.ui.SharedViewModel;
+import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +29,10 @@ public class ViewModelRestaurant extends ViewModel {
     private RestaurantsRepository myRestaurantRepository;
     private FirestoreRepository myFirestoreRepository;
     private LiveData<Location> myPosition;
-    private SharedViewModel mySharedRepository;
+    private SharedRepository mySharedRepository;
     private final MediatorLiveData<ViewStateRestaurant> myViewStateRestaurantMediator = new MediatorLiveData<>();
 
-    public ViewModelRestaurant(PositionRepository myPositionRepository, RestaurantsRepository myRestaurantRepository, FirestoreRepository myFirestoreRepository, SharedViewModel mySharedRepository) {
+    public ViewModelRestaurant(PositionRepository myPositionRepository, RestaurantsRepository myRestaurantRepository, FirestoreRepository myFirestoreRepository, SharedRepository mySharedRepository) {
 
         this.myPositionRepository = myPositionRepository;
         this.myRestaurantRepository = myRestaurantRepository;

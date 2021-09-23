@@ -29,6 +29,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
+import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 
 import org.jetbrains.annotations.NotNull;
@@ -39,10 +40,13 @@ import java.util.List;
 public class MapsFragment extends Fragment implements OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener {
 
     private ViewModelMap myViewModelMap;
+    private SharedRepository mySharedRepository;
     public Marker myMarker;
-    private static final int DEFAULT_ZOOM = 12;
+   // private static final int DEFAULT_ZOOM = 12;
     public List<MyMarkerObject> allMarkers = new ArrayList<MyMarkerObject>();
     private GoogleMap myMap;
+
+    private Integer myZoom;
 
     @Nullable
     @Override
@@ -64,6 +68,19 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             //to get an instance
             myMap = map;
             myMap.clear();
+
+
+
+
+
+            myViewModelMap.getMyZoom().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+                @Override
+                public void onChanged(Integer integer) {
+                    //ok for variable but no zoom in or out
+                    myZoom = integer;
+                    myMap.animateCamera(CameraUpdateFactory.zoomTo(integer));
+                }
+            });
 
             //myViewModelMap.refresh();
             myViewModelMap.ViewStateForMapUI().observe(getViewLifecycleOwner(), new Observer<ViewStateMap>() {
@@ -332,7 +349,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     private void showMapWithPosition(@NonNull LatLng position) {
         if (myMap != null) {
             myMap.moveCamera(CameraUpdateFactory.newLatLng(position));
-            myMap.animateCamera(CameraUpdateFactory.zoomTo(DEFAULT_ZOOM));
+            myMap.animateCamera(CameraUpdateFactory.zoomTo(myZoom));
         }
 
     }
