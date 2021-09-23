@@ -61,7 +61,7 @@ public class RestaurantsRepository {
 
     //**********************************************************************************************
 
-    public LiveData<List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo>> getMyRestaurantsList() {
+    public LiveData<List<RestaurantPojo>> getMyRestaurantsList() {
         return listOfRestaurantWithLongLat;
     }
 
@@ -74,7 +74,7 @@ public class RestaurantsRepository {
     //**********************************************************************************************
 
     //this is livedata is publish to viewmodel
-    public LiveData<List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo>> getAllRestaurants(@Nullable Double Long, @Nullable Double Lat) {
+    public LiveData<List<RestaurantPojo>> getAllRestaurants(@Nullable Double Long, @Nullable Double Lat) {
 
         String myPositionStr = Lat + "," + Long;
         Log.i("[MAP]", "[REPOSITORY RESTAURANT] : Ma position : " + myPositionStr);
@@ -120,7 +120,7 @@ public class RestaurantsRepository {
      * @param placeId
      * @return
      */
-    private LiveData<ResultPlaceDetail> getRestaurantById(String placeId) {
+    public LiveData<ResultPlaceDetail> getRestaurantById(String placeId) {
 
         PlaceDetailsFinal existing = myCache.get(placeId);
 

@@ -9,28 +9,29 @@ import androidx.lifecycle.ViewModel;
 import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 
+import java.util.List;
+
 public class SharedRepository {
 
     private MutableLiveData<Integer> myZoom = new MutableLiveData<Integer>();
     public MutableLiveData<Prediction> myPlaceIdFromAutocomplete = new MutableLiveData<>();
-    public MutableLiveData<RestaurantPojo> myRestaurantList = new MutableLiveData<>();
+    public MutableLiveData<List<String>> myRestaurantList = new MutableLiveData<>();
 
-
-
-    /**
-     * public method to get prediction in repository, for observe by sample
-     *
-     * @return
-     */
     public MutableLiveData<Prediction> getMyPlaceIdFromAutocomplete() {
         return myPlaceIdFromAutocomplete;
     }
 
-    /**
-     * public method to set prediction in repository
-     *
-     * @param myPlaceFromVM
-     */
+
+
+
+    public LiveData<List<String>> getMyRestaurantList() {
+        return myRestaurantList;
+    }
+
+    public void setMyRestaurantList(List<String> myRestaurantList) {
+        this.myRestaurantList.setValue(myRestaurantList);
+    }
+
     public void setMyPlaceIdFromAutocomplete(Prediction myPlaceFromVM) {
         this.myPlaceIdFromAutocomplete.postValue(myPlaceFromVM);
     }

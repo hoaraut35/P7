@@ -66,21 +66,11 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
-    /**
-     * for binding views
-     */
     public ActivityMainBinding binding;
 
-    /**
-     * for viewModel
-     */
     public ViewModelMain myViewModel;
     public ViewModelMap myViewModelMap;
 
-
-    /**
-     * List of providers for authentification
-     */
     private final List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.TwitterBuilder().build(),
             new AuthUI.IdpConfig.EmailBuilder().build(),
@@ -88,12 +78,6 @@ public class MainActivity extends AppCompatActivity {
             new AuthUI.IdpConfig.GoogleBuilder().build());
 
     private ActivityResultLauncher<Intent> openFirebaseAuthForResult;
-
-    /**
-     * Main methof for initialise application
-     *
-     * @param savedInstanceState
-     */
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -128,9 +112,6 @@ public class MainActivity extends AppCompatActivity {
         newAlarm.setAlarm();
     }
 
-    /**
-     * Get notification state from settings fragments and send it to viewmodel
-     */
     private void setupSettings() {
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -148,9 +129,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * setup autocomplete api
-     */
     private void setupAutocomplete() {
         //initialize
         Places.initialize(getApplicationContext(), BuildConfig.MAPS_API_KEY);
@@ -294,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Toast.makeText(getApplicationContext(), "test", Toast.LENGTH_SHORT).show();
-                myViewModel.setPredictionFromUIWithPlaceId(placeAutocomplete.getPredictions().get(which));
+                //myViewModel.setPredictionFromUIWithPlaceId(placeAutocomplete.getPredictions().get(which));
                 dialog.cancel();
             }
         });
@@ -679,6 +657,8 @@ public class MainActivity extends AppCompatActivity {
             public boolean onClose() {
                 //TODO: get new markers with place
                 showSnackBar("abandon recherche affichage par defaut ");
+                    myViewModel.reloadDataAfterQuery();
+                //myViewModel.startPositionListener();
                 return false;
             }
         });
@@ -701,6 +681,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                     if (query != null && mypos != null) {
+                       // myViewModel.stopPositionListener();
                         myViewModel.getResultAutocomplete(query, mypos);
                     } else {
                         Toast.makeText(getApplicationContext(), "Réessayer plus tard", Toast.LENGTH_SHORT).show();

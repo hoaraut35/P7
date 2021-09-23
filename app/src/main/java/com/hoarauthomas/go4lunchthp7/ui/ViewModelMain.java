@@ -85,7 +85,7 @@ public class ViewModelMain extends ViewModel {
         this.myPlaceAutocompleteRepoVM = placeAutocompleteRepository;
         //  this.myPlaceAutocompleteList = myPlaceAutocompleteRepoVM.getMyPlaceAutocompleteListForVM();
 
-        this.myPlaceAutocompleteList = myPlaceAutocompleteRepoVM.getPlaces();
+      //  this.myPlaceAutocompleteList = myPlaceAutocompleteRepoVM.getPlaces();
 
         //get position for autocomplete request
         this.myPositionRepoVM = myPositionRepoVM;
@@ -161,17 +161,20 @@ public class ViewModelMain extends ViewModel {
 
         if (myUser != null && workmates != null && myFirestoreUserData != null) {
 
+            //placeautocomplete à traduire en placedetails
+
             if (myPlacesAuto != null) {
 
-                List<Prediction> myList = new ArrayList<>();
+
+                List<String> myPlacesIdList = new ArrayList<>();
 
                 for (int z = 0; z < myPlacesAuto.getPredictions().size(); z++) {
-                    myList.add(myPlacesAuto.getPredictions().get(z));
+                    myPlacesIdList.add(myPlacesAuto.getPredictions().get(z).getPlaceId());
 
-                    Log.i("[SEARCH]", "predic" + myPlacesAuto.getPredictions().get(z).getDescription().toString() + myPlacesAuto.getPredictions().get(z).getPlaceId());
+               //     Log.i("[SEARCH]", "predic" + myPlacesAuto.getPredictions().get(z).getDescription().toString() + myPlacesAuto.getPredictions().get(z).getPlaceId());
                 }
 
-                myPlaceAutocompleteRepoVM.setResult(myList);
+               mySharedRepoVM.setMyRestaurantList(myPlacesIdList);
 
             } else {
 
@@ -255,9 +258,11 @@ public class ViewModelMain extends ViewModel {
      *
      * @param place
      */
-    public void setPredictionFromUIWithPlaceId(Prediction place) {
+/*   public void setPredictionFromUIWithPlaceId(Prediction place) {
         mySharedRepoVM.setMyPlaceIdFromAutocomplete(place);
     }
+
+ */
 
     public void updataApp() {
         myWorkMatesRepoVM.getFirestoreWorkmates();
@@ -284,5 +289,17 @@ public class ViewModelMain extends ViewModel {
 
     public void setZoom(int myZoom) {
         mySharedRepoVM.setZoom(myZoom);
+    }
+
+    public void stopPositionListener() {
+        myPositionRepoVM.stopLocationRequest();
+    }
+
+    public void startPositionListener() {
+        myPositionRepoVM.startLocationRequest();
+    }
+
+    public void reloadDataAfterQuery() {
+
     }
 }

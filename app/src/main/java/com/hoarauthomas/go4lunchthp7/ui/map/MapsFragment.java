@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -29,6 +30,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
+import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 
@@ -81,6 +83,9 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                     myMap.animateCamera(CameraUpdateFactory.zoomTo(integer));
                 }
             });
+
+
+
 
             //myViewModelMap.refresh();
             myViewModelMap.ViewStateForMapUI().observe(getViewLifecycleOwner(), new Observer<ViewStateMap>() {
@@ -349,7 +354,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     private void showMapWithPosition(@NonNull LatLng position) {
         if (myMap != null) {
             myMap.moveCamera(CameraUpdateFactory.newLatLng(position));
-            myMap.animateCamera(CameraUpdateFactory.zoomTo(myZoom));
+            //myMap.animateCamera(CameraUpdateFactory.zoomTo(myZoom));
         }
 
     }
@@ -428,6 +433,9 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     public boolean onMarkerClick(@NonNull @NotNull Marker marker) {
         return false;
     }
+
+
+
 
 }
 

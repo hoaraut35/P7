@@ -2,7 +2,7 @@ package com.hoarauthomas.go4lunchthp7.ui.map;
 
 import android.annotation.SuppressLint;
 import android.location.Location;
-import android.provider.MediaStore;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -10,11 +10,13 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
+import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.Prediction;
+import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
-import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
+import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
@@ -31,6 +33,7 @@ public class ViewModelMap extends ViewModel {
     private RestaurantsRepository myRestaurantRepository;
     private FirestoreRepository myFirestoreRepository;
     private SharedRepository mySharedRepository;
+    private PlaceAutocompleteRepository myPlaceAutocompleteRepository;
 
     private MutableLiveData<Integer> myZoomLive = new MutableLiveData<>();
     private LiveData<Location> myPosition;
@@ -44,26 +47,46 @@ public class ViewModelMap extends ViewModel {
      * @param myRestaurantsRepository
      * @param myFirestoreRepository
      * @param mySharedRepository
+     * @param placeAutocompleteRepository
      */
-    public ViewModelMap(PermissionChecker myPermission, PositionRepository myPositionRepository, RestaurantsRepository myRestaurantsRepository, FirestoreRepository myFirestoreRepository, SharedRepository mySharedRepository) {
+    public ViewModelMap(PermissionChecker myPermission, PositionRepository myPositionRepository, RestaurantsRepository myRestaurantsRepository, FirestoreRepository myFirestoreRepository, SharedRepository mySharedRepository, PlaceAutocompleteRepository placeAutocompleteRepository) {
         //init repository
         this.myPermission = myPermission;
         this.myPositionRepository = myPositionRepository;
         this.myRestaurantRepository = myRestaurantsRepository;
         this.myFirestoreRepository = myFirestoreRepository;
         this.mySharedRepository = mySharedRepository;
+        this.myPlaceAutocompleteRepository = placeAutocompleteRepository;
 
-
+        //zoom parameter
         LiveData<Integer> myZoom = this.mySharedRepository.getMyZoom();
 
-
-        //init position
+        //start position of map
         myPosition = myPositionRepository.getLocationLiveData();
-        //init list of restaurants
+
+        //start restaurants list
         LiveData<List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
-        //init list of workmates
+
+        //start list of workmates
         LiveData<List<FirestoreUser>> myWorkMatesList = this.myFirestoreRepository.getFirestoreWorkmates();
 
+        //list of prediction place id ???????????????????
+        LiveData<List<String>> myListOfPredictionPlaceId = this.mySharedRepository.getMyRestaurantList();
+
+
+        LiveData<PlaceAutocomplete> myPlacesId = this.myPlaceAutocompleteRepository.getPlaces();
+
+
+        myViewStateMapMediator.addSource(myPlacesId, new Observer<PlaceAutocomplete>() {
+            @Override
+            public void onChanged(PlaceAutocomplete placeAutocomplete) {
+                if (placeAutocomplete == null) return;
+                logicWork(myPosition.getValue(),
+                        myRestaurantsList.getValue(),
+                        myWorkMatesList.getValue(),
+                        placeAutocomplete);
+            }
+        });
 
         myViewStateMapMediator.addSource(myZoom, new Observer<Integer>() {
             @Override
@@ -87,64 +110,130 @@ public class ViewModelMap extends ViewModel {
             if (restaurantsList != null) {
                 logicWork(myPosition.getValue(),
                         restaurantsList,
-                        myWorkMatesList.getValue());
+                        myWorkMatesList.getValue(),
+                        myPlacesId.getValue());
             }
         });
 
         //add listener for workmates list
         myViewStateMapMediator.addSource(myWorkMatesList, workmates -> {
             if (workmates != null) {
-                logicWork(myPosition.getValue(), myRestaurantsList.getValue(), workmates);
+                logicWork(myPosition.getValue(),
+                        myRestaurantsList.getValue(),
+                        workmates,
+                        myPlacesId.getValue());
             }
         });
     }
 
-    public LiveData<Integer> getMyZoom()
-    {
-      return myZoomLive;
+    public LiveData<Integer> getMyZoom() {
+        return myZoomLive;
     }
+
     /**
      * This is the logic work
+     *
      * @param position
      * @param restaurants
      * @param workmates
      */
-    private void logicWork(@Nullable Location position, @Nullable List<RestaurantPojo> restaurants, @Nullable List<FirestoreUser> workmates) {
+    private void logicWork(@Nullable Location position,
+                           @Nullable List<RestaurantPojo> restaurants,
+                           @Nullable List<FirestoreUser> workmates,
+                           @Nullable PlaceAutocomplete myPlacesId) {
 
         //if one of three values is null then we cancel the job
         if (position == null || restaurants == null || workmates == null) return;
 
-        //
-        if (!restaurants.isEmpty() && !workmates.isEmpty()) {
 
-            List<RestaurantPojo> newRestaurantList = new ArrayList<>();
-            RestaurantPojo newRestaurantItem;
+        if (myPlacesId != null && restaurants != null) {
 
-            //for the amount of result restaurants
-            for (int i = 0; i < restaurants.size(); i++) {
+            List<RestaurantPojo> newPredictionRestaurantList = new ArrayList<>();
 
-                newRestaurantItem = restaurants.get(i);
+            for (RestaurantPojo myRestaurant : restaurants) {
 
-                //check if workmates has already liked a restaurant
-                for (int z = 0; z < workmates.size(); z++) {
+                for (Prediction myPrediction : myPlacesId.getPredictions()) {
 
-                    //restaurant already liked
-                    if (restaurants.get(i).getPlaceId().equals(workmates.get(z).getFavoriteRestaurant())) {
-                        newRestaurantItem.setIcon("vert");
-                        break;
+                    if (myRestaurant.getPlaceId().equals(myPrediction.getPlaceId())) {
+                        Log.i("[PREDIC]", "new restau to add" + myRestaurant.getName());
+                        newPredictionRestaurantList.add(myRestaurant);
+
                     }
-                    //restaurant is not favorite
-                    newRestaurantItem.setIcon("rouge");
+
                 }
 
-                newRestaurantList.add(newRestaurantItem);
 
             }
 
-            //we set the viewstate for ui
-            myViewStateMapMediator.setValue(new ViewStateMap(position, newRestaurantList));
+            myViewStateMapMediator.setValue(new ViewStateMap(position, newPredictionRestaurantList));
+
+        } else {
+
+
+            //
+            if (!restaurants.isEmpty() && !workmates.isEmpty()) {
+
+                List<RestaurantPojo> newRestaurantList = new ArrayList<>();
+                RestaurantPojo newRestaurantItem;
+
+                //for the amount of result restaurants
+                for (int i = 0; i < restaurants.size(); i++) {
+
+                    newRestaurantItem = restaurants.get(i);
+
+                    //check if workmates has already liked a restaurant
+                    for (int z = 0; z < workmates.size(); z++) {
+
+                        //restaurant already liked
+                        if (restaurants.get(i).getPlaceId().equals(workmates.get(z).getFavoriteRestaurant())) {
+                            newRestaurantItem.setIcon("vert");
+                            break;
+                        }
+                        //restaurant is not favorite
+                        newRestaurantItem.setIcon("rouge");
+                    }
+
+                    newRestaurantList.add(newRestaurantItem);
+
+
+
+
+
+
+
+                /*myMarkerPosition = new LatLng(restaurants.get(i).getGeometry().getLocation().getLat(), restaurants.get(i).getGeometry().getLocation().getLng());
+                myMarkerOptions = new MarkerOptions();
+
+                myMarkerOptions.position(myMarkerPosition);
+
+                if (restaurants.get(i).getIcon().contains("rouge")) {
+                    //myMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                    myMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.baseline_unreserved_restaurant_24));
+                } else {
+                    //    myMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                    myMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.baseline_booked_restaurant_24));
+                }
+
+
+                myMarker = myMap.addMarker(myMarkerOptions);
+                myMarker.setTag(restaurants.get(i).getPlaceId());
+
+
+                allMarkers.add(new MyMarkerObject(restaurants.get(i).getPlaceId(), myMarkerPosition));
+
+                 */
+
+
+                }
+
+                //we set the viewstate for ui
+                myViewStateMapMediator.setValue(new ViewStateMap(position, newRestaurantList));
+
+            }
+
 
         }
+
 
     }
 
@@ -170,6 +259,7 @@ public class ViewModelMap extends ViewModel {
         return myViewStateMapMediator;
     }
 
+
     /**
      * get Prediction from repository
      *
@@ -178,5 +268,10 @@ public class ViewModelMap extends ViewModel {
     public MutableLiveData<Prediction> getPredictionFromRepository() {
         return mySharedRepository.getMyPlaceIdFromAutocomplete();
     }
+
+    public LiveData<List<String>> getMyListPrediction() {
+        return mySharedRepository.getMyRestaurantList();
+    }
+
 
 }
