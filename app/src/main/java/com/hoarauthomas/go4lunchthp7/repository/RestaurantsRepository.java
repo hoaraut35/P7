@@ -120,7 +120,7 @@ public class RestaurantsRepository {
      * @param placeId
      * @return
      */
-    public LiveData<ResultPlaceDetail> getRestaurantById(String placeId) {
+    public void getRestaurantById(String placeId) {
 
         PlaceDetailsFinal existing = myCache.get(placeId);
 
@@ -138,7 +138,24 @@ public class RestaurantsRepository {
 
                 Log.i("[RESTAURANT]", "detail restaurant avec id " + placeId);
 
+                service.getPlaceWithAllDetails(BuildConfig.MAPS_API_KEY,placeId)
+                        .enqueue(new Callback<PlaceDetailsFinal>() {
+                            @Override
+                            public void onResponse(Call<PlaceDetailsFinal> call, Response<PlaceDetailsFinal> response) {
 
+                                if (response.isSuccessful()){
+                                    myRestaurantDetailByPlaceId.setValue(response.body().getResult());
+
+                                    Log.i("[DETAILS]","" + response.body().getResult().getName());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<PlaceDetailsFinal> call, Throwable t) {
+                                myRestaurantDetailByPlaceId.setValue(null);
+                            }
+                        });
+/*
                 service.getPlaceWithAllDetails(BuildConfig.MAPS_API_KEY,placeId)
                         .enqueue(new Callback<ResultPlaceDetail>() {
                                      @Override
@@ -153,14 +170,18 @@ public class RestaurantsRepository {
                                      public void onFailure(Call<ResultPlaceDetail> call, Throwable t) {
                                         myRestaurantDetailByPlaceId.setValue(null);
                                      }
-                                 });
+                                 });*/
 
 
             }
 
 
+
+
         }
-        return myRestaurantDetailByPlaceId;
+
+
+      //  return myRestaurantDetailByPlaceId;
     }
 
     /**

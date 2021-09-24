@@ -2,7 +2,7 @@ package com.hoarauthomas.go4lunchthp7.model.PlaceDetails;
 
 import java.util.List;
 
-import com.google.android.libraries.places.api.model.AddressComponent;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

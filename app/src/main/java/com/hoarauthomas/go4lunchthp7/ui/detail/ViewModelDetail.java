@@ -9,12 +9,11 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
-
+import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.model.PlaceDetails.ResultPlaceDetail;
 import com.hoarauthomas.go4lunchthp7.repository.FirebaseAuthRepository;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
-import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 
 import java.util.ArrayList;
@@ -24,18 +23,16 @@ import javax.annotation.Nullable;
 
 public class ViewModelDetail extends ViewModel {
 
-    //repositories
     private final FirebaseAuthRepository myFirebaseAuth;
     private final RestaurantsRepository myRestaurantRepository;
     private final FirestoreRepository myFirestoreRepository;
 
-    //for ui
+    //for ui update
     private final MediatorLiveData<ViewStateDetail> myScreenDetailMediator = new MediatorLiveData<>();
 
-    //used to know the placeid requested
-    private MutableLiveData<String> placeIdRequest = new MutableLiveData<>(null);
+    //for update the placeId to show
+    private final MutableLiveData<String> placeIdRequest = new MutableLiveData<>(null);
 
-    //constructor
     public ViewModelDetail(
 
             FirebaseAuthRepository myAuthRepository,
@@ -46,38 +43,27 @@ public class ViewModelDetail extends ViewModel {
         this.myRestaurantRepository = myRestaurantRepository;
         this.myFirestoreRepository = myFirestoreRepository;
 
-
-        //firebase auth user
-        LiveData<FirebaseUser> myUserAuth = this.myFirebaseAuth.getFirebaseAuthUserFromRepo();
-
-        //google api
+        LiveData<FirebaseUser> myUserFirebaseFromRepo = this.myFirebaseAuth.getFirebaseAuthUserFromRepo();
         LiveData<List<RestaurantPojo>> myRestaurantsListFromRepo = this.myRestaurantRepository.getMyRestaurantsList();
-
-        //google api
         LiveData<ResultPlaceDetail> myRestaurantDetailFromRepo = this.myRestaurantRepository.getMyRestaurantDetail();
-
-        //firestore
         LiveData<List<FirestoreUser>> myWorkMatesListFromRepo = this.myFirestoreRepository.getFirestoreWorkmates();
-
-        //user from firestore
         LiveData<FirestoreUser> myUserFirestore = this.myFirestoreRepository.getWorkmateFromRepo();
 
-
-        //dans la base firestore
+        //user from firestore
         myScreenDetailMediator.addSource(myUserFirestore, firestoreUser -> {
             if (firestoreUser == null) return;
             logicWork(
                     myRestaurantsListFromRepo.getValue(),
                     myWorkMatesListFromRepo.getValue(),
                     myRestaurantDetailFromRepo.getValue(),
-                    myUserAuth.getValue(),
+                    myUserFirebaseFromRepo.getValue(),
                     placeIdRequest.getValue(),
                     firestoreUser);
         });
 
-        //authentification
-        myScreenDetailMediator.addSource(myUserAuth, firebaseUser -> {
-            if (myUserAuth == null) return;
+        //user from firebase
+        myScreenDetailMediator.addSource(myUserFirebaseFromRepo, firebaseUser -> {
+            if (myUserFirebaseFromRepo == null) return;
             ViewModelDetail.this.logicWork(
                     myRestaurantsListFromRepo.getValue(),
                     myWorkMatesListFromRepo.getValue(),
@@ -87,40 +73,42 @@ public class ViewModelDetail extends ViewModel {
                     myUserFirestore.getValue());
         });
 
-
+        //workmatesList from firestore
         myScreenDetailMediator.addSource(myWorkMatesListFromRepo, firestoreUsers -> {
             if (firestoreUsers == null) return;
             logicWork(myRestaurantsListFromRepo.getValue(),
                     firestoreUsers,
                     myRestaurantDetailFromRepo.getValue(),
-                    myUserAuth.getValue(),
+                    myUserFirebaseFromRepo.getValue(),
                     placeIdRequest.getValue(),
                     myUserFirestore.getValue());
         });
 
+        //restaurants from nearbysearch
         myScreenDetailMediator.addSource(myRestaurantsListFromRepo, restaurantPojo -> {
             if (myRestaurantsListFromRepo == null) return;
             ViewModelDetail.this.logicWork(
                     restaurantPojo,
                     myWorkMatesListFromRepo.getValue(),
                     myRestaurantDetailFromRepo.getValue(),
-                    myUserAuth.getValue(),
+                    myUserFirebaseFromRepo.getValue(),
                     placeIdRequest.getValue(),
                     myUserFirestore.getValue());
         });
 
+        //restaurant details from place details
         myScreenDetailMediator.addSource(myRestaurantDetailFromRepo, resultDetailRestaurant -> {
             if (myRestaurantDetailFromRepo == null) return;
             ViewModelDetail.this.logicWork(
                     myRestaurantsListFromRepo.getValue(),
                     myWorkMatesListFromRepo.getValue(),
                     resultDetailRestaurant,
-                    myUserAuth.getValue(),
+                    myUserFirebaseFromRepo.getValue(),
                     placeIdRequest.getValue(),
                     myUserFirestore.getValue());
-        })
-        ;
+        });
 
+        //placeId to show on UI
         myScreenDetailMediator.addSource(placeIdRequest, s -> {
             if (placeIdRequest == null) return;
             myRestaurantRepository.setPlaceId(s);
@@ -128,19 +116,23 @@ public class ViewModelDetail extends ViewModel {
 
     }
 
-    //logic method for mediatorLiveData
+    //logic work method for mediatorLiveData
     private void logicWork(
-            @Nullable List<RestaurantPojo> restaurantsList,
-            @Nullable List<FirestoreUser> workmatesList,
-            @Nullable ResultPlaceDetail Restaurantdetail,
-            @Nullable FirebaseUser myUserFireAuth,
-            String placeIdRequested,
-            FirestoreUser myUserFirtestore) {
+            @Nullable List<RestaurantPojo> restaurantsListFromNearbySearch,
+            @Nullable List<FirestoreUser> workmatesListFromFirestore,
+            @Nullable ResultPlaceDetail RestaurantDetailFromPlaceDetails,
+            @Nullable FirebaseUser myUserFromFirebase,
+            String placeIdRequestedFromUI,
+            FirestoreUser myUserFromFirestore) {
 
-        if (workmatesList == null || restaurantsList == null || myUserFireAuth == null || Restaurantdetail == null || myUserFirtestore == null)
+        if (workmatesListFromFirestore == null ||
+                restaurantsListFromNearbySearch == null ||
+                myUserFromFirebase == null ||
+                RestaurantDetailFromPlaceDetails == null ||
+                myUserFromFirestore == null)
             return;
 
-        Log.i("[FIRESTORE]", "Utilisateur datbase : " + myUserFirtestore.getUsername() + myUserFirtestore.getUid());
+        Log.i("[FIRESTORE]", "Utilisateur datbase : " + myUserFromFirestore.getUsername() + myUserFromFirestore.getUid());
 
 
         //create an ViewState detail object for ui
@@ -148,42 +140,36 @@ public class ViewModelDetail extends ViewModel {
 
         //list of workmates
         List<FirestoreUser> myWorkMatesDetailList = new ArrayList<>();
-        for (FirestoreUser myItem : workmatesList) {
-            if (myItem.getFavoriteRestaurant().equals(placeIdRequested)) {
+        for (FirestoreUser myItem : workmatesListFromFirestore) {
+            if (myItem.getFavoriteRestaurant().equals(placeIdRequestedFromUI)) {
                 myWorkMatesDetailList.add(myItem);
             }
         }
         myScreen.setListWorkMates(myWorkMatesDetailList);
 
         //?
-        myScreen.setWorkmate(myUserFireAuth.getUid());
-        myScreen.setPlaceId(placeIdRequested);
+        myScreen.setWorkmate(myUserFromFirebase.getUid());
+        myScreen.setPlaceId(placeIdRequestedFromUI);
 
 
         //setup favorite
-        if (myUserFirtestore.getFavoriteRestaurant().equals(placeIdRequested)) {
+        if (myUserFromFirestore.getFavoriteRestaurant().equals(placeIdRequestedFromUI)) {
             myScreen.setFavorite(true);
         } else {
             myScreen.setFavorite(false);
         }
 
         //setup btn like
-        if (myUserFirtestore.getRestaurant_liked().contains(placeIdRequested)) {
+        if (myUserFromFirestore.getRestaurant_liked().contains(placeIdRequestedFromUI)) {
             myScreen.setLiked(true);
         } else {
             myScreen.setLiked(false);
         }
 
-        //debug
-        Log.i("[FIRESTORE]", " - utilisateur connecté : " + myUserFireAuth.getDisplayName());
-        Log.i("[FIRESOTRE]", "  - utilisateur bdd : " + myUserFirtestore.getUsername());
-        Log.i("[FIRESTORE]", " - restaurant favoris : " + myUserFirtestore.getFavoriteRestaurant());
-        Log.i("[FIRESTORE]", " - restaurant affiché : " + placeIdRequested);
-
         //setup general data in view object
-        for (RestaurantPojo myItem : restaurantsList) {
+        for (RestaurantPojo myItem : restaurantsListFromNearbySearch) {
 
-            if (myItem.getPlaceId().equals(placeIdRequested)) {
+            if (myItem.getPlaceId().equals(placeIdRequestedFromUI)) {
 
                 //title
                 myScreen.setTitle(myItem.getName());
@@ -225,10 +211,16 @@ public class ViewModelDetail extends ViewModel {
                 }
 
                 //phone
-            //    myScreen.setPhoneNumber(Restaurantdetail.getFormattedPhoneNumber());
+
+                if (RestaurantDetailFromPlaceDetails.getFormattedPhoneNumber() != null) {
+                    myScreen.setPhoneNumber(RestaurantDetailFromPlaceDetails.getFormattedPhoneNumber());
+                }
+
 
                 //website
-              //  myScreen.setWebSite(Restaurantdetail.getUrl());
+                if (RestaurantDetailFromPlaceDetails.getUrl() != null) {
+                    myScreen.setWebSite(RestaurantDetailFromPlaceDetails.getUrl());
+                }
 
                 break;
             }
@@ -256,7 +248,7 @@ public class ViewModelDetail extends ViewModel {
     }
 
     public void updateLikeRestaurant(Boolean mLike, String mPlaceId, String mWorkmate) {
-        myFirestoreRepository.updateLikeRestaurant(mLike,mPlaceId,mWorkmate);
+        myFirestoreRepository.updateLikeRestaurant(mLike, mPlaceId, mWorkmate);
     }
 
     public void getUserPlaceFavoriteToShow() {
