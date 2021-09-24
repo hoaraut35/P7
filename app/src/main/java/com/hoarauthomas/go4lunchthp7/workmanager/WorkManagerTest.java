@@ -23,7 +23,7 @@ public class WorkManagerTest extends Worker {
 
     public WorkManagerTest(@NonNull @NotNull Context context, @NonNull @NotNull WorkerParameters workerParams) {
         super(context, workerParams);
-    setProgressAsync(new Data.Builder().putInt(PROGRESS,0).build());
+    setProgressAsync(new Data.Builder().putInt(PROGRESS,5).build());
 
     }
 
@@ -38,6 +38,7 @@ public class WorkManagerTest extends Worker {
     @Override
     public Result doWork() {
 
+        setProgressAsync(new Data.Builder().putInt(PROGRESS,15).build());
 
         Context applicationContext = getApplicationContext();
 
@@ -83,8 +84,11 @@ public class WorkManagerTest extends Worker {
             setProgressAsync(new Data.Builder().putInt(PROGRESS,100).build());
 
             return Result.success();
+
         } catch (Throwable throwable) {
-           return Result.failure();
+            setProgressAsync(new Data.Builder().putInt(PROGRESS,100).build());
+            return Result.failure();
+
         }
 
 

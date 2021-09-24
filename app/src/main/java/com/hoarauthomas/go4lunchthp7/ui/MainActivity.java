@@ -226,18 +226,15 @@ public class MainActivity extends AppCompatActivity {
        */
 
 
-
-
+        //define work
         WorkRequest newLoadPeriodicWork = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
-
                 //.setInitialDelay(10Math.abs((int) minutes), TimeUnit.MINUTES)
-
                 //don't work
-                //.setInitialDelay(15, TimeUnit.MINUTES)
-
+               // .setInitialDelay(10, TimeUnit.SECONDS)
                 //don't work
-        //        .setInitialDelay(duration.getSeconds(), TimeUnit.SECONDS)
+                //.setInitialDelay(duration.getSeconds(), TimeUnit.SECONDS)
                 .setInputData(createDataForWorkRequest())
+
                 .addTag("popup12h00")// //constrains
                 .build();
 
@@ -247,11 +244,13 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+        //to load work in mmnager
         WorkManager
                 .getInstance(this)
                 .enqueue(newLoadPeriodicWork);
 
-
+        //to listen work
         WorkManager
                 .getInstance(this)
                 .getWorkInfoByIdLiveData(newLoadPeriodicWork.getId())
@@ -261,15 +260,19 @@ public class MainActivity extends AppCompatActivity {
                         if (workInfo != null){
                             Data progress = workInfo.getProgress();
                             int value = progress.getInt("PROGRESS",0);
-
                             binding.topAppBar.setTitle(String.valueOf(value));
 
                         }else
                         {
                             binding.topAppBar.setTitle("work nul");
                         }
+
                     }
                 });
+
+
+
+
                 //.enqueue(newPeriodic);
 
                 //.enqueue(newLoadPeriodicWork);
