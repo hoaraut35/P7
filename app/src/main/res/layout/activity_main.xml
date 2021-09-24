@@ -55,13 +55,6 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <!--     <fragment android:id="@+id/autocomplete_fragment"
-                 android:layout_width="match_parent"
-                 android:layout_height="40dp"
-                 android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-                 />
-                 -->
-
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewpager"
             android:layout_width="match_parent"

@@ -88,6 +88,9 @@
 
     <!-- screen settings -->
     <string name="langage_mode">Notifications On/Off : </string>
+    <string name="setting_zoom_title">Zoom carte</string>
+    <string name="setting_off_notification">Désactiver les notifications</string>
+    <string name="setting_on_notification">Notification à 12H00</string>
 
 
 </resources>

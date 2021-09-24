@@ -47,7 +47,7 @@ public class AlarmManager extends AppCompatActivity {
         Log.i("[JOB]", "Extraction initial delay for work request : " + Long.toString(minutes) + " min");
 
         //on peut creer l'alrme
-        if (minutes < 0) {
+        if (minutes <= 0) {
 
             //first we cancel all job with tag popup12h00
             myWorkManager.cancelAllWorkByTag("popup12h00");
@@ -71,16 +71,16 @@ public class AlarmManager extends AppCompatActivity {
             //first we cancel all job with tag popup12h00
             myWorkManager.cancelAllWorkByTag("popup12h00");
 
+            Log.i("[JOB]", "Demarrage job j+1 ");
+
             //second create a new work
             WorkRequest newLoadWork = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
-                    .setInitialDelay(Math.abs((int) minutes) + 1440, TimeUnit.MINUTES)
+                  //  .setInitialDelay(Math.abs((int) minutes) + 1440, TimeUnit.MINUTES)//+1j
+                    .setInitialDelay(10, TimeUnit.MINUTES)//+1j
                     .addTag("popup12h00")
                     .build();
 
             myWorkManager.enqueue(newLoadWork);
-
-            //nothing to do
-            //j+1 ?
         }
 
 

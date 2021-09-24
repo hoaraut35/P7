@@ -1,7 +1,5 @@
 package com.hoarauthomas.go4lunchthp7.workmanager;
 
-import static androidx.core.content.ContextCompat.getSystemService;
-
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -13,8 +11,6 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
-
-import com.hoarauthomas.go4lunchthp7.R;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -29,38 +25,51 @@ public class WorkManagerTest extends Worker {
     @Override
     public Result doWork() {
 
-        String CHANNEL_ID = "123";
 
+        Context applicationContext = getApplicationContext();
 
+        //get data from ui
+        String restaurant_title = getInputData().getString("restaurant_title");
+        String restaurant_address = getInputData().getString("restaurant_address");
+        String[] myWorkmates = getInputData().getStringArray("workmates");
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        try {
+            Log.i("[JOB]", "doWork enable...");
 
-            CharSequence name = "Go4Lunch";
-            String description = "Channel for Go4Lunch";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                // Create the NotificationChannel, but only on API 26+ because
+                // the NotificationChannel class is new and not in the support library
+                CharSequence name = "go4lunch";
+                String description = "go4lunchdatachannel";
+                int importance = NotificationManager.IMPORTANCE_HIGH;
+                NotificationChannel channel =
+                        new NotificationChannel("go4lunch", "go4lunch", importance);
+                channel.setDescription(description);
 
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
+                // Add the channel
+                NotificationManager notificationManager =
+                        (NotificationManager) applicationContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
-            NotificationManager notificationManager = getSystemService(getApplicationContext(), null);
-            notificationManager.createNotificationChannel(channel);
+                if (notificationManager != null) {
+                    notificationManager.createNotificationChannel(channel);
+                }
+            }
 
+            // Create the notification
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(applicationContext, "go4lunch")
+                    .setSmallIcon(android.R.drawable.star_big_on)
+                    .setContentTitle("Go4Lunch It's time to lunch")
+                    .setContentText(restaurant_title + " " + restaurant_address + " " + myWorkmates[0])
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setVibrate(new long[0]);
+
+            // Show the notification
+            NotificationManagerCompat.from(applicationContext).notify(1, builder.build());
+
+            Result.success();
+        } catch (Throwable throwable) {
+            Result.failure();
         }
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "123")
-                .setSmallIcon(R.drawable.ic_logo)
-                .setContentTitle("Go4Lunch from dowork")
-                .setContentText("Message de test")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-        Log.i("[JOB]", "Working....");
-
-
-        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
-        //notificationManagerCompat.notify(1, builder.build());
-//        notificationManagerCompat.createNotificationChannel( CHANNEL_ID);
-
-        return Result.success();
 
 
     }

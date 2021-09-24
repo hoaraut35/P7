@@ -99,6 +99,9 @@
     <string name="btn_ok_dialogalert">ok</string>
     <string name="title_dialog_alert">Résultat recherche</string>
     <string name="restaurant_notchoice">\" hasn\'t decided yet\"</string>
+    <string name="setting_zoom_title">Map zoom</string>
+    <string name="setting_off_notification">Don\'t receive notification</string>
+    <string name="setting_on_notification">Receive notification at 12:00</string>
 
 
 </resources>

@@ -3,8 +3,6 @@ package com.hoarauthomas.go4lunchthp7.ui;
 import static androidx.core.view.GravityCompat.START;
 
 import android.Manifest;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -29,6 +27,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
+import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
@@ -39,16 +38,12 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
-import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
-import com.hoarauthomas.go4lunchthp7.BuildConfig;
-import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
@@ -59,10 +54,8 @@ import com.hoarauthomas.go4lunchthp7.workmanager.WorkManagerTest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -95,17 +88,15 @@ public class MainActivity extends AppCompatActivity {
         setupNavigationDrawer();
         setupBottomBAr();
         setupViewPager();
-
-
         setupSettings();
 
-        //    loadWork();//alarm
-        //   loadtest();
-
-        //     setupAutocomplete();
+        loadWork();//alarm
+        // loadtest();
 
     }
 
+
+    //alarmmanager
     private void loadtest() {
         AlarmManager newAlarm = new AlarmManager();
         newAlarm.getAlarmManager(this);
@@ -120,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
-                Integer myZoom = sharedPreferences.getInt("zoom",10);
+                Integer myZoom = sharedPreferences.getInt("zoom", 10);
                 myViewModel.setZoom(myZoom);
 
                 boolean myNotificationSetup = sharedPref.getBoolean("notifications2", false);
@@ -129,26 +120,33 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setupAutocomplete() {
-        //initialize
-        Places.initialize(getApplicationContext(), BuildConfig.MAPS_API_KEY);
-        // create
-        PlacesClient placesClient = Places.createClient(this);
+
+    private Data createDataForWorkRequest() {
+
+        String [] myWorkmates = {"Thomas","Camille","Mélissa"};
+
+        Data.Builder builder = new Data.Builder();
+        builder.putString("restaurant_title", "Pizza del arte");
+        builder.putString("restaurant_address", "12 rue du vieux moulin");
+        builder.putStringArray("workmates", myWorkmates);
+        return builder.build();
+
     }
+
 
     // @RequiresApi(api = Build.VERSION_CODES.O)
     private void loadWork() {
 
 
-        //get actual date
+   /*     //get actual date
         Calendar currentDate = Calendar.getInstance();
         Log.i("[JOB]", "Calendar actual " + currentDate.getTime().toString());
 
         //set target date
         Calendar targetDate = Calendar.getInstance();
-        //targetDate.set(Calendar.HOUR_OF_DAY,12);
-        // targetDate.set(Calendar.MINUTE,0);
-        // targetDate.set(Calendar.SECOND,0);
+        targetDate.set(Calendar.HOUR_OF_DAY,12);
+        targetDate.set(Calendar.MINUTE,0);
+        targetDate.set(Calendar.SECOND,0);
         Log.i("[JOB]", "Calendar target " + targetDate.getTime().toString());
 
         //to check
@@ -166,12 +164,17 @@ public class MainActivity extends AppCompatActivity {
 
         //build request periodic
 
+    */
+
+
         WorkRequest newLoadPeriodicWork = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
-                .setInitialDelay(delayTime, TimeUnit.MILLISECONDS)
+                //  .setInitialDelay(10, TimeUnit.MINUTES)
+                .setInputData(createDataForWorkRequest())
                 .addTag("popup12h00")// //constrains
                 .build();
 
-        WorkManager.getInstance(this)
+        WorkManager
+                .getInstance(this)
                 .enqueue(newLoadPeriodicWork);
 
 
@@ -244,87 +247,6 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.INTERNET}, 0);
-    }
-
-
-    private void alertDialogList(PlaceAutocomplete placeAutocomplete) {
-
-        //create new list
-        List<String> placeAutoCompleteList = new ArrayList();
-
-        //load the new list
-        for (int i = 0; i < placeAutocomplete.getPredictions().size(); i++) {
-            placeAutoCompleteList.add(placeAutocomplete.getPredictions().get(i).getDescription());
-        }
-
-        //map list to an array
-        String[] ArrayListForDialog = new String[placeAutoCompleteList.size()];
-        ArrayListForDialog = placeAutoCompleteList.toArray(ArrayListForDialog);
-
-        //build alertdialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-
-        builder.setTitle(R.string.title_dialog_alert);
-
-        builder.setCancelable(true);
-
-        builder.setItems(ArrayListForDialog, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //Toast.makeText(getApplicationContext(), "test", Toast.LENGTH_SHORT).show();
-                //myViewModel.setPredictionFromUIWithPlaceId(placeAutocomplete.getPredictions().get(which));
-                dialog.cancel();
-            }
-        });
-
-
-
-     /*   builder.setNegativeButton(R.string.cancel_btn_alert, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-      */
-
-        /*builder.setPositiveButton(R.string.btn_ok_dialogalert, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-       //         Toast.makeText(MainActivity.this, which, Toast.LENGTH_SHORT).show();
-
-                dialog.dismiss();
-            }
-        });
-
-         */
-
-
-        //   ListView testList = new ListView(this);
-
-        //    testList.setAdapter(new ArrayAdapter<>(this, android.R.layout.select_dialog_item, ArrayListForDialog));
-
-     /*   testList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               // Toast.makeText(getApplicationContext(), position, Toast.LENGTH_LONG).show();
-
-
-                // myViewModel.setPositionWithPlaceId(placeAutocomplete.getPredictions().get(position));
-
-
-
-            }
-        });
-
-      */
-
-        //  builder.setView(testList);
-
-
-        AlertDialog myDialogBox = builder.create();
-
-        myDialogBox.show();
     }
 
     /**
@@ -563,53 +485,6 @@ public class MainActivity extends AppCompatActivity {
         binding.topAppBar.setOnMenuItemClickListener(item -> false);
     }
 
-    public void onSearchCalled() {
-        // Set the fields to specify which types of place data to return.
-        /*  List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG);
-        // Start the autocomplete intent.
-        Intent intent = new Autocomplete.IntentBuilder(
-                AutocompleteActivityMode.FULLSCREEN, fields).setCountry("FR") //NIGERIA
-                .build(this);
-       */
-        //  startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
-    }
-
-    //work fine but sdk with can't specify position
-    public void startAutocompleteActivity(MenuItem item) {
-
-        /*    String st = null;
-
-        if (myViewModel.getResultAutocomplete().getValue() != null) {
-            for (int i = 0; i < myViewModel.getResultAutocomplete().getValue().getPredictions().size(); i++) {
-                st = st + myViewModel.getResultAutocomplete().getValue().getPredictions().get(i).getPlaceId();
-            }
-        }
-     */
-
- /*       if (st != null) {
-            showSnackBar("Resultat autocomplete :" + st);
-        } else {
-            showSnackBar("Resultat vide autocomplete :");
-        }
-
-  */
-
-
-  /*      Intent intent = new Autocomplete.IntentBuilder(
-                AutocompleteActivityMode.OVERLAY,
-
-                Arrays.asList(Place.Field.ID, Place.Field.NAME)    )
-                .setTypeFilter(TypeFilter.ESTABLISHMENT)
-                .setCountries(Arrays.asList("FR"))
-                .build(this);
-
-        startActivityForResult(intent, 123);
-
-
-*/
-    }
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -618,9 +493,6 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 showSnackBar(place.getName() + " id: " + place.getId());
-
-
-
 
               /*  if (myListResponse.size()>0) {
                     Intent intent = new Intent(this, DetailActivity.class);
@@ -657,7 +529,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onClose() {
                 //TODO: get new markers with place
                 showSnackBar("abandon recherche affichage par defaut ");
-                    myViewModel.reloadDataAfterQuery(true);
+                myViewModel.reloadDataAfterQuery(true);
                 //myViewModel.startPositionListener();
                 return false;
             }
@@ -681,7 +553,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                     if (query != null && mypos != null) {
-                       // myViewModel.stopPositionListener();
+                        // myViewModel.stopPositionListener();
                         myViewModel.getResultAutocomplete(query, mypos);
                     } else {
                         Toast.makeText(getApplicationContext(), "Réessayer plus tard", Toast.LENGTH_SHORT).show();
@@ -747,8 +619,6 @@ public class MainActivity extends AppCompatActivity {
 
                 return false;
             }
-
-
 
 
         });

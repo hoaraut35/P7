@@ -7,14 +7,14 @@
 
         <SwitchPreferenceCompat
             app:key="notifications2"
-            app:summaryOff="Don't receive notification"
-            app:summaryOn="Receive notification at 12:00"
+            app:summaryOff="@string/setting_off_notification"
+            app:summaryOn="@string/setting_on_notification"
             app:title="@string/langage_mode" />
     </PreferenceCategory>
 
     <SeekBarPreference
         app:key="zoom"
-        app:title="Zoom"
+        app:title="@string/setting_zoom_title"
         app:defaultValue="12"
         app:min="10"
         android:max="15"

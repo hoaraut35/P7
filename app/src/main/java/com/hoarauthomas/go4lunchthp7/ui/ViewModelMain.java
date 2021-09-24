@@ -244,7 +244,11 @@ public class ViewModelMain extends ViewModel {
      * @param state
      */
     public void setNotification(Boolean state) {
-        myAlarmRepoVM.setNotification(state);
+
+
+
+
+      myAlarmRepoVM.setNotification(state);
     }
 
     /**

@@ -21,9 +21,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class NotificationService extends FirebaseMessagingService{
 
-
-
-
     private final int NOTIFICATION_ID = 007;
     private final String NOTIFICATION_TAG = "FIREBASEOC";
 

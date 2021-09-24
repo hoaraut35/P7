@@ -28,12 +28,15 @@ public class FirestoreRepository {
     public FirestoreRepository() {
         this.myBase = FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
         setupListenerOnCollection();
-        setupListenerWorkmateFromFirestoreRepo();
+        //setupListenerWorkmateFromFirestoreRepo();
     }
 
     public void setupListeners() {
         setupListenerOnCollection();
-        setupListenerWorkmateFromFirestoreRepo();
+        if (getCurrentUser() != null){
+            setupListenerWorkmateFromFirestoreRepo();
+        }
+
     }
 
     public void setupListenerWorkmateFromFirestoreRepo() {

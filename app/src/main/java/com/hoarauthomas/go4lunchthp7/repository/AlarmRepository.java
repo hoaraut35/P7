@@ -1,7 +1,12 @@
 package com.hoarauthomas.go4lunchthp7.repository;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
@@ -54,6 +59,34 @@ public class AlarmRepository {
      * @param content content of notification
      */
     public void setupNotification(String title, String content){
+
+        String CHANNEL_ID = "123";
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            CharSequence name = "Go4Lunch";
+            String description = "Channel for Go4Lunch";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getSystemService(myContext, null);
+//            notificationManager.createNotificationChannel(channel);
+
+        }
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(myContext, "123")
+                .setSmallIcon(R.drawable.ic_logo)
+                .setContentTitle("Go4Lunch from dowork")
+                .setContentText("Message de test")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+
+
+
+
+
+
         myNotification = new NotificationCompat.Builder(myContext,"Go4Lunch")
                 .setContentText(content)
                 .setContentTitle(title)
@@ -171,7 +204,6 @@ public class AlarmRepository {
      */
     public void setNotification(Boolean state) {
 
-        Log.i("[PREF]","Notification pref : " + state);
         if (state){
             setupNotification("Go4Lunch","contenu");    
         }else
