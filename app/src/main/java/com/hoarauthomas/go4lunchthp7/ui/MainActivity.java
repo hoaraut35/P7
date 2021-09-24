@@ -52,10 +52,16 @@ import com.hoarauthomas.go4lunchthp7.ui.map.ViewModelMap;
 import com.hoarauthomas.go4lunchthp7.workmanager.AlarmManager;
 import com.hoarauthomas.go4lunchthp7.workmanager.WorkManagerTest;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -166,16 +172,67 @@ public class MainActivity extends AppCompatActivity {
 
     */
 
+        //Determine the format to work
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
-        WorkRequest newLoadPeriodicWork = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
-                //  .setInitialDelay(10, TimeUnit.MINUTES)
-                .setInputData(createDataForWorkRequest())
-                .addTag("popup12h00")// //constrains
-                .build();
+        //Determine actual datetime
+        LocalDateTime dateactu = LocalDateTime.now();
+        Log.i("[JOB]", "Actual date and time : " + dateactu.format(formatter));
 
-        WorkManager
-                .getInstance(this)
-                .enqueue(newLoadPeriodicWork);
+        //Determine the target date and time to execute request
+        LocalDate dateToStart = LocalDate.now();
+        LocalTime timeToStart = LocalTime.parse("12:00:00");
+        LocalDateTime fullDateTimeToStart = LocalDateTime.of(dateToStart, timeToStart);
+        Log.i("[JOB]", "Target date and time : " + fullDateTimeToStart.format(formatter).toString());
+
+        //extract initial delay to construct work request after
+        long minutes = ChronoUnit.MINUTES.between(fullDateTimeToStart, dateactu);
+        Log.i("[JOB]", "Extraction initial delay for work request : " + Long.toString(minutes) + " min");
+
+        //now
+        if (minutes <= 0) {
+
+            Log.i("[JOB]", "Load work in : " + Math.abs((int) minutes) + " min");
+
+
+            WorkManager.getInstance(this).cancelAllWorkByTag("popup12h00");
+
+            WorkRequest newLoadPeriodicWork = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
+                    //.setInitialDelay(10Math.abs((int) minutes), TimeUnit.MINUTES)
+                    .setInitialDelay(15, TimeUnit.MINUTES)
+                    .setInputData(createDataForWorkRequest())
+                    .addTag("popup12h00")// //constrains
+                    .build();
+
+            WorkManager
+                    .getInstance(this)
+                    .enqueue(newLoadPeriodicWork);
+
+        }else
+            //j
+        {
+            //first we cancel all job with tag popup12h00
+            WorkManager.getInstance(this).cancelAllWorkByTag("popup12h00");
+
+            Log.i("[JOB]", "Load work in : " + Math.abs(1440 + (int) minutes) + " min");
+
+            WorkRequest newLoadPeriodicWork = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
+                    //  .setInitialDelay(10, TimeUnit.MINUTES)
+                    .setInitialDelay(15, TimeUnit.MINUTES)
+                    .setInputData(createDataForWorkRequest())
+                    .addTag("popup12h00")// //constrains
+                    .build();
+
+            WorkManager
+                    .getInstance(this)
+                    .enqueue(newLoadPeriodicWork);
+
+
+        }
+
+
+
+
 
 
 //

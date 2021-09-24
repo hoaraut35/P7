@@ -59,18 +59,20 @@ public class WorkManagerTest extends Worker {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(applicationContext, "go4lunch")
                     .setSmallIcon(android.R.drawable.star_big_on)
                     .setContentTitle("Go4Lunch It's time to lunch")
-                    .setContentText(restaurant_title + " " + restaurant_address + " " + myWorkmates[0])
+                    .setContentText(restaurant_title + " \n" + restaurant_address + " \n" + myWorkmates[0])
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setVibrate(new long[0]);
 
             // Show the notification
             NotificationManagerCompat.from(applicationContext).notify(1, builder.build());
 
-            Result.success();
+            return Result.success();
         } catch (Throwable throwable) {
-            Result.failure();
+           return Result.failure();
         }
 
 
     }
+
+
 }
