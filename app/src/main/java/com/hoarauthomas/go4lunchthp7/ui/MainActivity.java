@@ -52,6 +52,7 @@ import com.hoarauthomas.go4lunchthp7.ui.map.ViewModelMap;
 import com.hoarauthomas.go4lunchthp7.workmanager.AlarmManager;
 import com.hoarauthomas.go4lunchthp7.workmanager.WorkManagerTest;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -172,8 +173,7 @@ public class MainActivity extends AppCompatActivity {
 
     */
 
-        //Determine the format to work
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+    /*    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
         //Determine actual datetime
         LocalDateTime dateactu = LocalDateTime.now();
@@ -189,36 +189,36 @@ public class MainActivity extends AppCompatActivity {
         long minutes = ChronoUnit.MINUTES.between(fullDateTimeToStart, dateactu);
         Log.i("[JOB]", "Extraction initial delay for work request : " + Long.toString(minutes) + " min");
 
-        //now
-        if (minutes <= 0) {
 
-            Log.i("[JOB]", "Load work in : " + Math.abs((int) minutes) + " min");
+     */
+
+
+        //new data proces
+
+        LocalTime alarmTime = LocalTime.of(12,00);
+        Log.i("[ALARM]","Alarm time :" + alarmTime.toString());
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        Log.i("[ALARM]","Time now : " + now.toString());
+        LocalTime nowTime = now.toLocalTime();
+        Log.i("[ALARM]","Time now extract : " + nowTime.toString());
+
+        if (nowTime == alarmTime || nowTime.isAfter(alarmTime)){
+            now = now.plusDays(1);
+            Log.i("[ALARM]","Add one day to delay : " + now.toString());
+        }
+
+        now = now.withHour(alarmTime.getHour()).withMinute(alarmTime.getMinute());
+        Duration duration = Duration.between(LocalDateTime.now(),now);
+
+        Log.i("[ALARM]", "Load work in : " + duration.getSeconds() + " sec");
 
 
             WorkManager.getInstance(this).cancelAllWorkByTag("popup12h00");
 
             WorkRequest newLoadPeriodicWork = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
                     //.setInitialDelay(10Math.abs((int) minutes), TimeUnit.MINUTES)
-                    .setInitialDelay(15, TimeUnit.MINUTES)
-                    .setInputData(createDataForWorkRequest())
-                    .addTag("popup12h00")// //constrains
-                    .build();
-
-            WorkManager
-                    .getInstance(this)
-                    .enqueue(newLoadPeriodicWork);
-
-        }else
-            //j
-        {
-            //first we cancel all job with tag popup12h00
-            WorkManager.getInstance(this).cancelAllWorkByTag("popup12h00");
-
-            Log.i("[JOB]", "Load work in : " + Math.abs(1440 + (int) minutes) + " min");
-
-            WorkRequest newLoadPeriodicWork = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
-                    //  .setInitialDelay(10, TimeUnit.MINUTES)
-                    .setInitialDelay(15, TimeUnit.MINUTES)
+                    //.setInitialDelay(15, TimeUnit.MINUTES)
+                    .setInitialDelay(duration.getSeconds(),TimeUnit.SECONDS)
                     .setInputData(createDataForWorkRequest())
                     .addTag("popup12h00")// //constrains
                     .build();
@@ -228,7 +228,6 @@ public class MainActivity extends AppCompatActivity {
                     .enqueue(newLoadPeriodicWork);
 
 
-        }
 
 
 

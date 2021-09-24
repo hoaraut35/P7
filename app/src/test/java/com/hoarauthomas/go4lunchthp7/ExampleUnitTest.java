@@ -19,6 +19,19 @@ public class ExampleUnitTest {
         assertEquals(4, 2 + 2);
     }
 
+    @Before
+    public void setup(){
+
+    }
+
+    @Test
+    public void testNotificationAlarm(){
+
+
+
+
+    }
+
 
 
 

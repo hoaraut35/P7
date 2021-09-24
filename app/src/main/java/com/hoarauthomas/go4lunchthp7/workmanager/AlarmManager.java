@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkRequest;
 
@@ -52,7 +53,18 @@ public class AlarmManager extends AppCompatActivity {
             //first we cancel all job with tag popup12h00
             myWorkManager.cancelAllWorkByTag("popup12h00");
 
-            //second create a new work
+            //create request
+            PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(
+                    WorkManagerTest.class,
+                    15 ,
+                    TimeUnit.MINUTES)
+                    .addTag("popup12h00")
+                    .build();
+
+            //send request
+            myWorkManager.enqueue(periodicWorkRequest);
+
+           /* //second create a new work
             WorkRequest newLoadWork = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
                     .setInitialDelay(Math.abs((int) minutes), TimeUnit.MINUTES)
                     .addTag("popup12h00")
@@ -60,11 +72,8 @@ public class AlarmManager extends AppCompatActivity {
 
             myWorkManager.enqueue(newLoadWork);
 
-            //periodic mode
-            // PeriodicWorkRequest newLoadPeriodicWork = new PeriodicWorkRequest.Builder(WorkManagerTest.class,
-            //        15, TimeUnit.MINUTES)
-            // //constrains
-            //.build();
+            */
+
         }
         //le temps est dépassé
         else {
@@ -73,6 +82,18 @@ public class AlarmManager extends AppCompatActivity {
 
             Log.i("[JOB]", "Demarrage job j+1 ");
 
+            //create request
+            PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(
+                    WorkManagerTest.class,
+                    15 ,
+                    TimeUnit.MINUTES)
+                    .addTag("popup12h00")
+                    .build();
+
+            //send request
+            myWorkManager.enqueue(periodicWorkRequest);
+
+            /*
             //second create a new work
             WorkRequest newLoadWork = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
                   //  .setInitialDelay(Math.abs((int) minutes) + 1440, TimeUnit.MINUTES)//+1j
@@ -81,6 +102,8 @@ public class AlarmManager extends AppCompatActivity {
                     .build();
 
             myWorkManager.enqueue(newLoadWork);
+
+             */
         }
 
 
