@@ -29,6 +29,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
 
@@ -53,15 +55,14 @@ import com.hoarauthomas.go4lunchthp7.workmanager.AlarmManager;
 import com.hoarauthomas.go4lunchthp7.workmanager.WorkManagerTest;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
@@ -130,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Data createDataForWorkRequest() {
 
-        String [] myWorkmates = {"Thomas","Camille","Mélissa"};
+        String[] myWorkmates = {"Thomas", "Camille", "Mélissa"};
 
         Data.Builder builder = new Data.Builder();
         builder.putString("restaurant_title", "Pizza del arte");
@@ -142,6 +143,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     // @RequiresApi(api = Build.VERSION_CODES.O)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void loadWork() {
 
 
@@ -195,43 +197,83 @@ public class MainActivity extends AppCompatActivity {
 
         //new data proces
 
-        LocalTime alarmTime = LocalTime.of(12,00);
-        Log.i("[ALARM]","Alarm time :" + alarmTime.toString());
+        LocalTime alarmTime = LocalTime.of(12, 00);
+        Log.i("[ALARM]", "Alarm time :" + alarmTime.toString());
         LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
-        Log.i("[ALARM]","Time now : " + now.toString());
+        Log.i("[ALARM]", "Time now : " + now.toString());
         LocalTime nowTime = now.toLocalTime();
-        Log.i("[ALARM]","Time now extract : " + nowTime.toString());
+        Log.i("[ALARM]", "Time now extract : " + nowTime.toString());
 
-        if (nowTime == alarmTime || nowTime.isAfter(alarmTime)){
+        if (nowTime == alarmTime || nowTime.isAfter(alarmTime)) {
             now = now.plusDays(1);
-            Log.i("[ALARM]","Add one day to delay : " + now.toString());
+            Log.i("[ALARM]", "Add one day to delay : " + now.toString());
         }
 
         now = now.withHour(alarmTime.getHour()).withMinute(alarmTime.getMinute());
-        Duration duration = Duration.between(LocalDateTime.now(),now);
+        Duration duration = Duration.between(LocalDateTime.now(), now);
 
         Log.i("[ALARM]", "Load work in : " + duration.getSeconds() + " sec");
 
 
-            WorkManager.getInstance(this).cancelAllWorkByTag("popup12h00");
+        WorkManager.getInstance(this).cancelAllWorkByTag("popup12h00");
 
-            WorkRequest newLoadPeriodicWork = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
-                    //.setInitialDelay(10Math.abs((int) minutes), TimeUnit.MINUTES)
-                    //.setInitialDelay(15, TimeUnit.MINUTES)
-                    .setInitialDelay(duration.getSeconds(),TimeUnit.SECONDS)
-                    .setInputData(createDataForWorkRequest())
-                    .addTag("popup12h00")// //constrains
-                    .build();
 
-            WorkManager
-                    .getInstance(this)
-                    .enqueue(newLoadPeriodicWork);
+
+      /*  WorkRequest newPeriodic = new PeriodicWorkRequest.Builder(WorkManagerTest.class, 1, TimeUnit.SECONDS,15, TimeUnit.MINUTES)
+                .addTag("popup12h00")
+                .build();
+
+       */
 
 
 
 
+        WorkRequest newLoadPeriodicWork = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
+
+                //.setInitialDelay(10Math.abs((int) minutes), TimeUnit.MINUTES)
+
+                //don't work
+                //.setInitialDelay(15, TimeUnit.MINUTES)
+
+                //don't work
+        //        .setInitialDelay(duration.getSeconds(), TimeUnit.SECONDS)
+                .setInputData(createDataForWorkRequest())
+                .addTag("popup12h00")// //constrains
+                .build();
 
 
+
+        String requestId = "popup12h00";
+
+
+
+        WorkManager
+                .getInstance(this)
+                .enqueue(newLoadPeriodicWork);
+
+
+        WorkManager
+                .getInstance(this)
+                .getWorkInfoByIdLiveData(newLoadPeriodicWork.getId())
+                .observe(this, new Observer<WorkInfo>() {
+                    @Override
+                    public void onChanged(WorkInfo workInfo) {
+                        if (workInfo != null){
+                            Data progress = workInfo.getProgress();
+                            int value = progress.getInt("PROGRESS",0);
+
+                            binding.topAppBar.setTitle(String.valueOf(value));
+
+                        }else
+                        {
+                            binding.topAppBar.setTitle("work nul");
+                        }
+                    }
+                });
+                //.enqueue(newPeriodic);
+
+                //.enqueue(newLoadPeriodicWork);
+                //.enqueue(newPeriodic);
 
 
 //

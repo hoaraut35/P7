@@ -9,6 +9,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
@@ -16,9 +17,21 @@ import org.jetbrains.annotations.NotNull;
 
 public class WorkManagerTest extends Worker {
 
+
+    private static final String PROGRESS = "PROGRESS";
+
+
     public WorkManagerTest(@NonNull @NotNull Context context, @NonNull @NotNull WorkerParameters workerParams) {
         super(context, workerParams);
+    setProgressAsync(new Data.Builder().putInt(PROGRESS,0).build());
+
     }
+
+
+
+
+
+
 
     @NonNull
     @NotNull
@@ -65,6 +78,9 @@ public class WorkManagerTest extends Worker {
 
             // Show the notification
             NotificationManagerCompat.from(applicationContext).notify(1, builder.build());
+
+
+            setProgressAsync(new Data.Builder().putInt(PROGRESS,100).build());
 
             return Result.success();
         } catch (Throwable throwable) {
