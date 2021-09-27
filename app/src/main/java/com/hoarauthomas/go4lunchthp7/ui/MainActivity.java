@@ -24,10 +24,12 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 import androidx.work.Data;
+import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkInfo;
@@ -143,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     // @RequiresApi(api = Build.VERSION_CODES.O)
-    @RequiresApi(api = Build.VERSION_CODES.O)
+   // @RequiresApi(api = Build.VERSION_CODES.O)
     private void loadWork() {
 
 
@@ -195,27 +197,28 @@ public class MainActivity extends AppCompatActivity {
      */
 
 
-        //new data proces
 
-        LocalTime alarmTime = LocalTime.of(12, 00);
-        Log.i("[ALARM]", "Alarm time :" + alarmTime.toString());
+        //for production
+        // LocalTime alarmTime = LocalTime.of(12, 00);
+
+        //for test
+        LocalTime alarmTime = LocalTime.of(9, 36);
+
+        Log.i("[ALARME]", "Alarm time :" + alarmTime.toString());
         LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
-        Log.i("[ALARM]", "Time now : " + now.toString());
         LocalTime nowTime = now.toLocalTime();
-        Log.i("[ALARM]", "Time now extract : " + nowTime.toString());
+        Log.i("[ALARME]", "Time now : " + nowTime.toString());
 
         if (nowTime == alarmTime || nowTime.isAfter(alarmTime)) {
             now = now.plusDays(1);
-            Log.i("[ALARM]", "Add one day to delay : " + now.toString());
+            Log.i("[ALARME]", "Add one day to delay if the time is passed : " + now.toString());
         }
 
         now = now.withHour(alarmTime.getHour()).withMinute(alarmTime.getMinute());
         Duration duration = Duration.between(LocalDateTime.now(), now);
 
-        Log.i("[ALARM]", "Load work in : " + duration.getSeconds() + " sec");
+        Log.i("[ALARME]", "Load work in : " + duration.getSeconds() + " sec");
 
-
-        WorkManager.getInstance(this).cancelAllWorkByTag("popup12h00");
 
 
 
@@ -226,34 +229,42 @@ public class MainActivity extends AppCompatActivity {
        */
 
 
+
+
+
+        WorkManager.getInstance(this).cancelAllWorkByTag("popup12h00");
+
+        //Workmanager
+        WorkManager myWorkManager;
+        LiveData<List<WorkInfo>> myWorkInfo;
+
+
+
+        //init workmanager
+        myWorkManager = WorkManager.getInstance(getApplication());
+        myWorkInfo = myWorkManager.getWorkInfosByTagLiveData("popup12h00");
+
+
         //define work
-        WorkRequest newLoadPeriodicWork = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
-                //.setInitialDelay(10Math.abs((int) minutes), TimeUnit.MINUTES)
-                //don't work
-               // .setInitialDelay(10, TimeUnit.SECONDS)
+        WorkRequest myWorkRequest = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
+
                 //don't work
                 //.setInitialDelay(duration.getSeconds(), TimeUnit.SECONDS)
+                .setInitialDelay(duration.getSeconds(),TimeUnit.SECONDS)
                 .setInputData(createDataForWorkRequest())
 
                 .addTag("popup12h00")// //constrains
                 .build();
 
-
-
-        String requestId = "popup12h00";
-
-
-
-
         //to load work in mmnager
         WorkManager
                 .getInstance(this)
-                .enqueue(newLoadPeriodicWork);
+                .enqueue(myWorkRequest) ;
 
         //to listen work
         WorkManager
                 .getInstance(this)
-                .getWorkInfoByIdLiveData(newLoadPeriodicWork.getId())
+                .getWorkInfoByIdLiveData(myWorkRequest.getId())
                 .observe(this, new Observer<WorkInfo>() {
                     @Override
                     public void onChanged(WorkInfo workInfo) {

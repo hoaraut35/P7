@@ -1,11 +1,14 @@
 package com.hoarauthomas.go4lunchthp7.ui;
 
+import android.app.Application;
 import android.location.Location;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
@@ -31,6 +34,15 @@ public class ViewModelMain extends ViewModel {
     private PlaceAutocompleteRepository myPlaceAutocompleteRepoVM;
     private PositionRepository myPositionRepoVM;
     private AlarmRepository myAlarmRepoVM;
+
+    private Application application;
+
+
+    //for notification work
+    private WorkManager myWorkManager;
+    private LiveData<List<WorkInfo>> mySavedInfo;
+
+
 
     //shared beetween multiple view
     private SharedRepository mySharedRepoVM;
@@ -90,6 +102,12 @@ public class ViewModelMain extends ViewModel {
         this.myAlarmRepoVM = myAlarmRepoVM;
 
         this.mySharedRepoVM = mySharedRepoVM;
+
+
+
+        //workmanager init
+        //myWorkManager = WorkManager.getInstance(this);
+
 
         //add source on onPlacesAutocomplete
         myAppMapMediator.addSource(myPlaceAutocompleteList, placeAutocomplete -> {
@@ -299,4 +317,13 @@ public class ViewModelMain extends ViewModel {
     public void reloadDataAfterQuery(Boolean bool) {
         mySharedRepoVM.setReloadMap(bool);
     }
+
+
+
+
+
+    public LiveData<List<WorkInfo>> getWorkInfos(){
+        return mySavedInfo;
+    }
+
 }

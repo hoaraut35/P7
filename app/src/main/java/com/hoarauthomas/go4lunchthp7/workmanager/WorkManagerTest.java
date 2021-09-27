@@ -23,7 +23,7 @@ public class WorkManagerTest extends Worker {
 
     public WorkManagerTest(@NonNull @NotNull Context context, @NonNull @NotNull WorkerParameters workerParams) {
         super(context, workerParams);
-    setProgressAsync(new Data.Builder().putInt(PROGRESS,5).build());
+        setProgressAsync(new Data.Builder().putInt(PROGRESS,5).build());
 
     }
 
