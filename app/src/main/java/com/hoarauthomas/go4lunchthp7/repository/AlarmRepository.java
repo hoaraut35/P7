@@ -21,6 +21,7 @@ import androidx.work.WorkRequest;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.workmanager.WorkManagerTest;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -33,191 +34,46 @@ public class AlarmRepository {
 
     androidx.work.WorkManager myWorkManager;
     Context myContext;
-    Notification myNotification = new Notification();
-    NotificationManagerCompat notificationManagerCompat;
 
-    /**
-     * constructor
-     */
     public AlarmRepository(Context context) {
         this.myContext = context;
         this.myWorkManager = androidx.work.WorkManager.getInstance(context);
-       // setupNotification("Go4Lunch","Démonstration notification");
     }
 
-    /**
-     *  Setup channel for notification
-     */
-    public void setupChannel(){
-        notificationManagerCompat = NotificationManagerCompat.from(myContext);
-        notificationManagerCompat.notify(1,myNotification);
-    }
-
-    /**
-     * make a notification
-     * @param title title of notifica&tion
-     * @param content content of notification
-     */
-    public void setupNotification(String title, String content){
-
-        String CHANNEL_ID = "123";
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-            CharSequence name = "Go4Lunch";
-            String description = "Channel for Go4Lunch";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-
-            NotificationManager notificationManager = getSystemService(myContext, null);
-//            notificationManager.createNotificationChannel(channel);
-
-        }
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(myContext, "123")
-                .setSmallIcon(R.drawable.ic_logo)
-                .setContentTitle("Go4Lunch from dowork")
-                .setContentText("Message de test")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-
-
-
-
-
-
-        myNotification = new NotificationCompat.Builder(myContext,"Go4Lunch")
-                .setContentText(content)
-                .setContentTitle(title)
-                .setSmallIcon(R.drawable.ic_logo)
-                .setCategory(NotificationCompat.CATEGORY_ALARM)
-                .build();
-
-        setupChannel();
-    }
-
-
-    //get an alarm
-    public void getAlarm(String idAlarm){
-
-        myWorkManager
-                .getWorkInfoByIdLiveData(UUID.fromString(idAlarm))
-                .observe((LifecycleOwner) myContext, new Observer<WorkInfo>() {
-                    @Override
-                    public void onChanged(WorkInfo workInfo) {
-
-                        if (workInfo != null){
-                            Data progress = workInfo.getProgress();
-                          //  int value = progress.getInt(progress,0);
-
-                            //otherqs
-                        }
-
-                    }
-                });
-
-    }
-
-
-
-
-
-
-
-    //set alarm
     public void setAlarm(){
 
-        //Determine the format to work
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        //for production
+        // LocalTime alarmTime = LocalTime.of(12, 00);
 
-        //Determine actual datetime
-        LocalDateTime dateactu = LocalDateTime.now();
-        Log.i("[JOB]","Actual date and time : " + dateactu.format(formatter));
+        //for test
+        LocalTime alarmTime = LocalTime.of(15, 24);
 
-        //Determine the target date and time to execute request
-        LocalDate dateToStart = LocalDate.now();
-        LocalTime timeToStart = LocalTime.parse("12:00:00");
-        LocalDateTime fullDateTimeToStart = LocalDateTime.of(dateToStart,timeToStart);
-        Log.i("[JOB]","Target date and time : " + fullDateTimeToStart.format(formatter).toString());
+        Log.i("[ALARME]", "Alarm time :" + alarmTime.toString());
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        LocalTime nowTime = now.toLocalTime();
+        Log.i("[ALARME]", "Time now : " + nowTime.toString());
 
-        //extract initial delay to construct work request after
-        long minutes = ChronoUnit.MINUTES.between(fullDateTimeToStart,dateactu);
-        Log.i("[JOB]","Extraction initial delay for work request : " + Long.toString(minutes) + " min");
-
-
-        //on peut creer l'alrme
-        if (minutes < 0 ){
-
-
-            //first we cancel all job with tag popup12h00
-            androidx.work.WorkManager.getInstance(myContext).cancelAllWorkByTag("popup12h00");
-
-            //second create a new work
-            WorkRequest newLoadWork = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
-                    .setInitialDelay(Math.abs((int)minutes), TimeUnit.MINUTES)
-                    .addTag("popup12h00")
-                    .build();
-
-            androidx.work.WorkManager.getInstance(myContext).enqueue(newLoadWork);
-
-            //periodic mode
-            // PeriodicWorkRequest newLoadPeriodicWork = new PeriodicWorkRequest.Builder(WorkManagerTest.class,
-            //        15, TimeUnit.MINUTES)
-            // //constrains
-            //.build();
+        if (nowTime == alarmTime || nowTime.isAfter(alarmTime)) {
+            now = now.plusDays(1);
+            Log.i("[ALARME]", "Add one day to delay if the time is passed : " + now.toString());
         }
-        //le temps est dépassé
-        else
-        {
-            //first we cancel all job with tag popup12h00
-            androidx.work.WorkManager.getInstance(myContext).cancelAllWorkByTag("popup12h00");
 
-            //second create a new work
-            WorkRequest newLoadWork = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
-                    .setInitialDelay(Math.abs((int)minutes) + 1440, TimeUnit.MINUTES)
-                    .addTag("popup12h00")
-                    .build();
+        now = now.withHour(alarmTime.getHour()).withMinute(alarmTime.getMinute());
+        Duration duration = Duration.between(LocalDateTime.now(), now);
 
-            androidx.work.WorkManager.getInstance(myContext).enqueue(newLoadWork);
+        Log.i("[ALARME]", "Load work in : " + duration.getSeconds() + " sec");
 
-            //nothing to do
-            //j+1 ?
-        }
+        WorkRequest myWorkRequest = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
+               // .setInitialDelay(duration.getSeconds(), TimeUnit.SECONDS)
+                .addTag("glunch")
+                .build();
+
+        myWorkManager.enqueue(myWorkRequest);
 
     }
 
-    /**
-     * Stop all work with the tag parameter
-     */
     public void removeAlarm() {
-        myWorkManager.cancelAllWorkByTag("popup12h00");
-    }
-
-
-
-
-
-    /**
-     * Enable or disable notification with state parameter from viewmodel
-     * @param state
-     */
-    public void setNotification(Boolean state) {
-
-        if (state){
-            setupNotification("Go4Lunch","contenu");    
-        }else
-        {
-            removeNotification();
-        }
-
-    }
-
-    /**
-     * Remove all notification with tag id
-     */
-    private void removeNotification() {
-        myWorkManager.cancelAllWorkByTag("popup12h00");
+        myWorkManager.cancelAllWorkByTag("go4lunch");
     }
 
 }

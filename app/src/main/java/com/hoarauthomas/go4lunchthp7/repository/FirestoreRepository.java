@@ -38,7 +38,7 @@ public class FirestoreRepository {
 
     public void setupListeners() {
         setupListenerOnCollection();
-        if (getCurrentUser() != null){
+        if (getCurrentUser() != null) {
             setupListenerWorkmateFromFirestoreRepo();
         }
 
@@ -56,28 +56,30 @@ public class FirestoreRepository {
     }
 
 
+    public List<String> getAllWorkmatesForAnRestaurant(String placeid) {
 
-
-    public List<String> getAllWorkmatesForAnRestaurant(String placeid){
         List<String> allWorkMates = new ArrayList<>();
-        Query query = myBase.whereEqualTo("favorite_restaurant",placeid);
+
+        Query query = myBase.whereEqualTo("favoriteRestaurant", placeid);
 
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
 
-                Log.i("[NOTIFICATION", "User xith this placeid " + placeid +  " " +  value.getDocuments().toString());
+                Log.i("[NOTIFICATION", "User avec ce restaurant dans la base" + placeid + " ");
 
-                for (DocumentSnapshot queryIterate: value.getDocuments()){
+                for (DocumentSnapshot queryIterate : value.getDocuments()) {
                     allWorkMates.add(queryIterate.get("username").toString());
+                    //Log.i("[NOTIFICATION","" + queryIterate.getData().get("username").toString());
                 }
+
+
+
             }
         });
 
         return allWorkMates;
     }
-
-
 
 
     public LiveData<FirestoreUser> getWorkmateFromRepo() {

@@ -23,14 +23,9 @@ public class WorkManagerTest extends Worker {
 
     public WorkManagerTest(@NonNull @NotNull Context context, @NonNull @NotNull WorkerParameters workerParams) {
         super(context, workerParams);
-        setProgressAsync(new Data.Builder().putInt(PROGRESS,5).build());
+
 
     }
-
-
-
-
-
 
 
     @NonNull
@@ -38,7 +33,6 @@ public class WorkManagerTest extends Worker {
     @Override
     public Result doWork() {
 
-        setProgressAsync(new Data.Builder().putInt(PROGRESS,15).build());
 
         Context applicationContext = getApplicationContext();
 
@@ -73,7 +67,7 @@ public class WorkManagerTest extends Worker {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(applicationContext, "go4lunch")
                     .setSmallIcon(android.R.drawable.star_big_on)
                     .setContentTitle("Go4Lunch It's time to lunch")
-                    .setContentText(restaurant_title + " \n" + restaurant_address + " \n" + myWorkmates[0])
+                    .setContentText(restaurant_title + " \n" + restaurant_address + " \n" )
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setVibrate(new long[0]);
 
@@ -81,12 +75,11 @@ public class WorkManagerTest extends Worker {
             NotificationManagerCompat.from(applicationContext).notify(1, builder.build());
 
 
-            setProgressAsync(new Data.Builder().putInt(PROGRESS,100).build());
 
             return Result.success();
 
         } catch (Throwable throwable) {
-            setProgressAsync(new Data.Builder().putInt(PROGRESS,100).build());
+
             return Result.failure();
 
         }

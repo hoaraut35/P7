@@ -24,17 +24,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
-import androidx.work.Data;
-import androidx.work.ExistingWorkPolicy;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkInfo;
-import androidx.work.WorkManager;
-import androidx.work.WorkRequest;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthMethodPickerLayout;
@@ -53,19 +45,11 @@ import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 import com.hoarauthomas.go4lunchthp7.ui.map.ViewModelMap;
-import com.hoarauthomas.go4lunchthp7.workmanager.AlarmManager;
-import com.hoarauthomas.go4lunchthp7.workmanager.WorkManagerTest;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -82,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityResultLauncher<Intent> openFirebaseAuthForResult;
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,261 +81,6 @@ public class MainActivity extends AppCompatActivity {
         setupNavigationDrawer();
         setupBottomBAr();
         setupViewPager();
-        setupSettings();
-
-        loadWork();//alarm
-        // loadtest();
-    createDataForWorkRequest();
-    }
-
-
-    //alarmmanager
-    private void loadtest() {
-        AlarmManager newAlarm = new AlarmManager();
-        newAlarm.getAlarmManager(this);
-        newAlarm.setAlarm();
-    }
-
-    private void setupSettings() {
-
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-
-        sharedPref.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
-            @Override
-            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
-                Integer myZoom = sharedPreferences.getInt("zoom", 10);
-                myViewModel.setZoom(myZoom);
-
-                boolean myNotificationSetup = sharedPref.getBoolean("notifications2", false);
-                myViewModel.setNotification(myNotificationSetup);
-            }
-        });
-    }
-
-
-    private Data createDataForWorkRequest() {
-
-        MyNotification montest = myViewModel.getDataForNotification(myViewModel.getMyUserRestaurant().getValue());
-
-        String[] myWorkmates = {"un","deux","trois"};
-                //new String [montest.getMyWorkmateList().size()];
-//        myWorkmates = montest.getMyWorkmateList().toArray(myWorkmates);
-
-
-        Data.Builder builder = new Data.Builder();
-
-        builder.putString("restaurant_title", "Pizza del arte");
-
-        builder.putString("restaurant_address", "12 rue du vieux moulin");
-
-        builder.putStringArray("workmates", myWorkmates);
-
-        return builder.build();
-
-    }
-
-
-    // @RequiresApi(api = Build.VERSION_CODES.O)
-   // @RequiresApi(api = Build.VERSION_CODES.O)
-    private void loadWork() {
-
-
-   /*     //get actual date
-        Calendar currentDate = Calendar.getInstance();
-        Log.i("[JOB]", "Calendar actual " + currentDate.getTime().toString());
-
-        //set target date
-        Calendar targetDate = Calendar.getInstance();
-        targetDate.set(Calendar.HOUR_OF_DAY,12);
-        targetDate.set(Calendar.MINUTE,0);
-        targetDate.set(Calendar.SECOND,0);
-        Log.i("[JOB]", "Calendar target " + targetDate.getTime().toString());
-
-        //to check
-        targetDate.set(Calendar.SECOND, 30);
-
-        //add one day if target before current date
-        if (targetDate.before(currentDate)) {
-            targetDate.add(Calendar.HOUR_OF_DAY, 24);
-            Log.i("[JOB]", "Calendar comparaison, one day added to the target " + targetDate.getTime());
-        }
-
-        //delay 60000 ms / minute
-        long delayTime = targetDate.getTimeInMillis() - currentDate.getTimeInMillis();
-        Log.i("[JOB]", "Calendar delay : " + Long.toString(delayTime));
-
-        //build request periodic
-
-    */
-
-    /*    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-
-        //Determine actual datetime
-        LocalDateTime dateactu = LocalDateTime.now();
-        Log.i("[JOB]", "Actual date and time : " + dateactu.format(formatter));
-
-        //Determine the target date and time to execute request
-        LocalDate dateToStart = LocalDate.now();
-        LocalTime timeToStart = LocalTime.parse("12:00:00");
-        LocalDateTime fullDateTimeToStart = LocalDateTime.of(dateToStart, timeToStart);
-        Log.i("[JOB]", "Target date and time : " + fullDateTimeToStart.format(formatter).toString());
-
-        //extract initial delay to construct work request after
-        long minutes = ChronoUnit.MINUTES.between(fullDateTimeToStart, dateactu);
-        Log.i("[JOB]", "Extraction initial delay for work request : " + Long.toString(minutes) + " min");
-
-
-     */
-
-
-
-
-        // all users who have one restaurant
-        // 12h00
-        //name of restaurant
-        //address of restaurant
-        //lisyt of workmates
-
-
-
-        //for production
-        // LocalTime alarmTime = LocalTime.of(12, 00);
-
-        //for test
-        LocalTime alarmTime = LocalTime.of(10, 53);
-
-        Log.i("[ALARME]", "Alarm time :" + alarmTime.toString());
-        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
-        LocalTime nowTime = now.toLocalTime();
-        Log.i("[ALARME]", "Time now : " + nowTime.toString());
-
-        if (nowTime == alarmTime || nowTime.isAfter(alarmTime)) {
-            now = now.plusDays(1);
-            Log.i("[ALARME]", "Add one day to delay if the time is passed : " + now.toString());
-        }
-
-        now = now.withHour(alarmTime.getHour()).withMinute(alarmTime.getMinute());
-        Duration duration = Duration.between(LocalDateTime.now(), now);
-
-        Log.i("[ALARME]", "Load work in : " + duration.getSeconds() + " sec");
-
-
-
-        WorkManager.getInstance(this).cancelAllWorkByTag("popup12h00");
-
-        //Workmanager
-        WorkManager myWorkManager;
-        LiveData<List<WorkInfo>> myWorkInfo;
-
-        //init workmanager
-        myWorkManager = WorkManager.getInstance(getApplication());
-        myWorkInfo = myWorkManager.getWorkInfosByTagLiveData("popup12h00");
-
-
-        //define work
-        WorkRequest myWorkRequest = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
-
-                //don't work
-                //.setInitialDelay(duration.getSeconds(), TimeUnit.SECONDS)
-                .setInitialDelay(duration.getSeconds(),TimeUnit.SECONDS)
-                .setInputData(createDataForWorkRequest())
-
-                .addTag("popup12h00")// //constrains
-                .build();
-
-        //to load work in mmnager
-        WorkManager
-                .getInstance(this)
-                .enqueue(myWorkRequest) ;
-
-        //to listen work
-        WorkManager
-                .getInstance(this)
-                .getWorkInfoByIdLiveData(myWorkRequest.getId())
-                .observe(this, new Observer<WorkInfo>() {
-                    @Override
-                    public void onChanged(WorkInfo workInfo) {
-                        if (workInfo != null){
-                            Data progress = workInfo.getProgress();
-                            int value = progress.getInt("PROGRESS",0);
-                            binding.topAppBar.setTitle(String.valueOf(value));
-
-                        }else
-                        {
-                            binding.topAppBar.setTitle("work nul");
-                        }
-
-                    }
-                });
-
-
-
-
-
-
-
-//
-//        //Determine the format to work
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-//
-//        //Determine actual datetime
-//        LocalDateTime dateactu = LocalDateTime.now();
-//        Log.i("[JOB]","Actual date and time : " + dateactu.format(formatter));
-//
-//        //Determine the target date and time to execute request
-//        LocalDate dateToStart = LocalDate.now();
-//        LocalTime timeToStart = LocalTime.parse("12:00:00");
-//        LocalDateTime fullDateTimeToStart = LocalDateTime.of(dateToStart,timeToStart);
-//        Log.i("[JOB]","Target date and time : " + fullDateTimeToStart.format(formatter).toString());
-//
-//        //extract initial delay to construct work request after
-//        long minutes = ChronoUnit.MINUTES.between(fullDateTimeToStart,dateactu);
-//        Log.i("[JOB]","Extraction initial delay for work request : " + Long.toString(minutes) + " min");
-//
-//        //extract position
-//
-//        //on peut creer l'alrme
-//        if (minutes < 0 ){
-//
-//
-//            //first we cancel all job with tag popup12h00
-//          //  androidx.work.WorkManager.getInstance(this).cancelAllWorkByTag("popup12h00");
-//
-//
-//            // .setInitialDelay(Math.abs((int)minutes), TimeUnit.MINUTES)
-//            //second create a new work
-//            WorkRequest newLoadWork = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
-//                  // .setInitialDelay(15,TimeUnit.MINUTES)
-//                  //  .addTag("popup12h00")
-//                    .build();
-//
-//            androidx.work.WorkManager.getInstance(this).enqueue(newLoadWork);
-//
-//            //periodic mode
-//            // PeriodicWorkRequest newLoadPeriodicWork = new PeriodicWorkRequest.Builder(WorkManagerTest.class,
-//            //        15, TimeUnit.MINUTES)
-//            // //constrains
-//            //.build();
-//        }
-//        //le temps est dépassé
-//        else
-//        {
-//            //first we cancel all job with tag popup12h00
-//            androidx.work.WorkManager.getInstance(this).cancelAllWorkByTag("popup12h00");
-//
-//            //second create a new work
-//            WorkRequest newLoadWork = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
-//                    //.setInitialDelay(Math.abs((int)minutes) + 1440, TimeUnit.MINUTES)
-//                //    .setInitialDelay(15,TimeUnit.MINUTES)
-//               //     .addTag("popup12h00")
-//                    .build();
-//
-//            androidx.work.WorkManager.getInstance(this).enqueue(newLoadWork);
-//
-//            //nothing to do
-//            //j+1 ?
-//        }
 
     }
 

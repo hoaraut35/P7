@@ -8,11 +8,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.work.Data;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
 import com.google.firebase.auth.FirebaseUser;
-import com.hoarauthomas.go4lunchthp7.MainApplication;
 import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.repository.AlarmRepository;
@@ -109,7 +109,7 @@ public class ViewModelMain extends ViewModel {
 
 
         //workmanager init
-        //myWorkManager = WorkManager.getInstance(this);
+//        myWorkManager = WorkManager.getInstance(application.getApplicationContext());
 
 
         //add source on onPlacesAutocomplete
@@ -260,23 +260,52 @@ public class ViewModelMain extends ViewModel {
         return myPositionRepoVM.getLocationLiveData().getValue();
     }
 
-    //not used
-    public void setNotification() {
-        myAlarmRepoVM.setAlarm();
-    }
-
-    /**
-     * To enable or disable notification
-     *
-     * @param state
-     */
     public void setNotification(Boolean state) {
+        if (state){
 
-
-
-
-      myAlarmRepoVM.setNotification(state);
+            myAlarmRepoVM.setAlarm();
+        }else
+        {
+            myAlarmRepoVM.removeAlarm();
+        }
     }
+
+
+    private Data notificationBuilderForWorkRequest() {
+
+       // MyNotification montest = myViewModel.getDataForNotification(myViewModel.getMyUserRestaurant().getValue());
+
+        String[] myWorkmates = {"un","deux","trois"};
+        //new String [montest.getMyWorkmateList().size()];
+//        myWorkmates = montest.getMyWorkmateList().toArray(myWorkmates);
+
+
+        Data.Builder builder = new Data.Builder();
+
+        builder.putString("restaurant_title", "Pizza del arte");
+
+        builder.putString("restaurant_address", "12 rue du vieux moulin");
+
+        builder.putStringArray("workmates", myWorkmates);
+
+        return builder.build();
+
+    }
+
+    private void startNotification() {
+
+
+
+    }
+
+
+    private void removeNotification(String id){
+        WorkManager.getInstance(application.getApplicationContext()).cancelAllWorkByTag("popup12h00");
+    }
+
+
+
+
 
     /**
      * Update the place prediction in repository shared
@@ -339,12 +368,17 @@ public class ViewModelMain extends ViewModel {
 
 
 
+        Log.i("[NOTIFICATION]","Liste des restaurants  : " + mySharedRepoVM.getMyRestaurantList().getValue());
+
+
 //        myWorkMatesDetailList.addAll(this.myWorkMatesRepoVM.getAllWorkmatesForAnRestaurant(myUserRestaurantId.getValue()).getValue());
 
 
 
         Log.i("[NOTIFICATION]","My pace id " + placeId);
-      myWorkMatesRepoVM.getAllWorkmatesForAnRestaurant("ChIJO5NxcizVDkgRfPGwfbKFK9I");
+
+        List<String> teszt = new ArrayList<>();
+        teszt.addAll(myWorkMatesRepoVM.getAllWorkmatesForAnRestaurant("ChIJO5NxcizVDkgRfPGwfbKFK9I"));
 
         return null;
 
