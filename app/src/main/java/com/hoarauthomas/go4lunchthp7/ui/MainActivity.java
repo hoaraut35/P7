@@ -58,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
     public ViewModelMain myViewModel;
     public ViewModelMap myViewModelMap;
 
+    private SharedPreferences sp;
+
+
     private final List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.TwitterBuilder().build(),
             new AuthUI.IdpConfig.EmailBuilder().build(),
@@ -81,6 +84,29 @@ public class MainActivity extends AppCompatActivity {
         setupNavigationDrawer();
         setupBottomBAr();
         setupViewPager();
+
+        setupSettings();
+
+
+    }
+
+    private void setupSettings() {
+
+        this.sp = PreferenceManager.getDefaultSharedPreferences(this);
+
+        Log.i("[SETTINGS]","Notification at startup" + sp.getBoolean("notifications2",true));
+
+        myViewModel.setNotification(sp.getBoolean("notifications2",true));
+        myViewModel.setZoom(sp.getInt("zoom",10));
+
+
+//        sp.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+//            @Override
+//            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+//               myViewModel.setZoom(sharedPreferences.getInt("zoom",10));
+//               myViewModel.setNotification(sharedPreferences.getBoolean("notifications2",true));
+//            }
+//        });
 
     }
 

@@ -9,12 +9,16 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.work.Data;
+import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkRequest;
 
@@ -27,6 +31,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -40,13 +45,13 @@ public class AlarmRepository {
         this.myWorkManager = androidx.work.WorkManager.getInstance(context);
     }
 
-    public void setAlarm(){
+    public void setAlarm() {
 
         //for production
         // LocalTime alarmTime = LocalTime.of(12, 00);
 
         //for test
-        LocalTime alarmTime = LocalTime.of(15, 34);
+        LocalTime alarmTime = LocalTime.of(17, 45);
 
         Log.i("[ALARME]", "Alarm time :" + alarmTime.toString());
         LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
@@ -63,17 +68,20 @@ public class AlarmRepository {
 
         Log.i("[ALARME]", "Load work in : " + duration.getSeconds() + " sec");
 
-        WorkRequest myWorkRequest = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
+        //TODO: set repeat interval to 24h, initialDelay to dephase start
+        //repeat interval must be greather or equal tio 15min
+        PeriodicWorkRequest myPeriodicWorkRequest = new PeriodicWorkRequest.Builder(WorkManagerTest.class, 15, TimeUnit.MINUTES)
                 .setInitialDelay(duration.getSeconds(), TimeUnit.SECONDS)
                 .addTag("go4lunch")
                 .build();
 
-        myWorkManager.enqueue(myWorkRequest);
+        myWorkManager.enqueueUniquePeriodicWork("go4lunch", ExistingPeriodicWorkPolicy.REPLACE, myPeriodicWorkRequest);
 
     }
 
     public void removeAlarm() {
         myWorkManager.cancelAllWorkByTag("go4lunch");
     }
+
 
 }

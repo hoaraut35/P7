@@ -1,6 +1,7 @@
 package com.hoarauthomas.go4lunchthp7.ui;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.util.Log;
 
@@ -8,6 +9,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.preference.PreferenceManager;
 import androidx.work.Data;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
@@ -38,6 +40,7 @@ public class ViewModelMain extends ViewModel {
     private AlarmRepository myAlarmRepoVM;
 
     private Application application;
+
 
 
     //for notification work
@@ -83,6 +86,8 @@ public class ViewModelMain extends ViewModel {
             SharedRepository mySharedRepoVM
             ) {
 
+
+
         //get data from Auth repository...
         this.myFirebaseAuthRepoVM = firebaseAuthRepository;
 
@@ -105,6 +110,10 @@ public class ViewModelMain extends ViewModel {
         this.myAlarmRepoVM = myAlarmRepoVM;
 
         this.mySharedRepoVM = mySharedRepoVM;
+
+
+
+
 
 
 

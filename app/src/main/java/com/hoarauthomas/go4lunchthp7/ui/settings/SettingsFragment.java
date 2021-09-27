@@ -24,12 +24,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private void setupViewModel() {
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
-        sp.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
-            @Override
-            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                myViewModel.setZoom(sharedPreferences.getInt("zoom",10));
-                myViewModel.setNotification(sharedPreferences.getBoolean("notifications2",true));
-            }
-        });
+
+
+
+
     }
 }

@@ -33,6 +33,7 @@ public class FirestoreRepository {
     public FirestoreRepository() {
         this.myBase = FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
         setupListenerOnCollection();
+        //TODO: remove it
         //setupListenerWorkmateFromFirestoreRepo();
     }
 
@@ -72,15 +73,11 @@ public class FirestoreRepository {
                     allWorkMates.add(queryIterate.get("username").toString());
                     //Log.i("[NOTIFICATION","" + queryIterate.getData().get("username").toString());
                 }
-
-
-
             }
         });
 
         return allWorkMates;
     }
-
 
     public LiveData<FirestoreUser> getWorkmateFromRepo() {
         return myWorkmateFromRepo;

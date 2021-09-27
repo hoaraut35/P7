@@ -23,6 +23,7 @@ public class WorkManagerTest extends Worker {
 
     public WorkManagerTest(@NonNull @NotNull Context context, @NonNull @NotNull WorkerParameters workerParams) {
         super(context, workerParams);
+        Log.i("[ALARME]","Work loaded");
 
 
     }
