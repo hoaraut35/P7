@@ -46,7 +46,7 @@ public class AlarmRepository {
         // LocalTime alarmTime = LocalTime.of(12, 00);
 
         //for test
-        LocalTime alarmTime = LocalTime.of(15, 24);
+        LocalTime alarmTime = LocalTime.of(15, 34);
 
         Log.i("[ALARME]", "Alarm time :" + alarmTime.toString());
         LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
@@ -64,8 +64,8 @@ public class AlarmRepository {
         Log.i("[ALARME]", "Load work in : " + duration.getSeconds() + " sec");
 
         WorkRequest myWorkRequest = new OneTimeWorkRequest.Builder(WorkManagerTest.class)
-               // .setInitialDelay(duration.getSeconds(), TimeUnit.SECONDS)
-                .addTag("glunch")
+                .setInitialDelay(duration.getSeconds(), TimeUnit.SECONDS)
+                .addTag("go4lunch")
                 .build();
 
         myWorkManager.enqueue(myWorkRequest);
