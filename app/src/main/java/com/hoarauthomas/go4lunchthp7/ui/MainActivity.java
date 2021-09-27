@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
         loadWork();//alarm
         // loadtest();
-
+    createDataForWorkRequest();
     }
 
 
@@ -133,12 +133,21 @@ public class MainActivity extends AppCompatActivity {
 
     private Data createDataForWorkRequest() {
 
-        String[] myWorkmates = {"Thomas", "Camille", "Mélissa"};
+        MyNotification montest = myViewModel.getDataForNotification(myViewModel.getMyUserRestaurant().getValue());
+
+        String[] myWorkmates = {"un","deux","trois"};
+                //new String [montest.getMyWorkmateList().size()];
+//        myWorkmates = montest.getMyWorkmateList().toArray(myWorkmates);
+
 
         Data.Builder builder = new Data.Builder();
+
         builder.putString("restaurant_title", "Pizza del arte");
+
         builder.putString("restaurant_address", "12 rue du vieux moulin");
+
         builder.putStringArray("workmates", myWorkmates);
+
         return builder.build();
 
     }
@@ -198,11 +207,20 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+        // all users who have one restaurant
+        // 12h00
+        //name of restaurant
+        //address of restaurant
+        //lisyt of workmates
+
+
+
         //for production
         // LocalTime alarmTime = LocalTime.of(12, 00);
 
         //for test
-        LocalTime alarmTime = LocalTime.of(9, 36);
+        LocalTime alarmTime = LocalTime.of(10, 53);
 
         Log.i("[ALARME]", "Alarm time :" + alarmTime.toString());
         LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
@@ -221,24 +239,11 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-      /*  WorkRequest newPeriodic = new PeriodicWorkRequest.Builder(WorkManagerTest.class, 1, TimeUnit.SECONDS,15, TimeUnit.MINUTES)
-                .addTag("popup12h00")
-                .build();
-
-       */
-
-
-
-
-
         WorkManager.getInstance(this).cancelAllWorkByTag("popup12h00");
 
         //Workmanager
         WorkManager myWorkManager;
         LiveData<List<WorkInfo>> myWorkInfo;
-
-
 
         //init workmanager
         myWorkManager = WorkManager.getInstance(getApplication());
@@ -284,10 +289,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                //.enqueue(newPeriodic);
 
-                //.enqueue(newLoadPeriodicWork);
-                //.enqueue(newPeriodic);
 
 
 //
@@ -365,27 +367,19 @@ public class MainActivity extends AppCompatActivity {
      * Setup ViewModel for MainActivity
      */
     private void setupViewModel() {
-
         this.myViewModelMap = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMap.class);
-
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
 
         this.myViewModel.getLoginState().observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-
-
                 if (aBoolean) {
-                    //request user from firebase ui
-                    //request user from firestore
                     request_user_info(myViewModel.getUser());
-                    //myViewModel.getMyUserData();
                 } else {
                     request_login();
                 }
             }
         });
-
 
         this.myViewModel.myAppMapMediator.observe(this, new Observer<ViewMainState>() {
             @Override
@@ -477,7 +471,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void request_user_info(FirebaseUser myUserResult) {
-
+        myViewModel.setUser();
         if (myUserResult != null) {
 
             View hv = binding.navigationView.getHeaderView(0);

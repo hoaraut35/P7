@@ -110,7 +110,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     placeAutocompleteRepository,
                     positionRepository,
                     alarmRepository,
-                    sharedRepository);
+                    sharedRepository
+                    );
 
         } else if (modelClass.isAssignableFrom(ViewModelMap.class)) {
             return (T) new ViewModelMap(

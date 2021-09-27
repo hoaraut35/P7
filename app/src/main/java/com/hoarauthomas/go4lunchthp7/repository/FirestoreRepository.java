@@ -2,6 +2,7 @@ package com.hoarauthomas.go4lunchthp7.repository;
 
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -9,8 +10,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 
@@ -49,6 +54,31 @@ public class FirestoreRepository {
             }
         });
     }
+
+
+
+
+    public List<String> getAllWorkmatesForAnRestaurant(String placeid){
+        List<String> allWorkMates = new ArrayList<>();
+        Query query = myBase.whereEqualTo("favorite_restaurant",placeid);
+
+        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+
+                Log.i("[NOTIFICATION", "User xith this placeid " + placeid +  " " +  value.getDocuments().toString());
+
+                for (DocumentSnapshot queryIterate: value.getDocuments()){
+                    allWorkMates.add(queryIterate.get("username").toString());
+                }
+            }
+        });
+
+        return allWorkMates;
+    }
+
+
+
 
     public LiveData<FirestoreUser> getWorkmateFromRepo() {
         return myWorkmateFromRepo;

@@ -2,6 +2,7 @@ package com.hoarauthomas.go4lunchthp7.ui;
 
 import android.app.Application;
 import android.location.Location;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -11,6 +12,7 @@ import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.hoarauthomas.go4lunchthp7.MainApplication;
 import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.repository.AlarmRepository;
@@ -48,12 +50,13 @@ public class ViewModelMain extends ViewModel {
     private SharedRepository mySharedRepoVM;
 
     //livedata...
-    private LiveData<FirebaseUser> myUserLiveData;
-    private LiveData<Boolean> myUserStateNew;
+    private final LiveData<FirebaseUser> myUserLiveData;
+    private final LiveData<FirestoreUser> myWorkmate;
+    private final LiveData<Boolean> myUserStateNew;
     private LiveData<List<FirestoreUser>> myWorkMatesListLiveData = new MutableLiveData<>();
-    private MutableLiveData<String> myUserRestaurantId = new MutableLiveData<>();
-    private MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myPlaceAutocompleteList = new MutableLiveData<>();
+    private final MutableLiveData<String> myUserRestaurantId = new MutableLiveData<>();
 
+    private MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myPlaceAutocompleteList = new MutableLiveData<>();
     public MutableLiveData<String> getMyUserRestaurantId() {
         return myUserRestaurantId;
     }
@@ -77,23 +80,23 @@ public class ViewModelMain extends ViewModel {
             PlaceAutocompleteRepository placeAutocompleteRepository,
             PositionRepository myPositionRepoVM,
             AlarmRepository myAlarmRepoVM,
-            SharedRepository mySharedRepoVM) {
+            SharedRepository mySharedRepoVM
+            ) {
 
         //get data from Auth repository...
         this.myFirebaseAuthRepoVM = firebaseAuthRepository;
+
         myUserLiveData = myFirebaseAuthRepoVM.getFirebaseAuthUserFromRepo();
         myUserStateNew = myFirebaseAuthRepoVM.getFirebaseAuthUserStateFromRepo();
 
         //get data from workmates repository...
         this.myWorkMatesRepoVM = firestoreRepository;
+
         myWorkMatesListLiveData = myWorkMatesRepoVM.getFirestoreWorkmates();
-        LiveData<FirestoreUser> myWorkmate = myWorkMatesRepoVM.getWorkmateFromRepo();
+        myWorkmate = myWorkMatesRepoVM.getWorkmateFromRepo();
 
         //get data from place autocomplete repository...
         this.myPlaceAutocompleteRepoVM = placeAutocompleteRepository;
-        //  this.myPlaceAutocompleteList = myPlaceAutocompleteRepoVM.getMyPlaceAutocompleteListForVM();
-
-        //  this.myPlaceAutocompleteList = myPlaceAutocompleteRepoVM.getPlaces();
 
         //get position for autocomplete request
         this.myPositionRepoVM = myPositionRepoVM;
@@ -168,7 +171,8 @@ public class ViewModelMain extends ViewModel {
     private void logicWork(
             @Nullable FirebaseUser myUser,
             @Nullable List<FirestoreUser> workmates,
-            Boolean bool, FirestoreUser myFirestoreUserData,
+            Boolean bool,
+            FirestoreUser myFirestoreUserData,
             PlaceAutocomplete myPlacesAuto) {
 
         createUser();
@@ -176,6 +180,11 @@ public class ViewModelMain extends ViewModel {
         if (myUser != null && workmates != null && myFirestoreUserData != null) {
 
             //placeautocomplete à traduire en placedetails
+
+
+
+            Log.i("[NOTIFICATION]","My user favorite restaurant : " + myFirestoreUserData.getFavoriteRestaurant());
+
 
             if (myPlacesAuto != null) {
 
@@ -326,4 +335,25 @@ public class ViewModelMain extends ViewModel {
         return mySavedInfo;
     }
 
+    public MyNotification getDataForNotification(String placeId) {
+
+
+
+//        myWorkMatesDetailList.addAll(this.myWorkMatesRepoVM.getAllWorkmatesForAnRestaurant(myUserRestaurantId.getValue()).getValue());
+
+
+
+        Log.i("[NOTIFICATION]","My pace id " + placeId);
+      myWorkMatesRepoVM.getAllWorkmatesForAnRestaurant("ChIJO5NxcizVDkgRfPGwfbKFK9I");
+
+        return null;
+
+    }
+
+
+
+
+
 }
+
+
