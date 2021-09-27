@@ -98,15 +98,9 @@ public class MainActivity extends AppCompatActivity {
 
         myViewModel.setNotification(sp.getBoolean("notifications2",true));
         myViewModel.setZoom(sp.getInt("zoom",10));
+        myViewModel.setupSP(getApplicationContext());
 
-
-//        sp.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
-//            @Override
-//            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-//               myViewModel.setZoom(sharedPreferences.getInt("zoom",10));
-//               myViewModel.setNotification(sharedPreferences.getBoolean("notifications2",true));
-//            }
-//        });
+//
 
     }
 

@@ -51,7 +51,7 @@ public class AlarmRepository {
         // LocalTime alarmTime = LocalTime.of(12, 00);
 
         //for test
-        LocalTime alarmTime = LocalTime.of(17, 45);
+        LocalTime alarmTime = LocalTime.of(18, 11);
 
         Log.i("[ALARME]", "Alarm time :" + alarmTime.toString());
         LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);

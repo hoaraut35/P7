@@ -1,6 +1,7 @@
 package com.hoarauthomas.go4lunchthp7.ui;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.util.Log;
@@ -40,7 +41,7 @@ public class ViewModelMain extends ViewModel {
     private AlarmRepository myAlarmRepoVM;
 
     private Application application;
-
+    private SharedPreferences sp;
 
 
     //for notification work
@@ -394,9 +395,19 @@ public class ViewModelMain extends ViewModel {
     }
 
 
+    public void setupSP(Context applicationContext) {
 
+        sp = PreferenceManager.getDefaultSharedPreferences(applicationContext);
 
-
+        sp.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                Log.i("[SETTINGS]","changed");
+              setZoom(sharedPreferences.getInt("zoom",10));
+              setNotification(sharedPreferences.getBoolean("notifications2",true));
+            }
+        });
+    }
 }
 
 
