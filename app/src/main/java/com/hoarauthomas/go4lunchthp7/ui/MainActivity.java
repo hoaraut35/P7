@@ -90,8 +90,9 @@ public class MainActivity extends AppCompatActivity {
     private void setupWorkManagerListener() {
 
 
+        /*String uid = "go4lunch";
 
-        WorkManager.getInstance(this).getWorkInfoByIdLiveData("go4lunch").observe(this, new Observer<WorkInfo>() {
+        WorkManager.getInstance(this).getWorkInfoByIdLiveData(uid."go4lunch").observe(this, new Observer<WorkInfo>() {
             @Override
             public void onChanged(WorkInfo workInfo) {
 
@@ -103,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
+         */
     }
 
     private void setupSettings() {

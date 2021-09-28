@@ -1,20 +1,16 @@
 package com.hoarauthomas.go4lunchthp7;
 
-import com.hoarauthomas.go4lunchthp7.api.RetrofitRequest;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
-import android.telephony.ClosedSubscriberGroupInfo;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
-public class ExampleUnitTest {
+public class RestaurantsViewModelTest {
 
     //write to test before the model
 

@@ -57,9 +57,8 @@ public class AlarmRepository {
         Duration duration = Duration.between(LocalDateTime.now(), now);
         Log.i("[ALARME]", "Load work in : " + duration.getSeconds() + " sec");
 
-        //TODO: set repeat interval to 24h, initialDelay to dephase start
         //minimum repeat interval must be greather or equal to 15min see JobScheduler API
-        PeriodicWorkRequest myPeriodicWorkRequest = new PeriodicWorkRequest.Builder(WorkManagerTest.class, 15, TimeUnit.MINUTES)
+        PeriodicWorkRequest myPeriodicWorkRequest = new PeriodicWorkRequest.Builder(WorkManagerTest.class, 1, TimeUnit.DAYS)
                 //first work is delayed after we use the repeatinterval 24h
                 .setInitialDelay(duration.getSeconds(), TimeUnit.SECONDS)
                 .addTag("go4lunch")
@@ -77,6 +76,5 @@ public class AlarmRepository {
     public void removeAlarm() {
         myWorkManager.cancelAllWorkByTag("go4lunch");
     }
-
 
 }
