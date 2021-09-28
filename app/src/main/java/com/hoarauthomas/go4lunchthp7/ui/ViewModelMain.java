@@ -101,6 +101,12 @@ public class ViewModelMain extends ViewModel {
         myWorkMatesListLiveData = myWorkMatesRepoVM.getFirestoreWorkmates();
         myWorkmate = myWorkMatesRepoVM.getWorkmateFromRepo();
 
+
+
+
+
+
+
         //get data from place autocomplete repository...
         this.myPlaceAutocompleteRepoVM = placeAutocompleteRepository;
 
@@ -191,6 +197,13 @@ public class ViewModelMain extends ViewModel {
 
             //placeautocomplete à traduire en placedetails
 
+
+
+
+            //get data here for prepare alarm
+            if (myFirestoreUserData.getFavoriteRestaurant() != null){
+                Log.i("[ALARME]","User name " + myFirestoreUserData.getUsername());
+            }
 
 
             Log.i("[NOTIFICATION]","My user favorite restaurant : " + myFirestoreUserData.getFavoriteRestaurant());
@@ -343,7 +356,7 @@ public class ViewModelMain extends ViewModel {
 //        myWorkMatesDetailList.addAll(this.myWorkMatesRepoVM.getAllWorkmatesForAnRestaurant(myUserRestaurantId.getValue()).getValue());
         Log.i("[NOTIFICATION]","My pace id " + placeId);
         List<String> teszt = new ArrayList<>();
-        teszt.addAll(myWorkMatesRepoVM.getAllWorkmatesForAnRestaurant("ChIJO5NxcizVDkgRfPGwfbKFK9I"));
+        //teszt.addAll(myWorkMatesRepoVM.getAllWorkmatesForAnRestaurant("ChIJO5NxcizVDkgRfPGwfbKFK9I"));
         return null;
     }
 
@@ -360,6 +373,10 @@ public class ViewModelMain extends ViewModel {
               setNotification(sharedPreferences.getBoolean("notifications2",true));
             }
         });
+    }
+
+    public LiveData<List<String>> getAllWorkmatesByPlaceId() {
+        return myWorkMatesRepoVM.getAllWorkmatesForAnRestaurant("ChIJy9WiwEzVDkgRxxG08dkPb-0");
     }
 }
 

@@ -20,7 +20,10 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
@@ -44,6 +47,7 @@ import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 import com.hoarauthomas.go4lunchthp7.ui.map.ViewModelMap;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -84,8 +88,28 @@ public class MainActivity extends AppCompatActivity {
 
         setupWorkManagerListener();
 
+        setupNotif();
+
 
     }
+
+    private void setupNotif() {
+
+        MediatorLiveData<List<String>> test = new MediatorLiveData<>();
+
+
+        LiveData<List<String>> myList = myViewModel.getAllWorkmatesByPlaceId();
+
+        test.addSource(myList, new Observer<List<String>>() {
+            @Override
+            public void onChanged(List<String> strings) {
+
+                Log.i("[ALARME]","Liste users fir this restau");
+            }
+        });
+
+    }
+
 
     private void setupWorkManagerListener() {
 
@@ -124,8 +148,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupViewModel() {
-        this.myViewModelMap = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMap.class);
+
+      //  this.myViewModelMap = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMap.class);
+
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
+
+        this.myViewModel.getAllWorkmatesByPlaceId().observe(this, new Observer<List<String>>() {
+            @Override
+            public void onChanged(List<String> strings) {
+                binding.topAppBar.setTitle("test" + LocalTime.now());
+            }
+        });
+
+
 
         this.myViewModel.getLoginState().observe(this, aBoolean -> {
             if (aBoolean) {
@@ -134,7 +169,15 @@ public class MainActivity extends AppCompatActivity {
                 request_login();
             }
         });
+
+
+
+
     }
+
+
+
+
 
     /**
      * Authentification is load at startup
@@ -146,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
                 result -> {
 
                     if (result.getResultCode() == -1) {
+                        myViewModel.createUser();
                         myViewModel.setUser();
                     } else {
 

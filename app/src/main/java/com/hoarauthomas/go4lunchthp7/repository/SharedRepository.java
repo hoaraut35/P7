@@ -3,9 +3,11 @@ package com.hoarauthomas.go4lunchthp7.repository;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.facebook.internal.Mutable;
 import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 
@@ -13,11 +15,34 @@ import java.util.List;
 
 public class SharedRepository {
 
+    private FirestoreRepository myFirestoreRepository;
+
+
     private MutableLiveData<Integer> myZoom = new MutableLiveData<Integer>();
     public MutableLiveData<Prediction> myPlaceIdFromAutocomplete = new MutableLiveData<>();
     public MutableLiveData<List<String>> myRestaurantList = new MutableLiveData<>();
 
     public MutableLiveData<Boolean> reloadMap = new MutableLiveData<>(true);
+
+
+
+    public MutableLiveData<List<String>> myWorkmatesListWithPlaceId = new MutableLiveData<>();
+
+
+    private MediatorLiveData<String> myMediator;
+
+
+    public SharedRepository() {
+
+
+
+
+
+    }
+
+
+
+
 
     public MutableLiveData<Prediction> getMyPlaceIdFromAutocomplete() {
         return myPlaceIdFromAutocomplete;

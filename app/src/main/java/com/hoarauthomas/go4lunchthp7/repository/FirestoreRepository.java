@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.facebook.internal.Mutable;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -57,7 +58,9 @@ public class FirestoreRepository {
     }
 
 
-    public List<String> getAllWorkmatesForAnRestaurant(String placeid) {
+    public LiveData<List<String>> getAllWorkmatesForAnRestaurant(String placeid) {
+
+        MutableLiveData<List<String>> myList = new MutableLiveData<>();
 
         List<String> allWorkMates = new ArrayList<>();
 
@@ -67,16 +70,20 @@ public class FirestoreRepository {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
 
-                Log.i("[NOTIFICATION", "User avec ce restaurant dans la base" + placeid + " ");
+                Log.i("[ALARME]", "User avec ce restaurant dans la base" + placeid + " ");
 
-                for (DocumentSnapshot queryIterate : value.getDocuments()) {
-                    allWorkMates.add(queryIterate.get("username").toString());
-                    //Log.i("[NOTIFICATION","" + queryIterate.getData().get("username").toString());
+                if (value != null){
+                    for (DocumentSnapshot queryIterate : value.getDocuments()) {
+                        allWorkMates.add(queryIterate.get("username").toString());
+                        myList.setValue(allWorkMates);
+                        //Log.i("[NOTIFICATION","" + queryIterate.getData().get("username").toString());
+                    }
                 }
+
             }
         });
 
-        return allWorkMates;
+        return myList;
     }
 
     public LiveData<FirestoreUser> getWorkmateFromRepo() {
