@@ -23,7 +23,7 @@ public class WorkManagerTest extends Worker {
 
     public WorkManagerTest(@NonNull @NotNull Context context, @NonNull @NotNull WorkerParameters workerParams) {
         super(context, workerParams);
-        Log.i("[ALARME]","Work loaded");
+        Log.i("[ALARME]","Work is  loaded ...");
 
 
     }
@@ -34,7 +34,7 @@ public class WorkManagerTest extends Worker {
     @Override
     public Result doWork() {
 
-
+        Log.i("[ALARME]","Work is  loaded ... doWork");
         Context applicationContext = getApplicationContext();
 
         //get data from ui

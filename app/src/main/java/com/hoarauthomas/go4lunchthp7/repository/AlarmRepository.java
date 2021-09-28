@@ -39,8 +39,6 @@ public class AlarmRepository {
         LocalTime alarmTime = actuel.toLocalTime();
         alarmTime = alarmTime.plusMinutes(2);
 
-//        LocalTime alarmTime = LocalTime.of(18, 11);
-
         Log.i("[ALARME]", "Alarm time :" + alarmTime.toString());
 
         LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
@@ -58,14 +56,14 @@ public class AlarmRepository {
         Log.i("[ALARME]", "Load work in : " + duration.getSeconds() + " sec");
 
         //minimum repeat interval must be greather or equal to 15min see JobScheduler API
-        PeriodicWorkRequest myPeriodicWorkRequest = new PeriodicWorkRequest.Builder(WorkManagerTest.class, 1, TimeUnit.DAYS)
+        PeriodicWorkRequest myPeriodicWorkRequest = new PeriodicWorkRequest.Builder(WorkManagerTest.class, 15, TimeUnit.MINUTES)
                 //first work is delayed after we use the repeatinterval 24h
                 .setInitialDelay(duration.getSeconds(), TimeUnit.SECONDS)
                 .addTag("go4lunch")
                 .build();
 
         //TODO: policy ? KEEP REPLACE
-        myWorkManager.enqueueUniquePeriodicWork("go4lunch", ExistingPeriodicWorkPolicy.KEEP, myPeriodicWorkRequest);
+        myWorkManager.enqueueUniquePeriodicWork("go4lunch", ExistingPeriodicWorkPolicy.REPLACE, myPeriodicWorkRequest);
 
     }
 
