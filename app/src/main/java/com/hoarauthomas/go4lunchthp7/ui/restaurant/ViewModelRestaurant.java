@@ -27,13 +27,12 @@ import javax.annotation.Nullable;
 
 public class ViewModelRestaurant extends ViewModel {
 
-    private PositionRepository myPositionRepository;
-    private RestaurantsRepository myRestaurantRepository;
-    private FirestoreRepository myFirestoreRepository;
-    private LiveData<Location> myPosition;
-    private SharedRepository mySharedRepository;
-    private PlaceAutocompleteRepository myPlaceAutocompleteRepository;
-
+    private final PositionRepository myPositionRepository;
+    private final RestaurantsRepository myRestaurantRepository;
+    private final FirestoreRepository myFirestoreRepository;
+    private final LiveData<Location> myPosition;
+    private final SharedRepository mySharedRepository;
+    private final PlaceAutocompleteRepository myPlaceAutocompleteRepository;
 
     private final MediatorLiveData<ViewStateRestaurant> myViewStateRestaurantMediator = new MediatorLiveData<>();
 
@@ -46,9 +45,8 @@ public class ViewModelRestaurant extends ViewModel {
         this.myPlaceAutocompleteRepository = placeAutocompleteRepository;
 
         myPosition = myPositionRepository.getLocationLiveData();
-        LiveData<List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
+        LiveData<List<RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
         LiveData<List<FirestoreUser>> myWorkMatesList = this.myFirestoreRepository.getFirestoreWorkmates();
-
 
         //for autocomplete
         LiveData<PlaceAutocomplete> myPlacesId = this.myPlaceAutocompleteRepository.getPlaces();

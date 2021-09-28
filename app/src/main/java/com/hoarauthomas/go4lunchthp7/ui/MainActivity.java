@@ -88,27 +88,10 @@ public class MainActivity extends AppCompatActivity {
 
         setupWorkManagerListener();
 
-        setupNotif();
 
 
     }
 
-    private void setupNotif() {
-
-        MediatorLiveData<List<String>> test = new MediatorLiveData<>();
-
-
-        LiveData<List<String>> myList = myViewModel.getAllWorkmatesByPlaceId();
-
-        test.addSource(myList, new Observer<List<String>>() {
-            @Override
-            public void onChanged(List<String> strings) {
-
-                Log.i("[ALARME]","Liste users fir this restau");
-            }
-        });
-
-    }
 
 
     private void setupWorkManagerListener() {
