@@ -272,7 +272,6 @@ public class ViewModelMain extends ViewModel {
 
     public void setNotification(Boolean state) {
         if (state){
-
             myAlarmRepoVM.setAlarm();
         }else
         {
@@ -302,44 +301,9 @@ public class ViewModelMain extends ViewModel {
 
     }
 
-    private void startNotification() {
-
-
-
-    }
-
-
-    private void removeNotification(String id){
-        WorkManager.getInstance(application.getApplicationContext()).cancelAllWorkByTag("popup12h00");
-    }
-
-
-
-
-
-    /**
-     * Update the place prediction in repository shared
-     *
-     * @param place
-     */
-/*   public void setPredictionFromUIWithPlaceId(Prediction place) {
-        mySharedRepoVM.setMyPlaceIdFromAutocomplete(place);
-    }
-
- */
     public void updataApp() {
         myWorkMatesRepoVM.getFirestoreWorkmates();
         //WorkMatesListFromRepo();
-    }
-
- /*   public Task<DocumentSnapshot> requestUserForestoreFromVM(String uid) {
-        return myWorkMatesRepoVM.getUserFirestoreFromRepo(uid);
-    }
-
-  */
-
-    public void updateUserSystem() {
-        //    myFirebaseAuthRepoVM.updateUser();
     }
 
     public void setUser() {
@@ -375,23 +339,12 @@ public class ViewModelMain extends ViewModel {
     }
 
     public MyNotification getDataForNotification(String placeId) {
-
-
-
         Log.i("[NOTIFICATION]","Liste des restaurants  : " + mySharedRepoVM.getMyRestaurantList().getValue());
-
-
 //        myWorkMatesDetailList.addAll(this.myWorkMatesRepoVM.getAllWorkmatesForAnRestaurant(myUserRestaurantId.getValue()).getValue());
-
-
-
         Log.i("[NOTIFICATION]","My pace id " + placeId);
-
         List<String> teszt = new ArrayList<>();
         teszt.addAll(myWorkMatesRepoVM.getAllWorkmatesForAnRestaurant("ChIJO5NxcizVDkgRfPGwfbKFK9I"));
-
         return null;
-
     }
 
 

@@ -74,6 +74,9 @@
 
     <!-- menu top -->
     <string name="menu_title">J\'ai faim!</string>
+    <string name="search_abord">Recherche annulée</string>
+    <string name="query_error_autocomplete">Réessayer plus tard</string>
+
 
 
     <!-- screnn map -->

@@ -6,7 +6,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -18,22 +17,21 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
-import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
@@ -54,11 +52,8 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
 
     public ActivityMainBinding binding;
-
     public ViewModelMain myViewModel;
     public ViewModelMap myViewModelMap;
-
-    private SharedPreferences sp;
 
 
     private final List<AuthUI.IdpConfig> providers = Arrays.asList(
@@ -87,21 +82,35 @@ public class MainActivity extends AppCompatActivity {
 
         setupSettings();
 
+        setupWorkManagerListener();
+
+
+    }
+
+    private void setupWorkManagerListener() {
+
+
+
+        WorkManager.getInstance(this).getWorkInfoByIdLiveData("go4lunch").observe(this, new Observer<WorkInfo>() {
+            @Override
+            public void onChanged(WorkInfo workInfo) {
+
+                if (workInfo.getState() != null && workInfo.getState() == WorkInfo.State.SUCCEEDED){
+
+                    binding.topAppBar.setTitle("success work alarm");
+                }
+            }
+        });
+
 
     }
 
     private void setupSettings() {
-
-        this.sp = PreferenceManager.getDefaultSharedPreferences(this);
-
-        Log.i("[SETTINGS]","Notification at startup" + sp.getBoolean("notifications2",true));
-
+        SharedPreferences sp;
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
         myViewModel.setNotification(sp.getBoolean("notifications2",true));
         myViewModel.setZoom(sp.getInt("zoom",10));
         myViewModel.setupSP(getApplicationContext());
-
-//
-
     }
 
     private void setupPermission() {
@@ -111,40 +120,18 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.INTERNET}, 0);
     }
 
-    /**
-     * Setup ViewModel for MainActivity
-     */
     private void setupViewModel() {
         this.myViewModelMap = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMap.class);
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
 
-        this.myViewModel.getLoginState().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean) {
-                    request_user_info(myViewModel.getUser());
-                } else {
-                    request_login();
-                }
+        this.myViewModel.getLoginState().observe(this, aBoolean -> {
+            if (aBoolean) {
+                request_user_info(myViewModel.getUser());
+            } else {
+                request_login();
             }
         });
-
-        this.myViewModel.myAppMapMediator.observe(this, new Observer<ViewMainState>() {
-            @Override
-            public void onChanged(ViewMainState viewStateMain) {
-                if (viewStateMain.myUser != null) {
-                    // binding.debugTxt.setText(viewStateMain.myUser.getDisplayName());
-                    //  request_user_info(viewStateMain.getMyUser());
-                    //testNotification(viewStateMain.myRestaurant.toString());
-                } else {
-                    //    request_login();
-                }
-            }
-        });
-
-
     }
-
 
     /**
      * Authentification is load at startup
@@ -153,39 +140,24 @@ public class MainActivity extends AppCompatActivity {
 
         openFirebaseAuthForResult = registerForActivityResult(
                 new FirebaseAuthUIActivityResultContract(),
-                new ActivityResultCallback<FirebaseAuthUIAuthenticationResult>() {
-                    @Override
-                    public void onActivityResult(FirebaseAuthUIAuthenticationResult result) {
+                result -> {
 
-                        Log.i("[LOGIN]", "Retour réponse : " + result.getResultCode() + result.getIdpResponse());
+                    if (result.getResultCode() == -1) {
+                        myViewModel.setUser();
+                    } else {
 
-
-                        //   myViewModel.checkUserLogin();
-                        if (result.getResultCode() == -1) {
-                            Log.i("[Auth]", "login ok " + result.getResultCode());
-
-
-                            myViewModel.setUser();
-
-                            //  myViewModel.checkUserLogin();
-
-
+                        if (result.getResultCode() == 0) {
+                            Log.i("[Auth]", "Login annulé");
                         } else {
 
-                            if (result.getResultCode() == 0) {
-                                Log.i("[Auth]", "Login annulé");
-                            } else {
-
-
-                                Log.i("[Auth]", "Erreur login");
-                                if (result.getIdpResponse() == null) {
-                                    MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_no_network));
-                                    MainActivity.this.showSnackBar("Annulée");
-                                } else if (result.getIdpResponse().equals(ErrorCodes.NO_NETWORK)) {
-                                    MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_no_network));
-                                } else if (result.getIdpResponse().equals(ErrorCodes.UNKNOWN_ERROR)) {
-                                    MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_unknow));
-                                }
+                            Log.i("[Auth]", "Erreur login");
+                            if (result.getIdpResponse() == null) {
+                                MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_no_network));
+                                MainActivity.this.showSnackBar("Annulée");
+                            } else if (result.getIdpResponse().equals(ErrorCodes.NO_NETWORK)) {
+                                MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_no_network));
+                            } else if (result.getIdpResponse().equals(ErrorCodes.UNKNOWN_ERROR)) {
+                                MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_unknow));
                             }
                         }
                     }
@@ -249,6 +221,7 @@ public class MainActivity extends AppCompatActivity {
                     String nom = myUserResult.getDisplayName();
                     String[] parts = nom.split(" ", 2);
                     String z = "";
+
                     for (int i = 0; i < parts.length; i++) {
                         z = parts[i].charAt(0) + z;
                     }
@@ -264,7 +237,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
-
     }
 
     private void showSnackBar(String message) {
@@ -329,8 +301,6 @@ public class MainActivity extends AppCompatActivity {
         binding.viewpager.setAdapter(myFragmentAdapter);
         binding.viewpager.setCurrentItem(1);
         binding.viewpager.setUserInputEnabled(false);
-
-
     }
 
     private void setupTopAppBar() {
@@ -348,17 +318,6 @@ public class MainActivity extends AppCompatActivity {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 showSnackBar(place.getName() + " id: " + place.getId());
 
-              /*  if (myListResponse.size()>0) {
-                    Intent intent = new Intent(this, DetailActivity.class);
-                    intent.putExtra("TAG_ID", myListResponse.get(0).getPredictions().get(0).getPlaceId());
-                    startActivity(intent);
-                } else {
-                    showSnackBar("Vous n'avez pas de favoris");
-                }
-
-               */
-
-
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 showSnackBar("Erreur autocomplete");
             } else if (resultCode == RESULT_CANCELED) {
@@ -373,7 +332,6 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.top_main_menu, menu);
 
-
         MenuItem search = menu.findItem(R.id.searchView);
         SearchView searchView = (SearchView) search.getActionView();
         searchView.setQueryHint("Search restaurant ...");
@@ -382,9 +340,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onClose() {
                 //TODO: get new markers with place
-                showSnackBar("abandon recherche affichage par defaut ");
+                showSnackBar(getString(R.string.search_abord));
                 myViewModel.reloadDataAfterQuery(true);
-                //myViewModel.startPositionListener();
                 return false;
             }
         });
@@ -393,18 +350,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 myViewModel.reloadDataAfterQuery(false);
-                //   searchView.clearFocus();
 
-                //myViewModel.reloadDataAfterQuery(false);
                 if (myViewModel.getMyPosition() != null && query.length() > 3) {
-
                     Location mypos = myViewModel.getMyPosition();
-
                     String st = null;
-
-
                     List<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myListResponse = new ArrayList<>();
-
 
                     if (query != null && mypos != null) {
                         // myViewModel.stopPositionListener();
@@ -412,73 +362,18 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(getApplicationContext(), "Réessayer plus tard", Toast.LENGTH_SHORT).show();
                     }
-
-
-                    //envoyer la requete au viewmodel
-
-
-//                    List<PlaceAutocomplete> myAutocompleteList = (List<PlaceAutocomplete>) myViewModel.getResultAutocomplete(query, mypos).getValue();
-//
-//
-//                    if (myViewModel.getResultAutocomplete(query, mypos).getValue() != null) {
-//
-//
-//                        for (int i = 0; i < myViewModel.getResultAutocomplete(query, mypos).getValue().getPredictions().size(); i++) {
-//
-//                            myListResponse.add(myViewModel.getResultAutocomplete(query, mypos).getValue());
-//                            st = st + myViewModel.getResultAutocomplete(query, mypos).getValue().getPredictions().get(i).getDescription();
-//
-//
-//                            Log.i("[AUTOCOMPLETE]", "" + myListResponse.size() + myListResponse.get(i).getPredictions().get(i).getDescription());
-//                        }
-//
-//
-//                    }
-//
-//
-//                    if (myListResponse.size() > 0) {
-//                        showSnackBar("Resultat autocomplete :" + myListResponse.size());
-//
-//                        Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
-//                        intent.putExtra("TAG_ID", myListResponse.get(0).getPredictions().get(0).getPlaceId());
-//                        startActivity(intent);
-//
-//
-////                       if (myListResponse.size()>0) {
-////                            Intent intent = new Intent(this, DetailActivity.class);
-////                            intent.putExtra("TAG_ID", myListResponse.get(0).getPredictions().get(0).getPlaceId());
-////                            startActivity(intent);
-////                        } else {
-////                            showSnackBar("Vous n'avez pas de favoris");
-////                        }
-//
-//
-//                    } else {
-//                        showSnackBar("Resultat vide autocomplete :");
-//                    }
-                    // return true;
                     return true;
                 } else {
-                    showSnackBar("requete impossible actuellemtn");
+                    showSnackBar(getString(R.string.query_error_autocomplete));
                     return true;
-                    //    return true;
                 }
-
-                //return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-
-
                 return false;
             }
-
-
         });
-
-
         return super.onCreateOptionsMenu(menu);
-
     }
 }
