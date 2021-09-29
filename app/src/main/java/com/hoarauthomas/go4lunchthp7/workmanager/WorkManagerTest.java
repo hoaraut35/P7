@@ -9,21 +9,102 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.work.Data;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.hoarauthomas.go4lunchthp7.model.PlaceDetails.PlaceDetailsFinal;
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
+import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
+
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class WorkManagerTest extends Worker {
 
+    String TAG = "[ALARM]";
 
-    private static final String PROGRESS = "PROGRESS";
+    //repositories
+    private final FirestoreRepository myFirestoreRepo;
+    private final RestaurantsRepository myRestaurantsRepo;
 
+    //detail object
+    PlaceDetailsFinal myRestaurantDetail;
+
+    //for restaurant UI
+    String myRestaurantName = null;
+    String myRestaurantAddress = null;
+    String myRestaurantId = null;
+    List<String> myRestaurantWorkmate = new ArrayList<>();
 
     public WorkManagerTest(@NonNull @NotNull Context context, @NonNull @NotNull WorkerParameters workerParams) {
         super(context, workerParams);
-        Log.i("[ALARME]","Work is  loaded ...");
+
+        //get user uid ok
+        String uid = getInputData().getString("uid");
+        Log.i(TAG,"My user uid : " + uid);
+
+        //repositories
+        myFirestoreRepo = new FirestoreRepository();
+        myRestaurantsRepo = new RestaurantsRepository();
+
+        //request user data from firestore
+        Task<DocumentSnapshot> myFireUser = myFirestoreRepo.getMyUserByUIDFromFirestore(uid);
+
+        try{
+
+            DocumentSnapshot documentSnapshot = Tasks.await(myFireUser);
+
+            if (documentSnapshot.exists()){
+
+                Log.i(TAG,"My user name : " + documentSnapshot.get("username"));
+                Log.i(TAG,"My user favorite restaurant : " + documentSnapshot.get("favoriteRestaurant"));
+
+                //get restaurant detail with  id ok
+                this.myRestaurantDetail = myRestaurantsRepo.test(documentSnapshot.get("favoriteRestaurant").toString());
+
+                myRestaurantId = myRestaurantDetail.getResult().getPlaceId();
+                myRestaurantName = myRestaurantDetail.getResult().getName();
+                myRestaurantAddress = myRestaurantDetail.getResult().getFormattedAddress();
+                Log.i(TAG,"My restaurant name : " + myRestaurantDetail.getResult().getName());
+                Log.i(TAG,"My restaurant address : " + myRestaurantDetail.getResult().getFormattedAddress());
+
+            }else
+            {
+                Log.i(TAG,"pas de retour get name from firestore : ");
+            }
+
+
+        }catch (Exception e){
+            Log.i(TAG,"pas de retour get naerreurme from firestore : " + e.getMessage()) ;
+        }
+
+        //get all workmates by placeid
+        Task<QuerySnapshot> myAllUser = myFirestoreRepo.getAllUsersByPlaceIdFromFirestore(myRestaurantId);
+
+        try{
+
+            QuerySnapshot queryDocumentSnapshots = Tasks.await(myAllUser);
+
+            for (QueryDocumentSnapshot myItem : queryDocumentSnapshots){
+                Log.i(TAG,"My restaurant workmate(s) : " + myItem.get("username"));
+                myRestaurantWorkmate.add(myItem.get("username").toString());
+            }
+
+            Log.i(TAG,"My workmate size : " + myRestaurantWorkmate.size());
+
+        }catch (Exception e){
+            Log.i(TAG,"Error on synchronous task for workmate list alarm " + e.getMessage()) ;
+        }
+
 
 
     }
@@ -34,13 +115,25 @@ public class WorkManagerTest extends Worker {
     @Override
     public Result doWork() {
 
-        Log.i("[ALARME]","Work is  loaded ... doWork");
+        Log.i("[ALARM]","Alarm is started ...");
+
         Context applicationContext = getApplicationContext();
 
         //get data from ui
-        String restaurant_title = getInputData().getString("restaurant_title");
-        String restaurant_address = getInputData().getString("restaurant_address");
-        String[] myWorkmates = getInputData().getStringArray("workmates");
+        String restaurant_title = myRestaurantName;
+        String restaurant_address = myRestaurantAddress;
+
+
+
+        String[] myWorkmates = new String[myRestaurantWorkmate.size()];
+
+        String delimiter = "\n";
+        String result = String.join(delimiter,myRestaurantWorkmate);
+
+        myRestaurantWorkmate.toArray(myWorkmates);
+
+        Log.i(TAG,"ma liste : " + result);
+
 
         try {
             Log.i("[JOB]", "doWork enable...");
@@ -68,7 +161,8 @@ public class WorkManagerTest extends Worker {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(applicationContext, "go4lunch")
                     .setSmallIcon(android.R.drawable.star_big_on)
                     .setContentTitle("Go4Lunch It's time to lunch")
-                    .setContentText(restaurant_title + " \n" + restaurant_address + " \n" )
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(restaurant_title + "\n" +restaurant_address + "\n" + result))
+                    .setContentText(restaurant_title + " \n" + restaurant_address + " \n"  )
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setVibrate(new long[0]);
 

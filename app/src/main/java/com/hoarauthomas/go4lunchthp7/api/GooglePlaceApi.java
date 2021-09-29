@@ -21,6 +21,14 @@ public interface GooglePlaceApi {
             @Query("key") String key,
             @Query("place_id") String myPlaceId);
 
+    @GET("place/details/json?")
+    Call<PlaceDetailsFinal> getPlaceWithAllDetails2(
+            @Query("key") String key,
+            @Query("place_id") String myPlaceId);
+
+
+
+
     @GET("place/autocomplete/json?types=establishment&radius=1000&components=country:fr&language=fr")
     Call<PlaceAutocomplete> getPlaceAutocomplete(
             @Query("key") String key,

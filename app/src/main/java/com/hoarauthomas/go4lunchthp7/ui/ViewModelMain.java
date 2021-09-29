@@ -2,7 +2,6 @@ package com.hoarauthomas.go4lunchthp7.ui;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.location.Location;
 import android.util.Log;
 
@@ -10,7 +9,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.preference.PreferenceManager;
 import androidx.work.Data;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
@@ -35,13 +33,13 @@ public class ViewModelMain extends ViewModel {
 
     //repository...
     private FirebaseAuthRepository myFirebaseAuthRepoVM;
-    private FirestoreRepository myWorkMatesRepoVM;
+    private FirestoreRepository myFirestoreRepo;
     private PlaceAutocompleteRepository myPlaceAutocompleteRepoVM;
     private PositionRepository myPositionRepoVM;
     private AlarmRepository myAlarmRepoVM;
 
     private Application application;
-    private SharedPreferences sp;
+
 
 
     //for notification work
@@ -54,7 +52,7 @@ public class ViewModelMain extends ViewModel {
     private SharedRepository mySharedRepoVM;
 
     //livedata...
-    private final LiveData<FirebaseUser> myUserLiveData;
+    private  LiveData<FirebaseUser> myUserLiveData;
     private final LiveData<FirestoreUser> myWorkmate;
     private final LiveData<Boolean> myUserStateNew;
     private LiveData<List<FirestoreUser>> myWorkMatesListLiveData = new MutableLiveData<>();
@@ -96,16 +94,10 @@ public class ViewModelMain extends ViewModel {
         myUserStateNew = myFirebaseAuthRepoVM.getFirebaseAuthUserStateFromRepo();
 
         //get data from workmates repository...
-        this.myWorkMatesRepoVM = firestoreRepository;
+        this.myFirestoreRepo = firestoreRepository;
 
-        myWorkMatesListLiveData = myWorkMatesRepoVM.getFirestoreWorkmates();
-        myWorkmate = myWorkMatesRepoVM.getWorkmateFromRepo();
-
-
-
-
-
-
+        myWorkMatesListLiveData = myFirestoreRepo.getFirestoreWorkmates();
+        myWorkmate = myFirestoreRepo.getWorkmateFromRepo();
 
         //get data from place autocomplete repository...
         this.myPlaceAutocompleteRepoVM = placeAutocompleteRepository;
@@ -267,7 +259,7 @@ public class ViewModelMain extends ViewModel {
 
     //Create user to Firestore
     public void createUser() {
-        this.myWorkMatesRepoVM.createUser();
+        this.myFirestoreRepo.createUser();
     }
 
     //to publish mediatorlivedata to mainactivity
@@ -283,9 +275,10 @@ public class ViewModelMain extends ViewModel {
         return myPositionRepoVM.getLocationLiveData().getValue();
     }
 
-    public void setNotification(Boolean state) {
+    public void setNotification(String uid, Boolean state) {
         if (state){
-            myAlarmRepoVM.setAlarm();
+            myAlarmRepoVM.setAlarm(uid);
+
         }else
         {
             myAlarmRepoVM.removeAlarm();
@@ -315,12 +308,12 @@ public class ViewModelMain extends ViewModel {
     }
 
     public void updataApp() {
-        myWorkMatesRepoVM.getFirestoreWorkmates();
+        myFirestoreRepo.getFirestoreWorkmates();
         //WorkMatesListFromRepo();
     }
 
     public void setUser() {
-        myWorkMatesRepoVM.setupListeners();
+        myFirestoreRepo.setupListeners();
     }
 
     public FirebaseUser getUser() {
@@ -344,6 +337,11 @@ public class ViewModelMain extends ViewModel {
     }
 
 
+    public FirebaseUser getMyUserFromFirestore(){
+      return myFirestoreRepo.getCurrentUser();
+    }
+
+
 
 
 
@@ -363,20 +361,11 @@ public class ViewModelMain extends ViewModel {
 
     public void setupSP(Context applicationContext) {
 
-        sp = PreferenceManager.getDefaultSharedPreferences(applicationContext);
 
-        sp.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
-            @Override
-            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                Log.i("[SETTINGS]","changed");
-              setZoom(sharedPreferences.getInt("zoom",10));
-              setNotification(sharedPreferences.getBoolean("notifications2",true));
-            }
-        });
     }
 
     public LiveData<List<String>> getAllWorkmatesByPlaceId() {
-        return myWorkMatesRepoVM.getAllWorkmatesForAnRestaurant("ChIJy9WiwEzVDkgRxxG08dkPb-0");
+        return myFirestoreRepo.getAllWorkmatesForAnRestaurant("ChIJy9WiwEzVDkgRxxG08dkPb-0");
     }
 }
 

@@ -23,7 +23,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     private void setupViewModel() {
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+     //  SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
 
 
 

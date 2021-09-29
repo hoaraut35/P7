@@ -57,8 +57,6 @@ public class MainActivity extends AppCompatActivity {
 
     public ActivityMainBinding binding;
     public ViewModelMain myViewModel;
-    public ViewModelMap myViewModelMap;
-
 
     private final List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.TwitterBuilder().build(),
@@ -86,41 +84,30 @@ public class MainActivity extends AppCompatActivity {
 
         setupSettings();
 
-        setupWorkManagerListener();
-
-
-
-    }
-
-
-
-    private void setupWorkManagerListener() {
-
-
-        /*String uid = "go4lunch";
-
-        WorkManager.getInstance(this).getWorkInfoByIdLiveData(uid."go4lunch").observe(this, new Observer<WorkInfo>() {
-            @Override
-            public void onChanged(WorkInfo workInfo) {
-
-                if (workInfo.getState() != null && workInfo.getState() == WorkInfo.State.SUCCEEDED){
-
-                    binding.topAppBar.setTitle("success work alarm");
-                }
-            }
-        });
-
-
-
-         */
     }
 
     private void setupSettings() {
+
         SharedPreferences sp;
+
         sp = PreferenceManager.getDefaultSharedPreferences(this);
-        myViewModel.setNotification(sp.getBoolean("notifications2",true));
+
+        //  sp.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+        //    @Override
+        //  public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        //    Log.i("[SETTINGS]","changed");
+
+
+       Log.i("[ALARME]","user alarm " + myViewModel.getMyUserFromFirestore().getUid());
+
         myViewModel.setZoom(sp.getInt("zoom",10));
-        myViewModel.setupSP(getApplicationContext());
+        myViewModel.setNotification(myViewModel.getMyUserFromFirestore().getUid(),sp.getBoolean("notifications2",true));
+        // }
+        //});
+
+
+
+    //    myViewModel.setupSP(getApplicationContext());
     }
 
     private void setupPermission() {
@@ -143,8 +130,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
         this.myViewModel.getLoginState().observe(this, aBoolean -> {
             if (aBoolean) {
                 request_user_info(myViewModel.getUser());
@@ -153,14 +138,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
-
     }
-
-
-
-
 
     /**
      * Authentification is load at startup

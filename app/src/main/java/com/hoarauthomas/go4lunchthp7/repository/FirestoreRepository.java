@@ -2,11 +2,14 @@ package com.hoarauthomas.go4lunchthp7.repository;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.facebook.internal.Mutable;
+import com.facebook.appevents.ml.ModelManager;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -16,6 +19,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
@@ -31,6 +35,9 @@ public class FirestoreRepository {
     private final MutableLiveData<FirestoreUser> myWorkmateFromRepo = new MutableLiveData<>();
     private final MutableLiveData<List<FirestoreUser>> myWorkmatesListFromFirestore = new MutableLiveData<>();
 
+
+    private MutableLiveData<DocumentSnapshot> myTestSnapShot = new MutableLiveData<>(null);
+
     public FirestoreRepository() {
         this.myBase = FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
         setupListenerOnCollection();
@@ -40,6 +47,7 @@ public class FirestoreRepository {
 
     public void setupListeners() {
         setupListenerOnCollection();
+
         if (getCurrentUser() != null) {
             setupListenerWorkmateFromFirestoreRepo();
         }
@@ -72,7 +80,7 @@ public class FirestoreRepository {
 
                 Log.i("[ALARME]", "User avec ce restaurant dans la base" + placeid + " ");
 
-                if (value != null){
+                if (value != null) {
                     for (DocumentSnapshot queryIterate : value.getDocuments()) {
                         allWorkMates.add(queryIterate.get("username").toString());
                         myList.setValue(allWorkMates);
@@ -108,67 +116,109 @@ public class FirestoreRepository {
         });
     }
 
-    public LiveData<List<FirestoreUser>> getFirestoreWorkmates() {
-        return myWorkmatesListFromFirestore;
+
+
+
+    public Task<DocumentSnapshot> getMyUserByUIDFromFirestore(String uid){
+        return myBase.document(uid).get();
     }
 
-    public void createUser() {
-        myBase.document(getCurrentUser().getUid()).get().addOnSuccessListener(documentSnapshot -> {
-            if (!documentSnapshot.exists()) {
-                FirebaseUser myWorkmateToWrite = getCurrentUser();
-                String urlPicture = (myWorkmateToWrite.getPhotoUrl() != null ? myWorkmateToWrite.getPhotoUrl().toString() : null);
-                String username = (myWorkmateToWrite.getDisplayName() != null ? myWorkmateToWrite.getDisplayName() : null);
-                String uid = (myWorkmateToWrite.getUid() != null ? myWorkmateToWrite.getUid() : null);
-                String restaurant = "";
-                List<String> restaurant_liked = new ArrayList<>();
+    public Task<QuerySnapshot> getAllUsersByPlaceIdFromFirestore(String restaurantId){
+        return myBase.whereEqualTo("favoriteRestaurant", restaurantId).get();
+    }
 
-                User userToCreate = new User(uid, username, urlPicture, restaurant, restaurant_liked);
 
-                myBase.document(myWorkmateToWrite.getUid()).set(userToCreate)
-                        .addOnSuccessListener(unused -> Log.i("[FIRESTORE]", "Write user in database"))
 
-                        .addOnFailureListener(e -> Log.i("[FIRESTORE]", "Error on writing new user to database with createUSer()"));
 
+    public LiveData<DocumentSnapshot> getActualUser(){
+        return myTestSnapShot;
+    }
+
+    public String getFirestoreUser(String uid) {
+
+        final String[] test = {null};
+
+        myBase.whereEqualTo("uid", uid).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                if (task.isSuccessful()){
+
+                    Log.i("[ALARME]","Extract user ok " + task.getResult().getDocuments().size());
+                    test[0] = task.getResult().getDocuments().get(0).get("username").toString();
+
+                }else{
+                    Log.i("[ALARME]","Fail to extract user in firestore");
+                }
             }
         });
+
+
+
+        return test[0];
     }
 
-    public FirebaseUser getCurrentUser() {
-        return FirebaseAuth.getInstance().getCurrentUser();
-    }
+        public LiveData<List<FirestoreUser>> getFirestoreWorkmates () {
+            return myWorkmatesListFromFirestore;
+        }
 
-    public void updateFavRestaurant(Boolean mFavorite, String mPlaceId, String mWorkmate) {
+        public void createUser () {
+            myBase.document(getCurrentUser().getUid()).get().addOnSuccessListener(documentSnapshot -> {
+                if (!documentSnapshot.exists()) {
+                    FirebaseUser myWorkmateToWrite = getCurrentUser();
+                    String urlPicture = (myWorkmateToWrite.getPhotoUrl() != null ? myWorkmateToWrite.getPhotoUrl().toString() : null);
+                    String username = (myWorkmateToWrite.getDisplayName() != null ? myWorkmateToWrite.getDisplayName() : null);
+                    String uid = (myWorkmateToWrite.getUid() != null ? myWorkmateToWrite.getUid() : null);
+                    String restaurant = "";
+                    List<String> restaurant_liked = new ArrayList<>();
 
-        Log.i("", "" + mFavorite + mPlaceId + mWorkmate);
-        if (!mFavorite) {
+                    User userToCreate = new User(uid, username, urlPicture, restaurant, restaurant_liked);
 
-            myBase.document(mWorkmate).update("favoriteRestaurant", mPlaceId)
-                    .addOnSuccessListener(unused -> Log.i("[FIRESTORE]", "Add du favorite ok"))
-                    .addOnFailureListener(e -> Log.i("[FIRESTORE]", "Add favorite impossible : " + e));
+                    myBase.document(myWorkmateToWrite.getUid()).set(userToCreate)
+                            .addOnSuccessListener(unused -> Log.i("[FIRESTORE]", "Write user in database"))
+
+                            .addOnFailureListener(e -> Log.i("[FIRESTORE]", "Error on writing new user to database with createUSer()"));
+
+                }
+            });
+        }
+
+        public FirebaseUser getCurrentUser () {
+            return FirebaseAuth.getInstance().getCurrentUser();
+        }
+
+        public void updateFavRestaurant (Boolean mFavorite, String mPlaceId, String mWorkmate){
+
+            Log.i("", "" + mFavorite + mPlaceId + mWorkmate);
+            if (!mFavorite) {
+
+                myBase.document(mWorkmate).update("favoriteRestaurant", mPlaceId)
+                        .addOnSuccessListener(unused -> Log.i("[FIRESTORE]", "Add du favorite ok"))
+                        .addOnFailureListener(e -> Log.i("[FIRESTORE]", "Add favorite impossible : " + e));
 
 
-        } else {
-            myBase.document(mWorkmate).update("favoriteRestaurant", "")
+            } else {
+                myBase.document(mWorkmate).update("favoriteRestaurant", "")
 
-                    .addOnSuccessListener(unused -> Log.i("[FIRESTORE]", "Suppression du favorite ok"))
-                    .addOnFailureListener(e -> Log.i("[FIRESTORE]", "Suppression favorite impossible : " + e));
+                        .addOnSuccessListener(unused -> Log.i("[FIRESTORE]", "Suppression du favorite ok"))
+                        .addOnFailureListener(e -> Log.i("[FIRESTORE]", "Suppression favorite impossible : " + e));
+
+            }
 
         }
 
-    }
+        public void updateLikeRestaurant (Boolean mLike, String mPlaceId, String mWorkmate){
 
-    public void updateLikeRestaurant(Boolean mLike, String mPlaceId, String mWorkmate) {
+            if (!mLike) {
 
-        if (!mLike) {
-
-            myBase.document(mWorkmate).update("restaurant_liked", FieldValue.arrayUnion(mPlaceId))
-                    .addOnSuccessListener(unused -> Log.i("[FIRESTORE]", "Add de like sur restaurant ok"))
-                    .addOnFailureListener(e -> Log.i("[FIRESTORE]", "Add du like fail "));
-        } else {
-            myBase.document(mWorkmate).update("restaurant_liked", FieldValue.arrayRemove(mPlaceId))
-                    .addOnSuccessListener(unused -> Log.i("[FIRESTORE]", "Remove like ok"))
-                    .addOnFailureListener(e -> Log.i("[FIRESTORE]", "Remove like restaurant fail"));
+                myBase.document(mWorkmate).update("restaurant_liked", FieldValue.arrayUnion(mPlaceId))
+                        .addOnSuccessListener(unused -> Log.i("[FIRESTORE]", "Add de like sur restaurant ok"))
+                        .addOnFailureListener(e -> Log.i("[FIRESTORE]", "Add du like fail "));
+            } else {
+                myBase.document(mWorkmate).update("restaurant_liked", FieldValue.arrayRemove(mPlaceId))
+                        .addOnSuccessListener(unused -> Log.i("[FIRESTORE]", "Remove like ok"))
+                        .addOnFailureListener(e -> Log.i("[FIRESTORE]", "Remove like restaurant fail"));
+            }
         }
-    }
 
-}
+    }

@@ -6,6 +6,8 @@ import android.util.LruCache;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+
+import com.bumptech.glide.util.ExceptionPassthroughInputStream;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.api.GooglePlaceApi;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
+import javax.xml.transform.Result;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,6 +51,11 @@ public class RestaurantsRepository {
     private final MutableLiveData<String> placeId = new MutableLiveData<String>();
 
 
+
+
+    private final MutableLiveData<ResultPlaceDetail> myTest = new MutableLiveData<>();
+
+
     /**
      * trying to use cache with placeDetail API
      */
@@ -72,6 +80,41 @@ public class RestaurantsRepository {
     }
 
     //**********************************************************************************************
+
+
+
+
+
+
+    public PlaceDetailsFinal test(String placeId){
+
+        Call<PlaceDetailsFinal> myCallAPI = service.getPlaceWithAllDetails2(BuildConfig.MAPS_API_KEY,placeId);
+
+        try{
+
+            Log.i("[ALARME]","Starting call synchrone for details ..." );
+
+            Response<PlaceDetailsFinal> response = myCallAPI.execute();
+
+            PlaceDetailsFinal apiResponse = response.body();
+
+            return apiResponse;
+
+        }
+        catch (Exception ex){
+            Log.i("[ALARME]","Extraction synchrone détail restaurant"  + ex.getMessage());
+            return null;
+        }
+
+        //return myTest;
+    }
+
+
+
+
+
+
+
 
     //this is livedata is publish to viewmodel
     public LiveData<List<RestaurantPojo>> getAllRestaurants(@Nullable Double Long, @Nullable Double Lat) {
@@ -155,22 +198,6 @@ public class RestaurantsRepository {
                                 myRestaurantDetailByPlaceId.setValue(null);
                             }
                         });
-/*
-                service.getPlaceWithAllDetails(BuildConfig.MAPS_API_KEY,placeId)
-                        .enqueue(new Callback<ResultPlaceDetail>() {
-                                     @Override
-                                     public void onResponse(Call<ResultPlaceDetail> call, Response<ResultPlaceDetail> response) {
-
-                                         if (response.isSuccessful()){
-                                             myRestaurantDetailByPlaceId.setValue(response.body());
-                                         }
-                                     }
-
-                                     @Override
-                                     public void onFailure(Call<ResultPlaceDetail> call, Throwable t) {
-                                        myRestaurantDetailByPlaceId.setValue(null);
-                                     }
-                                 });*/
 
 
             }

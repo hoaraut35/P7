@@ -6,6 +6,7 @@ import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
+import androidx.work.Data;
 import androidx.work.WorkManager;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
@@ -20,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 public class AlarmRepository {
 
+    FirebaseAuthRepository myFirebase;
     WorkManager myWorkManager;
     Context myContext;
 
@@ -29,15 +31,18 @@ public class AlarmRepository {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void setAlarm() {
+    public void setAlarm(String uid) {
 
+
+
+//        Log.i("[ALARME]","User uid for alarm : " + myFirebase.myFireBaseAuthInstance.getCurrentUser().getUid());
         //for production
         // LocalTime alarmTime = LocalTime.of(12, 00);
 
         //set starting time for test
         LocalDateTime actuel = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
         LocalTime alarmTime = actuel.toLocalTime();
-        alarmTime = alarmTime.plusMinutes(2);
+        alarmTime = alarmTime.plusMinutes(1);
 
         Log.i("[ALARME]", "Alarm time :" + alarmTime.toString());
 
@@ -59,15 +64,15 @@ public class AlarmRepository {
         PeriodicWorkRequest myPeriodicWorkRequest = new PeriodicWorkRequest.Builder(WorkManagerTest.class, 15, TimeUnit.MINUTES)
                 //first work is delayed after we use the repeatinterval 24h
                 .setInitialDelay(duration.getSeconds(), TimeUnit.SECONDS)
+                .setInputData(
+                        new Data.Builder()
+                     .putString("uid", uid)
+                        .build()
+                )
                 .addTag("go4lunch")
                 .build();
 
-        //TODO: policy ? KEEP REPLACE
         myWorkManager.enqueueUniquePeriodicWork("go4lunch", ExistingPeriodicWorkPolicy.REPLACE, myPeriodicWorkRequest);
-
-    }
-
-    public void check_alarm(){
 
     }
 
