@@ -104,6 +104,11 @@
     <string name="setting_on_notification">Receive notification at 12:00</string>
     <string name="search_abord">Search canceled</string>
     <string name="query_error_autocomplete">Try again later</string>
+    <string name="title_formapview">I\'m Hungry!</string>
+    <string name="title_forlistview">I\'m Hungry!</string>
+    <string name="title_forworkmate">Available workmates</string>
+    <string name="notification_disable_msg">Notification disable</string>
+    <string name="notification_enable_msg">Notification enabled</string>
 
 
 </resources>

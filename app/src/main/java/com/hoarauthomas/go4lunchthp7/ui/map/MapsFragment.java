@@ -44,7 +44,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     private ViewModelMap myViewModelMap;
     private SharedRepository mySharedRepository;
     public Marker myMarker;
-   // private static final int DEFAULT_ZOOM = 12;
+    private static final int DEFAULT_ZOOM = 12;
     public List<MyMarkerObject> allMarkers = new ArrayList<MyMarkerObject>();
     private GoogleMap myMap;
 
@@ -72,7 +72,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             myMap.clear();
 
 
-
+            myMap.animateCamera(CameraUpdateFactory.zoomTo(DEFAULT_ZOOM));
 
 
             myViewModelMap.getMyZoom().observe(getViewLifecycleOwner(), new Observer<Integer>() {

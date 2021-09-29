@@ -13,7 +13,10 @@ import androidx.work.Data;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.repository.AlarmRepository;
@@ -37,7 +40,7 @@ public class ViewModelMain extends ViewModel {
     private PlaceAutocompleteRepository myPlaceAutocompleteRepoVM;
     private PositionRepository myPositionRepoVM;
     private AlarmRepository myAlarmRepoVM;
-
+    String myPlaceForOpenFav = null;
     private Application application;
 
 
@@ -59,9 +62,8 @@ public class ViewModelMain extends ViewModel {
     private final MutableLiveData<String> myUserRestaurantId = new MutableLiveData<>();
 
     private MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myPlaceAutocompleteList = new MutableLiveData<>();
-    public MutableLiveData<String> getMyUserRestaurantId() {
-        return myUserRestaurantId;
-    }
+
+
 
     //to update ViewState...
     MediatorLiveData<ViewMainState> myAppMapMediator = new MediatorLiveData<>();
@@ -85,40 +87,24 @@ public class ViewModelMain extends ViewModel {
             SharedRepository mySharedRepoVM
             ) {
 
-
-
         //get data from Auth repository...
         this.myFirebaseAuthRepoVM = firebaseAuthRepository;
-
         myUserLiveData = myFirebaseAuthRepoVM.getFirebaseAuthUserFromRepo();
         myUserStateNew = myFirebaseAuthRepoVM.getFirebaseAuthUserStateFromRepo();
 
         //get data from workmates repository...
         this.myFirestoreRepo = firestoreRepository;
-
         myWorkMatesListLiveData = myFirestoreRepo.getFirestoreWorkmates();
         myWorkmate = myFirestoreRepo.getWorkmateFromRepo();
 
+
         //get data from place autocomplete repository...
         this.myPlaceAutocompleteRepoVM = placeAutocompleteRepository;
-
         //get position for autocomplete request
         this.myPositionRepoVM = myPositionRepoVM;
-
         //get alarm data
         this.myAlarmRepoVM = myAlarmRepoVM;
-
         this.mySharedRepoVM = mySharedRepoVM;
-
-
-
-
-
-
-
-        //workmanager init
-//        myWorkManager = WorkManager.getInstance(application.getApplicationContext());
-
 
         //add source on onPlacesAutocomplete
         myAppMapMediator.addSource(myPlaceAutocompleteList, placeAutocomplete -> {
@@ -254,7 +240,7 @@ public class ViewModelMain extends ViewModel {
     }
 
     public LiveData<String> getMyUserRestaurant() {
-        return myUserRestaurantId;
+        return myFirestoreRepo.getMyUser();
     }
 
     //Create user to Firestore
@@ -367,6 +353,13 @@ public class ViewModelMain extends ViewModel {
     public LiveData<List<String>> getAllWorkmatesByPlaceId() {
         return myFirestoreRepo.getAllWorkmatesForAnRestaurant("ChIJy9WiwEzVDkgRxxG08dkPb-0");
     }
+
+
+/*    public MutableLiveData<String> getMyUserRestaurantId() {
+        return myFirestoreRepo.getCurrentUser(). myUserRestaurantId;
+    }
+
+ */
 }
 
 

@@ -1,6 +1,7 @@
 package com.hoarauthomas.go4lunchthp7.repository;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
@@ -9,47 +10,24 @@ import androidx.lifecycle.ViewModel;
 
 import com.facebook.internal.Mutable;
 import com.hoarauthomas.go4lunchthp7.Prediction;
+import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 
 import java.util.List;
 
 public class SharedRepository {
 
-    private FirestoreRepository myFirestoreRepository;
-
-
     private MutableLiveData<Integer> myZoom = new MutableLiveData<Integer>();
     public MutableLiveData<Prediction> myPlaceIdFromAutocomplete = new MutableLiveData<>();
     public MutableLiveData<List<String>> myRestaurantList = new MutableLiveData<>();
-
     public MutableLiveData<Boolean> reloadMap = new MutableLiveData<>(true);
 
-
-
-    public MutableLiveData<List<String>> myWorkmatesListWithPlaceId = new MutableLiveData<>();
-
-
-    private MediatorLiveData<String> myMediator;
-
-
     public SharedRepository() {
-
-
-
-
-
     }
-
-
-
-
 
     public MutableLiveData<Prediction> getMyPlaceIdFromAutocomplete() {
         return myPlaceIdFromAutocomplete;
     }
-
-
-
 
     public LiveData<List<String>> getMyRestaurantList() {
         return myRestaurantList;
@@ -64,14 +42,12 @@ public class SharedRepository {
     }
 
     public void setZoom(Integer myZoom) {
-        Log.i("[PREF]", "Zoom setup to : " + myZoom);
         this.myZoom.setValue(myZoom);
     }
 
     public LiveData<Integer> getMyZoom() {
         return myZoom;
     }
-
 
     public void setReloadMap(Boolean bool){
         reloadMap.setValue(bool);
@@ -80,6 +56,5 @@ public class SharedRepository {
     public LiveData<Boolean> getReload() {
         return reloadMap;
     }
-
 
 }

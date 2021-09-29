@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.facebook.appevents.ml.ModelManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,7 +18,6 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
@@ -35,7 +33,7 @@ public class FirestoreRepository {
     private final MutableLiveData<FirestoreUser> myWorkmateFromRepo = new MutableLiveData<>();
     private final MutableLiveData<List<FirestoreUser>> myWorkmatesListFromFirestore = new MutableLiveData<>();
 
-
+    private MutableLiveData<String> myCurrentRestaurant= new MutableLiveData<>();
     private MutableLiveData<DocumentSnapshot> myTestSnapShot = new MutableLiveData<>(null);
 
     public FirestoreRepository() {
@@ -60,6 +58,8 @@ public class FirestoreRepository {
                 Log.i("[FIRESTORE]", "Error on listener for user");
             }
             if (value != null && value.exists()) {
+
+
                 myWorkmateFromRepo.setValue(value.toObject(FirestoreUser.class));
             }
         });
@@ -116,11 +116,35 @@ public class FirestoreRepository {
         });
     }
 
-
-
-
     public Task<DocumentSnapshot> getMyUserByUIDFromFirestore(String uid){
         return myBase.document(uid).get();
+    }
+
+    //TODO: bug here
+    public LiveData<String> getMyUser(){
+
+        myBase.document(getCurrentUser().getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+
+                myCurrentRestaurant.setValue(value.get("favoriteRestaurant").toString());
+            }
+        });
+
+
+        return myCurrentRestaurant;
+
+
+
+       /* Log.i("[OPENFAV]","current uid :" + getCurrentUser().getUid());
+        return myBase.document(getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                Log.i("[OPENFAV]","oncomplete " + task.getResult().get("favoriteRestaurant"));
+            }
+        });
+
+        */
     }
 
     public Task<QuerySnapshot> getAllUsersByPlaceIdFromFirestore(String restaurantId){

@@ -9,7 +9,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.lifecycle.MediatorLiveData;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
@@ -25,7 +24,6 @@ import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class WorkManagerTest extends Worker {
@@ -50,7 +48,7 @@ public class WorkManagerTest extends Worker {
 
         //get user uid ok
         String uid = getInputData().getString("uid");
-        Log.i(TAG,"My user uid : " + uid);
+        Log.i(TAG, "My user uid : " + uid);
 
         //repositories
         myFirestoreRepo = new FirestoreRepository();
@@ -59,14 +57,14 @@ public class WorkManagerTest extends Worker {
         //request user data from firestore
         Task<DocumentSnapshot> myFireUser = myFirestoreRepo.getMyUserByUIDFromFirestore(uid);
 
-        try{
+        try {
 
             DocumentSnapshot documentSnapshot = Tasks.await(myFireUser);
 
-            if (documentSnapshot.exists()){
+            if (documentSnapshot.exists()) {
 
-                Log.i(TAG,"My user name : " + documentSnapshot.get("username"));
-                Log.i(TAG,"My user favorite restaurant : " + documentSnapshot.get("favoriteRestaurant"));
+                Log.i(TAG, "My user name : " + documentSnapshot.get("username"));
+                Log.i(TAG, "My user favorite restaurant : " + documentSnapshot.get("favoriteRestaurant"));
 
                 //get restaurant detail with  id ok
                 this.myRestaurantDetail = myRestaurantsRepo.test(documentSnapshot.get("favoriteRestaurant").toString());
@@ -74,37 +72,35 @@ public class WorkManagerTest extends Worker {
                 myRestaurantId = myRestaurantDetail.getResult().getPlaceId();
                 myRestaurantName = myRestaurantDetail.getResult().getName();
                 myRestaurantAddress = myRestaurantDetail.getResult().getFormattedAddress();
-                Log.i(TAG,"My restaurant name : " + myRestaurantDetail.getResult().getName());
-                Log.i(TAG,"My restaurant address : " + myRestaurantDetail.getResult().getFormattedAddress());
+                Log.i(TAG, "My restaurant name : " + myRestaurantDetail.getResult().getName());
+                Log.i(TAG, "My restaurant address : " + myRestaurantDetail.getResult().getFormattedAddress());
 
-            }else
-            {
-                Log.i(TAG,"pas de retour get name from firestore : ");
+            } else {
+                Log.i(TAG, "pas de retour get name from firestore : ");
             }
 
 
-        }catch (Exception e){
-            Log.i(TAG,"pas de retour get naerreurme from firestore : " + e.getMessage()) ;
+        } catch (Exception e) {
+            Log.i(TAG, "pas de retour get naerreurme from firestore : " + e.getMessage());
         }
 
         //get all workmates by placeid
         Task<QuerySnapshot> myAllUser = myFirestoreRepo.getAllUsersByPlaceIdFromFirestore(myRestaurantId);
 
-        try{
+        try {
 
             QuerySnapshot queryDocumentSnapshots = Tasks.await(myAllUser);
 
-            for (QueryDocumentSnapshot myItem : queryDocumentSnapshots){
-                Log.i(TAG,"My restaurant workmate(s) : " + myItem.get("username"));
+            for (QueryDocumentSnapshot myItem : queryDocumentSnapshots) {
+                Log.i(TAG, "My restaurant workmate(s) : " + myItem.get("username"));
                 myRestaurantWorkmate.add(myItem.get("username").toString());
             }
 
-            Log.i(TAG,"My workmate size : " + myRestaurantWorkmate.size());
+            Log.i(TAG, "My workmate size : " + myRestaurantWorkmate.size());
 
-        }catch (Exception e){
-            Log.i(TAG,"Error on synchronous task for workmate list alarm " + e.getMessage()) ;
+        } catch (Exception e) {
+            Log.i(TAG, "Error on synchronous task for workmate list alarm " + e.getMessage());
         }
-
 
 
     }
@@ -115,7 +111,7 @@ public class WorkManagerTest extends Worker {
     @Override
     public Result doWork() {
 
-        Log.i("[ALARM]","Alarm is started ...");
+        Log.i("[ALARM]", "Alarm is started ...");
 
         Context applicationContext = getApplicationContext();
 
@@ -124,15 +120,14 @@ public class WorkManagerTest extends Worker {
         String restaurant_address = myRestaurantAddress;
 
 
-
         String[] myWorkmates = new String[myRestaurantWorkmate.size()];
 
         String delimiter = "\n";
-        String result = String.join(delimiter,myRestaurantWorkmate);
+        String result = String.join(delimiter, myRestaurantWorkmate);
 
         myRestaurantWorkmate.toArray(myWorkmates);
 
-        Log.i(TAG,"ma liste : " + result);
+        Log.i(TAG, "ma liste : " + result);
 
 
         try {
@@ -161,14 +156,13 @@ public class WorkManagerTest extends Worker {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(applicationContext, "go4lunch")
                     .setSmallIcon(android.R.drawable.star_big_on)
                     .setContentTitle("Go4Lunch It's time to lunch")
-                    .setStyle(new NotificationCompat.BigTextStyle().bigText(restaurant_title + "\n" +restaurant_address + "\n" + result))
-                    .setContentText(restaurant_title + " \n" + restaurant_address + " \n"  )
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(restaurant_title + "\n" + restaurant_address + "\n" + result))
+                    .setContentText(restaurant_title + " \n" + restaurant_address + " \n")
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setVibrate(new long[0]);
 
             // Show the notification
             NotificationManagerCompat.from(applicationContext).notify(1, builder.build());
-
 
 
             return Result.success();

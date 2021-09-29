@@ -2,6 +2,7 @@ package com.hoarauthomas.go4lunchthp7.ui.settings;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceFragmentCompat;
@@ -23,10 +24,19 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     private void setupViewModel() {
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
-     //  SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
 
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(requireActivity());
 
+        sp.registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> {
+            Log.i("[SETTINGS]", "changed");
 
+            myViewModel.setZoom(sp.getInt("zoom", 10));
+
+            if (myViewModel.getMyUserFromFirestore()!= null){
+                myViewModel.setNotification(myViewModel.getMyUserFromFirestore().getUid(), sp.getBoolean("notifications2", true));
+            }
+
+        });
 
     }
 }

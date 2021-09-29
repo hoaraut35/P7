@@ -20,34 +20,29 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
-import androidx.work.WorkInfo;
-import androidx.work.WorkManager;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
-import com.hoarauthomas.go4lunchthp7.ui.map.ViewModelMap;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -82,32 +77,13 @@ public class MainActivity extends AppCompatActivity {
         setupBottomBAr();
         setupViewPager();
 
-        setupSettings();
-
     }
 
     private void setupSettings() {
-
         SharedPreferences sp;
-
         sp = PreferenceManager.getDefaultSharedPreferences(this);
-
-        //  sp.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
-        //    @Override
-        //  public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        //    Log.i("[SETTINGS]","changed");
-
-
-       Log.i("[ALARME]","user alarm " + myViewModel.getMyUserFromFirestore().getUid());
-
-        myViewModel.setZoom(sp.getInt("zoom",10));
-        myViewModel.setNotification(myViewModel.getMyUserFromFirestore().getUid(),sp.getBoolean("notifications2",true));
-        // }
-        //});
-
-
-
-    //    myViewModel.setupSP(getApplicationContext());
+        myViewModel.setZoom(sp.getInt("zoom", 10));
+        myViewModel.setNotification(myViewModel.getMyUserFromFirestore().getUid(), sp.getBoolean("notifications2", true));
     }
 
     private void setupPermission() {
@@ -119,16 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupViewModel() {
 
-      //  this.myViewModelMap = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMap.class);
-
         this.myViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMain.class);
-
-        this.myViewModel.getAllWorkmatesByPlaceId().observe(this, new Observer<List<String>>() {
-            @Override
-            public void onChanged(List<String> strings) {
-                binding.topAppBar.setTitle("test" + LocalTime.now());
-            }
-        });
 
         this.myViewModel.getLoginState().observe(this, aBoolean -> {
             if (aBoolean) {
@@ -140,9 +107,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * Authentification is load at startup
-     */
     private void Authentification() {
 
         openFirebaseAuthForResult = registerForActivityResult(
@@ -152,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
                     if (result.getResultCode() == -1) {
                         myViewModel.createUser();
                         myViewModel.setUser();
+                        setupSettings();
                     } else {
 
                         if (result.getResultCode() == 0) {
@@ -199,7 +164,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void request_user_info(FirebaseUser myUserResult) {
+       // myViewModel.createUser();
         myViewModel.setUser();
+
         if (myUserResult != null) {
 
             View hv = binding.navigationView.getHeaderView(0);
@@ -222,9 +189,14 @@ public class MainActivity extends AppCompatActivity {
 
             for (UserInfo profile : myUserResult.getProviderData()) {
 
+                if (profile.getPhotoUrl() != null){
+
                 if (!profile.getPhotoUrl().equals("")) {
                     avatarSource = profile.getPhotoUrl().toString();
-                } else {
+                }
+
+                }
+                else {
                     //construc avatar
                     String nom = myUserResult.getDisplayName();
                     String[] parts = nom.split(" ", 2);
@@ -272,13 +244,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openMyFavoriteRestaurant() {
-        if (myViewModel.getMyUserRestaurant().getValue() != null && !myViewModel.getMyUserRestaurant().getValue().isEmpty()) {
+
+
+       /* if (myViewModel.getMyUserRestaurant() != null && !myViewModel.getMyUserRestaurant().isEmpty()) {
             Intent intent = new Intent(this, DetailActivity.class);
-            intent.putExtra("TAG_ID", myViewModel.getMyUserRestaurant().getValue());
+            Log.i("[OPENFAV]","place id " + myViewModel.getMyUserRestaurant());
+            intent.putExtra("TAG_ID", myViewModel.getMyUserRestaurant());
             startActivity(intent);
         } else {
             showSnackBar(getString(R.string.no_fav_msg));
         }
+
+        */
 
     }
 
@@ -289,15 +266,15 @@ public class MainActivity extends AppCompatActivity {
 
             if (id == R.id.action_map) {
                 binding.viewpager.setCurrentItem(1);
-                binding.topAppBar.setTitle("I'm Hungry!");
+                binding.topAppBar.setTitle(R.string.title_formapview);
                 binding.topAppBar.findViewById(R.id.searchView).setVisibility(View.VISIBLE);
             } else if (id == R.id.action_list) {
                 binding.viewpager.setCurrentItem(2);
-                binding.topAppBar.setTitle("I'm Hungry!");
+                binding.topAppBar.setTitle(R.string.title_forlistview);
                 binding.topAppBar.findViewById(R.id.searchView).setVisibility(View.VISIBLE);
             } else if (id == R.id.action_work) {
                 binding.topAppBar.findViewById(R.id.searchView).setVisibility(View.INVISIBLE);
-                binding.topAppBar.setTitle("Available workmates");
+                binding.topAppBar.setTitle(R.string.title_forworkmate);
                 binding.viewpager.setCurrentItem(3);
             }
             return true;
