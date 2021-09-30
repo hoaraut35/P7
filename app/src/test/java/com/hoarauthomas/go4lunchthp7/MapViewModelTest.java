@@ -17,6 +17,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 /**
@@ -48,6 +49,7 @@ public class MapViewModelTest {
     @Before
     public void setup()
     {
+
       //  myViewModelMap = new ViewModelMap(myPermission, myPositionRepository,myRestaurantRepository,myFirestoreRepository,mySharedRepository,myPlaceAutocompleteRepository);
     }
 
@@ -55,6 +57,7 @@ public class MapViewModelTest {
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);
     }
+
 
 
 }

@@ -319,7 +319,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     public void onResume() {
         super.onResume();
         checkPermissions();
-        myViewModelMap.refresh();
+       myViewModelMap.refresh();
     }
 
     @Override

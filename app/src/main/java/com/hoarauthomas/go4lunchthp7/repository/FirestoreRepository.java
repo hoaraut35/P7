@@ -31,13 +31,11 @@ public class FirestoreRepository {
     private final CollectionReference myBase;
     private static final String COLLECTION_NAME = "users";
 
-    private final MutableLiveData<FirestoreUser> myWorkmateFromRepo = new MutableLiveData<>();
     private final MutableLiveData<List<FirestoreUser>> myWorkmatesListFromFirestore = new MutableLiveData<>();
-
-    private MutableLiveData<String> myCurrentRestaurant= new MutableLiveData<>();
-    private MutableLiveData<DocumentSnapshot> myTestSnapShot = new MutableLiveData<>(null);
-
-    private MutableLiveData<FirestoreUser> myActualUser = new MutableLiveData<>(null);
+    private final MutableLiveData<DocumentSnapshot> myTestSnapShot = new MutableLiveData<>(null);
+    private final MutableLiveData<FirestoreUser> myWorkmateFromRepo = new MutableLiveData<>();
+    private final MutableLiveData<FirestoreUser> myActualUser = new MutableLiveData<>(null);
+    private final MutableLiveData<String> myCurrentRestaurant= new MutableLiveData<>();
 
     public FirestoreRepository() {
         this.myBase = FirebaseFirestore.getInstance().collection(COLLECTION_NAME);

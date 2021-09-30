@@ -5,8 +5,6 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -27,60 +25,62 @@ import javax.annotation.Nullable;
 
 public class ViewModelRestaurant extends ViewModel {
 
-    private final PositionRepository myPositionRepository;
-    private final RestaurantsRepository myRestaurantRepository;
-    private final FirestoreRepository myFirestoreRepository;
-    private final LiveData<Location> myPosition;
-    private final SharedRepository mySharedRepository;
-    private final PlaceAutocompleteRepository myPlaceAutocompleteRepository;
+    //repositories here ...
+    //private final PositionRepository myPositionRepository;
+    //private final RestaurantsRepository myRestaurantRepository;
+    //private final FirestoreRepository myFirestoreRepository;
+    //private final SharedRepository mySharedRepository;
+    //private final PlaceAutocompleteRepository myPlaceAutocompleteRepository;
 
+    //mediatorlivedata for UI update
     private final MediatorLiveData<ViewStateRestaurant> myViewStateRestaurantMediator = new MediatorLiveData<>();
 
-    public ViewModelRestaurant(PositionRepository myPositionRepository, RestaurantsRepository myRestaurantRepository, FirestoreRepository myFirestoreRepository, SharedRepository mySharedRepository, PlaceAutocompleteRepository placeAutocompleteRepository) {
+    // viewmodel constructor
+    public ViewModelRestaurant(PositionRepository myPositionRepository,
+                               RestaurantsRepository myRestaurantRepository,
+                               FirestoreRepository myFirestoreRepository,
+                               SharedRepository mySharedRepository,
+                               PlaceAutocompleteRepository placeAutocompleteRepository) {
 
-        this.myPositionRepository = myPositionRepository;
-        this.myRestaurantRepository = myRestaurantRepository;
-        this.myFirestoreRepository = myFirestoreRepository;
-        this.mySharedRepository = mySharedRepository;
-        this.myPlaceAutocompleteRepository = placeAutocompleteRepository;
+        //PositionRepository myPositionRepository;
+        //this.myRestaurantRepository = myRestaurantRepository;
+        //this.myFirestoreRepository = myFirestoreRepository;
+        //his.mySharedRepository = mySharedRepository;
+        //this.myPlaceAutocompleteRepository = placeAutocompleteRepository;
 
-        myPosition = myPositionRepository.getLocationLiveData();
-        LiveData<List<RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
-        LiveData<List<FirestoreUser>> myWorkMatesList = this.myFirestoreRepository.getFirestoreWorkmates();
+        //get data from repositories
+        LiveData<Location> myPosition = myPositionRepository.getLocationLiveData();
+        LiveData<List<RestaurantPojo>> myRestaurantsList = myRestaurantRepository.getMyRestaurantsList();
+        LiveData<List<FirestoreUser>> myWorkMatesList = myFirestoreRepository.getFirestoreWorkmates();
+        LiveData<PlaceAutocomplete> myPlacesId = placeAutocompleteRepository.getPlaces();
+        LiveData<Boolean> reloadMap = mySharedRepository.getReload();
 
-        //for autocomplete
-        LiveData<PlaceAutocomplete> myPlacesId = this.myPlaceAutocompleteRepository.getPlaces();
-        LiveData<Boolean> reloadMap = this.mySharedRepository.getReload();
-
-
-        myViewStateRestaurantMediator.addSource(reloadMap, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (reloadMap == null) return;
-                logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), myPosition.getValue(), myPlacesId.getValue(), aBoolean);
-            }
+        //source
+        myViewStateRestaurantMediator.addSource(reloadMap, aBoolean -> {
+            if (aBoolean == null) return;
+            logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), myPosition.getValue(), myPlacesId.getValue(), aBoolean);
         });
 
-        myViewStateRestaurantMediator.addSource(myPlacesId, new Observer<PlaceAutocomplete>() {
-            @Override
-            public void onChanged(PlaceAutocomplete placeAutocomplete) {
-                if (myPlacesId == null) return;
-                logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), myPosition.getValue(), placeAutocomplete, reloadMap.getValue());
-            }
+        //source
+        myViewStateRestaurantMediator.addSource(myPlacesId, placeAutocomplete -> {
+            if (placeAutocomplete == null) return;
+            logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), myPosition.getValue(), placeAutocomplete, reloadMap.getValue());
         });
 
-
+        //source
         myViewStateRestaurantMediator.addSource(myPosition, position -> {
             if (position == null) return;
             myRestaurantRepository.setNewLatLngPositionFromGPS(position.getLongitude(), position.getLatitude());
             logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), position, myPlacesId.getValue(), reloadMap.getValue());
         });
 
+        //source
         myViewStateRestaurantMediator.addSource(myRestaurantsList, restaurantPojos -> {
             if (restaurantPojos == null || restaurantPojos.isEmpty()) return;
             logicWork(restaurantPojos, myWorkMatesList.getValue(), myPosition.getValue(), myPlacesId.getValue(), reloadMap.getValue());
         });
 
+        //source
         myViewStateRestaurantMediator.addSource(myWorkMatesList, firestoreUsers -> {
             if (firestoreUsers == null) return;
             logicWork(myRestaurantsList.getValue(), firestoreUsers, myPosition.getValue(), myPlacesId.getValue(), reloadMap.getValue());
@@ -88,7 +88,8 @@ public class ViewModelRestaurant extends ViewModel {
 
     }
 
-    private void logicWork(List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo> restaurants,
+    //logic work for data
+    private void logicWork(List<RestaurantPojo> restaurants,
                            List<FirestoreUser> workMates,
                            @Nullable Location myPosition,
                            PlaceAutocomplete myPlaceAuto,
@@ -96,32 +97,24 @@ public class ViewModelRestaurant extends ViewModel {
 
         if (restaurants == null || workMates == null || myPosition == null) return;
 
-
         if (refresh) {
 
-
-            List<RestaurantPojo> newList = new ArrayList<>();
-            RestaurantPojo myRestau;
-
+            List<RestaurantPojo> newRestaurantsList = new ArrayList<>();
+            RestaurantPojo myRestaurant;
 
             //calculer distance
             for (int i = 0; i < restaurants.size(); i++) {
 
-
-                myRestau = new RestaurantPojo();
-                myRestau = restaurants.get(i);
-
+                myRestaurant = new RestaurantPojo();
+                myRestaurant = restaurants.get(i);
 
                 //modifier la distance du restaurant dans le pojo
-                LatLng restauPos = new LatLng(restaurants.get(i).getGeometry().getLocation().getLat(), restaurants.get(i).getGeometry().getLocation().getLng());
+                LatLng restaurantPos = new LatLng(restaurants.get(i).getGeometry().getLocation().getLat(), restaurants.get(i).getGeometry().getLocation().getLng());
                 LatLng userPos = new LatLng(myPosition.getLatitude(), myPosition.getLongitude());
-
-                float getDistance;
-                getDistance = distanceBetween(restauPos, userPos);
-
+                //float getDistance;
+                float getDistance = distanceBetween(restaurantPos, userPos);
                 int distance = Math.round(getDistance);
-
-                myRestau.setMyDistance(Integer.toString(distance));
+                myRestaurant.setMyDistance(Integer.toString(distance));
 
                 int compteur = 0;
 
@@ -129,26 +122,20 @@ public class ViewModelRestaurant extends ViewModel {
                 for (int j = 0; j < workMates.size(); j++) {
 
                     if (restaurants.get(i).getPlaceId().equals(workMates.get(j).getFavoriteRestaurant())) {
-                        Log.i("[compteur]", "un collegue sur le restaur " + workMates.get(j).getUsername() + " " + restaurants.get(i).getName());
-
                         compteur = compteur + 1;
-                    } else {
-                        Log.i("[compteur]", "compteur = " + restaurants.get(i).getPlaceId() + " " + workMates.get(j).getFavoriteRestaurant());
                     }
                 }
 
-
-                myRestau.setMyNumberOfWorkmates(Integer.toString(compteur));
-
-                newList.add(myRestau);
+                myRestaurant.setMyNumberOfWorkmates(Integer.toString(compteur));
+                newRestaurantsList.add(myRestaurant);
             }
 
-            myViewStateRestaurantMediator.setValue(new ViewStateRestaurant(newList));
+            myViewStateRestaurantMediator.setValue(new ViewStateRestaurant(newRestaurantsList));
 
 
         } else {
-            if (myPlaceAuto != null && restaurants != null) {
 
+            if (myPlaceAuto != null) {
 
                 List<RestaurantPojo> newPredictionRestaurantList = new ArrayList<>();
 
@@ -158,39 +145,24 @@ public class ViewModelRestaurant extends ViewModel {
                     for (Prediction myPrediction : myPlaceAuto.getPredictions()) {
 
                         if (myRestaurant.getPlaceId().equals(myPrediction.getPlaceId())) {
-
                             Log.i("[PREDIC]", "new restau to add" + myRestaurant.getName());
                             newPredictionRestaurantList.add(myRestaurant);
-
-
                         }
                     }
-
-
                 }
-
                 myViewStateRestaurantMediator.setValue(new ViewStateRestaurant(newPredictionRestaurantList));
-
-
             }
-
-
         }
-
-
     }
 
-    public float distanceBetween(LatLng first, LatLng second) {
+    private float distanceBetween(LatLng first, LatLng second) {
         float[] distance = new float[1];
         Location.distanceBetween(first.latitude, first.longitude, second.latitude, second.longitude, distance);
         return distance[0];
     }
 
-    public LiveData<ViewStateRestaurant> getMediatorLiveData() {
+    public LiveData<ViewStateRestaurant> getRestaurantsViewUI() {
         return myViewStateRestaurantMediator;
     }
 
-    public MutableLiveData<Prediction> getPredictionFromVM() {
-        return mySharedRepository.getMyPlaceIdFromAutocomplete();
-    }
 }
