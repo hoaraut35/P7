@@ -21,7 +21,7 @@ import java.util.List;
 public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerViewAdapterDetail.ViewHolder> {
 
     private List<FirestoreUser> myWorkMatesResult;
-    private LatLng myPosition;
+    //private LatLng myPosition;
 
     /*public RecyclerViewAdapterDetail(List<FirestoreUser> myList, LatLng myLatLng) {
         this.myWorkMatesResult = myList;
@@ -30,8 +30,10 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
 
      */
 
-    public RecyclerViewAdapterDetail() {
+   /* public RecyclerViewAdapterDetail() {
     }
+
+    */
 
     public RecyclerViewAdapterDetail(List<FirestoreUser> myList) {
         this.myWorkMatesResult = myList;

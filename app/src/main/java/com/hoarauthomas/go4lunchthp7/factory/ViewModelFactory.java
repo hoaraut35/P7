@@ -48,12 +48,6 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     private final AlarmRepository alarmRepository;
     private final SharedRepository sharedRepository;
 
-    /**
-     * return an instance of ViewModelFactory object with singleton pattern
-     *
-     * @return
-     */
-
     public static ViewModelFactory getInstance() {
         if (myViewModelFactory == null) {
             synchronized (ViewModelFactory.class) {

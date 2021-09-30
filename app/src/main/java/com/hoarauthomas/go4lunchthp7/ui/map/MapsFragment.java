@@ -36,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MapsFragment extends Fragment implements OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener {
 
@@ -60,7 +61,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
         myViewModelMap = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMap.class);
     }
 
-    private OnMapReadyCallback callback = new OnMapReadyCallback() {
+    private final OnMapReadyCallback callback = new OnMapReadyCallback() {
 
         @Override
         public void onMapReady(GoogleMap map) {
@@ -101,7 +102,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
                         if (prediction.getPlaceId().equals(allMarkers.get(i).getId())) {
 
-                            Toast.makeText(getContext(), "trouvé: " + prediction.getPlaceId(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "find : " + prediction.getPlaceId(), Toast.LENGTH_SHORT).show();
 
                             map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(allMarkers.get(i).getLocation().latitude, allMarkers.get(i).getLocation().longitude), 15));
                             //                        CameraUpdateFactory.zoomTo(20);
@@ -242,7 +243,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                 @Override
                 public boolean onMarkerClick(@NonNull @NotNull Marker marker) {
                     Intent intent = new Intent(getContext(), DetailActivity.class);
-                    String restaurantTag = marker.getTag().toString();
+                    String restaurantTag = Objects.requireNonNull(marker.getTag()).toString();
                     intent.putExtra("TAG_ID", restaurantTag);
                     startActivity(intent);
                     return true;
@@ -265,7 +266,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     private void showRestaurant(List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo> restaurants) {
 
         if (restaurants.isEmpty()) {
-            Log.i("[MAP]", "liste restauy à zero ds le fragment");
+            Log.i("[MAP]", "list restaurant is empty");
             return;
         }
 
@@ -297,6 +298,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
 
             myMarker = myMap.addMarker(myMarkerOptions);
+            assert myMarker != null;
             myMarker.setTag(restaurants.get(i).getPlaceId());
 
 
