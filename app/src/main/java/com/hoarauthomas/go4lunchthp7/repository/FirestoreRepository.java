@@ -114,23 +114,15 @@ public class FirestoreRepository {
         return myActualUser;
     }
 
-
-
-
     public LiveData<List<String>> getAllWorkmatesForAnRestaurant(String placeid) {
 
         MutableLiveData<List<String>> myList = new MutableLiveData<>();
-
         List<String> allWorkMates = new ArrayList<>();
-
         Query query = myBase.whereEqualTo("favoriteRestaurant", placeid);
-
         query.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-
                 Log.i("[ALARME]", "User avec ce restaurant dans la base" + placeid + " ");
-
                 if (value != null) {
                     for (DocumentSnapshot queryIterate : value.getDocuments()) {
                         allWorkMates.add(queryIterate.get("username").toString());
@@ -138,10 +130,8 @@ public class FirestoreRepository {
                         //Log.i("[NOTIFICATION","" + queryIterate.getData().get("username").toString());
                     }
                 }
-
             }
         });
-
         return myList;
     }
 
@@ -203,9 +193,6 @@ public class FirestoreRepository {
     public Task<QuerySnapshot> getAllUsersByPlaceIdFromFirestore(String restaurantId){
         return myBase.whereEqualTo("favoriteRestaurant", restaurantId).get();
     }
-
-
-
 
     public LiveData<DocumentSnapshot> getActualUser(){
         return myTestSnapShot;

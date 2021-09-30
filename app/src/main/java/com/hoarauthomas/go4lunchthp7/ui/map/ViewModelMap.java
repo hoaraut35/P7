@@ -116,8 +116,7 @@ public class ViewModelMap extends ViewModel {
         //add listener for new position
         myViewStateMapMediator.addSource(myPosition, position -> {
             if (position != null) {
-                //TODO: rename method to setNewLatLngPosition()
-                myRestaurantRepository.UpdateLngLat(position.getLongitude(), position.getLatitude());
+                myRestaurantRepository.setNewLatLngPositionFromGPS(position.getLongitude(), position.getLatitude());
             }
         });
 

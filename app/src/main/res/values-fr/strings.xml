@@ -5,7 +5,7 @@
     <!-- Added 04/06/21 for integration of facebook login -->
     <string name="facebook_application_id">3512562515510897</string>
     <string name="fb_login_protocol_scheme">fb3512562515510897</string>
-    <string name="info_no_username_found">Empty user name</string>
+    <string name="info_no_username_found">Pas de nom</string>
 
     <!-- Added for bottom navigation menu-->
     <string name="bottom_navigation_menu_map">Carte</string>
@@ -36,7 +36,7 @@
 
     <!-- Messages Preferences -->
     <string name="signature_title">Your signature</string>
-    <string name="reply_title">View by default</string>
+    <string name="reply_title">Vue par défaut</string>
 
     <!-- Sync Preferences -->
 
@@ -90,10 +90,31 @@
     <string name="is_joining_txt">a choisi ce restaurant</string>
 
     <!-- screen settings -->
-    <string name="langage_mode">Notifications On/Off : </string>
+    <string name="language_mode">Notifications On/Off : </string>
     <string name="setting_zoom_title">Zoom carte</string>
     <string name="setting_off_notification">Désactiver les notifications</string>
     <string name="setting_on_notification">Notification à 12H00</string>
+    <string name="connection_succeed">Succès</string>
+    <string name="error_no_network">Erreur réseau</string>
+    <string name="error_unknow">Erreur inconnu</string>
+    <string name="error_authentification_canceled">Connexion annulée</string>
+    <string name="default_notification_channel_id">defaut canal</string>
+    <string name="no_phone_string">Pas de téléphone</string>
+    <string name="like_delete_msg">Suppression du like</string>
+    <string name="like_add_msg">Ajout du like</string>
+    <string name="delete_fav_msg">Ajout restaurant</string>
+    <string name="add_fav_msg">Restaurant suavegardé</string>
+    <string name="descriptionForRestaurantImage">pas de données</string>
+    <string name="descriptionForWorkMatesIcon">pas de données</string>
+    <string name="cancel_btn_alert">annuler</string>
+    <string name="btn_ok_dialogalert">ok</string>
+    <string name="title_dialog_alert">Résultat recherche</string>
+    <string name="restaurant_notchoice">n\'a pas décidé</string>
+    <string name="title_formapview">J\'ai faim</string>
+    <string name="title_forlistview">J\'ai faim</string>
+    <string name="title_forworkmate">Collègues dispo</string>
+    <string name="notification_disable_msg">Notification désactivée</string>
+    <string name="notification_enable_msg">Notification activée</string>
 
 
 </resources>

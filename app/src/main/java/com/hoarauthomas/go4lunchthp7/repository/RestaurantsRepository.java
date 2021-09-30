@@ -38,83 +38,45 @@ public class RestaurantsRepository {
     //this is the list for add all iteration in a list to send after in mutable
     private  List<RestaurantPojo> allRestaurants = new ArrayList<>();
 
-
-    /**
-     * for detail restaurant publish, must be observe by viewmodel
-     */
     public MutableLiveData<ResultPlaceDetail> myRestaurantDetailByPlaceId = new MutableLiveData<>();
-
 
     private final MutableLiveData<List<RestaurantPojo>> listOfRestaurantWithLongLat = new MutableLiveData<>();
     private final MutableLiveData<PlaceDetailsFinal> restauDetailObj = new MutableLiveData<>();
     private final MutableLiveData<PlaceDetailsFinal> restauDetailObj2 = new MutableLiveData<>();
     private final MutableLiveData<String> placeId = new MutableLiveData<String>();
-
-
-
-
     private final MutableLiveData<ResultPlaceDetail> myTest = new MutableLiveData<>();
 
-
-    /**
-     * trying to use cache with placeDetail API
-     */
     private final LruCache<String, PlaceDetailsFinal> myCache = new LruCache<>(2_000);
 
-    //this is the constructor is called by factory...
     public RestaurantsRepository() {
-        Log.i("[MAP]", "Repository restaurant starting singleton...");
         service = RetrofitRequest.getRetrofitInstance().create(GooglePlaceApi.class);
     }
 
-    //**********************************************************************************************
 
-    public LiveData<List<RestaurantPojo>> getMyRestaurantsList() {
-        return listOfRestaurantWithLongLat;
-    }
 
     //update position of user in repository when a location is find
-    public void UpdateLngLat(Double Long, Double Lat) {
+    public void setNewLatLngPositionFromGPS(Double Long, Double Lat) {
         Log.i("[MAP]", "Repository restaurant position " + Lat + Long);
         listOfRestaurantWithLongLat.setValue(getAllRestaurants(Long, Lat).getValue());
     }
 
-    //**********************************************************************************************
-
-
-
-
-
-
-    public PlaceDetailsFinal test(String placeId){
+    //for alarm place detail
+    public PlaceDetailsFinal getPlaceDetail(String placeId){
 
         Call<PlaceDetailsFinal> myCallAPI = service.getPlaceWithAllDetails2(BuildConfig.MAPS_API_KEY,placeId);
 
         try{
-
             Log.i("[ALARME]","Starting call synchrone for details ..." );
-
             Response<PlaceDetailsFinal> response = myCallAPI.execute();
-
             PlaceDetailsFinal apiResponse = response.body();
-
             return apiResponse;
-
         }
         catch (Exception ex){
             Log.i("[ALARME]","Extraction synchrone détail restaurant"  + ex.getMessage());
             return null;
         }
 
-        //return myTest;
     }
-
-
-
-
-
-
-
 
     //this is livedata is publish to viewmodel
     public LiveData<List<RestaurantPojo>> getAllRestaurants(@Nullable Double Long, @Nullable Double Lat) {
@@ -155,14 +117,6 @@ public class RestaurantsRepository {
         return listOfRestaurantWithLongLat;
     }
 
-    //**********************************************************************************************
-
-
-    /**
-     * get the detail for a restaurant with placeId
-     * @param placeId
-     * @return
-     */
     public void getRestaurantById(String placeId) {
 
         PlaceDetailsFinal existing = myCache.get(placeId);
@@ -211,19 +165,15 @@ public class RestaurantsRepository {
       //  return myRestaurantDetailByPlaceId;
     }
 
-    /**
-     * update place id request
-     *
-     * @param id
-     * @return
-     */
     public void setPlaceId(String id) {
         this.getRestaurantById(id);
-        //return id;
     }
 
     public LiveData<ResultPlaceDetail> getMyRestaurantDetail() {
         return myRestaurantDetailByPlaceId;
     }
 
+    public LiveData<List<RestaurantPojo>> getMyRestaurantsList() {
+        return listOfRestaurantWithLongLat;
+    }
 }

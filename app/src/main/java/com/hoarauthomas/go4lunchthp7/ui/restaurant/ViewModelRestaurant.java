@@ -72,7 +72,7 @@ public class ViewModelRestaurant extends ViewModel {
 
         myViewStateRestaurantMediator.addSource(myPosition, position -> {
             if (position == null) return;
-            myRestaurantRepository.UpdateLngLat(position.getLongitude(), position.getLatitude());
+            myRestaurantRepository.setNewLatLngPositionFromGPS(position.getLongitude(), position.getLatitude());
             logicWork(myRestaurantsList.getValue(), myWorkMatesList.getValue(), position, myPlacesId.getValue(), reloadMap.getValue());
         });
 

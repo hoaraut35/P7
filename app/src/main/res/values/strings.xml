@@ -22,7 +22,7 @@
     <string name="bottom_navigation_work">Workmates</string>
 
     <!-- strings for Workmates view -->
-    <string name="hello_blank_fragment">Liste des collègues</string>
+    <string name="hello_blank_fragment">workmateslist</string>
 
     <!-- Preference Default ViewPager -->
     <string name="default_screen">Ecran par défaut</string>
@@ -52,11 +52,11 @@
     <string name="numberOfWorkmates">(10)</string>
     <string name="numberOfLike">3</string>
     <string name="labelForOpeningHours">\"Ouvert : \"</string>
-    <string name="connection_succeed">Connexion avec succès</string>
-    <string name="error_authentification_canceled">Connexion annulée</string>
-    <string name="error_no_network">Erreur réseau</string>
-    <string name="error_unknow">Erreur inconnu</string>
-    <string name="default_notification_channel_id" />
+    <string name="connection_succeed">Success</string>
+    <string name="error_authentification_canceled">Abord connect</string>
+    <string name="error_no_network">Lan fail</string>
+    <string name="error_unknow">Fail</string>
+    <string name="default_notification_channel_id" >default channel</string>
 
 
     <!-- login screen -->
@@ -85,19 +85,18 @@
     <string name="no_phone_string">No phone number !</string>
     <string name="is_joining_txt">is joining</string>
 
-    <string name="like_delete_msg">Suppression du like</string>
-    <string name="like_add_msg">Ajout du like</string>
+    <string name="like_delete_msg">Delete like</string>
+    <string name="like_add_msg">Add like</string>
 
-    <string name="delete_fav_msg">Suppression du restaurant</string>
-    <string name="add_fav_msg">Restaurant enregistré</string>
+    <string name="delete_fav_msg">Delete restaurant</string>
+    <string name="add_fav_msg">Save restaurant</string>
 
     <!-- screen settings -->
-    <string name="langage_mode">Notifications On/Off : </string>
-    <string name="descriptionForRestaurantImage">TODO</string>
-    <string name="descriptionForWorkMatesIcon">TODO</string>
+    <string name="language_mode">Notifications On/Off : </string>
+    <string name="descriptionForRestaurantImage">no data</string>
+    <string name="descriptionForWorkMatesIcon">no data</string>
     <string name="cancel_btn_alert">cancel</string>
     <string name="btn_ok_dialogalert">ok</string>
-    <string name="title_dialog_alert">Résultat recherche</string>
     <string name="restaurant_notchoice">\" hasn\'t decided yet\"</string>
     <string name="setting_zoom_title">Map zoom</string>
     <string name="setting_off_notification">Don\'t receive notification</string>
@@ -109,6 +108,8 @@
     <string name="title_forworkmate">Available workmates</string>
     <string name="notification_disable_msg">Notification disable</string>
     <string name="notification_enable_msg">Notification enabled</string>
+    <string name="title_dialog_alert">Search result</string>
+    <string name="no_data">no data</string>
 
 
 </resources>

@@ -5,47 +5,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-
-       <!-- <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/go4lunch" />
-        -->
-
-
             <TextView
                 android:id="@+id/appName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="50dp"
                 android:text="@string/header_title"
                 android:textColor="@color/white"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                android:textSize="42dp"
+                android:textSize="42sp"
                 android:textStyle="bold"/>
-
-
 
             <TextView
                 android:id="@+id/displayName"
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-
                 app:layout_constraintTop_toBottomOf="@id/appName"
                 app:layout_constraintLeft_toRightOf="@id/avatar"
                 app:layout_constraintRight_toRightOf="parent"
-
-
                 android:layout_margin="20dp"
-                android:textSize="16dp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="@color/white"
                 android:text="@string/login_name"
@@ -53,35 +37,24 @@
 
             <TextView
                 android:id="@+id/email"
-
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 app:layout_constraintTop_toBottomOf="@id/displayName"
                 app:layout_constraintLeft_toRightOf="@id/avatar"
                 app:layout_constraintRight_toRightOf="parent"
-
-
                 android:layout_gravity="center_horizontal"
-                android:textSize="12dp"
+                android:textSize="12sp"
                 android:textColor="@color/white"
                 android:text="jsmith.1337@gmail.Com"/>
-
-
-
-
-
 
         <ImageView
             android:id="@+id/avatar"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:contentDescription="TODO"
-            android:layout_marginLeft="18dp"
+            android:contentDescription="no data"
+            android:layout_marginStart="18dp"
             android:color="@android:color/transparent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="@+id/displayName" />
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

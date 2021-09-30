@@ -43,6 +43,7 @@ import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
+import com.hoarauthomas.go4lunchthp7.model.firestore.User;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 
 import java.util.ArrayList;
@@ -193,6 +194,9 @@ public class MainActivity extends AppCompatActivity {
 
             //name of user profile
             name.setText(Objects.requireNonNull(myUserResult.getDisplayName()));
+
+
+
             //email of user profile
             TextView email = hv.findViewById(R.id.email);
             email.setText(myUserResult.getEmail());
@@ -201,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
             for (UserInfo profile : myUserResult.getProviderData()) {
                 email.setText(profile.getEmail());
             }
+
 
             //for photo avatar test
             String avatarSource = "";

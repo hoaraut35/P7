@@ -8,11 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-
     <!-- for bottom navigation menu  -->
     <color name="background_light">#000000</color>
     <color name="background_orange">#FF5722</color>
-
 
     <!-- for authentification for with Firebase UI -->
     <color name="material_green_50">#E8F5E9</color>
@@ -21,13 +19,8 @@
     <color name="material_green_a200">#69F0AE</color>
     <color name="material_lime_a700">#AEEA00</color>
     <color name="material_purple_a700">#AA00FF</color>
-
-
     <color name="material_star">#AEEA00</color>
-
-
     <color name="selected_favorite">#0000FF</color>
     <color name="not_selected_favorite">#FF0000</color>
-
 
 </resources>

@@ -28,7 +28,7 @@
 
 
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/mytopappbar"
+            android:id="@+id/myTopAppbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
@@ -62,7 +62,7 @@
             app:layout_constraintBottom_toTopOf="@id/bottom_navigation_menu"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/mytopappbar" />
+            app:layout_constraintTop_toBottomOf="@id/myTopAppbar" />
 
 
 

@@ -9,7 +9,7 @@
             app:key="notifications2"
             app:summaryOff="@string/setting_off_notification"
             app:summaryOn="@string/setting_on_notification"
-            app:title="@string/langage_mode" />
+            app:title="@string/language_mode" />
     </PreferenceCategory>
 
     <SeekBarPreference

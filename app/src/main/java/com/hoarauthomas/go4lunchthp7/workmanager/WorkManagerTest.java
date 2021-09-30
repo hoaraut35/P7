@@ -67,7 +67,7 @@ public class WorkManagerTest extends Worker {
                 Log.i(TAG, "My user favorite restaurant : " + documentSnapshot.get("favoriteRestaurant"));
 
                 //get restaurant detail with  id ok
-                this.myRestaurantDetail = myRestaurantsRepo.test(documentSnapshot.get("favoriteRestaurant").toString());
+                this.myRestaurantDetail = myRestaurantsRepo.getPlaceDetail(documentSnapshot.get("favoriteRestaurant").toString());
 
                 myRestaurantId = myRestaurantDetail.getResult().getPlaceId();
                 myRestaurantName = myRestaurantDetail.getResult().getName();
