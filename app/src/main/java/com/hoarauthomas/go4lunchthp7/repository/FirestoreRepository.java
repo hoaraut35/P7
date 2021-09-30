@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.facebook.internal.Mutable;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,6 +37,8 @@ public class FirestoreRepository {
     private MutableLiveData<String> myCurrentRestaurant= new MutableLiveData<>();
     private MutableLiveData<DocumentSnapshot> myTestSnapShot = new MutableLiveData<>(null);
 
+    private MutableLiveData<FirestoreUser> myActualUser = new MutableLiveData<>(null);
+
     public FirestoreRepository() {
         this.myBase = FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
         setupListenerOnCollection();
@@ -44,7 +47,9 @@ public class FirestoreRepository {
     }
 
     public void setupListeners() {
+
         setupListenerOnCollection();
+        getUserActual();
 
         if (getCurrentUser() != null) {
             setupListenerWorkmateFromFirestoreRepo();
@@ -53,17 +58,63 @@ public class FirestoreRepository {
     }
 
     public void setupListenerWorkmateFromFirestoreRepo() {
+
         myBase.document(getCurrentUser().getUid()).addSnapshotListener((value, error) -> {
             if (error != null) {
                 Log.i("[FIRESTORE]", "Error on listener for user");
             }
             if (value != null && value.exists()) {
-
-
                 myWorkmateFromRepo.setValue(value.toObject(FirestoreUser.class));
             }
         });
     }
+
+
+    public void getUserActual(){
+
+        myBase.document(getCurrentUser().getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+
+                if (value != null && value.exists()){
+                    Log.i("[USER]", "Actual user in firestore " + value.get("username"));
+                    myActualUser.setValue(value.toObject(FirestoreUser.class));
+                }else
+                {
+                    Log.i("[USER]", "Actual user in firestore error");
+                    myActualUser.setValue(null);
+                }
+
+            }
+        });
+
+
+
+        /*.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                if (task.getResult().exists()){
+                    Log.i("[USER]", "Actual user in firestore " + task.getResult().get("username"));
+                    myActualUser.setValue(task.getResult().toObject(FirestoreUser.class));
+                }else
+                {
+                    Log.i("[USER]", "Actual user in firestore error");
+                    myActualUser.setValue(null);
+                }
+
+            }
+        });
+
+         */
+
+    }
+
+    public LiveData<FirestoreUser> getPublicUSerFirestore(){
+        return myActualUser;
+    }
+
+
 
 
     public LiveData<List<String>> getAllWorkmatesForAnRestaurant(String placeid) {
@@ -94,7 +145,7 @@ public class FirestoreRepository {
         return myList;
     }
 
-    public LiveData<FirestoreUser> getWorkmateFromRepo() {
+    public MutableLiveData<FirestoreUser> getWorkmateFromRepo() {
         return myWorkmateFromRepo;
     }
 
@@ -121,7 +172,7 @@ public class FirestoreRepository {
     }
 
     //TODO: bug here
-    public LiveData<String> getMyUser(){
+   /* public LiveData<String> getMyUser(){
 
         myBase.document(getCurrentUser().getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
@@ -144,8 +195,10 @@ public class FirestoreRepository {
             }
         });
 
-        */
-    }
+
+    }*/
+
+
 
     public Task<QuerySnapshot> getAllUsersByPlaceIdFromFirestore(String restaurantId){
         return myBase.whereEqualTo("favoriteRestaurant", restaurantId).get();

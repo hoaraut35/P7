@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -30,7 +29,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
-import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 
@@ -71,9 +69,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             myMap = map;
             myMap.clear();
 
-
             myMap.animateCamera(CameraUpdateFactory.zoomTo(DEFAULT_ZOOM));
-
 
             myViewModelMap.getMyZoom().observe(getViewLifecycleOwner(), new Observer<Integer>() {
                 @Override
@@ -83,9 +79,6 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                     myMap.animateCamera(CameraUpdateFactory.zoomTo(integer));
                 }
             });
-
-
-
 
             //myViewModelMap.refresh();
             myViewModelMap.ViewStateForMapUI().observe(getViewLifecycleOwner(), new Observer<ViewStateMap>() {
@@ -102,18 +95,13 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
                     if (prediction == null) return;
 
-                    //Toast.makeText(getContext(), prediction.getDescription() + "placeid : " + prediction.getPlaceId(), Toast.LENGTH_SHORT).show();
-
                     Boolean findPlace = false;
 
                     for (int i = 0; i < allMarkers.size(); i++) {
 
-
                         if (prediction.getPlaceId().equals(allMarkers.get(i).getId())) {
 
                             Toast.makeText(getContext(), "trouvé: " + prediction.getPlaceId(), Toast.LENGTH_SHORT).show();
-
-//
 
                             map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(allMarkers.get(i).getLocation().latitude, allMarkers.get(i).getLocation().longitude), 15));
                             //                        CameraUpdateFactory.zoomTo(20);
@@ -127,89 +115,11 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                     }
 
                     if (!findPlace) {
-
-                        //  Toast.makeText(getContext(), "non trouvé: " + prediction.getPlaceId(), Toast.LENGTH_SHORT).show();
-
                         Intent intent = new Intent(getContext(), DetailActivity.class);
                         String restaurantTag = prediction.getPlaceId();
                         intent.putExtra("TAG_ID", restaurantTag);
                         startActivity(intent);
-
                     }
-
-
-
-
-
-                   /* Iterator<Marker> iterator = allMarkers.iterator();
-
-                    while(iterator.hasNext()){
-                        Marker marker = iterator.next();
-
-                        if (marker.getTag().equals(prediction.getPlaceId())){
-                            Toast.makeText(getContext(), "trouvé", Toast.LENGTH_SHORT).show();
-                        }else
-                        {
-                            Toast.makeText(getContext(), "non trouvé", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    */
-
-
-                    /*for (Marker item: allMarkers){
-                        if (item.getTag().equals(prediction.getPlaceId())){
-                            Toast.makeText(getContext(), "trouvé", Toast.LENGTH_SHORT).show();
-                        }else
-                        {
-                            Toast.makeText(getContext(), "non trouvé", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                     */
-
-
-          /*          if (allMarkers.contains(prediction.getPlaceId())) {
-                        Toast.makeText(getContext(), "trouvé", Toast.LENGTH_SHORT).show();
-
-//
-                    }else
-                    {
-                        Toast.makeText(getContext(), " non trouvé", Toast.LENGTH_SHORT).show();
-                    }
-
-           */
-
-
-                    /* //for the list of marker we search
-                    for (int i = 0; i < allMarkers.size();i++){
-
-                        if (allMarkers.get(i).getTag().equals(prediction.getPlaceId())){
-                            Toast.makeText(getContext(), "trouvé", Toast.LENGTH_SHORT).show();
-
-
-                           // myMap.moveCamera(CameraUpdateFactory.newLatLngBounds(australiaBounds, 0));
-                          // myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(allMarkers.get(i).getPosition(),15));
-
-                            //  myMap.
-                          ///  Toast.makeText(getContext(), "position ajustée sur le restaurant", Toast.LENGTH_SHORT).show();
-
-                            break;
-
-                        }
-
-                        else
-                        {
-
-
-
-                        }
-
-                    }
-
-
-                     */
-
 
                 }
             });
@@ -320,14 +230,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
              */
 
-          /*  myViewModelMap.getPositionFromAutoComplete().observe(getViewLifecycleOwner(), new Observer<String>() {
-                @Override
-                public void onChanged(String s) {
-                    Log.i("[COMPLETE]","reour sur frag map" + s);
-                }
-            });
 
-           */
 
 
             //Setup Google Map
@@ -433,9 +336,6 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     public boolean onMarkerClick(@NonNull @NotNull Marker marker) {
         return false;
     }
-
-
-
 
 }
 

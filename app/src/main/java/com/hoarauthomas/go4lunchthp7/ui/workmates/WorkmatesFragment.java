@@ -23,15 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class WorkFragment extends Fragment implements WorkMatesAdapter.WorkMatesListener {
+public class WorkmatesFragment extends Fragment implements WorkmatesAdapter.WorkMatesListener {
 
     private FragmentWorkBinding binding;
-    private ViewModelWorkMates myViewModelWorkMates;
     private RecyclerView recyclerView;
     public final List<SpecialWorkMates> resultToShow = new ArrayList<>();
 
-    public static WorkFragment newInstance() {
-        return new WorkFragment();
+    public static WorkmatesFragment newInstance() {
+        return new WorkmatesFragment();
     }
 
     @Override
@@ -48,15 +47,15 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.WorkMates
     }
 
     private void setupViewModel() {
-        this.myViewModelWorkMates = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelWorkMates.class);
-        this.myViewModelWorkMates.getMediatorLiveData().observe(getViewLifecycleOwner(), viewStateWorkMates -> showWorkMates(viewStateWorkMates.getMySpecialWorkMAtes()));
+        ViewModelWorkMates myViewModelWorkMates = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelWorkMates.class);
+        myViewModelWorkMates.getMediatorLiveData().observe(getViewLifecycleOwner(), viewStateWorkMates -> showWorkMates(viewStateWorkMates.getMySpecialWorkMAtes()));
     }
 
     private void setupRecyclerView() {
         recyclerView = binding.recyclerViewWorkmates;
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-        recyclerView.setAdapter(new WorkMatesAdapter(resultToShow, this));
+        recyclerView.setAdapter(new WorkmatesAdapter(resultToShow, this));
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -69,6 +68,7 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.WorkMates
         }
     }
 
+    //click listener
     @Override
     public void onClickWorkMatesRestaurant(String restaurantId) {
         Intent intent = new Intent(getContext(), DetailActivity.class);
@@ -76,6 +76,7 @@ public class WorkFragment extends Fragment implements WorkMatesAdapter.WorkMates
         startActivity(intent);
     }
 
+    //click listener
     @Override
     public void popupSnack(String message) {
         showToast(message);

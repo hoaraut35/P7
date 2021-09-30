@@ -16,28 +16,26 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.R;
+import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     //variables ...
-
-    private List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo> myRestaurantResult;
-    private LatLng myPosition;
-
+    private List<RestaurantPojo> myRestaurantResult;
+   // private LatLng myPosition;
 
     //interface for callback
     public interface RestaurantListener {
         void onClickDetailRestaurant(String restaurantId);
-
         void popupSnack(String message);
     }
 
     //declare callbacl
     private final RestaurantListener callback;
 
-    public RecyclerViewAdapter(List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo> myList, RestaurantListener callback) {
+    public RecyclerViewAdapter(List<RestaurantPojo> myList, RestaurantListener callback) {
         this.callback = callback;
         this.myRestaurantResult = myList;
     }
@@ -59,7 +57,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewAdapter.ViewHolder holder, int position) {
 
-        com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo result = myRestaurantResult.get(position);
+        RestaurantPojo result = myRestaurantResult.get(position);
 
         //show the name of restaurant
         holder.nameOfRestaurant.setText(myRestaurantResult.get(position).getName());

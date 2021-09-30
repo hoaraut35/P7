@@ -21,6 +21,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
@@ -41,6 +42,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.databinding.ActivityMainBinding;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
+import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 
 import java.util.ArrayList;
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     public ActivityMainBinding binding;
     public ViewModelMain myViewModel;
+    public FirestoreUser myUserFirestoreData;
 
     private final List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.TwitterBuilder().build(),
@@ -102,6 +105,19 @@ public class MainActivity extends AppCompatActivity {
                 request_user_info(myViewModel.getUser());
             } else {
                 request_login();
+            }
+        });
+
+        myViewModel.getActualUserData().observe(this, new Observer<FirestoreUser>() {
+            @Override
+            public void onChanged(FirestoreUser firestoreUser) {
+                if (firestoreUser !=  null){
+                    myUserFirestoreData = firestoreUser;
+//                    binding.topAppBar.setTitle(firestoreUser.getUsername());
+                    //request user here?
+
+                }
+
             }
         });
 
@@ -164,7 +180,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void request_user_info(FirebaseUser myUserResult) {
+
        // myViewModel.createUser();
+
+
         myViewModel.setUser();
 
         if (myUserResult != null) {
@@ -245,17 +264,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void openMyFavoriteRestaurant() {
 
-
-       /* if (myViewModel.getMyUserRestaurant() != null && !myViewModel.getMyUserRestaurant().isEmpty()) {
+       if (myUserFirestoreData != null && !myUserFirestoreData.getFavoriteRestaurant().isEmpty()) {
             Intent intent = new Intent(this, DetailActivity.class);
-            Log.i("[OPENFAV]","place id " + myViewModel.getMyUserRestaurant());
-            intent.putExtra("TAG_ID", myViewModel.getMyUserRestaurant());
+            intent.putExtra("TAG_ID", myUserFirestoreData.getFavoriteRestaurant());
             startActivity(intent);
         } else {
             showSnackBar(getString(R.string.no_fav_msg));
         }
-
-        */
 
     }
 

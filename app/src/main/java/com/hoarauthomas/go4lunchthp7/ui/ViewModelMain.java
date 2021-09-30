@@ -13,10 +13,7 @@ import androidx.work.Data;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.repository.AlarmRepository;
@@ -34,6 +31,7 @@ import javax.annotation.Nullable;
 
 public class ViewModelMain extends ViewModel {
 
+
     //repository...
     private FirebaseAuthRepository myFirebaseAuthRepoVM;
     private FirestoreRepository myFirestoreRepo;
@@ -44,26 +42,24 @@ public class ViewModelMain extends ViewModel {
     private Application application;
 
 
-
     //for notification work
     private WorkManager myWorkManager;
     private LiveData<List<WorkInfo>> mySavedInfo;
-
 
 
     //shared beetween multiple view
     private SharedRepository mySharedRepoVM;
 
     //livedata...
-    private  LiveData<FirebaseUser> myUserLiveData;
-    private final LiveData<FirestoreUser> myWorkmate;
+    private final LiveData<FirebaseUser> myUserLiveData;
+    private MutableLiveData<FirestoreUser> myWorkmate = new MutableLiveData<>();
     private final LiveData<Boolean> myUserStateNew;
     private LiveData<List<FirestoreUser>> myWorkMatesListLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> myUserRestaurantId = new MutableLiveData<>();
 
     private MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myPlaceAutocompleteList = new MutableLiveData<>();
 
-
+    private LiveData<FirestoreUser> myActualUserFromFirestore = new MutableLiveData<>();
 
     //to update ViewState...
     MediatorLiveData<ViewMainState> myAppMapMediator = new MediatorLiveData<>();
@@ -85,7 +81,7 @@ public class ViewModelMain extends ViewModel {
             PositionRepository myPositionRepoVM,
             AlarmRepository myAlarmRepoVM,
             SharedRepository mySharedRepoVM
-            ) {
+    ) {
 
         //get data from Auth repository...
         this.myFirebaseAuthRepoVM = firebaseAuthRepository;
@@ -97,6 +93,7 @@ public class ViewModelMain extends ViewModel {
         myWorkMatesListLiveData = myFirestoreRepo.getFirestoreWorkmates();
         myWorkmate = myFirestoreRepo.getWorkmateFromRepo();
 
+        myActualUserFromFirestore = myFirestoreRepo.getPublicUSerFirestore();
 
         //get data from place autocomplete repository...
         this.myPlaceAutocompleteRepoVM = placeAutocompleteRepository;
@@ -176,15 +173,13 @@ public class ViewModelMain extends ViewModel {
             //placeautocomplete à traduire en placedetails
 
 
-
-
             //get data here for prepare alarm
-            if (myFirestoreUserData.getFavoriteRestaurant() != null){
-                Log.i("[ALARME]","User name " + myFirestoreUserData.getUsername());
+            if (myFirestoreUserData.getFavoriteRestaurant() != null) {
+                Log.i("[ALARME]", "User name " + myFirestoreUserData.getUsername());
             }
 
 
-            Log.i("[NOTIFICATION]","My user favorite restaurant : " + myFirestoreUserData.getFavoriteRestaurant());
+            Log.i("[NOTIFICATION]", "My user favorite restaurant : " + myFirestoreUserData.getFavoriteRestaurant());
 
 
             if (myPlacesAuto != null) {
@@ -239,9 +234,11 @@ public class ViewModelMain extends ViewModel {
         myFirebaseAuthRepoVM.logOut();
     }
 
-    public LiveData<String> getMyUserRestaurant() {
+    /*public LiveData<String> getMyUserRestaurant() {
         return myFirestoreRepo.getMyUser();
     }
+
+     */
 
     //Create user to Firestore
     public void createUser() {
@@ -262,11 +259,10 @@ public class ViewModelMain extends ViewModel {
     }
 
     public void setNotification(String uid, Boolean state) {
-        if (state){
+        if (state) {
             myAlarmRepoVM.setAlarm(uid);
 
-        }else
-        {
+        } else {
             myAlarmRepoVM.removeAlarm();
         }
     }
@@ -274,9 +270,9 @@ public class ViewModelMain extends ViewModel {
 
     private Data notificationBuilderForWorkRequest() {
 
-       // MyNotification montest = myViewModel.getDataForNotification(myViewModel.getMyUserRestaurant().getValue());
+        // MyNotification montest = myViewModel.getDataForNotification(myViewModel.getMyUserRestaurant().getValue());
 
-        String[] myWorkmates = {"un","deux","trois"};
+        String[] myWorkmates = {"un", "deux", "trois"};
         //new String [montest.getMyWorkmateList().size()];
 //        myWorkmates = montest.getMyWorkmateList().toArray(myWorkmates);
 
@@ -323,22 +319,19 @@ public class ViewModelMain extends ViewModel {
     }
 
 
-    public FirebaseUser getMyUserFromFirestore(){
-      return myFirestoreRepo.getCurrentUser();
+    public FirebaseUser getMyUserFromFirestore() {
+        return myFirestoreRepo.getCurrentUser();
     }
 
 
-
-
-
-    public LiveData<List<WorkInfo>> getWorkInfos(){
+    public LiveData<List<WorkInfo>> getWorkInfos() {
         return mySavedInfo;
     }
 
     public MyNotification getDataForNotification(String placeId) {
-        Log.i("[NOTIFICATION]","Liste des restaurants  : " + mySharedRepoVM.getMyRestaurantList().getValue());
+        Log.i("[NOTIFICATION]", "Liste des restaurants  : " + mySharedRepoVM.getMyRestaurantList().getValue());
 //        myWorkMatesDetailList.addAll(this.myWorkMatesRepoVM.getAllWorkmatesForAnRestaurant(myUserRestaurantId.getValue()).getValue());
-        Log.i("[NOTIFICATION]","My pace id " + placeId);
+        Log.i("[NOTIFICATION]", "My pace id " + placeId);
         List<String> teszt = new ArrayList<>();
         //teszt.addAll(myWorkMatesRepoVM.getAllWorkmatesForAnRestaurant("ChIJO5NxcizVDkgRfPGwfbKFK9I"));
         return null;
@@ -352,6 +345,10 @@ public class ViewModelMain extends ViewModel {
 
     public LiveData<List<String>> getAllWorkmatesByPlaceId() {
         return myFirestoreRepo.getAllWorkmatesForAnRestaurant("ChIJy9WiwEzVDkgRxxG08dkPb-0");
+    }
+
+    public LiveData<FirestoreUser> getActualUserData() {
+        return myActualUserFromFirestore;
     }
 
 

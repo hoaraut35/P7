@@ -18,13 +18,12 @@ import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
 
 import java.util.List;
 
-public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.ViewHolder> {
+public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesAdapter.ViewHolder> {
 
     private final List<SpecialWorkMates> myWorkMatesToShow;
 
     public interface WorkMatesListener {
         void onClickWorkMatesRestaurant(String restaurantId);
-
         void popupSnack(String message);
     }
 
@@ -47,7 +46,7 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
 
      */
 
-    public WorkMatesAdapter(List<SpecialWorkMates> myList, WorkMatesListener callback) {
+    public WorkmatesAdapter(List<SpecialWorkMates> myList, WorkMatesListener callback) {
         this.myWorkMatesToShow = myList;
         this.callback = callback;
     }
@@ -62,7 +61,7 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(@NonNull WorkMatesAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull WorkmatesAdapter.ViewHolder holder, int position) {
 
         SpecialWorkMates myWorkMates = myWorkMatesToShow.get(position);
 
@@ -109,7 +108,6 @@ public class WorkMatesAdapter extends RecyclerView.Adapter<WorkMatesAdapter.View
         //Log.i("[WORK]", "adapter workmates : " + myWorkMates.getUrlPicture());
 
         if (myWorkMates.getNameOfRestaurant() == null || myWorkMates.getNameOfRestaurant().isEmpty()) {
-            Log.i("[WORK]", "restaurant non défini null");
             holder.itemView.setOnClickListener((View myUserView) -> {
                 callback.popupSnack("pas de restaurant sélectionné");
             });
