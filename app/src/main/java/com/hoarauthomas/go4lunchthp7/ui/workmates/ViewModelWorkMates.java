@@ -15,17 +15,14 @@ import java.util.List;
 
 public class ViewModelWorkMates extends ViewModel {
 
-    private final FirestoreRepository myFirestoreRepository;
-    private final RestaurantsRepository myRestaurantRepository;
-
     private final MediatorLiveData<ViewStateWorkMates> myViewStateWorkMatesMediator = new MediatorLiveData<>();
 
-    public ViewModelWorkMates(RestaurantsRepository myRestaurantRepository, FirestoreRepository myFirestoreRepository) {
-        this.myRestaurantRepository = myRestaurantRepository;
-        this.myFirestoreRepository = myFirestoreRepository;
+    public ViewModelWorkMates(
+            RestaurantsRepository myRestaurantRepository,
+            FirestoreRepository myFirestoreRepository) {
 
-        LiveData<List<FirestoreUser>> myWorkMatesListFromRepo = this.myFirestoreRepository.getFirestoreWorkmates();
-        LiveData<List<RestaurantPojo>> myRestaurantList = this.myRestaurantRepository.getMyRestaurantsList();
+        LiveData<List<FirestoreUser>> myWorkMatesListFromRepo = myFirestoreRepository.getFirestoreWorkmates();
+        LiveData<List<RestaurantPojo>> myRestaurantList = myRestaurantRepository.getMyRestaurantsList();
 
         myViewStateWorkMatesMediator.addSource(myWorkMatesListFromRepo, firestoreUsers -> {
             if (firestoreUsers == null) return;
@@ -45,21 +42,24 @@ public class ViewModelWorkMates extends ViewModel {
 
         List<SpecialWorkMates> mySpecialWorkMatesList = new ArrayList<>();
 
-        for (int i = 0; i < myFirestoreWorkmatesList.size(); i++) {
 
-            SpecialWorkMates myWorkMates = new SpecialWorkMates();
-            myWorkMates.setAvatar(myFirestoreWorkmatesList.get(i).getUrlPicture());
-            myWorkMates.setNameOfWorkMates(myFirestoreWorkmatesList.get(i).getUsername());
+       for (FirestoreUser myUserLoop : myFirestoreWorkmatesList){
 
-            for (int z = 0; z < myRestaurant.size(); z++) {
-                if (myRestaurant.get(z).getPlaceId() != null) {
-                    if (myFirestoreWorkmatesList.get(i).getFavoriteRestaurant().equals(myRestaurant.get(z).getPlaceId())) {
-                        myWorkMates.setNameOfRestaurant(myRestaurant.get(z).getName());
-                        myWorkMates.setPlaceId(myRestaurant.get(z).getPlaceId());
+            SpecialWorkMates myWorkmates = new SpecialWorkMates();
+            myWorkmates.setAvatar(myUserLoop.getUrlPicture());
+            myWorkmates.setNameOfWorkMates(myUserLoop.getUsername());
+
+            for (RestaurantPojo myRestaurantLoop : myRestaurant){
+                if (myRestaurantLoop.getPlaceId() != null){
+                    if (myUserLoop.getFavoriteRestaurant().equals(myRestaurantLoop.getPlaceId())){
+                        myWorkmates.setNameOfRestaurant(myRestaurantLoop.getName());
+                        myWorkmates.setPlaceId(myRestaurantLoop.getPlaceId());
                     }
                 }
             }
-            mySpecialWorkMatesList.add(myWorkMates);
+
+            mySpecialWorkMatesList.add(myWorkmates);
+
         }
 
         myViewStateWorkMatesMediator.setValue(new ViewStateWorkMates(mySpecialWorkMatesList));

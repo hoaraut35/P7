@@ -23,10 +23,12 @@ public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerView
     private List<FirestoreUser> myWorkMatesResult;
     private LatLng myPosition;
 
-    public RecyclerViewAdapterDetail(List<FirestoreUser> myList, LatLng myLatLng) {
+    /*public RecyclerViewAdapterDetail(List<FirestoreUser> myList, LatLng myLatLng) {
         this.myWorkMatesResult = myList;
         this.myPosition = myLatLng;
     }
+
+     */
 
     public RecyclerViewAdapterDetail() {
     }

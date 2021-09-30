@@ -28,8 +28,6 @@ public class ListFragment extends Fragment implements RecyclerViewAdapter.Restau
 
     private final ArrayList<RestaurantPojo> allResult = new ArrayList<>();
     private RecyclerView recyclerView;
-    private RecyclerViewAdapter recyclerViewAdapter;
-    private View myView;
 
     @Override
     public void onClickDetailRestaurant(String restaurantId) {
@@ -61,12 +59,12 @@ public class ListFragment extends Fragment implements RecyclerViewAdapter.Restau
         if (restaurants != null) {
             allResult.clear();
             allResult.addAll(restaurants);
-            setupRecyclerViewData(myView);
+            setupRecyclerViewData();
             Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
         }
     }
 
-    private void setupRecyclerViewData(View myView) {
+    private void setupRecyclerViewData() {
         recyclerView.setAdapter(new RecyclerViewAdapter(allResult, this));
     }
 

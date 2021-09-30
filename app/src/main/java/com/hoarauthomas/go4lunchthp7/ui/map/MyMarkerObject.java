@@ -3,7 +3,7 @@ package com.hoarauthomas.go4lunchthp7.ui.map;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
- * Class for marker object, used for create a list from googgle map with tag id on marker
+ * Class for marker object, used for create a list from goggle map with tag id on marker
  */
 public class MyMarkerObject {
     String id;

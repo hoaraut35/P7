@@ -1,25 +1,16 @@
 package com.hoarauthomas.go4lunchthp7.ui.detail;
 
-import androidx.annotation.NonNull;
-
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 public class ViewStateDetail {
 
-    @NonNull
-    public String getWorkmate() {
-        return workmate;
-    }
-
-    public void setWorkmate(@NonNull String workmate) {
+    public void setWorkmate(String workmate) {
         this.workmate = workmate;
     }
 
-    @NonNull  String workmate;
+   String workmate;
 
     String placeId;
 
@@ -45,7 +36,7 @@ public class ViewStateDetail {
 
     List<FirestoreUser> listWorkMates;
 
-    public ViewStateDetail(@Nullable String placeID, @Nullable String urlPhoto, @Nullable String title, @Nullable String address, int rating, @Nullable String call, @Nullable Boolean liked, @Nullable String website, @Nullable Boolean favorite, @Nullable List<FirestoreUser> listWorkMates, @NonNull String workmate) {
+   /* public ViewStateDetail(@Nullable String placeID, @Nullable String urlPhoto, @Nullable String title, @Nullable String address, int rating, @Nullable String call, @Nullable Boolean liked, @Nullable String website, @Nullable Boolean favorite, @Nullable List<FirestoreUser> listWorkMates, @NonNull String workmate) {
         this.workmate = workmate;
         this.placeId = placeID;
         this.urlPhoto = urlPhoto;
@@ -58,6 +49,8 @@ public class ViewStateDetail {
         this.favorite = favorite;
         this.listWorkMates = listWorkMates;
     }
+
+    */
 
     public ViewStateDetail() {
 //        workmate = null;
