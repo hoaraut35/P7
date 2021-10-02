@@ -36,26 +36,9 @@ public class ViewStateDetail {
 
     List<FirestoreUser> listWorkMates;
 
-   /* public ViewStateDetail(@Nullable String placeID, @Nullable String urlPhoto, @Nullable String title, @Nullable String address, int rating, @Nullable String call, @Nullable Boolean liked, @Nullable String website, @Nullable Boolean favorite, @Nullable List<FirestoreUser> listWorkMates, @NonNull String workmate) {
-        this.workmate = workmate;
-        this.placeId = placeID;
-        this.urlPhoto = urlPhoto;
-        this.title = title;
-        this.address = address;
-        this.rating = rating;
-        this.call = call;
-        this.liked = liked;
-        this.website = website;
-        this.favorite = favorite;
-        this.listWorkMates = listWorkMates;
-    }
-
-    */
-
     public ViewStateDetail() {
-//        workmate = null;
-    }
 
+    }
 
     public String getTitle() {
         return title;

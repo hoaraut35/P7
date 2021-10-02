@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 
@@ -20,20 +19,7 @@ import java.util.List;
 
 public class RecyclerViewAdapterDetail extends RecyclerView.Adapter<RecyclerViewAdapterDetail.ViewHolder> {
 
-    private List<FirestoreUser> myWorkMatesResult;
-    //private LatLng myPosition;
-
-    /*public RecyclerViewAdapterDetail(List<FirestoreUser> myList, LatLng myLatLng) {
-        this.myWorkMatesResult = myList;
-        this.myPosition = myLatLng;
-    }
-
-     */
-
-   /* public RecyclerViewAdapterDetail() {
-    }
-
-    */
+    private final List<FirestoreUser> myWorkMatesResult;
 
     public RecyclerViewAdapterDetail(List<FirestoreUser> myList) {
         this.myWorkMatesResult = myList;

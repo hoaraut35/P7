@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,7 +20,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 
@@ -42,7 +40,6 @@ import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -105,16 +102,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        myViewModel.getActualUserData().observe(this, new Observer<FirestoreUser>() {
-            @Override
-            public void onChanged(FirestoreUser firestoreUser) {
-                if (firestoreUser !=  null){
-                    myUserFirestoreData = firestoreUser;
-//                    binding.topAppBar.setTitle(firestoreUser.getUsername());
-                    //request user here?
-
-                }
-
+        myViewModel.getActualUserData().observe(this, firestoreUser -> {
+            if (firestoreUser !=  null){
+                myUserFirestoreData = firestoreUser;
             }
         });
 
@@ -133,13 +123,13 @@ public class MainActivity extends AppCompatActivity {
                     } else {
 
                         if (result.getResultCode() == 0) {
-                            Log.i("[Auth]", "Login annulé");
+
                         } else {
 
-                            Log.i("[Auth]", "Erreur login");
+
                             if (result.getIdpResponse() == null) {
                                 MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_no_network));
-                                MainActivity.this.showSnackBar("Annulée");
+                                MainActivity.this.showSnackBar(getString(R.string.login_abord_msg));
                             } else if (result.getIdpResponse().equals(ErrorCodes.NO_NETWORK)) {
                                 MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_no_network));
                             } else if (result.getIdpResponse().equals(ErrorCodes.UNKNOWN_ERROR)) {
@@ -151,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * lauch if no user login
+     * launch if no user login
      */
     private void request_login() {
 
@@ -211,13 +201,13 @@ public class MainActivity extends AppCompatActivity {
 
                 if (profile.getPhotoUrl() != null){
 
-                if (!profile.getPhotoUrl().equals("")) {
+                if (!profile.getPhotoUrl().toString().isEmpty()) {
                     avatarSource = profile.getPhotoUrl().toString();
                 }
 
                 }
                 else {
-                    //construc avatar
+                    //construct avatar
                     String nom = myUserResult.getDisplayName();
                     String[] parts = nom.split(" ", 2);
                     String z = "";
@@ -320,9 +310,9 @@ public class MainActivity extends AppCompatActivity {
                 showSnackBar(place.getName() + " id: " + place.getId());
 
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                showSnackBar("Erreur autocomplete");
+                showSnackBar(getString(R.string.error_autocomplete));
             } else if (resultCode == RESULT_CANCELED) {
-                showSnackBar("Recherche annulée");
+                showSnackBar(getString(R.string.cancel_autocomplete));
             }
         }
     }
@@ -337,14 +327,11 @@ public class MainActivity extends AppCompatActivity {
         SearchView searchView = (SearchView) search.getActionView();
         searchView.setQueryHint("Search restaurant ...");
 
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                //TODO: get new markers with place
-                showSnackBar(getString(R.string.search_abord));
-                myViewModel.reloadDataAfterQuery(true);
-                return false;
-            }
+        searchView.setOnCloseListener(() -> {
+            //TODO: get new markers with place
+            showSnackBar(getString(R.string.search_abord));
+            myViewModel.reloadDataAfterQuery(true);
+            return false;
         });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -353,21 +340,20 @@ public class MainActivity extends AppCompatActivity {
                 myViewModel.reloadDataAfterQuery(false);
 
                 if (myViewModel.getMyPosition() != null && query.length() > 3) {
-                    Location mypos = myViewModel.getMyPosition();
-                    String st = null;
-                    List<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myListResponse = new ArrayList<>();
+                    Location myPosition = myViewModel.getMyPosition();
 
-                    if (query != null && mypos != null) {
+                    if (query != null && myPosition != null) {
                         // myViewModel.stopPositionListener();
-                        myViewModel.getResultAutocomplete(query, mypos);
+                        myViewModel.getResultAutocomplete(query, myPosition);
                     } else {
-                        Toast.makeText(getApplicationContext(), "Réessayer plus tard", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), R.string.msg_autocomplete, Toast.LENGTH_SHORT).show();
                     }
-                    return true;
+
                 } else {
                     showSnackBar(getString(R.string.query_error_autocomplete));
-                    return true;
+
                 }
+                return true;
             }
 
             @Override

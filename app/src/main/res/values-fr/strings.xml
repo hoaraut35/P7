@@ -115,6 +115,7 @@
     <string name="title_forworkmate">Collègues dispo</string>
     <string name="notification_disable_msg">Notification désactivée</string>
     <string name="notification_enable_msg">Notification activée</string>
+    <string name="no_data">Pas de données</string>
 
 
 </resources>

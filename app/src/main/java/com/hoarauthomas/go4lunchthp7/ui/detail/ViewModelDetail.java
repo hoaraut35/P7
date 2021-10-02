@@ -18,6 +18,7 @@ import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nullable;
 
@@ -63,7 +64,7 @@ public class ViewModelDetail extends ViewModel {
 
         //user from firebase
         myScreenDetailMediator.addSource(myUserFirebaseFromRepo, firebaseUser -> {
-            if (myUserFirebaseFromRepo == null) return;
+            if (myUserFirebaseFromRepo.getValue() != null) return;
             ViewModelDetail.this.logicWork(
                     myRestaurantsListFromRepo.getValue(),
                     myWorkMatesListFromRepo.getValue(),
@@ -75,7 +76,7 @@ public class ViewModelDetail extends ViewModel {
 
         //workmatesList from firestore
         myScreenDetailMediator.addSource(myWorkMatesListFromRepo, firestoreUsers -> {
-            if (firestoreUsers == null) return;
+            if (firestoreUsers.isEmpty()) return;
             logicWork(myRestaurantsListFromRepo.getValue(),
                     firestoreUsers,
                     myRestaurantDetailFromRepo.getValue(),
@@ -86,7 +87,7 @@ public class ViewModelDetail extends ViewModel {
 
         //restaurants from nearbysearch
         myScreenDetailMediator.addSource(myRestaurantsListFromRepo, restaurantPojo -> {
-            if (myRestaurantsListFromRepo == null) return;
+            if (myRestaurantsListFromRepo.getValue() == null) return;
             ViewModelDetail.this.logicWork(
                     restaurantPojo,
                     myWorkMatesListFromRepo.getValue(),
@@ -98,7 +99,7 @@ public class ViewModelDetail extends ViewModel {
 
         //restaurant details from place details
         myScreenDetailMediator.addSource(myRestaurantDetailFromRepo, resultDetailRestaurant -> {
-            if (myRestaurantDetailFromRepo == null) return;
+            if (myRestaurantDetailFromRepo.getValue() == null) return;
             ViewModelDetail.this.logicWork(
                     myRestaurantsListFromRepo.getValue(),
                     myWorkMatesListFromRepo.getValue(),
@@ -110,7 +111,7 @@ public class ViewModelDetail extends ViewModel {
 
         //placeId to show on UI
         myScreenDetailMediator.addSource(placeIdRequest, s -> {
-            if (placeIdRequest == null) return;
+            if (placeIdRequest.getValue() == null) return;
             myRestaurantRepository.setPlaceId(s);
         });
 
@@ -131,9 +132,6 @@ public class ViewModelDetail extends ViewModel {
                 RestaurantDetailFromPlaceDetails == null ||
                 myUserFromFirestore == null)
             return;
-
-        Log.i("[FIRESTORE]", "Utilisateur datbase : " + myUserFromFirestore.getUsername() + myUserFromFirestore.getUid());
-
 
         //create an ViewState detail object for ui
         ViewStateDetail myScreen = new ViewStateDetail();
@@ -174,7 +172,7 @@ public class ViewModelDetail extends ViewModel {
                 //title
                 myScreen.setTitle(myItem.getName());
 
-                //adress
+                //address
                 myScreen.setAddress(myItem.getVicinity());
 
                 //get photo
@@ -252,6 +250,6 @@ public class ViewModelDetail extends ViewModel {
     }
 
     public void getUserPlaceFavoriteToShow() {
-        setPlaceId(myFirestoreRepository.getWorkmateFromRepo().getValue().getFavoriteRestaurant());
+        setPlaceId(Objects.requireNonNull(myFirestoreRepository.getWorkmateFromRepo().getValue()).getFavoriteRestaurant());
     }
 }

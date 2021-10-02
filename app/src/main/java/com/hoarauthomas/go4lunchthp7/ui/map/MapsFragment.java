@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -26,10 +25,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
-import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 
 import org.jetbrains.annotations.NotNull;
@@ -41,10 +38,10 @@ import java.util.Objects;
 public class MapsFragment extends Fragment implements OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener {
 
     private ViewModelMap myViewModelMap;
-    private SharedRepository mySharedRepository;
+    //private SharedRepository mySharedRepository;
     public Marker myMarker;
     private static final int DEFAULT_ZOOM = 12;
-    public List<MyMarkerObject> allMarkers = new ArrayList<MyMarkerObject>();
+    public List<MyMarkerObject> allMarkers = new ArrayList<>();
     private GoogleMap myMap;
 
     private Integer myZoom;
@@ -72,182 +69,60 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
 
             myMap.animateCamera(CameraUpdateFactory.zoomTo(DEFAULT_ZOOM));
 
-            myViewModelMap.getMyZoom().observe(getViewLifecycleOwner(), new Observer<Integer>() {
-                @Override
-                public void onChanged(Integer integer) {
-                    //ok for variable but no zoom in or out
-                    myZoom = integer;
-                    myMap.animateCamera(CameraUpdateFactory.zoomTo(integer));
-                }
+            myViewModelMap.getMyZoom().observe(getViewLifecycleOwner(), integer -> {
+                //ok for variable but no zoom in or out
+                myZoom = integer;
+                myMap.animateCamera(CameraUpdateFactory.zoomTo(integer));
             });
 
             //myViewModelMap.refresh();
-            myViewModelMap.ViewStateForMapUI().observe(getViewLifecycleOwner(), new Observer<ViewStateMap>() {
-                @Override
-                public void onChanged(ViewStateMap viewStateMap) {
-                    showMapWithPosition(viewStateMap.getMyLatLng());
-                    showRestaurant(viewStateMap.myRestaurantsList);
-                }
+            myViewModelMap.ViewStateForMapUI().observe(getViewLifecycleOwner(), viewStateMap -> {
+                showMapWithPosition(viewStateMap.getMyLatLng());
+                showRestaurant(viewStateMap.myRestaurantsList);
             });
 
-            myViewModelMap.getPredictionFromRepository().observe(getActivity(), new Observer<Prediction>() {
-                @Override
-                public void onChanged(Prediction prediction) {
+            myViewModelMap.getPredictionFromRepository().observe(requireActivity(), prediction -> {
 
-                    if (prediction == null) return;
+                if (prediction == null) return;
 
-                    Boolean findPlace = false;
+                Boolean findPlace = false;
 
-                    for (int i = 0; i < allMarkers.size(); i++) {
+                for (int i = 0; i < allMarkers.size(); i++) {
 
-                        if (prediction.getPlaceId().equals(allMarkers.get(i).getId())) {
+                    if (prediction.getPlaceId().equals(allMarkers.get(i).getId())) {
 
-                            Toast.makeText(getContext(), "find : " + prediction.getPlaceId(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "find : " + prediction.getPlaceId(), Toast.LENGTH_SHORT).show();
 
-                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(allMarkers.get(i).getLocation().latitude, allMarkers.get(i).getLocation().longitude), 15));
-                            //                        CameraUpdateFactory.zoomTo(20);
-                            //   myMap.moveCamera(CameraUpdateFactory.newLatLng(allMarkers.get(i).getLocation()));
-                            findPlace = true;
-                            break;
-                        }
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(allMarkers.get(i).getLocation().latitude, allMarkers.get(i).getLocation().longitude), 15));
 
-                        findPlace = false;
-
+                        findPlace = true;
+                        break;
                     }
 
-                    if (!findPlace) {
-                        Intent intent = new Intent(getContext(), DetailActivity.class);
-                        String restaurantTag = prediction.getPlaceId();
-                        intent.putExtra("TAG_ID", restaurantTag);
-                        startActivity(intent);
-                    }
+                    findPlace = false;
 
                 }
-            });
 
-/*            myViewModelMap.getMyPositionFromAutoSingleMode().observe(getViewLifecycleOwner(), new Observer<Event<Prediction>>() {
-                @Override
-                public void onChanged(Event<Prediction> predictionEvent) {
-
-                    if (predictionEvent != null){
-
-                         Toast.makeText(getContext(),"Move to this restaurant : " + predictionEvent.getContentIfNotHandled().getDescription(), Toast.LENGTH_SHORT).show();
-
-                      //  Toast.makeText(getContext(), "" + allMarkers.size(), Toast.LENGTH_SHORT).show();
-
-
-                        for (int i=0; i< allMarkers.size();i++){
-
-                            if (allMarkers.get(i).getTag().equals(predictionEvent.getContentIfNotHandled().getPlaceId())){
-
-                                Toast.makeText(getContext(), "Déplacement sur la carte" , Toast.LENGTH_SHORT).show();
-
-
-
-                                //myMap.animateCamera(CameraUpdateFactory.newLatLng(allMarkers.get(i).getPosition()));
-
-                               // myMap.moveCamera(CameraUpdateFactory.newLatLng(allMarkers.get(i).getPosition()));
-                               // myMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-
-
-                                break;
-                            }else
-                            {
-                                Toast.makeText(getContext(), "ouverture du détail"  , Toast.LENGTH_SHORT).show();
-
-                             //   Intent intent = new Intent(getContext(), DetailActivity.class);
-                               // String restaurantTag = predictionEvent.getContentIfNotHandled().getPlaceId();
-                               // intent.putExtra("TAG_ID", restaurantTag);
-                               // startActivity(intent);
-
-
-
-                            }
-
-
-                        }
-
-                    }
-
-
+                if (!findPlace) {
+                    Intent intent = new Intent(getContext(), DetailActivity.class);
+                    String restaurantTag = prediction.getPlaceId();
+                    intent.putExtra("TAG_ID", restaurantTag);
+                    startActivity(intent);
                 }
+
             });
-
- */
-
-
-
-            /*new Observer<Prediction>() {
-                @Override
-                public void onChanged(Prediction prediction) {
-                    //showMapWithPosition(prediction.);
-                    //Toast.makeText(getContext(), "test", Toast.LENGTH_SHORT).show();
-                    if (prediction != null){
-                      //  Toast.makeText(getContext(),"Move to this restaurant : " + prediction.getDescription(), Toast.LENGTH_SHORT).show();
-
-                        //TODO: don't work
-                       // myMap.animateCamera(CameraUpdateFactory.newLatLng(myMarker.getPosition()));
-
-                        //Toast.makeText(getContext(), ""+ allMarkers.get(prediction.getDescription()), Toast.LENGTH_SHORT).show();
-
-                        Toast.makeText(getContext(), "" + allMarkers.size(), Toast.LENGTH_SHORT).show();
-
-
-                        for (int i=0; i< allMarkers.size();i++){
-
-                            if (allMarkers.get(i).getTag().equals(prediction.getPlaceId())){
-
-                                Toast.makeText(getContext(), "Déplacement sur la carte" , Toast.LENGTH_SHORT).show();
-
-
-
-                                //myMap.animateCamera(CameraUpdateFactory.newLatLng(allMarkers.get(i).getPosition()));
-
-                                myMap.moveCamera(CameraUpdateFactory.newLatLng(allMarkers.get(i).getPosition()));
-                                myMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-
-
-                                break;
-                            }else
-                            {
-                                Toast.makeText(getContext(), "ouverture du détail" + prediction.getDescription() , Toast.LENGTH_SHORT).show();
-
-                                Intent intent = new Intent(getContext(), DetailActivity.class);
-                                String restaurantTag = prediction.getPlaceId();
-                                intent.putExtra("TAG_ID", restaurantTag);
-                                startActivity(intent);
-
-
-
-                            }
-
-
-                        }
-
-                    }
-
-                }
-            });
-
-             */
-
-
-
 
             //Setup Google Map
             map.getUiSettings().setZoomControlsEnabled(true);
 
             //  map.setMinZoomPreference(DEFAULT_ZOOM);
 
-            map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                @Override
-                public boolean onMarkerClick(@NonNull @NotNull Marker marker) {
-                    Intent intent = new Intent(getContext(), DetailActivity.class);
-                    String restaurantTag = Objects.requireNonNull(marker.getTag()).toString();
-                    intent.putExtra("TAG_ID", restaurantTag);
-                    startActivity(intent);
-                    return true;
-                }
+            map.setOnMarkerClickListener(marker -> {
+                Intent intent = new Intent(getContext(), DetailActivity.class);
+                String restaurantTag = Objects.requireNonNull(marker.getTag()).toString();
+                intent.putExtra("TAG_ID", restaurantTag);
+                startActivity(intent);
+                return true;
             });
 
             checkPermissions();
@@ -258,7 +133,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     private void showMapWithPosition(@NonNull LatLng position) {
         if (myMap != null) {
             myMap.moveCamera(CameraUpdateFactory.newLatLng(position));
-            //myMap.animateCamera(CameraUpdateFactory.zoomTo(myZoom));
+
         }
 
     }
@@ -309,7 +184,7 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     }
 
     private void checkPermissions() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             if (myMap != null) {
                 myMap.setMyLocationEnabled(true);

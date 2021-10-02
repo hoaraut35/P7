@@ -5,8 +5,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import com.hoarauthomas.go4lunchthp7.ui.restaurant.ListFragment;
 import com.hoarauthomas.go4lunchthp7.ui.map.MapsFragment;
+import com.hoarauthomas.go4lunchthp7.ui.restaurant.ListFragment;
 import com.hoarauthomas.go4lunchthp7.ui.settings.SettingsFragment;
 import com.hoarauthomas.go4lunchthp7.ui.workmates.WorkmatesFragment;
 
@@ -24,8 +24,9 @@ public class MainFragmentsAdapter extends FragmentStateAdapter {
         switch (position) {
             case 1:
                 return new MapsFragment();
+
             case 2:
-                return new ListFragment();//.newInstance();
+                return new ListFragment();
             case 3:
                 return WorkmatesFragment.newInstance();
             case 4:

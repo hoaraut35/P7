@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
@@ -23,7 +22,7 @@ import java.util.List;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     //variables ...
-    private List<RestaurantPojo> myRestaurantResult;
+    private final List<RestaurantPojo> myRestaurantResult;
    // private LatLng myPosition;
 
     //interface for callback
@@ -32,7 +31,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         void popupSnack(String message);
     }
 
-    //declare callbacl
+    //declare callback
     private final RestaurantListener callback;
 
     public RecyclerViewAdapter(List<RestaurantPojo> myList, RestaurantListener callback) {
@@ -137,12 +136,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
 
         //TODO add listener
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callback.onClickDetailRestaurant(result.getPlaceId());
-            }
-        });
+        holder.itemView.setOnClickListener(v -> callback.onClickDetailRestaurant(result.getPlaceId()));
 
     }
 
