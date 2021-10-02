@@ -99,6 +99,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
 
         if (modelClass.isAssignableFrom(ViewModelMain.class)) {
             return (T) new ViewModelMain(
+                    permissionChecker,
                     firebaseAuthRepository,
                     firestoreRepository,
                     placeAutocompleteRepository,

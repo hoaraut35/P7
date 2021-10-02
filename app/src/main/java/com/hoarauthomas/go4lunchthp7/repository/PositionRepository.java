@@ -28,7 +28,7 @@ public class PositionRepository {
     private final MutableLiveData<Location> locationMutableLiveData = new MutableLiveData<>(null);
 
     //for callback of FusedLocationProviderClient
-    private LocationCallback callback;
+    private LocationCallback locationCallback;
 
     //constructor called by viewmodelfactory to get an instance...
     public PositionRepository(@NonNull FusedLocationProviderClient fusedLocationProviderClient) {
@@ -43,32 +43,35 @@ public class PositionRepository {
     //public method to start listener position
     @RequiresPermission(anyOf = {"android.permission.ACCESS_COARSE_LOCATION", "android.permission.ACCESS_FINE_LOCATION"})
     public void startLocationRequest() {
-        if (callback == null) {
-            callback = new LocationCallback() {
+
+        if (locationCallback == null) {
+
+            locationCallback = new LocationCallback() {
                 @Override
                 public void onLocationResult(@NonNull LocationResult locationResult) {
+                    super.onLocationResult(locationResult);
                     Location location = locationResult.getLastLocation();
                     locationMutableLiveData.setValue(location);
                 }
             };
         }
 
-        fusedLocationProviderClient.removeLocationUpdates(callback);
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
 
         fusedLocationProviderClient.requestLocationUpdates(
                 LocationRequest.create()
                         .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                         .setSmallestDisplacement(SMALLEST_DISPLACEMENT_THRESHOLD_METER)
                         .setInterval(LOCATION_REQUEST_INTERVAL_MS),
-                callback,
+                locationCallback,
                 Looper.getMainLooper()
         );
     }
 
     //public method to stop listener when permission is not granted
     public void stopLocationRequest() {
-        if (callback != null) {
-            fusedLocationProviderClient.removeLocationUpdates(callback);
+        if (locationCallback != null) {
+            fusedLocationProviderClient.removeLocationUpdates(locationCallback);
         }
     }
 }

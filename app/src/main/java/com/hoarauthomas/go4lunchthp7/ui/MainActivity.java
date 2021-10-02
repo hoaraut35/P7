@@ -48,6 +48,13 @@ public class MainActivity extends AppCompatActivity {
 
     public ActivityMainBinding binding;
     public ViewModelMain myViewModel;
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        myViewModel.refresh();
+    }
+
     public FirestoreUser myUserFirestoreData;
 
     private final List<AuthUI.IdpConfig> providers = Arrays.asList(
@@ -122,10 +129,7 @@ public class MainActivity extends AppCompatActivity {
                         setupSettings();
                     } else {
 
-                        if (result.getResultCode() == 0) {
-
-                        } else {
-
+                        if (result.getResultCode() != 0) {
 
                             if (result.getIdpResponse() == null) {
                                 MainActivity.this.showSnackBar(MainActivity.this.getString(R.string.error_no_network));
@@ -140,9 +144,6 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    /**
-     * launch if no user login
-     */
     private void request_login() {
 
         AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
@@ -167,9 +168,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void request_user_info(FirebaseUser myUserResult) {
-
-       // myViewModel.createUser();
-
 
         myViewModel.setUser();
 
