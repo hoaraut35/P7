@@ -93,11 +93,10 @@ public class WorkmatesViewModelTest {
     @Test
     public void workmateViewModel() throws InterruptedException {
 
-        //when fail here...
+        //when
         ViewStateWorkMates myView = LiveDataTestUtils.getOrAwaitValue(myViewModel.getMediatorLiveData());
-        // ViewStateWorkMates myResult = LiveDataTestUtils.getOrAwaitValue(myViewModel.getMediatorLiveData());
 
-        //Then
+        //Then (we must to find 3
         assertEquals(3, myView.getMySpecialWorkMAtes().size());
 
     }
