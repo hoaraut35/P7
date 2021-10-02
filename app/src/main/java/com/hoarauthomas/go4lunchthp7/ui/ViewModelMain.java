@@ -80,7 +80,7 @@ public class ViewModelMain extends ViewModel {
         this.mySharedRepoVM = mySharedRepoVM;
 
         //add source on onPlacesAutocomplete
-        myAppMapMediator.addSource(myPlaceAutocompleteList, placeAutocomplete -> {
+       /* myAppMapMediator.addSource(myPlaceAutocompleteList, placeAutocomplete -> {
             if (myPlaceAutocompleteList == null) return;
             logicWork(myUserLiveData.getValue(),
                     myWorkMatesListLiveData.getValue(),
@@ -89,9 +89,11 @@ public class ViewModelMain extends ViewModel {
                     placeAutocomplete);
         });
 
+        */
+
 
         //add source
-        myAppMapMediator.addSource(myUserLiveData, firebaseUser -> {
+     /*   myAppMapMediator.addSource(myUserLiveData, firebaseUser -> {
             if (firebaseUser != null) {
                 if (!firebaseUser.getUid().isEmpty()) {
                     logicWork(firebaseUser, myWorkMatesListLiveData.getValue(),
@@ -102,8 +104,10 @@ public class ViewModelMain extends ViewModel {
             }
         });
 
+      */
+
         //add source
-        myAppMapMediator.addSource(myWorkMatesListLiveData, users -> {
+        /*myAppMapMediator.addSource(myWorkMatesListLiveData, users -> {
             if (users == null) return;
             if (myWorkMatesListLiveData != null) {
                 if (!Objects.requireNonNull(myWorkMatesListLiveData.getValue()).isEmpty()) {
@@ -116,7 +120,9 @@ public class ViewModelMain extends ViewModel {
             }
         });
 
-        myAppMapMediator.addSource(myWorkmate, firestoreUser -> {
+         */
+
+        /*myAppMapMediator.addSource(myWorkmate, firestoreUser -> {
             if (firestoreUser == null) return;
             logicWork(myUserLiveData.getValue(),
                     myWorkMatesListLiveData.getValue(),
@@ -125,10 +131,12 @@ public class ViewModelMain extends ViewModel {
                     myPlaceAutocompleteList.getValue());
         });
 
+         */
+
     }
 
     // Logic work
-    private void logicWork(
+    /*private void logicWork(
             @Nullable FirebaseUser myUser,
             @Nullable List<FirestoreUser> workmates,
             @Nullable Boolean bool,
@@ -182,6 +190,8 @@ public class ViewModelMain extends ViewModel {
             }
         }
     }
+
+     */
 
     public LiveData<Boolean> getLoginState() {
         return myFirebaseAuthRepoVM.getFirebaseAuthUserStateFromRepo();
@@ -253,5 +263,3 @@ public class ViewModelMain extends ViewModel {
     }
 
 }
-
-
