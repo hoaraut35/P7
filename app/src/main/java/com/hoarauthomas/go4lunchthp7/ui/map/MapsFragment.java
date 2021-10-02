@@ -215,4 +215,3 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     }
 
 }
-

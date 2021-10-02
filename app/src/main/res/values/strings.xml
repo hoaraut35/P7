@@ -110,10 +110,10 @@
     <string name="notification_enable_msg">Notification enabled</string>
     <string name="title_dialog_alert">Search result</string>
     <string name="no_data">no data</string>
-    <string name="msg_autocomplete">Essayer plus tard</string>
-    <string name="login_abord_msg">Annulée</string>
-    <string name="error_autocomplete">Erreur autocomplete</string>
-    <string name="cancel_autocomplete">Recherche annulée</string>
+    <string name="msg_autocomplete">check another time</string>
+    <string name="login_abord_msg">abord</string>
+    <string name="error_autocomplete">Error autocomplete</string>
+    <string name="cancel_autocomplete">Aborded search</string>
 
 
 </resources>

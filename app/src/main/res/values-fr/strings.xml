@@ -116,6 +116,10 @@
     <string name="notification_disable_msg">Notification désactivée</string>
     <string name="notification_enable_msg">Notification activée</string>
     <string name="no_data">Pas de données</string>
+    <string name="msg_autocomplete">Essayer plus tard</string>
+    <string name="login_abord_msg">Annuler</string>
+    <string name="error_autocomplete">Erreur autocomplete</string>
+    <string name="cancel_autocomplete">Recherche annulée</string>
 
 
 </resources>
