@@ -94,6 +94,11 @@ public class RestaurantPojo {
     }
 
 
+    public RestaurantPojo(String placeid, String name) {
+        this.name = name;
+        this.placeId = placeid;
+    }
+
 
 
 

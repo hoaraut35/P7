@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.hoarauthomas.go4lunchthp7.databinding.FragmentWorkBinding;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
-import com.hoarauthomas.go4lunchthp7.model.SpecialWorkMates;
+import com.hoarauthomas.go4lunchthp7.model.WorkmatesPojoForUI;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class WorkmatesFragment extends Fragment implements WorkmatesAdapter.Work
 
     private FragmentWorkBinding binding;
     private RecyclerView recyclerView;
-    public final List<SpecialWorkMates> resultToShow = new ArrayList<>();
+    public final List<WorkmatesPojoForUI> resultToShow = new ArrayList<>();
 
     public static WorkmatesFragment newInstance() {
         return new WorkmatesFragment();
@@ -59,7 +59,7 @@ public class WorkmatesFragment extends Fragment implements WorkmatesAdapter.Work
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private void showWorkMates(List<SpecialWorkMates> mySpecial) {
+    private void showWorkMates(List<WorkmatesPojoForUI> mySpecial) {
         if (mySpecial != null) {
             resultToShow.clear();
             resultToShow.addAll(mySpecial);

@@ -10,13 +10,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import okhttp3.mockwebserver.MockWebServer;
 
 
 public class FirebaseAuthRepositoryTest {
 
-  //  MockWebServer server = new MockWebServer();
 
-    //MockWebServer.SocketHandler.
 
 }

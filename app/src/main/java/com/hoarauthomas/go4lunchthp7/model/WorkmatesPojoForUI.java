@@ -1,6 +1,6 @@
 package com.hoarauthomas.go4lunchthp7.model;
 
-public class SpecialWorkMates {
+public class WorkmatesPojoForUI {
 
     String avatar;
     String nameOfWorkMates;
@@ -31,7 +31,6 @@ public class SpecialWorkMates {
         this.avatar = avatar;
     }
 
-
     public String getNameOfRestaurant() {
         return nameOfRestaurant;
     }
@@ -40,16 +39,18 @@ public class SpecialWorkMates {
         this.nameOfRestaurant = nameOfRestaurant;
     }
 
-    public SpecialWorkMates(String avatar, String name, String nameOfRestaurant, String id) {
+    public WorkmatesPojoForUI(String avatar, String nameOfWorkMates, String nameOfRestaurant, String placeId) {
         this.avatar = avatar;
-        this.nameOfWorkMates = name;
+        this.nameOfWorkMates = nameOfWorkMates;
         this.nameOfRestaurant = nameOfRestaurant;
-        this.placeId = id;
+        this.placeId = placeId;
     }
 
-    public SpecialWorkMates() {
+    public WorkmatesPojoForUI(){
 
     }
+
+
 
 }
 

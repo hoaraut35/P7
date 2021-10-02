@@ -26,21 +26,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-//TODO:https://medium.com/@kashifo/4-steps-to-mvvm-in-android-java-b05fb4148523
-
-//https://github.com/NinoDLC/MVVM_Clean_Archi_Java/blob/master/app/src/main/java/fr/delcey/mvvm_clean_archi_java/data/interwebs/WeatherRepository.java
-
 public class RestaurantsRepository {
 
-    //this is api service class
     private final GooglePlaceApi service;
 
-    //this is the list for add all iteration in a list to send after in mutable
     private  List<RestaurantPojo> allRestaurants = new ArrayList<>();
 
     public MutableLiveData<ResultPlaceDetail> myRestaurantDetailByPlaceId = new MutableLiveData<>();
 
-    private final MutableLiveData<List<RestaurantPojo>> listOfRestaurantWithLongLat = new MutableLiveData<>();
+    private final MutableLiveData<List<RestaurantPojo>> listOfRestaurantWithLongLat = new MutableLiveData<>(null);
     private final MutableLiveData<PlaceDetailsFinal> restauDetailObj = new MutableLiveData<>();
     private final MutableLiveData<PlaceDetailsFinal> restauDetailObj2 = new MutableLiveData<>();
     private final MutableLiveData<String> placeId = new MutableLiveData<String>();
@@ -52,15 +46,11 @@ public class RestaurantsRepository {
         service = RetrofitRequest.getRetrofitInstance().create(GooglePlaceApi.class);
     }
 
-
-
-    //update position of user in repository when a location is find
     public void setNewLatLngPositionFromGPS(Double Long, Double Lat) {
         Log.i("[MAP]", "Repository restaurant position " + Lat + Long);
         listOfRestaurantWithLongLat.setValue(getAllRestaurants(Long, Lat).getValue());
     }
 
-    //for alarm place detail
     public PlaceDetailsFinal getPlaceDetail(String placeId){
 
         Call<PlaceDetailsFinal> myCallAPI = service.getPlaceWithAllDetails2(BuildConfig.MAPS_API_KEY,placeId);
@@ -78,7 +68,6 @@ public class RestaurantsRepository {
 
     }
 
-    //this is livedata is publish to viewmodel
     public LiveData<List<RestaurantPojo>> getAllRestaurants(@Nullable Double Long, @Nullable Double Lat) {
 
         String myPositionStr = Lat + "," + Long;
@@ -126,7 +115,6 @@ public class RestaurantsRepository {
             myRestaurantDetailByPlaceId.setValue(existing.getResult());
             Log.i("[CACHE]", "cache used !!");
         } else {
-
             //no cache, no placeId request
             if (placeId == null || placeId.isEmpty()) {
                 Log.i("[MONDETAIL]", "id null opu vide");
@@ -152,17 +140,8 @@ public class RestaurantsRepository {
                                 myRestaurantDetailByPlaceId.setValue(null);
                             }
                         });
-
-
             }
-
-
-
-
         }
-
-
-      //  return myRestaurantDetailByPlaceId;
     }
 
     public void setPlaceId(String id) {
@@ -176,4 +155,6 @@ public class RestaurantsRepository {
     public LiveData<List<RestaurantPojo>> getMyRestaurantsList() {
         return listOfRestaurantWithLongLat;
     }
+
+
 }

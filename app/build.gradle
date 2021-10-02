@@ -76,13 +76,32 @@ dependencies {
 
     testImplementation 'androidx.test:core:1.4.0'
     testImplementation 'org.mockito:mockito-core:1.10.19'
-    testImplementation("com.squareup.okhttp3:mockwebserver:4.9.1")
 
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation 'com.squareup.retrofit2:retrofit-mock:2.7.1'
+
+    //testImplementation 'com.squareup.okhttp3:mockwebserver3-junit4:4.9.2'
+   // testImplementation("com.squareup.okhttp3:mockwebserver:4.9.1")
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.9.2")
+
+    // Test helpers for LiveData
+    testImplementation "android.arch.core:core-testing:1.1.1"
+
+
+    //jackson
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.8.5'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.8.5'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.8.5'
+    
+    // Test helpers for Room
+    testImplementation "android.arch.persistence.room:testing:1.1.1"
+    androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     //FIREBASE can't add this because duplicate error ?
     //implementation 'com.google.firebase:firebase-core:19.0.0'
+
+
 
     //FIREBASE-UI
     implementation 'com.firebaseui:firebase-ui-auth:7.2.0'
