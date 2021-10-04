@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.google.common.collect.Maps;
 import com.hoarauthomas.go4lunchthp7.ui.map.MapsFragment;
 import com.hoarauthomas.go4lunchthp7.ui.restaurant.ListFragment;
 import com.hoarauthomas.go4lunchthp7.ui.settings.SettingsFragment;
@@ -22,8 +23,12 @@ public class MainFragmentsAdapter extends FragmentStateAdapter {
 
 
         switch (position) {
+
+            case 0:
+                return MapsFragment.newInstance();
             case 1:
-                return new MapsFragment();
+                return MapsFragment.newInstance();
+                //return new MapsFragment();
 
             case 2:
                 return new ListFragment();
@@ -32,7 +37,7 @@ public class MainFragmentsAdapter extends FragmentStateAdapter {
             case 4:
                 return new SettingsFragment();
             default:
-                return new MapsFragment();
+                return MapsFragment.newInstance();
         }
     }
 

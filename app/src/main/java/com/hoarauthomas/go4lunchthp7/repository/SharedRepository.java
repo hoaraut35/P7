@@ -29,17 +29,23 @@ public class SharedRepository {
         return myPlaceIdFromAutocomplete;
     }
 
-    public LiveData<List<String>> getMyRestaurantList() {
+    /*public LiveData<List<String>> getMyRestaurantList() {
         return myRestaurantList;
     }
 
-    public void setMyRestaurantList(List<String> myRestaurantList) {
+     */
+
+    /*public void setMyRestaurantList(List<String> myRestaurantList) {
         this.myRestaurantList.setValue(myRestaurantList);
     }
 
-    public void setMyPlaceIdFromAutocomplete(Prediction myPlaceFromVM) {
+     */
+
+  /*  public void setMyPlaceIdFromAutocomplete(Prediction myPlaceFromVM) {
         this.myPlaceIdFromAutocomplete.postValue(myPlaceFromVM);
     }
+
+   */
 
     public void setZoom(Integer myZoom) {
         this.myZoom.setValue(myZoom);

@@ -90,9 +90,10 @@ public class ViewModelMap extends ViewModel {
 
         //add listener for new position
         myViewStateMapMediator.addSource(myPosition, position -> {
-            if (position != null) {
-                myRestaurantRepository.setNewLatLngPositionFromGPS(position.getLongitude(), position.getLatitude());
-            }
+            if (position == null) return;
+
+               myRestaurantRepository.setNewLatLngPositionFromGPS(position.getLongitude(), position.getLatitude());
+
         });
 
         //add listener for list of restaurants
@@ -181,7 +182,7 @@ public class ViewModelMap extends ViewModel {
         }
     }
 
-    @SuppressLint("MissingPermission")
+  /*  @SuppressLint("MissingPermission")
     public void refresh() {
         // No GPS permission
         if (!myPermission.hasLocationPermission()) {
@@ -190,6 +191,8 @@ public class ViewModelMap extends ViewModel {
             myPositionRepository.startLocationRequest();
         }
     }
+
+   */
 
     public LiveData<ViewStateMap> ViewStateForMapUI() {
         return myViewStateMapMediator;

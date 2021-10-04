@@ -73,8 +73,6 @@ public class RestaurantsRepository {
         String myPositionStr = Lat + "," + Long;
         Log.i("[MAP]", "[REPOSITORY RESTAURANT] : Ma position : " + myPositionStr);
 
-        //TODO: cache
-
         service.getNearbyPlaces(BuildConfig.MAPS_API_KEY, myPositionStr)
 
                 .enqueue(new Callback<Place>() {
@@ -84,7 +82,6 @@ public class RestaurantsRepository {
                         if (response.body() != null) {
 
                             allRestaurants.clear();
-                            //listOfRestaurantWithLongLat.postValue(null);
 
                             for (int i = 0; i < response.body().getResults().size(); i++) {
                                 allRestaurants.add(response.body().getResults().get(i));

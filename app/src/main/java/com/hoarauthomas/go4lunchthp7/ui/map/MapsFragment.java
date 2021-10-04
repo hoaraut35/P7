@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,6 +27,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
+import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
 
 import org.jetbrains.annotations.NotNull;
@@ -38,13 +39,18 @@ import java.util.Objects;
 public class MapsFragment extends Fragment implements OnRequestPermissionsResultCallback, GoogleMap.OnMarkerClickListener {
 
     private ViewModelMap myViewModelMap;
-    //private SharedRepository mySharedRepository;
     public Marker myMarker;
     private static final int DEFAULT_ZOOM = 12;
     public List<MyMarkerObject> allMarkers = new ArrayList<>();
     private GoogleMap myMap;
+    SupportMapFragment mapFragment;
 
     private Integer myZoom;
+
+    public static MapsFragment newInstance() {
+        MapsFragment mapsFragment = new MapsFragment();
+        return mapsFragment;
+    }
 
     @Nullable
     @Override
@@ -54,8 +60,166 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+    }
+
     private void setupViewModel() {
+
         myViewModelMap = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMap.class);
+
+        //display a map
+        myViewModelMap.ViewStateForMapUI().observe(getViewLifecycleOwner(), new Observer<ViewStateMap>() {
+            @Override
+            public void onChanged(ViewStateMap viewStateMap) {
+
+                //if (mapFragment == null) return;
+
+                mapFragment.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(@NonNull GoogleMap googleMap) {
+
+                        myMap = googleMap;
+
+                        //update zoom to default mode
+                        googleMap.animateCamera(CameraUpdateFactory.zoomTo(DEFAULT_ZOOM));
+
+                        //update position locator on map
+                        checkPermissionsForZoom();
+
+                        //move to user position
+                        myMap.moveCamera(CameraUpdateFactory.newLatLng(viewStateMap.getMyLatLng()));
+
+                        DisplayMarker(viewStateMap.myRestaurantsList);
+
+                        //zoom in out button
+                        googleMap.getUiSettings().setZoomControlsEnabled(true);
+
+                        //set lisztener on marker
+                        googleMap.setOnMarkerClickListener(marker -> {
+                            Intent intent = new Intent(getContext(), DetailActivity.class);
+                            String restaurantTag = Objects.requireNonNull(marker.getTag()).toString();
+                            intent.putExtra("TAG_ID", restaurantTag);
+                            startActivity(intent);
+                            return true;
+                        });
+
+                    }
+                });
+
+            }
+        });
+
+        //setup zoom on map
+        myViewModelMap.getMyZoom().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+
+                mapFragment.getMapAsync((OnMapReadyCallback) new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(@NonNull GoogleMap googleMap) {
+                        if (integer != null) {
+                            setupZoom(integer);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void setupZoom(Integer integer) {
+
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(@NonNull GoogleMap googleMap) {
+                myZoom = integer;
+                myMap.animateCamera(CameraUpdateFactory.zoomTo(integer));
+            }
+        });
+    }
+
+    private void DisplayMarker(List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo> myMarkersList) {
+
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(@NonNull GoogleMap googleMap) {
+
+                MarkerOptions myMarkerOptions;
+
+                //loop to iterate restaurants
+                for (RestaurantPojo myRestaurantItem : myMarkersList) {
+                    LatLng myMarkerPosition = new LatLng(myRestaurantItem.getGeometry().getLocation().getLat(), myRestaurantItem.getGeometry().getLocation().getLng());
+
+                    myMarkerOptions = new MarkerOptions();
+
+                    myMarkerOptions.position(myMarkerPosition);
+
+                    if (myRestaurantItem.getIcon().contains("rouge")) {
+                        myMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.baseline_unreserved_restaurant_24));
+                    } else {
+                        myMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.baseline_booked_restaurant_24));
+                    }
+
+                    myMarker = googleMap.addMarker(myMarkerOptions);
+                    myMarker.setTag(myRestaurantItem.getPlaceId());
+                    allMarkers.add(new MyMarkerObject(myRestaurantItem.getPlaceId(), myMarkerPosition));
+
+                }
+
+
+            }
+        });
+
+
+
+
+
+
+     /*   private void showRestaurant(List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo> restaurants) {
+
+            if (restaurants.isEmpty()) {
+                Log.i("[MAP]", "list restaurant is empty");
+                return;
+            }
+
+            if (myMap == null) {
+                return;
+            }
+
+            myMap.clear();
+
+            LatLng myMarkerPosition;
+            MarkerOptions myMarkerOptions;
+
+            allMarkers.clear();
+
+            for (int i = 0; i < restaurants.size(); i++) {
+
+                myMarkerPosition = new LatLng(restaurants.get(i).getGeometry().getLocation().getLat(), restaurants.get(i).getGeometry().getLocation().getLng());
+                myMarkerOptions = new MarkerOptions();
+
+                myMarkerOptions.position(myMarkerPosition);
+
+                if (restaurants.get(i).getIcon().contains("rouge")) {
+                    myMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.baseline_unreserved_restaurant_24));
+                } else {
+                    myMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.baseline_booked_restaurant_24));
+                }
+
+                myMarker = myMap.addMarker(myMarkerOptions);
+                assert myMarker != null;
+                myMarker.setTag(restaurants.get(i).getPlaceId());
+
+                allMarkers.add(new MyMarkerObject(restaurants.get(i).getPlaceId(), myMarkerPosition));
+
+            }
+
+        }
+
+      */
+
     }
 
     private final OnMapReadyCallback callback = new OnMapReadyCallback() {
@@ -64,22 +228,28 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
         public void onMapReady(GoogleMap map) {
 
             //to get an instance
-            myMap = map;
+            //myMap = map;
             myMap.clear();
+            //  checkPermissions();
+            //  myMap.animateCamera(CameraUpdateFactory.zoomTo(DEFAULT_ZOOM));
 
-            myMap.animateCamera(CameraUpdateFactory.zoomTo(DEFAULT_ZOOM));
-
-            myViewModelMap.getMyZoom().observe(getViewLifecycleOwner(), integer -> {
+        /*    myViewModelMap.getMyZoom().observe(getViewLifecycleOwner(), integer -> {
                 //ok for variable but no zoom in or out
                 myZoom = integer;
                 myMap.animateCamera(CameraUpdateFactory.zoomTo(integer));
             });
 
+         */
+
             //myViewModelMap.refresh();
-            myViewModelMap.ViewStateForMapUI().observe(getViewLifecycleOwner(), viewStateMap -> {
+
+            /*myViewModelMap.ViewStateForMapUI().observe(getViewLifecycleOwner(), viewStateMap -> {
                 showMapWithPosition(viewStateMap.getMyLatLng());
                 showRestaurant(viewStateMap.myRestaurantsList);
             });
+
+             */
+
 
             myViewModelMap.getPredictionFromRepository().observe(requireActivity(), prediction -> {
 
@@ -113,77 +283,23 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             });
 
             //Setup Google Map
-            map.getUiSettings().setZoomControlsEnabled(true);
+            //   map.getUiSettings().setZoomControlsEnabled(true);
 
             //  map.setMinZoomPreference(DEFAULT_ZOOM);
 
-            map.setOnMarkerClickListener(marker -> {
-                Intent intent = new Intent(getContext(), DetailActivity.class);
-                String restaurantTag = Objects.requireNonNull(marker.getTag()).toString();
-                intent.putExtra("TAG_ID", restaurantTag);
-                startActivity(intent);
-                return true;
-            });
+//            map.setOnMarkerClickListener(marker -> {
+//                Intent intent = new Intent(getContext(), DetailActivity.class);
+//                String restaurantTag = Objects.requireNonNull(marker.getTag()).toString();
+//                intent.putExtra("TAG_ID", restaurantTag);
+//                startActivity(intent);
+//                return true;
+//            });
 
-            checkPermissions();
 
         }
     };
 
-    private void showMapWithPosition(@NonNull LatLng position) {
-        if (myMap != null) {
-            myMap.moveCamera(CameraUpdateFactory.newLatLng(position));
-
-        }
-
-    }
-
-    private void showRestaurant(List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo> restaurants) {
-
-        if (restaurants.isEmpty()) {
-            Log.i("[MAP]", "list restaurant is empty");
-            return;
-        }
-
-        if (myMap == null) {
-            return;
-        }
-
-        myMap.clear();
-
-        LatLng myMarkerPosition;
-        MarkerOptions myMarkerOptions;
-
-        allMarkers.clear();
-
-        for (int i = 0; i < restaurants.size(); i++) {
-
-            myMarkerPosition = new LatLng(restaurants.get(i).getGeometry().getLocation().getLat(), restaurants.get(i).getGeometry().getLocation().getLng());
-            myMarkerOptions = new MarkerOptions();
-
-            myMarkerOptions.position(myMarkerPosition);
-
-            if (restaurants.get(i).getIcon().contains("rouge")) {
-                //myMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                myMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.baseline_unreserved_restaurant_24));
-            } else {
-                //    myMarkerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-                myMarkerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.baseline_booked_restaurant_24));
-            }
-
-
-            myMarker = myMap.addMarker(myMarkerOptions);
-            assert myMarker != null;
-            myMarker.setTag(restaurants.get(i).getPlaceId());
-
-
-            allMarkers.add(new MyMarkerObject(restaurants.get(i).getPlaceId(), myMarkerPosition));
-
-        }
-
-    }
-
-    private void checkPermissions() {
+    private void checkPermissionsForZoom() {
         if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             if (myMap != null) {
@@ -195,18 +311,8 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     @Override
     public void onResume() {
         super.onResume();
-        checkPermissions();
-      // myViewModelMap.refresh();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        SupportMapFragment mapFragment =
-                (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(callback);
-        }
+        //checkPermissions();
+        // myViewModelMap.refresh();
     }
 
     @Override

@@ -27,9 +27,8 @@ public class ViewModelWorkMates extends ViewModel {
         LiveData<List<RestaurantPojo>> myRestaurantList = myRestaurantRepository.getMyRestaurantsList();
 
         myViewStateWorkMatesMediator.addSource(myWorkMatesListFromRepo, firestoreUsers -> {
-            if (firestoreUsers != null) {
-                logicWork(firestoreUsers, myRestaurantList.getValue());
-            }
+            if (firestoreUsers == null) return;
+            logicWork(firestoreUsers, myRestaurantList.getValue());
         });
 
         myViewStateWorkMatesMediator.addSource(myRestaurantList, restaurantPojo -> {
@@ -51,6 +50,7 @@ public class ViewModelWorkMates extends ViewModel {
         for (FirestoreUser myUserLoop : myFirestoreWorkmatesList) {
 
             WorkmatesPojoForUI myWorkmates = new WorkmatesPojoForUI();
+
             myWorkmates.setAvatar(myUserLoop.getUrlPicture());
             myWorkmates.setNameOfWorkMates(myUserLoop.getUsername());
 
@@ -58,7 +58,7 @@ public class ViewModelWorkMates extends ViewModel {
                 if (myRestaurantLoop.getPlaceId() != null) {
                     if (myUserLoop.getFavoriteRestaurant().equals(myRestaurantLoop.getPlaceId())) {
                         myWorkmates.setNameOfRestaurant(myRestaurantLoop.getName());
-                        //not visible but used for click listener
+                        //not visible but used for click listener tag
                         myWorkmates.setPlaceId(myRestaurantLoop.getPlaceId());
                     }
                 }

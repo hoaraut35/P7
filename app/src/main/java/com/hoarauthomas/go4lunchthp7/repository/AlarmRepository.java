@@ -1,6 +1,5 @@
 package com.hoarauthomas.go4lunchthp7.repository;
 
-import android.app.Application;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
@@ -8,9 +7,9 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.work.Data;
-import androidx.work.WorkManager;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.workmanager.WorkManagerTest;

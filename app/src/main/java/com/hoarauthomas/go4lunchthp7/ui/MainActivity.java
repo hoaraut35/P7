@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        myViewModel.refresh();
+     // myViewModel.refresh();
     }
 
     public FirestoreUser myUserFirestoreData;
@@ -114,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
                 myUserFirestoreData = firestoreUser;
             }
         });
+
+        myViewModel.refresh();
 
     }
 

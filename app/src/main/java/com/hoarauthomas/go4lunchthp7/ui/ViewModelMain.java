@@ -238,14 +238,6 @@ public class ViewModelMain extends ViewModel {
         mySharedRepoVM.setZoom(myZoom);
     }
 
-    public void stopPositionListener() {
-        myPositionRepoVM.stopLocationRequest();
-    }
-
-    public void startPositionListener() {
-        myPositionRepoVM.startLocationRequest();
-    }
-
     public void reloadDataAfterQuery(Boolean bool) {
         mySharedRepoVM.setReloadMap(bool);
     }
