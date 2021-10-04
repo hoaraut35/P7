@@ -9,6 +9,9 @@ plugins {
 //Added 04/06/21 for Firebase integration
 apply plugin: 'com.google.gms.google-services'
 
+
+
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -22,11 +25,15 @@ android {
 
         multiDexEnabled true
 
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
 
+
     buildTypes {
+
+
 
         debug {
 
@@ -36,6 +43,8 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+
         }
     }
     compileOptions {
@@ -106,7 +115,7 @@ dependencies {
 
 
     //FIREBASE-UI
-//    implementation 'com.firebaseui:firebase-ui-auth:7.2.0'
+    //implementation 'com.firebaseui:firebase-ui-auth:7.2.0'
     implementation platform('com.google.firebase:firebase-bom:28.4.1')
     implementation 'com.google.firebase:firebase-firestore'
     //implementation 'com.firebaseui:firebase-ui-firestore:7.2.0'

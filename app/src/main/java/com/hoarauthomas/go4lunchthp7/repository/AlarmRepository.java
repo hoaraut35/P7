@@ -22,7 +22,6 @@ import java.util.concurrent.TimeUnit;
 
 public class AlarmRepository {
 
-    FirebaseAuthRepository myFirebase;
     WorkManager myWorkManager;
     Context myContext;
 
@@ -36,35 +35,33 @@ public class AlarmRepository {
 
         Toast.makeText(myContext.getApplicationContext(), R.string.notification_enable_msg, Toast.LENGTH_SHORT).show();
 
-
-//        Log.i("[ALARME]","User uid for alarm : " + myFirebase.myFireBaseAuthInstance.getCurrentUser().getUid());
         //for production
         // LocalTime alarmTime = LocalTime.of(12, 00);
 
         //set starting time for test
-        LocalDateTime actuel = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
-        LocalTime alarmTime = actuel.toLocalTime();
+        LocalDateTime actual = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+        LocalTime alarmTime = actual.toLocalTime();
         alarmTime = alarmTime.plusMinutes(1);
 
-        Log.i("[ALARME]", "Alarm time :" + alarmTime.toString());
+        Log.i("[ALARM]", "Alarm time :" + alarmTime.toString());
 
         LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
         LocalTime nowTime = now.toLocalTime();
 
-        Log.i("[ALARME]", "Time now : " + nowTime.toString());
+        Log.i("[ALARM]", "Time now : " + nowTime.toString());
 
         if (nowTime == alarmTime || nowTime.isAfter(alarmTime)) {
             now = now.plusDays(1);
-            Log.i("[ALARME]", "Add one day to delay if the time is passed : " + now.toString());
+            Log.i("[ALARM]", "Add one day to delay if the time is passed : " + now.toString());
         }
 
         now = now.withHour(alarmTime.getHour()).withMinute(alarmTime.getMinute());
         Duration duration = Duration.between(LocalDateTime.now(), now);
-        Log.i("[ALARME]", "Load work in : " + duration.getSeconds() + " sec");
+        Log.i("[ALARM]", "Load work in : " + duration.getSeconds() + " sec");
 
-        //minimum repeat interval must be greather or equal to 15min see JobScheduler API
+        //minimum repeat interval must be more  or equal than 15min see JobScheduler API
         PeriodicWorkRequest myPeriodicWorkRequest = new PeriodicWorkRequest.Builder(WorkManagerTest.class, 15, TimeUnit.MINUTES)
-                //first work is delayed after we use the repeatinterval 24h
+                //first work is delayed after we use the repeat interval 24h
                 .setInitialDelay(duration.getSeconds(), TimeUnit.SECONDS)
                 .setInputData(
                         new Data.Builder()
@@ -80,8 +77,6 @@ public class AlarmRepository {
 
     public void removeAlarm() {
         myWorkManager.cancelAllWorkByTag("go4lunch");
-
-
         Toast.makeText(myContext.getApplicationContext(), R.string.notification_disable_msg, Toast.LENGTH_SHORT).show();
     }
 
