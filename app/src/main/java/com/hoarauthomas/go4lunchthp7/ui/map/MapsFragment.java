@@ -118,14 +118,17 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
             @Override
             public void onChanged(Integer integer) {
 
-                mapFragment.getMapAsync((OnMapReadyCallback) new OnMapReadyCallback() {
-                    @Override
-                    public void onMapReady(@NonNull GoogleMap googleMap) {
-                        if (integer != null) {
-                            setupZoom(integer);
+                if (mapFragment != null){
+                    mapFragment.getMapAsync((OnMapReadyCallback) new OnMapReadyCallback() {
+                        @Override
+                        public void onMapReady(@NonNull GoogleMap googleMap) {
+                            if (integer != null) {
+                                setupZoom(integer);
+                            }
                         }
-                    }
-                });
+                    });
+                }
+
             }
         });
     }
