@@ -266,22 +266,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupBottomBAr() {
+
         binding.bottomNavigationMenu.setOnItemSelectedListener(item -> {
 
             int id = item.getItemId();
 
             if (id == R.id.action_map) {
-                binding.viewpager.setCurrentItem(1);
+                binding.viewpager.setCurrentItem(0,false);
                 binding.topAppBar.setTitle(R.string.title_formapview);
                 binding.topAppBar.findViewById(R.id.searchView).setVisibility(View.VISIBLE);
             } else if (id == R.id.action_list) {
-                binding.viewpager.setCurrentItem(2);
+                binding.viewpager.setCurrentItem(1,false);
                 binding.topAppBar.setTitle(R.string.title_forlistview);
                 binding.topAppBar.findViewById(R.id.searchView).setVisibility(View.VISIBLE);
             } else if (id == R.id.action_work) {
                 binding.topAppBar.findViewById(R.id.searchView).setVisibility(View.INVISIBLE);
                 binding.topAppBar.setTitle(R.string.title_forworkmate);
-                binding.viewpager.setCurrentItem(3);
+                binding.viewpager.setCurrentItem(2,false);
             }
             return true;
         });
@@ -290,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupViewPager() {
         MainFragmentsAdapter myFragmentAdapter = new MainFragmentsAdapter(this);
         binding.viewpager.setAdapter(myFragmentAdapter);
-        binding.viewpager.setCurrentItem(1);
+        binding.viewpager.setCurrentItem(0);
         binding.viewpager.setUserInputEnabled(false);
     }
 

@@ -19,6 +19,7 @@ import com.hoarauthomas.go4lunchthp7.R;
 import com.hoarauthomas.go4lunchthp7.factory.ViewModelFactory;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.ui.detail.DetailActivity;
+import com.hoarauthomas.go4lunchthp7.ui.map.MapsFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,12 @@ public class ListFragment extends Fragment implements RecyclerViewAdapter.Restau
         setupRecyclerView(view);
         setupViewModel();
         return view;
+    }
+
+
+    public static ListFragment newInstance() {
+        ListFragment listFragment = new ListFragment();
+        return listFragment;
     }
 
     private void setupViewModel() {
