@@ -2,6 +2,7 @@ package com.hoarauthomas.go4lunchthp7.ui.map;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -43,9 +45,9 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     private static final int DEFAULT_ZOOM = 12;
     public List<MyMarkerObject> allMarkers = new ArrayList<>();
     private GoogleMap myMap;
-    SupportMapFragment mapFragment;
-
+    private SupportMapFragment mapFragment;
     private Integer myZoom;
+    private SharedPreferences mySharedPreferences;
 
     public static MapsFragment newInstance() {
         MapsFragment mapsFragment = new MapsFragment();
@@ -64,18 +66,19 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        //get preferences
+        mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireActivity());
     }
 
     private void setupViewModel() {
 
+        //init viewmodel
         myViewModelMap = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(ViewModelMap.class);
 
         //display a map
         myViewModelMap.ViewStateForMapUI().observe(getViewLifecycleOwner(), new Observer<ViewStateMap>() {
             @Override
             public void onChanged(ViewStateMap viewStateMap) {
-
-                //if (mapFragment == null) return;
 
                 mapFragment.getMapAsync(new OnMapReadyCallback() {
                     @Override
@@ -84,14 +87,15 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
                         myMap = googleMap;
                         googleMap.clear();
 
-                        //update zoom to default mode
-                        googleMap.animateCamera(CameraUpdateFactory.zoomTo(DEFAULT_ZOOM));
-
                         //update position locator on map
                         checkPermissionsForZoom();
 
                         //move to user position
                         myMap.moveCamera(CameraUpdateFactory.newLatLng(viewStateMap.getMyLatLng()));
+
+                        //     googleMap.animateCamera(CameraUpdateFactory.zoomTo(mySharedPreferences.getInt("zoom",DEFAULT_ZOOM)));
+                        googleMap.animateCamera(CameraUpdateFactory.zoomTo(mySharedPreferences.getInt("zoom",12)));
+
 
                         DisplayMarker(viewStateMap.myRestaurantsList);
 
@@ -138,8 +142,12 @@ public class MapsFragment extends Fragment implements OnRequestPermissionsResult
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(@NonNull GoogleMap googleMap) {
+
                 myZoom = integer;
-                myMap.animateCamera(CameraUpdateFactory.zoomTo(integer));
+                if (mapFragment!=null && googleMap!=null){
+                    googleMap.animateCamera(CameraUpdateFactory.zoomTo(integer));
+                }
+
             }
         });
     }

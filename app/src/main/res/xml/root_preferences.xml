@@ -9,13 +9,14 @@
             app:key="notifications2"
             app:summaryOff="@string/setting_off_notification"
             app:summaryOn="@string/setting_on_notification"
+            app:defaultValue="true"
             app:title="@string/language_mode" />
     </PreferenceCategory>
 
     <SeekBarPreference
         app:key="zoom"
         app:title="@string/setting_zoom_title"
-        app:defaultValue="12"
+        app:defaultValue="10"
         app:min="10"
         android:max="15"
         app:showSeekBarValue="true"

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -52,7 +53,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-     // myViewModel.refresh();
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        sp.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                Log.i("[SETTINGS]", "test event");
+            }
+        });
+        // myViewModel.refresh();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
     }
 
     public FirestoreUser myUserFirestoreData;
@@ -81,12 +95,14 @@ public class MainActivity extends AppCompatActivity {
         setupBottomBAr();
         setupViewPager();
 
+        setupSettings();
+
     }
 
     private void setupSettings() {
         SharedPreferences sp;
         sp = PreferenceManager.getDefaultSharedPreferences(this);
-        myViewModel.setZoom(sp.getInt("zoom", 10));
+        myViewModel.setZoom(sp.getInt("zoom", 55));
         myViewModel.setNotification(myViewModel.getMyUserFromFirestore().getUid(), sp.getBoolean("notifications2", true));
     }
 
@@ -110,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         myViewModel.getActualUserData().observe(this, firestoreUser -> {
-            if (firestoreUser !=  null){
+            if (firestoreUser != null) {
                 myUserFirestoreData = firestoreUser;
             }
         });
@@ -182,7 +198,6 @@ public class MainActivity extends AppCompatActivity {
             name.setText(Objects.requireNonNull(myUserResult.getDisplayName()));
 
 
-
             //email of user profile
             TextView email = hv.findViewById(R.id.email);
             email.setText(myUserResult.getEmail());
@@ -199,14 +214,13 @@ public class MainActivity extends AppCompatActivity {
 
             for (UserInfo profile : myUserResult.getProviderData()) {
 
-                if (profile.getPhotoUrl() != null){
+                if (profile.getPhotoUrl() != null) {
 
-                if (!profile.getPhotoUrl().toString().isEmpty()) {
-                    avatarSource = profile.getPhotoUrl().toString();
-                }
+                    if (!profile.getPhotoUrl().toString().isEmpty()) {
+                        avatarSource = profile.getPhotoUrl().toString();
+                    }
 
-                }
-                else {
+                } else {
                     //construct avatar
                     String nom = myUserResult.getDisplayName();
                     String[] parts = nom.split(" ", 2);
@@ -255,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void openMyFavoriteRestaurant() {
 
-       if (myUserFirestoreData != null && !myUserFirestoreData.getFavoriteRestaurant().isEmpty()) {
+        if (myUserFirestoreData != null && !myUserFirestoreData.getFavoriteRestaurant().isEmpty()) {
             Intent intent = new Intent(this, DetailActivity.class);
             intent.putExtra("TAG_ID", myUserFirestoreData.getFavoriteRestaurant());
             startActivity(intent);
@@ -272,17 +286,17 @@ public class MainActivity extends AppCompatActivity {
             int id = item.getItemId();
 
             if (id == R.id.action_map) {
-                binding.viewpager.setCurrentItem(0,false);
+                binding.viewpager.setCurrentItem(0, false);
                 binding.topAppBar.setTitle(R.string.title_formapview);
                 binding.topAppBar.findViewById(R.id.searchView).setVisibility(View.VISIBLE);
             } else if (id == R.id.action_list) {
-                binding.viewpager.setCurrentItem(1,false);
+                binding.viewpager.setCurrentItem(1, false);
                 binding.topAppBar.setTitle(R.string.title_forlistview);
                 binding.topAppBar.findViewById(R.id.searchView).setVisibility(View.VISIBLE);
             } else if (id == R.id.action_work) {
                 binding.topAppBar.findViewById(R.id.searchView).setVisibility(View.INVISIBLE);
                 binding.topAppBar.setTitle(R.string.title_forworkmate);
-                binding.viewpager.setCurrentItem(2,false);
+                binding.viewpager.setCurrentItem(2, false);
             }
             return true;
         });
