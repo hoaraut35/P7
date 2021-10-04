@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
         setupBottomBAr();
         setupViewPager();
 
-        setupSettings();
 
     }
 
@@ -103,7 +102,13 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sp;
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         myViewModel.setZoom(sp.getInt("zoom", 55));
-        myViewModel.setNotification(myViewModel.getMyUserFromFirestore().getUid(), sp.getBoolean("notifications2", true));
+
+        try{
+            myViewModel.setNotification(myViewModel.getMyUserFromFirestore().getUid(), sp.getBoolean("notifications2", true));
+        }catch (Exception e){
+
+        }
+
     }
 
     private void setupPermission() {
