@@ -19,6 +19,7 @@ import java.util.List;
 
 public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesAdapter.ViewHolder> {
 
+    private final Context context;
     private final List<WorkmatesPojoForUI> myWorkMatesToShow;
 
     public interface WorkMatesListener {
@@ -28,9 +29,10 @@ public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesAdapter.View
 
     private final WorkMatesListener callback;
 
-    public WorkmatesAdapter(List<WorkmatesPojoForUI> myList, WorkMatesListener callback) {
+    public WorkmatesAdapter(List<WorkmatesPojoForUI> myList, WorkMatesListener callback, Context context) {
         this.myWorkMatesToShow = myList;
         this.callback = callback;
+        this.context = context;
     }
 
     @NonNull
@@ -87,7 +89,7 @@ public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesAdapter.View
         }
 
         if (myWorkMates.getNameOfRestaurant() == null || myWorkMates.getNameOfRestaurant().isEmpty()) {
-            holder.itemView.setOnClickListener((View myUserView) -> callback.popupSnack("no restaurant selected"));
+            holder.itemView.setOnClickListener((View myUserView) -> callback.popupSnack(context.getString(R.string.toast_no_restaurant)));
 
         } else {
 

@@ -55,7 +55,7 @@ public class WorkmatesFragment extends Fragment implements WorkmatesAdapter.Work
         recyclerView = binding.recyclerViewWorkmates;
         recyclerView.setHasFixedSize(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-        recyclerView.setAdapter(new WorkmatesAdapter(resultToShow, this));
+        recyclerView.setAdapter(new WorkmatesAdapter(resultToShow, this, getContext()));
     }
 
     @SuppressLint("NotifyDataSetChanged")

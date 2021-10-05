@@ -120,6 +120,7 @@
     <string name="login_abord_msg">Annuler</string>
     <string name="error_autocomplete">Erreur autocomplete</string>
     <string name="cancel_autocomplete">Recherche annulée</string>
+    <string name="toast_no_restaurant">Pas de restaurant à afficher</string>
 
 
 </resources>

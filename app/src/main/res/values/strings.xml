@@ -114,6 +114,7 @@
     <string name="login_abord_msg">abord</string>
     <string name="error_autocomplete">Error autocomplete</string>
     <string name="cancel_autocomplete">Aborded search</string>
+    <string name="toast_no_restaurant">no restaurant selected</string>
 
 
 </resources>
