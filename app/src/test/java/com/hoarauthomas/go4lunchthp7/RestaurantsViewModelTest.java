@@ -2,84 +2,86 @@ package com.hoarauthomas.go4lunchthp7;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Before;
-import org.junit.Test;
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
+import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
+import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
+import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
+import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
+import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
+import com.hoarauthomas.go4lunchthp7.ui.restaurant.ViewModelRestaurant;
+import com.hoarauthomas.go4lunchthp7.ui.restaurant.ViewStateRestaurant;
+import com.hoarauthomas.go4lunchthp7.ui.workmates.ViewModelWorkMates;
+import com.hoarauthomas.go4lunchthp7.ui.workmates.ViewStateWorkMates;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
+
+@RunWith(MockitoJUnitRunner.class)
 public class RestaurantsViewModelTest {
 
-    //write to test before the model
+    //to run every tasks synchronously
+    @Rule
+    public final InstantTaskExecutorRule rule = new InstantTaskExecutorRule();
 
-    //list of test
-
-    /**
-     * Login form :
-     * login test
-     *
-     * Main activity :
-     * create user un database ?
-     * read user data ?
-     *
-     * Detail screen :
-     * add favorite restaurant
-     * remove favorite restaurant
-     * add like on restaurant
-     * remove like on restaurant
-     * get data for an restaurant
-     *
-     * Map screen :
-     *
-     *
-     * WXorkmate screen:
-     *
-     *
-     * Settings screen :
-     * set notificaiton on
-     * set notification off
-     * set zomm
-     *
-     *
-     * Alarm :
-     * tes alarm ?
-     *
-     */
-
-
-    @Test
-    public void addition_isCorrect() {
-        assertEquals(4, 2 + 2);
-    }
+    //mocked repositories
+    @Mock
+    PositionRepository myPositionRepository;
+    @Mock
+    RestaurantsRepository myRestaurantRepository;
+    @Mock
+    FirestoreRepository myFirestoreRepository;
+    @Mock
+    SharedRepository mySharedRepository;
+    @Mock
+    PlaceAutocompleteRepository placeAutocompleteRepository;
 
     @Before
-    public void setup(){
+    public void setup() {
+
+        //init mocks ...
+        MockitoAnnotations.initMocks(this);//JUnit4
+
+        //make fake data here for position here...
+
+        //make fake data here for restaurant ...
+
+        //make fake data here for Firestore ...
+
+        //make fake data here for Shared ...
+
+        //make fake data here for PlaceAutocomplete ...
+
+        //mock methods for repositories here...
+     //  Mockito.when(myFirestoreRepository.getFirestoreWorkmates()).thenReturn(myMockUserList);
+       // Mockito.when(myRestaurantRepository.getMyRestaurantsList()).thenReturn(myMockRestaurantList);
 
     }
 
     @Test
-    public void testNotificationAlarm(){
+    public void checkIfWorkmateVMGetUserUI() throws InterruptedException {
 
+        //init viewmodel before test
+        ViewModelRestaurant myRestaurantViewModel = new ViewModelRestaurant(
+                myPositionRepository,
+                myRestaurantRepository,
+                myFirestoreRepository,
+                mySharedRepository,
+                placeAutocompleteRepository);
 
+        //when
+        ViewStateRestaurant myView = LiveDataTestUtils.getOrAwaitValue(myRestaurantViewModel.getRestaurantsViewUI());
 
+        //Then (we must to find 3 workmates )
+        assertEquals(3, myView.getMyRestaurantList().size());
+        assertEquals("Pizza momo", myView.getMyRestaurantList().get(0).getPlaceId());
 
     }
-
-
-
-
-    //check repository
-
-    //tester appel du repo vcers le webservice
-    //tester le retour du resultat
-    //verifier le cahce du repository pour éviter les appel supplémentaire
-
-
-
-
-
-
 
 }

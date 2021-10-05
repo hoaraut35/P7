@@ -23,28 +23,33 @@ public class ViewModelWorkMates extends ViewModel {
             RestaurantsRepository myRestaurantRepository,
             FirestoreRepository myFirestoreRepository) {
 
+        //get datas
         LiveData<List<FirestoreUser>> myWorkMatesListFromRepo = myFirestoreRepository.getFirestoreWorkmates();
         LiveData<List<RestaurantPojo>> myRestaurantList = myRestaurantRepository.getMyRestaurantsList();
 
+        //listen data
         myViewStateWorkMatesMediator.addSource(myWorkMatesListFromRepo, firestoreUsers -> {
             if (firestoreUsers == null) return;
             logicWork(firestoreUsers, myRestaurantList.getValue());
         });
 
+        //listen data
         myViewStateWorkMatesMediator.addSource(myRestaurantList, restaurantPojo -> {
             if (restaurantPojo == null || restaurantPojo.isEmpty()) return;
             logicWork(myWorkMatesListFromRepo.getValue(), restaurantPojo);
         });
     }
 
+    //combine datas
     private void logicWork(
             List<FirestoreUser> myFirestoreWorkmatesList,
             List<RestaurantPojo> myRestaurants) {
 
+        //check
         if (myRestaurants == null || myRestaurants.isEmpty()) return;
-
         if (myFirestoreWorkmatesList == null || myFirestoreWorkmatesList.isEmpty()) return;
 
+        //combine
         List<WorkmatesPojoForUI> myWorkmatesUIList = new ArrayList<>();
 
         for (FirestoreUser myUserLoop : myFirestoreWorkmatesList) {
