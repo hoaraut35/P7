@@ -30,15 +30,10 @@ public class NotificationService extends FirebaseMessagingService{
 
 
         if (remoteMessage.getNotification() != null) {
-
             RemoteMessage.Notification notification = remoteMessage.getNotification();
-
             Log.i("[NOTIF]",notification.getBody());
-
             sendVisualNotification(notification);
         }
-
-
 
     }
 
@@ -57,8 +52,6 @@ public class NotificationService extends FirebaseMessagingService{
                 .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BASE){
 

@@ -105,8 +105,9 @@ public class MainActivity extends AppCompatActivity {
 
         try{
             myViewModel.setNotification(myViewModel.getMyUserFromFirestore().getUid(), sp.getBoolean("notifications2", true));
+            Log.i("[SETTINGS]","Notification on/off :" +  sp.getBoolean("notifications2",false));
         }catch (Exception e){
-
+            Log.i("[SETTINGS]","erreur Notification on/off :" +  sp.getBoolean("notifications2",false));
         }
 
     }
@@ -149,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                     if (result.getResultCode() == -1) {
                         myViewModel.createUser();
                         myViewModel.setUser();
-                        setupSettings();
+
                     } else {
 
                         if (result.getResultCode() != 0) {
@@ -193,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
     private void request_user_info(FirebaseUser myUserResult) {
 
         myViewModel.setUser();
-
+        setupSettings();
         if (myUserResult != null) {
 
             View hv = binding.navigationView.getHeaderView(0);
