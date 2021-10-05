@@ -42,7 +42,6 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent.getStringExtra("TAG_ID") != null) {
             myViewModelDetail.setPlaceId(intent.getStringExtra("TAG_ID"));
-            //showSnackBar("Place id selected for detail : " + intent.getStringExtra("TAG_ID"));
         } else {
             //search favorite restaurant for actual user don't work
             myViewModelDetail.getUserPlaceFavoriteToShow();

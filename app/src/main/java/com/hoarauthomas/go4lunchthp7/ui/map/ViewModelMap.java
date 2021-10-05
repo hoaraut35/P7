@@ -1,6 +1,5 @@
 package com.hoarauthomas.go4lunchthp7.ui.map;
 
-import android.annotation.SuppressLint;
 import android.location.Location;
 
 import androidx.lifecycle.LiveData;
@@ -26,8 +25,6 @@ import javax.annotation.Nullable;
 
 public class ViewModelMap extends ViewModel {
 
-    private final PermissionChecker myPermission;
-    private final PositionRepository myPositionRepository;
     private final RestaurantsRepository myRestaurantRepository;
     private final SharedRepository mySharedRepository;
 
@@ -43,8 +40,6 @@ public class ViewModelMap extends ViewModel {
                         SharedRepository mySharedRepository,
                         PlaceAutocompleteRepository placeAutocompleteRepository) {
         //init repository
-        this.myPermission = myPermission;
-        this.myPositionRepository = myPositionRepository;
         this.myRestaurantRepository = myRestaurantsRepository;
         this.mySharedRepository = mySharedRepository;
 
@@ -182,24 +177,8 @@ public class ViewModelMap extends ViewModel {
         }
     }
 
-  /*  @SuppressLint("MissingPermission")
-    public void refresh() {
-        // No GPS permission
-        if (!myPermission.hasLocationPermission()) {
-            myPositionRepository.stopLocationRequest();
-        } else {
-            myPositionRepository.startLocationRequest();
-        }
-    }
-
-   */
-
     public LiveData<ViewStateMap> ViewStateForMapUI() {
         return myViewStateMapMediator;
-    }
-
-    public MutableLiveData<Prediction> getPredictionFromRepository() {
-        return mySharedRepository.getMyPlaceIdFromAutocomplete();
     }
 
     public LiveData<Integer> getMyZoom() {

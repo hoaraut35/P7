@@ -7,6 +7,7 @@ import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.work.Worker;
@@ -25,14 +26,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class WorkManagerTest extends Worker {
 
     String TAG = "[ALARM]";
-
-    //repositories
-    private final FirestoreRepository myFirestoreRepo;
-    private final RestaurantsRepository myRestaurantsRepo;
 
     //detail object
     PlaceDetailsFinal myRestaurantDetail;
@@ -51,8 +49,9 @@ public class WorkManagerTest extends Worker {
         Log.i(TAG, "My user uid : " + uid);
 
         //repositories
-        myFirestoreRepo = new FirestoreRepository();
-        myRestaurantsRepo = new RestaurantsRepository();
+        //repositories
+        FirestoreRepository myFirestoreRepo = new FirestoreRepository();
+        RestaurantsRepository myRestaurantsRepo = new RestaurantsRepository();
 
         //request user data from firestore
         Task<DocumentSnapshot> myFireUser = myFirestoreRepo.getMyUserByUIDFromFirestore(uid);
@@ -67,7 +66,7 @@ public class WorkManagerTest extends Worker {
                 Log.i(TAG, "My user favorite restaurant : " + documentSnapshot.get("favoriteRestaurant"));
 
                 //get restaurant detail with  id ok
-                this.myRestaurantDetail = myRestaurantsRepo.getPlaceDetail(documentSnapshot.get("favoriteRestaurant").toString());
+                this.myRestaurantDetail = myRestaurantsRepo.getPlaceDetail(Objects.requireNonNull(documentSnapshot.get("favoriteRestaurant")).toString());
 
                 myRestaurantId = myRestaurantDetail.getResult().getPlaceId();
                 myRestaurantName = myRestaurantDetail.getResult().getName();
@@ -75,16 +74,14 @@ public class WorkManagerTest extends Worker {
                 Log.i(TAG, "My restaurant name : " + myRestaurantDetail.getResult().getName());
                 Log.i(TAG, "My restaurant address : " + myRestaurantDetail.getResult().getFormattedAddress());
 
-            } else {
-                Log.i(TAG, "pas de retour get name from firestore : ");
             }
 
 
         } catch (Exception e) {
-            Log.i(TAG, "pas de retour get naerreurme from firestore : " + e.getMessage());
+            Log.i(TAG, "no return from firestore : " + e.getMessage());
         }
 
-        //get all workmates by placeid
+        //get all workmates by place id
         Task<QuerySnapshot> myAllUser = myFirestoreRepo.getAllUsersByPlaceIdFromFirestore(myRestaurantId);
 
         try {
@@ -93,7 +90,7 @@ public class WorkManagerTest extends Worker {
 
             for (QueryDocumentSnapshot myItem : queryDocumentSnapshots) {
                 Log.i(TAG, "My restaurant workmate(s) : " + myItem.get("username"));
-                myRestaurantWorkmate.add(myItem.get("username").toString());
+                myRestaurantWorkmate.add(Objects.requireNonNull(myItem.get("username")).toString());
             }
 
             Log.i(TAG, "My workmate size : " + myRestaurantWorkmate.size());
@@ -106,6 +103,7 @@ public class WorkManagerTest extends Worker {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @NonNull
     @NotNull
     @Override
@@ -127,7 +125,7 @@ public class WorkManagerTest extends Worker {
 
         myRestaurantWorkmate.toArray(myWorkmates);
 
-        Log.i(TAG, "ma liste : " + result);
+        Log.i(TAG, "my list : " + result);
 
 
         try {

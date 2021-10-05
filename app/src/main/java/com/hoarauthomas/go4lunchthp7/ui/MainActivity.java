@@ -54,13 +54,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onPostResume() {
         super.onPostResume();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        sp.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
-            @Override
-            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                Log.i("[SETTINGS]", "test event");
-            }
-        });
-        // myViewModel.refresh();
+        sp.registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> Log.i("[SETTINGS]", "test event"));
+
     }
 
     @Override
@@ -107,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
             myViewModel.setNotification(myViewModel.getMyUserFromFirestore().getUid(), sp.getBoolean("notifications2", true));
             Log.i("[SETTINGS]","Notification on/off :" +  sp.getBoolean("notifications2",false));
         }catch (Exception e){
-            Log.i("[SETTINGS]","erreur Notification on/off :" +  sp.getBoolean("notifications2",false));
+            Log.i("[SETTINGS]","error Notification on/off :" +  sp.getBoolean("notifications2",false));
         }
 
     }

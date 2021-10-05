@@ -24,8 +24,6 @@ import javax.annotation.Nullable;
 
 public class ViewModelDetail extends ViewModel {
 
-    private final FirebaseAuthRepository myFirebaseAuth;
-    private final RestaurantsRepository myRestaurantRepository;
     private final FirestoreRepository myFirestoreRepository;
 
     //for ui update
@@ -40,13 +38,11 @@ public class ViewModelDetail extends ViewModel {
             RestaurantsRepository myRestaurantRepository,
             FirestoreRepository myFirestoreRepository) {
 
-        this.myFirebaseAuth = myAuthRepository;
-        this.myRestaurantRepository = myRestaurantRepository;
         this.myFirestoreRepository = myFirestoreRepository;
 
-        LiveData<FirebaseUser> myUserFirebaseFromRepo = this.myFirebaseAuth.getFirebaseAuthUserFromRepo();
-        LiveData<List<RestaurantPojo>> myRestaurantsListFromRepo = this.myRestaurantRepository.getMyRestaurantsList();
-        LiveData<ResultPlaceDetail> myRestaurantDetailFromRepo = this.myRestaurantRepository.getMyRestaurantDetail();
+        LiveData<FirebaseUser> myUserFirebaseFromRepo = myAuthRepository.getFirebaseAuthUserFromRepo();
+        LiveData<List<RestaurantPojo>> myRestaurantsListFromRepo = myRestaurantRepository.getMyRestaurantsList();
+        LiveData<ResultPlaceDetail> myRestaurantDetailFromRepo = myRestaurantRepository.getMyRestaurantDetail();
         LiveData<List<FirestoreUser>> myWorkMatesListFromRepo = this.myFirestoreRepository.getFirestoreWorkmates();
         LiveData<FirestoreUser> myUserFirestore = this.myFirestoreRepository.getWorkmateFromRepo();
 

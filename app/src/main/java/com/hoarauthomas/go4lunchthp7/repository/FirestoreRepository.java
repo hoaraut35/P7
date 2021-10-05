@@ -2,22 +2,16 @@ package com.hoarauthomas.go4lunchthp7.repository;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.model.firestore.User;
@@ -31,10 +25,9 @@ public class FirestoreRepository {
     private static final String COLLECTION_NAME = "users";
 
     private final MutableLiveData<List<FirestoreUser>> myWorkmatesListFromFirestore = new MutableLiveData<>(null);
-    private final MutableLiveData<DocumentSnapshot> myTestSnapShot = new MutableLiveData<>(null);
+  //  private final MutableLiveData<DocumentSnapshot> myTestSnapShot = new MutableLiveData<>(null);
     private final MutableLiveData<FirestoreUser> myWorkmateFromRepo = new MutableLiveData<>();
     private final MutableLiveData<FirestoreUser> myActualUser = new MutableLiveData<>(null);
-    private final MutableLiveData<String> myCurrentRestaurant = new MutableLiveData<>();
 
     public FirestoreRepository() {
         this.myBase = FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
@@ -69,66 +62,21 @@ public class FirestoreRepository {
 
     public void getUserActual() {
 
-        myBase.document(getCurrentUser().getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+        myBase.document(getCurrentUser().getUid()).addSnapshotListener((value, error) -> {
 
-                if (value != null && value.exists()) {
-                    Log.i("[USER]", "Actual user in firestore " + value.get("username"));
-                    myActualUser.setValue(value.toObject(FirestoreUser.class));
-                } else {
-                    Log.i("[USER]", "Actual user in firestore error");
-                    myActualUser.setValue(null);
-                }
-
+            if (value != null && value.exists()) {
+                Log.i("[USER]", "Actual user in firestore " + value.get("username"));
+                myActualUser.setValue(value.toObject(FirestoreUser.class));
+            } else {
+                Log.i("[USER]", "Actual user in firestore error");
+                myActualUser.setValue(null);
             }
+
         });
-
-
-
-        /*.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-
-                if (task.getResult().exists()){
-                    Log.i("[USER]", "Actual user in firestore " + task.getResult().get("username"));
-                    myActualUser.setValue(task.getResult().toObject(FirestoreUser.class));
-                }else
-                {
-                    Log.i("[USER]", "Actual user in firestore error");
-                    myActualUser.setValue(null);
-                }
-
-            }
-        });
-
-         */
-
     }
 
     public LiveData<FirestoreUser> getPublicUSerFirestore() {
         return myActualUser;
-    }
-
-    public LiveData<List<String>> getAllWorkmatesForAnRestaurant(String placeid) {
-
-        MutableLiveData<List<String>> myList = new MutableLiveData<>();
-        List<String> allWorkMates = new ArrayList<>();
-        Query query = myBase.whereEqualTo("favoriteRestaurant", placeid);
-        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                Log.i("[ALARME]", "User avec ce restaurant dans la base" + placeid + " ");
-                if (value != null) {
-                    for (DocumentSnapshot queryIterate : value.getDocuments()) {
-                        allWorkMates.add(queryIterate.get("username").toString());
-                        myList.setValue(allWorkMates);
-                        //Log.i("[NOTIFICATION","" + queryIterate.getData().get("username").toString());
-                    }
-                }
-            }
-        });
-        return myList;
     }
 
     public MutableLiveData<FirestoreUser> getWorkmateFromRepo() {
@@ -157,63 +105,8 @@ public class FirestoreRepository {
         return myBase.document(uid).get();
     }
 
-    //TODO: bug here
-   /* public LiveData<String> getMyUser(){
-
-        myBase.document(getCurrentUser().getUid()).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                myCurrentRestaurant.setValue(value.get("favoriteRestaurant").toString());
-            }
-        });
-
-
-        return myCurrentRestaurant;
-
-
-
-       /* Log.i("[OPENFAV]","current uid :" + getCurrentUser().getUid());
-        return myBase.document(getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                Log.i("[OPENFAV]","oncomplete " + task.getResult().get("favoriteRestaurant"));
-            }
-        });
-
-
-    }*/
-
-
     public Task<QuerySnapshot> getAllUsersByPlaceIdFromFirestore(String restaurantId) {
         return myBase.whereEqualTo("favoriteRestaurant", restaurantId).get();
-    }
-
-    public LiveData<DocumentSnapshot> getActualUser() {
-        return myTestSnapShot;
-    }
-
-    public String getFirestoreUser(String uid) {
-
-        final String[] test = {null};
-
-        myBase.whereEqualTo("uid", uid).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                if (task.isSuccessful()) {
-
-                    Log.i("[ALARME]", "Extract user ok " + task.getResult().getDocuments().size());
-                    test[0] = task.getResult().getDocuments().get(0).get("username").toString();
-
-                } else {
-                    Log.i("[ALARME]", "Fail to extract user in firestore");
-                }
-            }
-        });
-
-
-        return test[0];
     }
 
     public LiveData<List<FirestoreUser>> getFirestoreWorkmates() {

@@ -33,10 +33,6 @@ public class PlaceAutocompleteRepository {
     //getter setter
     public List<Prediction> myList = new ArrayList<>();
 
-    public List<Prediction> getMyList() {
-        return myList;
-    }
-
     public void setMyList(List<Prediction> myList) {
         this.myList = myList;
     }
