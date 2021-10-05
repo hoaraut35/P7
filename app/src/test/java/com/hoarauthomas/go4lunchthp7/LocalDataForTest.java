@@ -1,20 +1,30 @@
 package com.hoarauthomas.go4lunchthp7;
 
+import android.location.Location;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
-import com.hoarauthomas.go4lunchthp7.model.PlaceDetails.ResultPlaceDetail;
-import com.hoarauthomas.go4lunchthp7.model.WorkmatesPojoForUI;
+
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class LocalDataForTest {
 
-    private static MutableLiveData<List<FirestoreUser>> myMockUserList = new MutableLiveData<>();
-    private static MutableLiveData<List<RestaurantPojo>> myMockRestaurantList = new MutableLiveData<>();
+    //general data
+    private final static MutableLiveData<List<FirestoreUser>> myMockUserList = new MutableLiveData<>();
+    private final static MutableLiveData<List<RestaurantPojo>> myMockRestaurantList = new MutableLiveData<>();
+
+    //for restaurant ui
+    private final static MutableLiveData<Boolean> myReloadMap = new MutableLiveData<>();
+    private final static MutableLiveData<Location> myLocation = new MutableLiveData<>(null);
+    private final static MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myPlaceAutoCompleteListSingle = new MutableLiveData<>();
+
+    //for map ui
 
     public static MutableLiveData<List<FirestoreUser>> getFakeListFromFirestoreRepositoryForTest() {
         List<FirestoreUser> myFakeUserList = new ArrayList<>();
@@ -32,5 +42,43 @@ public class LocalDataForTest {
         myFakeRestaurantList.add(new RestaurantPojo("ChIJ85WzK9HUDkgRitQb60cwf9C", "Italien"));
         myMockRestaurantList.setValue(myFakeRestaurantList);
         return myMockRestaurantList;
+    }
+
+
+
+    public static double getLatitudeFromTest() {
+        return 48.0949d;
+    }
+
+    public static double getLongitudeFromTest() {
+        return -1.3712d;
+    }
+
+
+    public static LiveData<Location> getPositionForTest() {
+
+      //  Location newLocation = new Location("");
+
+       // Mockito.doCallRealMethod().when(newLocation).setLatitude(48.0949d);
+        //Mockito.doCallRealMethod().when(newLocation).setLongitude(-1.3712d);
+
+//        newLocation.setLongitude(-1.3712d);
+  //      newLocation.setLatitude(48.0949d);
+       // newLocation.setAccuracy(3.0f);
+    //    myLocation.setValue(newLocation);
+        return null;
+    }
+
+    public static MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> getPlacesForTest() {
+
+
+        return null;
+    }
+
+
+    public static LiveData<Boolean> getReloadMapForTest() {
+        Boolean myBool = false;
+        myReloadMap.setValue(myBool.booleanValue());
+        return myReloadMap;
     }
 }
