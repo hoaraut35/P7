@@ -5,26 +5,17 @@ import android.location.Location;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
-
+import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
+import com.hoarauthomas.go4lunchthp7.Prediction;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class LocalDataForTest {
-
-    //general data
-    private final static MutableLiveData<List<FirestoreUser>> myMockUserList = new MutableLiveData<>();
-    private final static MutableLiveData<List<RestaurantPojo>> myMockRestaurantList = new MutableLiveData<>();
-
-    //for restaurant ui
-    private final static MutableLiveData<Boolean> myReloadMap = new MutableLiveData<>();
-    private final static MutableLiveData<Location> myLocation = new MutableLiveData<>(null);
-    private final static MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myPlaceAutoCompleteListSingle = new MutableLiveData<>();
-
-    //for map ui
 
     public static List<FirestoreUser> getFakeListFromFirestoreRepositoryForTest() {
         List<FirestoreUser> myFakeUserList = new ArrayList<>();
@@ -35,48 +26,52 @@ public class LocalDataForTest {
     }
 
     public static List<RestaurantPojo> getFakeListFromRestaurantRepositoryForTest() {
+
+        RestaurantPojo myRestaurant1 = new RestaurantPojo();
+        myRestaurant1.setName("Restaurant1");
+        myRestaurant1.setPlaceId("ChIJ85WzK9HUDkgRitQb60cwf9Y");
+//        myRestaurant1.getGeometry().getLocation().setLat(11d);
+  //      myRestaurant1.getGeometry().getLocation().setLng(11d);
+
+        RestaurantPojo myRestaurant2 = new RestaurantPojo();
+        myRestaurant2.setName("Restaurant2");
+        myRestaurant2.setPlaceId("ChIJ85WzK9HUDkgRitQb60cwf92");
+    //    myRestaurant2.getGeometry().getLocation().setLat(22d);
+    //    myRestaurant2.getGeometry().getLocation().setLng(22d);
+
+        RestaurantPojo myRestaurant3 = new RestaurantPojo();
+        myRestaurant3.setName("Restaurant3");
+        myRestaurant3.setPlaceId("ChIJ85WzK9HUDkgRitQb60cwf93");
+      //  myRestaurant3.getGeometry().getLocation().setLat(33d);
+     //   myRestaurant3.getGeometry().getLocation().setLng(33d);
+
         List<RestaurantPojo> myFakeRestaurantList = new ArrayList<>();
-        myFakeRestaurantList.add(new RestaurantPojo("ChIJ85WzK9HUDkgRitQb60cwf9Y", "Pizza momo"));
-        myFakeRestaurantList.add(new RestaurantPojo("ChIJ85WzK9HUDkgRitQb60cwf9B", "Galette Bretagne"));
-        myFakeRestaurantList.add(new RestaurantPojo("ChIJ85WzK9HUDkgRitQb60cwf9C", "Italien"));
-        myMockRestaurantList.setValue(myFakeRestaurantList);
+        myFakeRestaurantList.add(myRestaurant1);
+        myFakeRestaurantList.add(myRestaurant2);
+        myFakeRestaurantList.add(myRestaurant3);
+
+//        List<RestaurantPojo> myFakeRestaurantList = new ArrayList<>();
+//        myFakeRestaurantList.add(new RestaurantPojo("ChIJ85WzK9HUDkgRitQb60cwf9Y", "Pizza momo"));
+//        myFakeRestaurantList.add(new RestaurantPojo("ChIJ85WzK9HUDkgRitQb60cwf9B", "Galette Bretagne"));
+//        myFakeRestaurantList.add(new RestaurantPojo("ChIJ85WzK9HUDkgRitQb60cwf9C", "Italien"));
+
         return myFakeRestaurantList;
     }
 
-
-
-    public static double getLatitudeFromTest() {
-        return 48.0949d;
+    public static PlaceAutocomplete getPlaceForTest() {
+        PlaceAutocomplete myFakePlace = new PlaceAutocomplete();
+        List<Prediction> myPredictionList = new ArrayList<>();
+        Prediction myPrediction= new Prediction();
+        myPrediction.setPlaceId("fakePlaceId");
+        myPredictionList.add(myPrediction);
+        myFakePlace.setPredictions(myPredictionList);
+        return myFakePlace;
     }
 
-    public static double getLongitudeFromTest() {
-        return -1.3712d;
-    }
-
-
-    public static LiveData<Location> getPositionForTest() {
-
-      //  Location newLocation = new Location("");
-
-       // Mockito.doCallRealMethod().when(newLocation).setLatitude(48.0949d);
-        //Mockito.doCallRealMethod().when(newLocation).setLongitude(-1.3712d);
-
-//        newLocation.setLongitude(-1.3712d);
-  //      newLocation.setLatitude(48.0949d);
-       // newLocation.setAccuracy(3.0f);
-    //    myLocation.setValue(newLocation);
-        return null;
-    }
-
-    public static MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> getPlacesForTest() {
-
-
-        return null;
+    public static LatLng getLatLngPosition(){
+        LatLng myPosition = new LatLng(48.0956, -1.3718);
+        return myPosition;
     }
 
 
-    public static Boolean getReloadMapForTest() {
-        boolean test = false;
-        return false;
-    }
 }

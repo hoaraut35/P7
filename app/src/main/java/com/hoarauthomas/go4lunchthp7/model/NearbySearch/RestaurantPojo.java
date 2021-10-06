@@ -94,9 +94,10 @@ public class RestaurantPojo {
     }
 
 
-    public RestaurantPojo(String placeid, String name) {
+    public RestaurantPojo(String placeid, String name, Geometry geometry ) {
         this.name = name;
         this.placeId = placeid;
+        this.geometry = geometry;
     }
 
 

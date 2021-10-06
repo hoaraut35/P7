@@ -113,63 +113,71 @@ public class WorkManagerTest extends Worker {
 
         Context applicationContext = getApplicationContext();
 
-        //get data from ui
-        String restaurant_title = myRestaurantName;
-        String restaurant_address = myRestaurantAddress;
+
+        if (myRestaurantName.isEmpty()){
+            return Result.failure();
+        }else
+        {
+            //get data from ui
+            String restaurant_title = myRestaurantName;
+            String restaurant_address = myRestaurantAddress;
 
 
-        String[] myWorkmates = new String[myRestaurantWorkmate.size()];
+            String[] myWorkmates = new String[myRestaurantWorkmate.size()];
 
-        String delimiter = "\n";
-        String result = String.join(delimiter, myRestaurantWorkmate);
+            String delimiter = "\n";
+            String result = String.join(delimiter, myRestaurantWorkmate);
 
-        myRestaurantWorkmate.toArray(myWorkmates);
+            myRestaurantWorkmate.toArray(myWorkmates);
 
-        Log.i(TAG, "my list : " + result);
+            Log.i(TAG, "my list : " + result);
 
 
-        try {
-            Log.i("[JOB]", "doWork enable...");
+            try {
+                Log.i("[JOB]", "doWork enable...");
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                // Create the NotificationChannel, but only on API 26+ because
-                // the NotificationChannel class is new and not in the support library
-                CharSequence name = "go4lunch";
-                String description = "go4lunchdatachannel";
-                int importance = NotificationManager.IMPORTANCE_HIGH;
-                NotificationChannel channel =
-                        new NotificationChannel("go4lunch", "go4lunch", importance);
-                channel.setDescription(description);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    // Create the NotificationChannel, but only on API 26+ because
+                    // the NotificationChannel class is new and not in the support library
+                    CharSequence name = "go4lunch";
+                    String description = "go4lunchdatachannel";
+                    int importance = NotificationManager.IMPORTANCE_HIGH;
+                    NotificationChannel channel =
+                            new NotificationChannel("go4lunch", "go4lunch", importance);
+                    channel.setDescription(description);
 
-                // Add the channel
-                NotificationManager notificationManager =
-                        (NotificationManager) applicationContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                    // Add the channel
+                    NotificationManager notificationManager =
+                            (NotificationManager) applicationContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
-                if (notificationManager != null) {
-                    notificationManager.createNotificationChannel(channel);
+                    if (notificationManager != null) {
+                        notificationManager.createNotificationChannel(channel);
+                    }
                 }
+
+                // Create the notification
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(applicationContext, "go4lunch")
+                        .setSmallIcon(android.R.drawable.star_big_on)
+                        .setContentTitle("Go4Lunch It's time to lunch")
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(restaurant_title + "\n" + restaurant_address + "\n" + result))
+                        .setContentText(restaurant_title + " \n" + restaurant_address + " \n")
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setVibrate(new long[0]);
+
+                // Show the notification
+                NotificationManagerCompat.from(applicationContext).notify(1, builder.build());
+
+
+                return Result.success();
+
+            } catch (Throwable throwable) {
+
+                return Result.failure();
+
             }
 
-            // Create the notification
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(applicationContext, "go4lunch")
-                    .setSmallIcon(android.R.drawable.star_big_on)
-                    .setContentTitle("Go4Lunch It's time to lunch")
-                    .setStyle(new NotificationCompat.BigTextStyle().bigText(restaurant_title + "\n" + restaurant_address + "\n" + result))
-                    .setContentText(restaurant_title + " \n" + restaurant_address + " \n")
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setVibrate(new long[0]);
-
-            // Show the notification
-            NotificationManagerCompat.from(applicationContext).notify(1, builder.build());
-
-
-            return Result.success();
-
-        } catch (Throwable throwable) {
-
-            return Result.failure();
-
         }
+
 
 
     }

@@ -20,7 +20,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class WorkmatesViewModelTest {
+public class WorkmatesViewModelTestGood {
 
     //to run every tasks synchronously
     @Rule
