@@ -1,16 +1,10 @@
 package com.hoarauthomas.go4lunchthp7;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.Geometry;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.Location;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
-import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
-import com.hoarauthomas.go4lunchthp7.Prediction;
-import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,18 +50,13 @@ public class LocalDataForTest {
         myFakeRestaurantList.add(myRestaurant2);
         myFakeRestaurantList.add(myRestaurant3);
 
-//        List<RestaurantPojo> myFakeRestaurantList = new ArrayList<>();
-//        myFakeRestaurantList.add(new RestaurantPojo("ChIJ85WzK9HUDkgRitQb60cwf9Y", "Pizza momo"));
-//        myFakeRestaurantList.add(new RestaurantPojo("ChIJ85WzK9HUDkgRitQb60cwf9B", "Galette Bretagne"));
-//        myFakeRestaurantList.add(new RestaurantPojo("ChIJ85WzK9HUDkgRitQb60cwf9C", "Italien"));
-
         return myFakeRestaurantList;
     }
 
-    public static PlaceAutocomplete getPlaceForTest() {
-        PlaceAutocomplete myFakePlace = new PlaceAutocomplete();
-        List<Prediction> myPredictionList = new ArrayList<>();
-        Prediction myPrediction= new Prediction();
+    public static com.hoarauthomas.go4lunchthp7.PlaceAutocomplete getPlaceForTest() {
+        com.hoarauthomas.go4lunchthp7.PlaceAutocomplete myFakePlace = new com.hoarauthomas.go4lunchthp7.PlaceAutocomplete();
+        List<com.hoarauthomas.go4lunchthp7.Prediction> myPredictionList = new ArrayList<>();
+        com.hoarauthomas.go4lunchthp7.Prediction myPrediction= new com.hoarauthomas.go4lunchthp7.Prediction();
         myPrediction.setPlaceId("fakePlaceId");
         myPredictionList.add(myPrediction);
         myFakePlace.setPredictions(myPredictionList);
@@ -75,9 +64,7 @@ public class LocalDataForTest {
     }
 
     public static LatLng getLatLngPosition(){
-        LatLng myPosition = new LatLng(48.0956, -1.3718);
-        return myPosition;
+        return new LatLng(48.0956, -1.3718);
     }
-
 
 }

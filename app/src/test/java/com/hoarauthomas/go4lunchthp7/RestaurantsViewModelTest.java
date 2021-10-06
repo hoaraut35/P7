@@ -32,7 +32,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RestaurantsViewModelTestGood {
+public class RestaurantsViewModelTest {
 
     //to run every tasks synchronously
     @Rule
@@ -85,17 +85,6 @@ public class RestaurantsViewModelTestGood {
         Mockito.when(mySharedRepository.getReload()).thenReturn(myReload);
         Mockito.when(myPlaceAutocompleteRepository.getPlaces()).thenReturn(myPlace);
 
-        //?
-        //to mock getGeometry and getLocation ands getLat and getLgn
-        //Mockito.when(RestaurantPojo)
-
-
-//        Mockito.when(myRestaurantPojo.getGeometry()).thenReturn(myGeometry);
-//        Mockito.when(myGeometry.getLocation()).thenReturn(myLocation);
-//        Mockito.when(myLocation.getLat()).thenReturn(4545454d);
-//        Mockito.when(myLocation.getLng()).thenReturn(454545d);
-
-        //LatLng restaurantPos = new LatLng(restaurants.get(i).getGeometry().getLocation().getLat(), restaurants.get(i).getGeometry().getLocation().getLng());
     }
 
     @Test
@@ -123,7 +112,6 @@ public class RestaurantsViewModelTestGood {
     public void checkPlace() {
         assertEquals("fakePlaceId", myPlaceAutocompleteRepository.getPlaces().getValue().getPredictions().get(0).getPlaceId());
     }
-
 
     @Test
     public void checkIfViewStateShowGoodData() throws InterruptedException  {

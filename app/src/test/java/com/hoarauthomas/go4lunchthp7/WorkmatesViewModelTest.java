@@ -20,7 +20,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class WorkmatesViewModelTestGood {
+public class WorkmatesViewModelTest {
 
     //to run every tasks synchronously
     @Rule
@@ -51,7 +51,7 @@ public class WorkmatesViewModelTestGood {
 
         //Then (we must to find 3 workmates )
         assertEquals(3, myView.getMySpecialWorkMAtes().size());
-        assertEquals("Pizza momo",  myView.getMySpecialWorkMAtes().get(0).getNameOfRestaurant());
+        assertEquals("Restaurant1",  myView.getMySpecialWorkMAtes().get(0).getNameOfRestaurant());
 
     }
 
