@@ -90,10 +90,10 @@ public class RestaurantsViewModelTestGood {
         //Mockito.when(RestaurantPojo)
 
 
-        Mockito.when(myRestaurantPojo.getGeometry()).thenReturn(myGeometry);
-        Mockito.when(myGeometry.getLocation()).thenReturn(myLocation);
-        Mockito.when(myLocation.getLat()).thenReturn(4545454d);
-        Mockito.when(myLocation.getLng()).thenReturn(454545d);
+//        Mockito.when(myRestaurantPojo.getGeometry()).thenReturn(myGeometry);
+//        Mockito.when(myGeometry.getLocation()).thenReturn(myLocation);
+//        Mockito.when(myLocation.getLat()).thenReturn(4545454d);
+//        Mockito.when(myLocation.getLng()).thenReturn(454545d);
 
         //LatLng restaurantPos = new LatLng(restaurants.get(i).getGeometry().getLocation().getLat(), restaurants.get(i).getGeometry().getLocation().getLng());
     }
@@ -140,7 +140,7 @@ public class RestaurantsViewModelTestGood {
         ViewStateRestaurant myView = LiveDataTestUtils.getOrAwaitValue(myRestaurantViewModel.getRestaurantsViewUI());
 
         //start check
-  //      assertEquals(3, myView.getMyRestaurantList().size());
+        assertEquals(3, myView.getMyRestaurantList().size());
 
     }
 
