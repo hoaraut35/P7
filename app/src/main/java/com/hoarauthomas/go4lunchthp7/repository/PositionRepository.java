@@ -12,6 +12,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.maps.model.LatLng;
 
 //to get position when changed
 
@@ -25,7 +26,9 @@ public class PositionRepository {
     private final FusedLocationProviderClient fusedLocationProviderClient;
 
     //To update data
+
     private final MutableLiveData<Location> locationMutableLiveData = new MutableLiveData<>(null);
+    private final MutableLiveData<LatLng> myLatLngLiveData = new MutableLiveData<>(null);
 
     //for callback of FusedLocationProviderClient
    // private LocationCallback locationCallback;
@@ -39,6 +42,9 @@ public class PositionRepository {
     public LiveData<Location> getLocationLiveData() {
         return locationMutableLiveData;
     }
+
+    //publish to viewmodel with latlgn
+    public LiveData<LatLng> getLocationLatLgnLiveData(){return myLatLngLiveData;}
 
     //public method to start listener position
     @RequiresPermission(anyOf = {"android.permission.ACCESS_COARSE_LOCATION", "android.permission.ACCESS_FINE_LOCATION"})
@@ -58,6 +64,7 @@ public class PositionRepository {
             super.onLocationResult(locationResult);
 
             if (locationResult != null && locationResult.getLastLocation()!= null){
+                myLatLngLiveData.setValue(new LatLng(locationResult.getLastLocation().getLatitude(),locationResult.getLastLocation().getLongitude()));
                 locationMutableLiveData.setValue(locationResult.getLastLocation());
             }
         }

@@ -20,8 +20,9 @@ public class SharedRepository {
         return myZoom;
     }
 
-    public void setReloadMap(Boolean bool){
+    public boolean setReloadMap(Boolean bool){
         reloadMap.setValue(bool);
+        return false;
     }
 
     public LiveData<Boolean> getReload() {

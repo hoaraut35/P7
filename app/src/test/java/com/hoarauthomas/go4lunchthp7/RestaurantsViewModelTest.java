@@ -1,23 +1,26 @@
 package com.hoarauthomas.go4lunchthp7;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.mock;
-
-import android.location.Location;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
 import com.hoarauthomas.go4lunchthp7.ui.restaurant.ViewModelRestaurant;
+import com.hoarauthomas.go4lunchthp7.ui.restaurant.ViewStateRestaurant;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -30,65 +33,78 @@ public class RestaurantsViewModelTest {
 
     //mocked repositories
     PositionRepository myPositionRepository = mock(PositionRepository.class);
+
+    //RestaurantsRepository myRestaurantRepository;
+    //= mock(RestaurantsRepository.class);
     RestaurantsRepository myRestaurantRepository = mock(RestaurantsRepository.class);
+
     FirestoreRepository myFirestoreRepository = mock(FirestoreRepository.class);
-    SharedRepository mySharedRepository = mock(SharedRepository.class);
+    @Mock
+    SharedRepository mySharedRepository = new SharedRepository();
+
     PlaceAutocompleteRepository placeAutocompleteRepository = mock(PlaceAutocompleteRepository.class);
 
-    Location myLocationClass = mock(Location.class);
 
-    MutableLiveData<Location> myMutLoc = new MutableLiveData<>();
+    LatLng myFakePositionLatLng;
 
     @Before
     public void setup() {
 
-        Location myDummyLocation = new Location("");
-        myDummyLocation.setLongitude(4545d);
-        myDummyLocation.setLatitude(55757d);
-
-        Mockito.doCallRealMethod().when(this.myLocationClass).getLatitude();
-        Mockito.doCallRealMethod().when(this.myLocationClass).getLongitude();
-
-        this.myLocationClass.setLatitude(LocalDataForTest.getLatitudeFromTest());
-        this.myLocationClass.setLongitude(LocalDataForTest.getLongitudeFromTest());
-
-
-        //location = new Location("");
-        //    location.setLongitude(45454);
-        // location.setLatitude(454);
-        //  myMutLoc.setValue(location);
-
-        Mockito.when(myPositionRepository.getLocationLiveData()).thenReturn(myMutLoc);
-
         //ok
-        Mockito.when(myRestaurantRepository.getMyRestaurantsList()).thenReturn(LocalDataForTest.getFakeListFromRestaurantRepositoryForTest());
+        myFakePositionLatLng = new LatLng(48.0956, -1.3718);
+
+        //mock method for viewmodel
         //ok
-        Mockito.when(myFirestoreRepository.getFirestoreWorkmates()).thenReturn(LocalDataForTest.getFakeListFromFirestoreRepositoryForTest());
-        //ok
-        Mockito.when(mySharedRepository.getReload()).thenReturn(LocalDataForTest.getReloadMapForTest());
-        //non ok
+        Mockito.when(myPositionRepository.getLocationLatLgnLiveData()).thenReturn(new MutableLiveData<>(myFakePositionLatLng));
+        Mockito.when(myRestaurantRepository.getMyRestaurantsList()).thenReturn(new MutableLiveData<>(LocalDataForTest.getFakeListFromRestaurantRepositoryForTest()));
+        Mockito.when(myFirestoreRepository.getFirestoreWorkmates()).thenReturn(new MutableLiveData<>(LocalDataForTest.getFakeListFromFirestoreRepositoryForTest()));
+//        Mockito.when(mySharedRepository.getReload()).thenReturn(LocalDataForTest.getReloadMapForTest());
         Mockito.when(placeAutocompleteRepository.getPlaces()).thenReturn(LocalDataForTest.getPlacesForTest());
 
-        /*//get data from repositories
+
+        //Mockito.doReturn(new MutableLiveData<>(LocalDataForTest.getFakeListFromRestaurantRepositoryForTest())).when(myRestaurantRepository.getMyRestaurantsList());
 
 
-        LiveData<Boolean> reloadMap = mySharedRepository.getReload();
+        //set combine
 
-         */
+
     }
 
     @Test
-    public void checkIfRestaurantsUI() throws InterruptedException {
-
-
-        //when
-        ViewModelRestaurant myRestaurantViewModel = new ViewModelRestaurant(myPositionRepository, myRestaurantRepository, myFirestoreRepository, mySharedRepository, placeAutocompleteRepository);
-        // ViewStateRestaurant myView = LiveDataTestUtils.getOrAwaitValue(myRestaurantViewModel.getRestaurantsViewUI());
-
-        //Then (we must to find 3 workmates )
-        // assertEquals(3, myView.getMyRestaurantList().size());
-        //assertEquals("Pizza momo", myView.getMyRestaurantList().get(0).getPlaceId());
-
+    public void checkFakePosition() throws InterruptedException {
+        //check if fake position is good
+        assertEquals(48.0956, myFakePositionLatLng.latitude, 0.1);
+        assertEquals(-1.3718, myFakePositionLatLng.longitude, 0.1);
     }
 
+    @Test
+    public void checkFakeRestaurantsList() {
+        assertEquals(3, myRestaurantRepository.getMyRestaurantsList().getValue().size());
+    }
+
+    @Test
+    public void checkFakeUserList() {
+        assertEquals(3, myFirestoreRepository.getFirestoreWorkmates().getValue().size());
+    }
+
+    @Test
+    public void checkFakeRelaodMode() {
+        assertFalse(mySharedRepository.getReload().getValue());
+    }
+
+    @Test
+    public void checkViewState() throws InterruptedException {
+
+        ViewModelRestaurant myRestaurantViewModel = new ViewModelRestaurant(
+                myPositionRepository,
+                myRestaurantRepository,
+                myFirestoreRepository,
+                mySharedRepository,
+                placeAutocompleteRepository);
+
+        ViewStateRestaurant myView = LiveDataTestUtils.getOrAwaitValue(myRestaurantViewModel.getRestaurantsViewUI());
+
+        assertEquals("testname", myView.getMyRestaurantList().get(0).getName());
+
+    }
 }

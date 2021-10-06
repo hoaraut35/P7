@@ -1,12 +1,11 @@
 package com.hoarauthomas.go4lunchthp7;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
 
-import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
-import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import com.hoarauthomas.go4lunchthp7.ui.workmates.ViewModelWorkMates;
@@ -18,11 +17,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorkmatesViewModelTest {
@@ -32,24 +27,16 @@ public class WorkmatesViewModelTest {
     public final InstantTaskExecutorRule rule = new InstantTaskExecutorRule();
 
     @Mock
-    RestaurantsRepository myRestaurantRepository;
-    @Mock
     FirestoreRepository myFirestoreRepository;
 
-    List<FirestoreUser> myFakeUserList = new ArrayList<>();
-    List<RestaurantPojo> myFakeRestaurantList = new ArrayList<>();
-    MutableLiveData<List<FirestoreUser>> myMockUserList = new MutableLiveData<>();
-    MutableLiveData<List<RestaurantPojo>> myMockRestaurantList = new MutableLiveData<>();
+    RestaurantsRepository myRestaurantRepository = mock(RestaurantsRepository.class);
 
     @Before
     public void setup() {
 
-        //init mocks ...
-        MockitoAnnotations.initMocks(this);//JUNIT4
-
         //mock methods for repositories here...
-        Mockito.when(myFirestoreRepository.getFirestoreWorkmates()).thenReturn(LocalDataForTest.getFakeListFromFirestoreRepositoryForTest());
-        Mockito.when(myRestaurantRepository.getMyRestaurantsList()).thenReturn(LocalDataForTest.getFakeListFromRestaurantRepositoryForTest());
+        Mockito.when(myFirestoreRepository.getFirestoreWorkmates()).thenReturn(new MutableLiveData<>(LocalDataForTest.getFakeListFromFirestoreRepositoryForTest()));
+        Mockito.when(myRestaurantRepository.getMyRestaurantsList()).thenReturn(new MutableLiveData<>(LocalDataForTest.getFakeListFromRestaurantRepositoryForTest()));
 
     }
 
@@ -69,6 +56,3 @@ public class WorkmatesViewModelTest {
     }
 
 }
-
-
-

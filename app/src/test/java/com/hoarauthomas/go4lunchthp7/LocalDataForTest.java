@@ -26,22 +26,21 @@ public class LocalDataForTest {
 
     //for map ui
 
-    public static MutableLiveData<List<FirestoreUser>> getFakeListFromFirestoreRepositoryForTest() {
+    public static List<FirestoreUser> getFakeListFromFirestoreRepositoryForTest() {
         List<FirestoreUser> myFakeUserList = new ArrayList<>();
         myFakeUserList.add(new FirestoreUser("ChIJ85WzK9HUDkgRitQb60cwf9Y", null, "9FYLr2m7csO4fxHtwa99widnQMC2", "https://lh3.googleusercontent.com/a-/AOh14Gj4nMiaSsUjHvyDgYy546bPkf8aopCNdF53F_x4hA=s96-c", "Thomas"));
         myFakeUserList.add(new FirestoreUser("ChIJ85WzK9HUDkgRitQb60cwf9YB", null, "9FYLr2m7csO4fxHtwa99widnQMCB", "https://lh3.googleusercontent.com/a-/AOh14Gj4nMiaSsUjHvyDgYy546bPkf8aopCNdF53F_x4hA=s96-c", "Samuel"));
         myFakeUserList.add(new FirestoreUser("ChIJ85WzK9HUDkgRitQb60cwf9A", null, "9FYLr2m7csO4fxHtwa99widnQMCC", "https://lh3.googleusercontent.com/a-/AOh14Gj4nMiaSsUjHvyDgYy546bPkf8aopCNdF53F_x4hA=s96-c", "JEssica"));
-        myMockUserList.setValue(myFakeUserList);
-        return myMockUserList;
+        return myFakeUserList;
     }
 
-    public static MutableLiveData<List<RestaurantPojo>> getFakeListFromRestaurantRepositoryForTest() {
+    public static List<RestaurantPojo> getFakeListFromRestaurantRepositoryForTest() {
         List<RestaurantPojo> myFakeRestaurantList = new ArrayList<>();
         myFakeRestaurantList.add(new RestaurantPojo("ChIJ85WzK9HUDkgRitQb60cwf9Y", "Pizza momo"));
         myFakeRestaurantList.add(new RestaurantPojo("ChIJ85WzK9HUDkgRitQb60cwf9B", "Galette Bretagne"));
         myFakeRestaurantList.add(new RestaurantPojo("ChIJ85WzK9HUDkgRitQb60cwf9C", "Italien"));
         myMockRestaurantList.setValue(myFakeRestaurantList);
-        return myMockRestaurantList;
+        return myFakeRestaurantList;
     }
 
 
@@ -76,9 +75,8 @@ public class LocalDataForTest {
     }
 
 
-    public static LiveData<Boolean> getReloadMapForTest() {
-        Boolean myBool = false;
-        myReloadMap.setValue(myBool.booleanValue());
-        return myReloadMap;
+    public static Boolean getReloadMapForTest() {
+        boolean test = false;
+        return false;
     }
 }
