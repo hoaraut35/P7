@@ -18,7 +18,7 @@ Ouvrir le projet dans Android Studio
 
 ## Aperçu
 
-![Screenshot] (https://github.com/hoaraut35/P7/blob/image1.jpeg)
+![alt text](https://github.com/hoaraut35/P7/blob/image1.jpeg)
 
 ## Développé avec
 
