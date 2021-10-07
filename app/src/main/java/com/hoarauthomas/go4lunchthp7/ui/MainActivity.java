@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
         this.myViewModel.getLoginState().observe(this, aBoolean -> {
             if (aBoolean) {
                 request_user_info(myViewModel.getUser());
+                myViewModel.createUser();
             } else {
                 request_login();
             }
@@ -187,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void request_user_info(FirebaseUser myUserResult) {
-
+        myViewModel.createUser();
         myViewModel.setUser();
         setupSettings();
         if (myUserResult != null) {
