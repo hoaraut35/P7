@@ -3,7 +3,6 @@ package com.hoarauthomas.go4lunchthp7.ui.map;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -11,7 +10,6 @@ import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
-import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
@@ -45,7 +43,6 @@ public class ViewModelMap extends ViewModel {
 
         //start position of map
         LiveData<LatLng> myPositionLatLng = myPositionRepository.getLocationLatLgnLiveData();
-        //myPosition = myPositionRepository.getLocationLiveData();
 
         //start restaurants list
         LiveData<List<com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo>> myRestaurantsList = this.myRestaurantRepository.getMyRestaurantsList();
@@ -79,13 +76,10 @@ public class ViewModelMap extends ViewModel {
         });
 
         //add listener for new position
-        myViewStateMapMediator.addSource(myPositionLatLng, new Observer<LatLng>() {
-            @Override
-            public void onChanged(LatLng latLng) {
-                if (latLng == null) return;
-                //myRestaurantRepository.setNewLatLngPositionFromGPS(latLng.longitude, latLng.latitude);
-                myRestaurantRepository.setNewLatLngPositionFromGPS2(latLng);
-            }
+        myViewStateMapMediator.addSource(myPositionLatLng, latLng -> {
+            if (latLng == null) return;
+            //myRestaurantRepository.setNewLatLngPositionFromGPS(latLng.longitude, latLng.latitude);
+            myRestaurantRepository.setNewLatLngPositionFromGPS2(latLng);
         });
 
         //add listener for list of restaurants
@@ -110,7 +104,6 @@ public class ViewModelMap extends ViewModel {
             }
         });
     }
-
 
     private void logicWork(
             //@Nullable Location position,

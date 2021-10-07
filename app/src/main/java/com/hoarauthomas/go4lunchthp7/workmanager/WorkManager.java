@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class WorkManagerTest extends Worker {
+public class WorkManager extends Worker {
 
     String TAG = "[ALARM]";
 
@@ -41,7 +41,7 @@ public class WorkManagerTest extends Worker {
     String myRestaurantId = null;
     List<String> myRestaurantWorkmate = new ArrayList<>();
 
-    public WorkManagerTest(@NonNull @NotNull Context context, @NonNull @NotNull WorkerParameters workerParams) {
+    public WorkManager(@NonNull @NotNull Context context, @NonNull @NotNull WorkerParameters workerParams) {
         super(context, workerParams);
 
         //get user uid ok
@@ -175,12 +175,6 @@ public class WorkManagerTest extends Worker {
                 return Result.failure();
 
             }
-
         }
-
-
-
     }
-
-
 }

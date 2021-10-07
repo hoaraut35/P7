@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -26,33 +25,49 @@ public class WorkmatesViewModelTest {
     @Rule
     public final InstantTaskExecutorRule rule = new InstantTaskExecutorRule();
 
-    @Mock
-    FirestoreRepository myFirestoreRepository;
-
+    //mock repositories here...
+    FirestoreRepository myFirestoreRepository = mock(FirestoreRepository.class);
     RestaurantsRepository myRestaurantRepository = mock(RestaurantsRepository.class);
 
-    @Before
-    public void setup() {
+    //viewModel here...
+    ViewModelWorkMates myWorkmatesViewModel;
 
+    //viewState
+    ViewStateWorkMates myView;
+
+    @Before
+    public void setup() throws InterruptedException {
         //mock methods for repositories here...
         Mockito.when(myFirestoreRepository.getFirestoreWorkmates()).thenReturn(new MutableLiveData<>(LocalDataForTest.getFakeListFromFirestoreRepositoryForTest()));
         Mockito.when(myRestaurantRepository.getMyRestaurantsList()).thenReturn(new MutableLiveData<>(LocalDataForTest.getFakeListFromRestaurantRepositoryForTest()));
 
-    }
-
-    @Test
-    public void checkIfWorkmateVMGetUserUI() throws InterruptedException {
-
-        //init viewmodel before test
+        //init viewModel before test
         ViewModelWorkMates myWorkmatesViewModel = new ViewModelWorkMates(myRestaurantRepository, myFirestoreRepository);
 
         //when
-        ViewStateWorkMates myView = LiveDataTestUtils.getOrAwaitValue(myWorkmatesViewModel.getMediatorLiveData());
+      myView = LiveDataTestUtils.getOrAwaitValue(myWorkmatesViewModel.getMediatorLiveData());
 
+    }
+
+    @Test
+    public void checkSizeOfWorkmates() throws InterruptedException {
         //Then (we must to find 3 workmates )
         assertEquals(3, myView.getMySpecialWorkMAtes().size());
-        assertEquals("Restaurant1",  myView.getMySpecialWorkMAtes().get(0).getNameOfRestaurant());
+    }
 
+    @Test
+    public void checkUserRestaurant1(){
+        assertEquals("Restaurant1", myView.getMySpecialWorkMAtes().get(0).getNameOfRestaurant());
+    }
+
+    @Test
+    public void checkUserRestaurant2(){
+        assertEquals("Restaurant2", myView.getMySpecialWorkMAtes().get(1).getNameOfRestaurant());
+    }
+
+    @Test
+    public void checkUserRestaurant3(){
+        assertEquals("Restaurant3", myView.getMySpecialWorkMAtes().get(2).getNameOfRestaurant());
     }
 
 }

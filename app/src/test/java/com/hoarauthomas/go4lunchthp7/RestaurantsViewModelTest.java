@@ -1,7 +1,6 @@
 package com.hoarauthomas.go4lunchthp7;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
@@ -19,7 +18,6 @@ import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
 import com.hoarauthomas.go4lunchthp7.ui.restaurant.ViewModelRestaurant;
-import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.ui.restaurant.ViewStateRestaurant;
 
 import org.junit.Before;
@@ -50,18 +48,20 @@ public class RestaurantsViewModelTest {
     Geometry myGeometry = mock(Geometry.class);
     Location myLocation = mock(Location.class);
 
-    //viewmodel
-    ViewModelRestaurant myViewModelRestaurants;
+    //viewmodel here...
+    ViewModelRestaurant myRestaurantViewModel;
+    //viewState here...
+    ViewStateRestaurant myView;
 
     //fake live data for mediator
     MutableLiveData<LatLng> myLatLng = new MutableLiveData<>();
     MutableLiveData<List<RestaurantPojo>> myListRestaurant = new MutableLiveData<>();
     MutableLiveData<List<FirestoreUser>> myListUser = new MutableLiveData<>();
     MutableLiveData<Boolean> myReload = new MutableLiveData<>();
-    MutableLiveData<PlaceAutocomplete> myPlace = new MutableLiveData<>();
+    MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myPlace = new MutableLiveData<>();
 
     @Before
-    public void setup() {
+    public void setup() throws  InterruptedException{
 
         //set position for repo
         myLatLng.setValue(LocalDataForTest.getLatLngPosition());
@@ -84,6 +84,18 @@ public class RestaurantsViewModelTest {
         Mockito.when(myFirestoreRepository.getFirestoreWorkmates()).thenReturn(myListUser);
         Mockito.when(mySharedRepository.getReload()).thenReturn(myReload);
         Mockito.when(myPlaceAutocompleteRepository.getPlaces()).thenReturn(myPlace);
+
+        //init my viewxmodel
+        myRestaurantViewModel = new ViewModelRestaurant(
+                myPositionRepository,
+                myRestaurantRepository,
+                myFirestoreRepository,
+                mySharedRepository,
+                myPlaceAutocompleteRepository);
+
+        //init viewstate
+        myView = LiveDataTestUtils.getOrAwaitValue(myRestaurantViewModel.getRestaurantsViewUI());
+
 
     }
 
@@ -113,24 +125,16 @@ public class RestaurantsViewModelTest {
         assertEquals("fakePlaceId", myPlaceAutocompleteRepository.getPlaces().getValue().getPredictions().get(0).getPlaceId());
     }
 
+
     @Test
-    public void checkIfViewStateShowGoodData() throws InterruptedException  {
-
-        //init my viewxmodel
-        ViewModelRestaurant myRestaurantViewModel = new ViewModelRestaurant(
-                myPositionRepository,
-                myRestaurantRepository,
-                myFirestoreRepository,
-                mySharedRepository,
-                myPlaceAutocompleteRepository);
-
-        //init viewstate
-        ViewStateRestaurant myView = LiveDataTestUtils.getOrAwaitValue(myRestaurantViewModel.getRestaurantsViewUI());
-
+    public void checkSizeOfRestaurantToShow_3() {
         //start check
         assertEquals(3, myView.getMyRestaurantList().size());
-
     }
 
+    @Test
+    public void checkIfTheFirstHaveAWorkmate() {
+        assertEquals("1",myView.getMyRestaurantList().get(0).myNumberOfWorkmates);
+    }
 
 }

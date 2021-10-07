@@ -11,11 +11,12 @@ import java.util.List;
 
 public class LocalDataForTest {
 
+    //3 workmates for testing
     public static List<FirestoreUser> getFakeListFromFirestoreRepositoryForTest() {
         List<FirestoreUser> myFakeUserList = new ArrayList<>();
-        myFakeUserList.add(new FirestoreUser("ChIJ85WzK9HUDkgRitQb60cwf9Y", null, "9FYLr2m7csO4fxHtwa99widnQMC2", "https://lh3.googleusercontent.com/a-/AOh14Gj4nMiaSsUjHvyDgYy546bPkf8aopCNdF53F_x4hA=s96-c", "Thomas"));
-        myFakeUserList.add(new FirestoreUser("ChIJ85WzK9HUDkgRitQb60cwf9YB", null, "9FYLr2m7csO4fxHtwa99widnQMCB", "https://lh3.googleusercontent.com/a-/AOh14Gj4nMiaSsUjHvyDgYy546bPkf8aopCNdF53F_x4hA=s96-c", "Samuel"));
-        myFakeUserList.add(new FirestoreUser("ChIJ85WzK9HUDkgRitQb60cwf9A", null, "9FYLr2m7csO4fxHtwa99widnQMCC", "https://lh3.googleusercontent.com/a-/AOh14Gj4nMiaSsUjHvyDgYy546bPkf8aopCNdF53F_x4hA=s96-c", "JEssica"));
+        myFakeUserList.add(new FirestoreUser("ChIJ85WzK9HUDkgRitQb60cwf91", null, "9FYLr2m7csO4fxHtwa99widnQMC1", "https://lh3.googleusercontent.com/a-/AOh14Gj4nMiaSsUjHvyDgYy546bPkf8aopCNdF53F_x4hA=s96-c", "Thomas"));
+        myFakeUserList.add(new FirestoreUser("ChIJ85WzK9HUDkgRitQb60cwf92", null, "9FYLr2m7csO4fxHtwa99widnQMC2", "https://lh3.googleusercontent.com/a-/AOh14Gj4nMiaSsUjHvyDgYy546bPkf8aopCNdF53F_x4hA=s96-c", "Samuel"));
+        myFakeUserList.add(new FirestoreUser("ChIJ85WzK9HUDkgRitQb60cwf93", null, "9FYLr2m7csO4fxHtwa99widnQMC3", "https://lh3.googleusercontent.com/a-/AOh14Gj4nMiaSsUjHvyDgYy546bPkf8aopCNdF53F_x4hA=s96-c", "JEssica"));
         return myFakeUserList;
     }
 
@@ -23,7 +24,7 @@ public class LocalDataForTest {
 
         RestaurantPojo myRestaurant1 = new RestaurantPojo();
         myRestaurant1.setName("Restaurant1");
-        myRestaurant1.setPlaceId("ChIJ85WzK9HUDkgRitQb60cwf9Y");
+        myRestaurant1.setPlaceId("ChIJ85WzK9HUDkgRitQb60cwf91");
         myRestaurant1.setGeometry(new Geometry());
         myRestaurant1.getGeometry().setLocation(new Location());
         myRestaurant1.getGeometry().getLocation().setLat(11d);

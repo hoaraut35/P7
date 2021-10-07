@@ -38,16 +38,13 @@ public class ViewModelRestaurant extends ViewModel {
         LiveData<PlaceAutocomplete> myPlacesId = placeAutocompleteRepository.getPlaces();
         LiveData<Boolean> reloadMap = mySharedRepository.getReload();
 
-        myViewStateRestaurantMediator.addSource(myPositionLatLng, new Observer<LatLng>() {
-            @Override
-            public void onChanged(LatLng latLng) {
-                if (latLng == null) return;
-                logicWork(myRestaurantsList.getValue(),
-                        myWorkMatesList.getValue(),
-                        latLng,
-                        myPlacesId.getValue(),
-                        reloadMap.getValue());
-            }
+        myViewStateRestaurantMediator.addSource(myPositionLatLng, latLng -> {
+            if (latLng == null) return;
+            logicWork(myRestaurantsList.getValue(),
+                    myWorkMatesList.getValue(),
+                    latLng,
+                    myPlacesId.getValue(),
+                    reloadMap.getValue());
         });
 
         //source
@@ -72,32 +69,26 @@ public class ViewModelRestaurant extends ViewModel {
         });
 
         //source
-        myViewStateRestaurantMediator.addSource(myRestaurantsList, new Observer<List<RestaurantPojo>>() {
-            @Override
-            public void onChanged(List<RestaurantPojo> restaurantPojo) {
-                if (restaurantPojo == null || restaurantPojo.isEmpty()) return;
-                ViewModelRestaurant.this.logicWork(
-                        restaurantPojo,
-                        myWorkMatesList.getValue(),
-                        myPositionLatLng.getValue(),
-                        myPlacesId.getValue(),
-                        reloadMap.getValue());
-            }
+        myViewStateRestaurantMediator.addSource(myRestaurantsList, restaurantPojo -> {
+            if (restaurantPojo == null || restaurantPojo.isEmpty()) return;
+            ViewModelRestaurant.this.logicWork(
+                    restaurantPojo,
+                    myWorkMatesList.getValue(),
+                    myPositionLatLng.getValue(),
+                    myPlacesId.getValue(),
+                    reloadMap.getValue());
         });
 
 
         //source
-        myViewStateRestaurantMediator.addSource(myWorkMatesList, new Observer<List<FirestoreUser>>() {
-            @Override
-            public void onChanged(List<FirestoreUser> firestoreUsers) {
-                if (firestoreUsers == null) return;
-                ViewModelRestaurant.this.logicWork(myRestaurantsList.getValue(),
-                        firestoreUsers,
-                        //myPosition.getValue(),
-                        myPositionLatLng.getValue(),
-                        myPlacesId.getValue(),
-                        reloadMap.getValue());
-            }
+        myViewStateRestaurantMediator.addSource(myWorkMatesList, firestoreUsers -> {
+            if (firestoreUsers == null) return;
+            ViewModelRestaurant.this.logicWork(myRestaurantsList.getValue(),
+                    firestoreUsers,
+                    //myPosition.getValue(),
+                    myPositionLatLng.getValue(),
+                    myPlacesId.getValue(),
+                    reloadMap.getValue());
         });
 
 

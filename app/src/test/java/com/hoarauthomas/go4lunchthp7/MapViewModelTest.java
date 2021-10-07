@@ -49,6 +49,9 @@ public class MapViewModelTest {
     //viewModel here...
     ViewModelMap myViewModelMap;
 
+    //viewstate here ...
+    ViewStateMap myView;
+
     //fake live data for mediator
     MutableLiveData<LatLng> myLatLng = new MutableLiveData<>();
     MutableLiveData<List<RestaurantPojo>> myListRestaurant = new MutableLiveData<>();
@@ -58,7 +61,7 @@ public class MapViewModelTest {
     MutableLiveData<Integer> myZoom = new MutableLiveData<>();
 
     @Before
-    public void setup(){
+    public void setup() throws InterruptedException{
 
         //set position for repo
         myLatLng.setValue(LocalDataForTest.getLatLngPosition());
@@ -85,6 +88,17 @@ public class MapViewModelTest {
         Mockito.when(myFirestoreRepository.getFirestoreWorkmates()).thenReturn(myListUser);
         Mockito.when(mySharedRepository.getReload()).thenReturn(myReload);
         Mockito.when(myPlaceAutocompleteRepository.getPlaces()).thenReturn(myPlace);
+
+        //init my viewModel
+        myViewModelMap = new ViewModelMap(
+                myPositionRepository,
+                myRestaurantRepository,
+                myFirestoreRepository,
+                mySharedRepository,
+                myPlaceAutocompleteRepository);
+
+        //init viewstate
+        myView = LiveDataTestUtils.getOrAwaitValue(myViewModelMap.getViewStateForMapUI());
 
     }
 
@@ -115,21 +129,9 @@ public class MapViewModelTest {
     }
 
     @Test
-    public void checkIfViewStateShowGoodData() throws InterruptedException  {
-
-        //init my viewModel
-       myViewModelMap = new ViewModelMap(
-                myPositionRepository,
-                myRestaurantRepository,
-                myFirestoreRepository,
-                mySharedRepository,
-                myPlaceAutocompleteRepository);
-
-        //init viewstate
-        ViewStateMap myView = LiveDataTestUtils.getOrAwaitValue(myViewModelMap.getViewStateForMapUI());
-
+    public void checkRestaurantToShow_3() throws InterruptedException  {
         //start check
         assertEquals(3, myView.myRestaurantsList.size());
-
     }
+
 }

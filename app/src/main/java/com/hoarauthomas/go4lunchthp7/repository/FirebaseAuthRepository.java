@@ -8,7 +8,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class FirebaseAuthRepository {
 
-    public FirebaseAuth myFireBaseAuthInstance;
+    public final FirebaseAuth myFireBaseAuthInstance;
 
     private final MutableLiveData<FirebaseUser> myUser = new MutableLiveData<>();
     private final MutableLiveData<Boolean> myUserState = new MutableLiveData<>();
