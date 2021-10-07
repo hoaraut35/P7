@@ -67,4 +67,7 @@ public class LocalDataForTest {
         return new LatLng(48.0956, -1.3718);
     }
 
+    public static Integer getZoom() {
+        return 12;
+    }
 }

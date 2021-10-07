@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.bumptech.glide.util.ExceptionPassthroughInputStream;
+import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.api.GooglePlaceApi;
@@ -46,9 +47,15 @@ public class RestaurantsRepository {
         service = RetrofitRequest.getRetrofitInstance().create(GooglePlaceApi.class);
     }
 
-    public void setNewLatLngPositionFromGPS(Double Long, Double Lat) {
+   /* public void setNewLatLngPositionFromGPS(Double Long, Double Lat) {
         Log.i("[MAP]", "Repository restaurant position " + Lat + Long);
         listOfRestaurantWithLongLat.setValue(getAllRestaurants(Long, Lat).getValue());
+    }
+
+    */
+
+    public void setNewLatLngPositionFromGPS2(LatLng myLatLng){
+        listOfRestaurantWithLongLat.setValue(getAllRestaurants(myLatLng.longitude,myLatLng.latitude).getValue());
     }
 
     public PlaceDetailsFinal getPlaceDetail(String placeId){

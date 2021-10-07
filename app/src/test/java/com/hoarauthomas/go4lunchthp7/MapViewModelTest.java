@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -17,6 +18,9 @@ import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
 import com.hoarauthomas.go4lunchthp7.repository.RestaurantsRepository;
 import com.hoarauthomas.go4lunchthp7.repository.SharedRepository;
 import com.hoarauthomas.go4lunchthp7.ui.map.ViewModelMap;
+import com.hoarauthomas.go4lunchthp7.ui.map.ViewStateMap;
+import com.hoarauthomas.go4lunchthp7.ui.restaurant.ViewModelRestaurant;
+import com.hoarauthomas.go4lunchthp7.ui.restaurant.ViewStateRestaurant;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,14 +34,19 @@ import java.util.List;
 @RunWith(MockitoJUnitRunner.class)
 public class MapViewModelTest {
 
-    //PermissionChecker myPermission = mock(PermissionChecker.class);
+    //to run every tasks synchronously
+    @Rule
+    public final InstantTaskExecutorRule rule = new InstantTaskExecutorRule();
+
+
+    //repositories here...
     PositionRepository myPositionRepository = mock(PositionRepository.class);
     RestaurantsRepository myRestaurantRepository = mock(RestaurantsRepository.class);
     FirestoreRepository myFirestoreRepository = mock(FirestoreRepository.class);
     SharedRepository mySharedRepository = mock(SharedRepository.class);
     PlaceAutocompleteRepository myPlaceAutocompleteRepository = mock(PlaceAutocompleteRepository.class);
 
-    //viewmodel to check
+    //viewModel here...
     ViewModelMap myViewModelMap;
 
     //fake live data for mediator
@@ -46,9 +55,7 @@ public class MapViewModelTest {
     MutableLiveData<List<FirestoreUser>> myListUser = new MutableLiveData<>();
     MutableLiveData<Boolean> myReload = new MutableLiveData<>();
     MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myPlace = new MutableLiveData<>();
-
-    @Rule
-    public final InstantTaskExecutorRule rule = new InstantTaskExecutorRule();
+    MutableLiveData<Integer> myZoom = new MutableLiveData<>();
 
     @Before
     public void setup(){
@@ -68,8 +75,12 @@ public class MapViewModelTest {
         //set places
         myPlace.setValue(LocalDataForTest.getPlaceForTest());
 
+        //set zoom
+        myZoom.setValue(LocalDataForTest.getZoom());
+
         //mock methodf
         Mockito.when(myPositionRepository.getLocationLatLgnLiveData()).thenReturn(myLatLng);
+        Mockito.when(mySharedRepository.getMyZoom()).thenReturn(myZoom);
         Mockito.when(myRestaurantRepository.getMyRestaurantsList()).thenReturn(myListRestaurant);
         Mockito.when(myFirestoreRepository.getFirestoreWorkmates()).thenReturn(myListUser);
         Mockito.when(mySharedRepository.getReload()).thenReturn(myReload);
@@ -103,5 +114,22 @@ public class MapViewModelTest {
         assertEquals("fakePlaceId", myPlaceAutocompleteRepository.getPlaces().getValue().getPredictions().get(0).getPlaceId());
     }
 
+    @Test
+    public void checkIfViewStateShowGoodData() throws InterruptedException  {
 
+        //init my viewModel
+       myViewModelMap = new ViewModelMap(
+                myPositionRepository,
+                myRestaurantRepository,
+                myFirestoreRepository,
+                mySharedRepository,
+                myPlaceAutocompleteRepository);
+
+        //init viewstate
+        ViewStateMap myView = LiveDataTestUtils.getOrAwaitValue(myViewModelMap.getViewStateForMapUI());
+
+        //start check
+        assertEquals(3, myView.myRestaurantsList.size());
+
+    }
 }

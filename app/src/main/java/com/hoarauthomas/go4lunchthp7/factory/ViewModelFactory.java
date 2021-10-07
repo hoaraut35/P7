@@ -110,7 +110,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
 
         } else if (modelClass.isAssignableFrom(ViewModelMap.class)) {
             return (T) new ViewModelMap(
-                    permissionChecker,
+                  // permissionChecker,
                     positionRepository,
                     restaurantsRepository,
                     firestoreRepository,
