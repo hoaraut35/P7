@@ -260,6 +260,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (id == R.id.navigation_drawer_settings) {
                 binding.viewpager.setCurrentItem(4);
             } else if (id == R.id.navigation_drawer_logout) {
+                binding.viewpager.setCurrentItem(0);
                 myViewModel.LogOut();
             }
 
