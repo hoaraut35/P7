@@ -47,20 +47,14 @@ public class RestaurantsRepository {
         service = RetrofitRequest.getRetrofitInstance().create(GooglePlaceApi.class);
     }
 
-   /* public void setNewLatLngPositionFromGPS(Double Long, Double Lat) {
-        Log.i("[MAP]", "Repository restaurant position " + Lat + Long);
-        listOfRestaurantWithLongLat.setValue(getAllRestaurants(Long, Lat).getValue());
-    }
-
-    */
-
     public void setNewLatLngPositionFromGPS2(LatLng myLatLng){
         listOfRestaurantWithLongLat.setValue(getAllRestaurants(myLatLng.longitude,myLatLng.latitude).getValue());
     }
 
     public PlaceDetailsFinal getPlaceDetail(String placeId){
 
-        Call<PlaceDetailsFinal> myCallAPI = service.getPlaceWithAllDetails2(BuildConfig.MAPS_API_KEY,placeId);
+        //Call<PlaceDetailsFinal> myCallAPI = service.getPlaceWithAllDetails2(BuildConfig.MAPS_API_KEY,placeId);
+        Call<PlaceDetailsFinal> myCallAPI = service.getPlaceWithAllDetails(BuildConfig.MAPS_API_KEY,placeId);
 
         try{
             Log.i("[ALARME]","Starting call synchrone for details ..." );

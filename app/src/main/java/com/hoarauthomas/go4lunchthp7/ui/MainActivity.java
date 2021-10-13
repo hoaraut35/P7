@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
         setupBottomBAr();
         setupViewPager();
 
-
     }
 
     private void setupSettings() {

@@ -32,8 +32,6 @@ public class FirestoreRepository {
     public FirestoreRepository() {
         this.myBase = FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
         setupListenerOnCollection();
-        //TODO: remove it
-        //setupListenerWorkmateFromFirestoreRepo();
     }
 
     public void setupListeners() {
