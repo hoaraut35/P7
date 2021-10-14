@@ -180,8 +180,7 @@ public class MainActivity extends AppCompatActivity {
                         .setAuthMethodPickerLayout(customLayout)
                         .setLogo(R.drawable.go4lunch_sign_in)
                         .setTheme(R.style.LoginTheme)
-                        //.setIsSmartLockEnabled(false, true)
-                        .setIsSmartLockEnabled(false, false)
+                        .setIsSmartLockEnabled(false, true)
                         .build()
         );
 

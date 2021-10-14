@@ -88,8 +88,6 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
         this.placeAutocompleteRepository = placeAutocompleteRepository;
         this.alarmRepository = alarmRepository;
         this.sharedRepository = sharedRepository;
-
-
     }
 
     @SuppressWarnings("unchecked")
@@ -136,7 +134,6 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
                     restaurantsRepository,
                     firestoreRepository);
         }
-
 
         throw new IllegalArgumentException("[V M F] Unknow ViewModel class");
     }

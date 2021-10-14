@@ -20,6 +20,7 @@ public class LocalDataForTest {
         return myFakeUserList;
     }
 
+    //3 restaurants for testing
     public static List<RestaurantPojo> getFakeListFromRestaurantRepositoryForTest() {
 
         RestaurantPojo myRestaurant1 = new RestaurantPojo();
@@ -54,6 +55,7 @@ public class LocalDataForTest {
         return myFakeRestaurantList;
     }
 
+    //fake prediction list
     public static com.hoarauthomas.go4lunchthp7.PlaceAutocomplete getPlaceForTest() {
         com.hoarauthomas.go4lunchthp7.PlaceAutocomplete myFakePlace = new com.hoarauthomas.go4lunchthp7.PlaceAutocomplete();
         List<com.hoarauthomas.go4lunchthp7.Prediction> myPredictionList = new ArrayList<>();
@@ -64,10 +66,12 @@ public class LocalDataForTest {
         return myFakePlace;
     }
 
+    //fake position for testing
     public static LatLng getLatLngPosition(){
         return new LatLng(48.0956, -1.3718);
     }
 
+    //fake zoom for testing
     public static Integer getZoom() {
         return 12;
     }

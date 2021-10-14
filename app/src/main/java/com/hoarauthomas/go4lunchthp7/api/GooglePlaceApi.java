@@ -15,7 +15,6 @@ public interface GooglePlaceApi {
             @Query("key") String key,
             @Query("location") String myLocation);
 
-    //async
     @GET("place/details/json?")
     Call<PlaceDetailsFinal> getPlaceWithAllDetails(
             @Query("key") String key,

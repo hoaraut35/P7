@@ -31,10 +31,10 @@ public class AlarmRepository {
 
         Toast.makeText(myContext.getApplicationContext(), R.string.notification_enable_msg, Toast.LENGTH_SHORT).show();
 
-        //for production
-        // LocalTime alarmTime = LocalTime.of(12, 00);
+        //TODO:must be disable for testing
+        //LocalTime alarmTime = LocalTime.of(12, 00);
 
-        //set starting time for test
+        //TODO: must be enable for testing
         LocalDateTime actual = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
         LocalTime alarmTime = actual.toLocalTime();
         alarmTime = alarmTime.plusMinutes(1);
