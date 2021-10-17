@@ -36,6 +36,17 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(view);
         setupViewModel();
         setupIntent();
+        setupCloseBtn();
+    }
+
+    private void setupCloseBtn() {
+
+        binding.topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void setupIntent() {

@@ -115,6 +115,7 @@
     <string name="error_autocomplete">Error autocomplete</string>
     <string name="cancel_autocomplete">Aborded search</string>
     <string name="toast_no_restaurant">no restaurant selected</string>
+    <string name="back_btn_text">Return</string>
 
 
 </resources>
