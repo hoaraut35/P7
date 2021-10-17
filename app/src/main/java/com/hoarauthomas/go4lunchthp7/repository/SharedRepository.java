@@ -25,6 +25,7 @@ public class SharedRepository {
         return false;
     }
 
+    //used for relaod initial data on map or list of restaurant
     public LiveData<Boolean> getReload() {
         return reloadMap;
     }

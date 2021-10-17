@@ -43,7 +43,7 @@ public class PositionRepository {
         return locationMutableLiveData;
     }
 
-    //publish to viewmodel with latlgn
+    //publish to ViewModel with LatLgn
     public LiveData<LatLng> getLocationLatLgnLiveData(){return myLatLngLiveData;}
 
     //public method to start listener position

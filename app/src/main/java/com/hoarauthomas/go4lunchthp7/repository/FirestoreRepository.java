@@ -25,7 +25,6 @@ public class FirestoreRepository {
     private static final String COLLECTION_NAME = "users";
 
     private final MutableLiveData<List<FirestoreUser>> myWorkmatesListFromFirestore = new MutableLiveData<>(null);
-    //private final MutableLiveData<DocumentSnapshot> myTestSnapShot = new MutableLiveData<>(null);
     private final MutableLiveData<FirestoreUser> myWorkmateFromRepo = new MutableLiveData<>();
     private final MutableLiveData<FirestoreUser> myActualUser = new MutableLiveData<>(null);
 
@@ -35,7 +34,6 @@ public class FirestoreRepository {
     }
 
     public void setupListeners() {
-
         setupListenerOnCollection();
         getUserActual();
 

@@ -141,7 +141,7 @@ public class ViewModelDetail extends ViewModel {
         }
         myScreen.setListWorkMates(myWorkMatesDetailList);
 
-        //?
+        //
         myScreen.setWorkmate(myUserFromFirebase.getUid());
         myScreen.setPlaceId(placeIdRequestedFromUI);
 

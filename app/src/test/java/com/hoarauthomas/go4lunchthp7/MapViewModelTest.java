@@ -38,7 +38,6 @@ public class MapViewModelTest {
     @Rule
     public final InstantTaskExecutorRule rule = new InstantTaskExecutorRule();
 
-
     //repositories here...
     PositionRepository myPositionRepository = mock(PositionRepository.class);
     RestaurantsRepository myRestaurantRepository = mock(RestaurantsRepository.class);
@@ -130,7 +129,7 @@ public class MapViewModelTest {
 
     @Test
     public void checkRestaurantToShow_3() throws InterruptedException  {
-        //start check
+        //start check 3 restaurants to show on map
         assertEquals(3, myView.myRestaurantsList.size());
     }
 

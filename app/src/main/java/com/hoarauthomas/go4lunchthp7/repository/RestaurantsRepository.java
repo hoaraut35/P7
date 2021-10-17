@@ -53,7 +53,6 @@ public class RestaurantsRepository {
 
     public PlaceDetailsFinal getPlaceDetail(String placeId){
 
-        //Call<PlaceDetailsFinal> myCallAPI = service.getPlaceWithAllDetails2(BuildConfig.MAPS_API_KEY,placeId);
         Call<PlaceDetailsFinal> myCallAPI = service.getPlaceWithAllDetails(BuildConfig.MAPS_API_KEY,placeId);
 
         try{

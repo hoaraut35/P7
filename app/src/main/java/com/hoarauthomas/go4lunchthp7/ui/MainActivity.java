@@ -356,7 +356,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
                 myViewModel.reloadDataAfterQuery(false);
 
-                if (myViewModel.getMyPosition() != null && query.length() > 3) {
+                if (myViewModel.getMyPosition() != null && query.length() >= 3) {
                     Location myPosition = myViewModel.getMyPosition();
 
                     if (query != null && myPosition != null) {

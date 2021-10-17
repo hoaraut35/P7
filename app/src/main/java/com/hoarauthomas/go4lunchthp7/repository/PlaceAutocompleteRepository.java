@@ -46,7 +46,6 @@ public class PlaceAutocompleteRepository {
 
             positionStr = position.getLatitude() + "," + position.getLongitude();
 
-          //  service.getPlaceAutocomplete(BuildConfig.MAPS_API_KEY, textSearch, positionStr).enqueue(new Callback<PlaceAutocomplete>() {
             service.getPlaceAutocomplete(BuildConfig.MAPS_API_KEY, textSearch, positionStr).enqueue(new Callback<PlaceAutocomplete>() {
                 @Override
                 public void onResponse(@NonNull Call<PlaceAutocomplete> call, @NonNull Response<PlaceAutocomplete> response) {

@@ -113,9 +113,9 @@ public class WorkManager extends Worker {
 
         Context applicationContext = getApplicationContext();
 
-
-        if (myRestaurantName.isEmpty()){
+        if (myRestaurantName == null){
             return Result.failure();
+
         }else
         {
             //get data from ui
