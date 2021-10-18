@@ -100,7 +100,7 @@ public class ListFragment extends Fragment implements RecyclerViewAdapter.Restau
             Log.i("[AUTOCOMPLETE]", "view restaurant" + restaurants.size());
             allResult.clear();
             allResult.addAll(restaurants);
-            recyclerView.setAdapter(new RecyclerViewAdapter(allResult, null,this));
+            recyclerView.setAdapter(new RecyclerViewAdapter(allResult, this));
             Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
         }
 

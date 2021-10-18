@@ -136,9 +136,6 @@ public class ViewModelRestaurant extends ViewModel {
                 int distance = Math.round(getDistance);
                 myRestaurant.setMyDistance(Integer.toString(distance));
 
-
-
-
                 int count = 0;
 
                 //workmates number for an restaurant
@@ -193,37 +190,6 @@ public class ViewModelRestaurant extends ViewModel {
 
                     myListForUI.add(myPlaceDetail);
                 }
-
-
-
-
-                // myPlaceAutocompleteRepository.getAutocompleteDataToPlaceDetailList();
-
-                /*
-                ORIGINE
-                //we iterate all result from autocomplete
-                for (Prediction myPrediction : myPlaceAuto.getPredictions()) {
-
-                    //here we must to get place detail
-                   PlaceDetailsFinal myPlaceDetail =  myRestaurantRepo.getPlaceDetail(myPrediction.getPlaceId());
-                    Log.i("[AUTOCOMPLETE]", "Predicion name : " + myPrediction.getDescription());
-
-                    for (RestaurantPojo myRestaurant : restaurants) {
-
-                      //  Log.i("[AUTOCOMPLETE]","Restaurant list actual :" + myRestaurant.getName() + myPrediction.getMatchedSubstrings().);
-
-
-                            if (myRestaurant.getPlaceId().equals(myPrediction.getPlaceId())){
-
-                        //if (myRestaurant.getName().contains(myPrediction.getStructuredFormatting().getMainText())){
-                            newPredictionRestaurantList.add(myRestaurant);
-                        }
-
-                    }
-
-                }
-
-                 */
 
                 myViewStateRestaurantMediator.setValue(new ViewStateRestaurant(null, myListForUI));
             }

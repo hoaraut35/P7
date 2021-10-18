@@ -25,7 +25,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     //variables ...
     private final List<RestaurantPojo> myRestaurantResult;
-    private final List<ResultPlaceDetail> myRestaurantAutocompleteResult;
+ //   private final List<ResultPlaceDetail> myRestaurantAutocompleteResult;
 
 
     // private LatLng myPosition;
@@ -39,10 +39,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     //declare callback
     private final RestaurantListener callback;
 
-    public RecyclerViewAdapter(List<RestaurantPojo> myList, List<ResultPlaceDetail> myAutocompleteResult, RestaurantListener callback) {
+    public RecyclerViewAdapter(List<RestaurantPojo> myList,  RestaurantListener callback) {
         this.callback = callback;
         this.myRestaurantResult = myList;
-        this.myRestaurantAutocompleteResult = myAutocompleteResult;
+      //  this.myRestaurantAutocompleteResult = myAutocompleteResult;
     }
 
     //for holder
@@ -95,7 +95,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         //TODO:workmates number don't work
         try{
-           // holder.numberOfWorkmates.setText(myRestaurantResult.get(position).getMyNumberOfWorkmates());
+            holder.numberOfWorkmates.setText(myRestaurantResult.get(position).getMyNumberOfWorkmates());
         }catch (Exception e)
         {
             holder.numberOfWorkmates.setText("?");
