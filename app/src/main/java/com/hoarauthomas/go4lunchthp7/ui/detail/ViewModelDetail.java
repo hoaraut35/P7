@@ -25,6 +25,8 @@ import javax.annotation.Nullable;
 public class ViewModelDetail extends ViewModel {
 
     private final FirestoreRepository myFirestoreRepository;
+    private final RestaurantsRepository myRestaurantRepository;
+
 
     //for ui update
     private final MediatorLiveData<ViewStateDetail> myScreenDetailMediator = new MediatorLiveData<>();
@@ -36,9 +38,12 @@ public class ViewModelDetail extends ViewModel {
 
             FirebaseAuthRepository myAuthRepository,
             RestaurantsRepository myRestaurantRepository,
-            FirestoreRepository myFirestoreRepository) {
+            FirestoreRepository myFirestoreRepository
+    ) {
 
         this.myFirestoreRepository = myFirestoreRepository;
+        this.myRestaurantRepository = myRestaurantRepository;
+
 
         LiveData<FirebaseUser> myUserFirebaseFromRepo = myAuthRepository.getFirebaseAuthUserFromRepo();
         LiveData<List<RestaurantPojo>> myRestaurantsListFromRepo = myRestaurantRepository.getMyRestaurantsList();
@@ -160,64 +165,55 @@ public class ViewModelDetail extends ViewModel {
             myScreen.setLiked(false);
         }
 
-        //setup general data in view object
-        for (RestaurantPojo myItem : restaurantsListFromNearbySearch) {
+        //title
+        myScreen.setTitle(RestaurantDetailFromPlaceDetails.getName());
 
-            if (myItem.getPlaceId().equals(placeIdRequestedFromUI)) {
+        //address
+        myScreen.setAddress(RestaurantDetailFromPlaceDetails.getVicinity());
 
-                //title
-                myScreen.setTitle(myItem.getName());
-
-                //address
-                myScreen.setAddress(myItem.getVicinity());
-
-                //get photo
-                try {
-                    String query = "https://maps.googleapis.com/maps/api/place/photo?key=" +
-                            BuildConfig.MAPS_API_KEY + "&photoreference=" +
-                            myItem.getPhotos().get(0).getPhotoReference() + "&maxheight=157&maxwidth=157";
-                    myScreen.setUrlPhoto(query);
+        //get photo
+        try {
+            String query = "https://maps.googleapis.com/maps/api/place/photo?key=" +
+                    BuildConfig.MAPS_API_KEY + "&photoreference=" +
+                    RestaurantDetailFromPlaceDetails.getPhotos().get(0).getPhotoReference() + "&maxheight=157&maxwidth=157";
+            myScreen.setUrlPhoto(query);
 
 
-                } catch (Exception e) {
-                    Log.i("[IMAGE]", "Exception : " + e.getMessage());
-                }
+        } catch (Exception e) {
+            Log.i("[IMAGE]", "Exception : " + e.getMessage());
+        }
 
-                //rating
-                try {
-                    //on google we have a rating from 1 to 5 but we want 1 to 3...
-                    //Double ratingDouble = map(restaurants.get(x).getRating(), 1.0, 5.0, 1.0, 3.0);
-                    double ratingDouble = (myItem.getRating() - 1.0) * (3.0 - 1.0) / (5.0 - 1.0) + 1.0;
-                    //private Double map(double value, double in_min, double in_max, double out_min, double out_max) {
-                    //return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+        //rating
+        try {
+            //on google we have a rating from 1 to 5 but we want 1 to 3...
+            //Double ratingDouble = map(restaurants.get(x).getRating(), 1.0, 5.0, 1.0, 3.0);
+            double ratingDouble = (RestaurantDetailFromPlaceDetails.getRating() - 1.0) * (3.0 - 1.0) / (5.0 - 1.0) + 1.0;
+            //private Double map(double value, double in_min, double in_max, double out_min, double out_max) {
+            //return (value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 
-                    int ratingInt = (int) Math.round(ratingDouble);
+            int ratingInt = (int) Math.round(ratingDouble);
 
-                    if (ratingInt == 1) {
-                        myScreen.setRating(1);
-                    } else if (ratingInt == 2) {
-                        myScreen.setRating(2);
-                    } else if (ratingInt == 3) {
-                        myScreen.setRating(3);
-                    }
-                } catch (Exception e) {
-                    myScreen.setRating(0);
-                }
-
-                //phone
-
-                if (RestaurantDetailFromPlaceDetails.getFormattedPhoneNumber() != null) {
-                    myScreen.setPhoneNumber(RestaurantDetailFromPlaceDetails.getFormattedPhoneNumber());
-                }
-
-
-                //website
-                if (RestaurantDetailFromPlaceDetails.getUrl() != null) {
-                    myScreen.setWebSite(RestaurantDetailFromPlaceDetails.getUrl());
-                }
-
-                break;
+            if (ratingInt == 1) {
+                myScreen.setRating(1);
+            } else if (ratingInt == 2) {
+                myScreen.setRating(2);
+            } else if (ratingInt == 3) {
+                myScreen.setRating(3);
             }
+        } catch (Exception e) {
+            myScreen.setRating(0);
+        }
+
+        //phone
+
+        if (RestaurantDetailFromPlaceDetails.getFormattedPhoneNumber() != null) {
+            myScreen.setPhoneNumber(RestaurantDetailFromPlaceDetails.getFormattedPhoneNumber());
+        }
+
+
+        //website
+        if (RestaurantDetailFromPlaceDetails.getUrl() != null) {
+            myScreen.setWebSite(RestaurantDetailFromPlaceDetails.getUrl());
         }
 
         //update viewstate object
@@ -226,6 +222,7 @@ public class ViewModelDetail extends ViewModel {
     }
 
     public void setPlaceId(String placeId) {
+        myRestaurantRepository.getRestaurantById(placeId);
         placeIdRequest.setValue(placeId);
     }
 

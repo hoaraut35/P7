@@ -27,20 +27,24 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private final List<RestaurantPojo> myRestaurantResult;
  //   private final List<ResultPlaceDetail> myRestaurantAutocompleteResult;
 
+    public ClickListener onClickListener;
 
     // private LatLng myPosition;
 
-    //interface for callback
+   /* //interface for callback
     public interface RestaurantListener {
         void onClickDetailRestaurant(String restaurantId);
         void popupSnack(String message);
     }
 
-    //declare callback
-    private final RestaurantListener callback;
+    */
 
-    public RecyclerViewAdapter(List<RestaurantPojo> myList,  RestaurantListener callback) {
-        this.callback = callback;
+    //declare callback
+  //  private final RestaurantListener callback;
+
+    //public RecyclerViewAdapter(List<RestaurantPojo> myList,  RestaurantListener callback) {
+    public RecyclerViewAdapter(List<RestaurantPojo> myList, ClickListener myClickListener) {
+        this.onClickListener = myClickListener;
         this.myRestaurantResult = myList;
       //  this.myRestaurantAutocompleteResult = myAutocompleteResult;
     }
@@ -142,7 +146,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
 
         //TODO add listener
-        holder.itemView.setOnClickListener(v -> callback.onClickDetailRestaurant(result.getPlaceId()));
+        //holder.itemView.setOnClickListener(v -> callback.onClickDetailRestaurant(result.getPlaceId()));
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickListener.onClickDetailRestaurant(result.getPlaceId());
+            }
+        });
 
     }
 

@@ -5,6 +5,8 @@ import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.Geometry;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.Location;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
+import com.hoarauthomas.go4lunchthp7.model.PlaceDetails.PlaceDetailsFinal;
+import com.hoarauthomas.go4lunchthp7.model.PlaceDetails.ResultPlaceDetail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,18 +58,18 @@ public class LocalDataForTest {
     }
 
     //fake prediction list
-    public static com.hoarauthomas.go4lunchthp7.PlaceAutocomplete getPlaceForTest() {
-        com.hoarauthomas.go4lunchthp7.PlaceAutocomplete myFakePlace = new com.hoarauthomas.go4lunchthp7.PlaceAutocomplete();
-        List<com.hoarauthomas.go4lunchthp7.Prediction> myPredictionList = new ArrayList<>();
-        com.hoarauthomas.go4lunchthp7.Prediction myPrediction= new com.hoarauthomas.go4lunchthp7.Prediction();
-        myPrediction.setPlaceId("fakePlaceId");
-        myPredictionList.add(myPrediction);
-        myFakePlace.setPredictions(myPredictionList);
-        return myFakePlace;
+    public static List<PlaceDetailsFinal> getPlaceForTest() {
+        List<PlaceDetailsFinal> myPlaceDetailsFinalList = new ArrayList<>();
+        PlaceDetailsFinal myPlaceDetailFinal = new PlaceDetailsFinal();
+        ResultPlaceDetail myResultPlaceDetail = new ResultPlaceDetail();
+        myResultPlaceDetail.setPlaceId("fakePlaceId");
+        myPlaceDetailFinal.setResult(myResultPlaceDetail);
+
+        return myPlaceDetailsFinalList;
     }
 
     //fake position for testing
-    public static LatLng getLatLngPosition(){
+    public static LatLng getLatLngPosition() {
         return new LatLng(48.0956, -1.3718);
     }
 

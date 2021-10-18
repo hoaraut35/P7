@@ -27,12 +27,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ListFragment extends Fragment implements RecyclerViewAdapter.RestaurantListener{
+//public class ListFragment extends Fragment implements RecyclerViewAdapter.RestaurantListener{
+public class ListFragment extends Fragment implements ClickListener{
 
     private final ArrayList<RestaurantPojo> allResult = new ArrayList<>();
     private final List<ResultPlaceDetail> AutocompleteResult = new ArrayList<>();
 
     private RecyclerView recyclerView;
+
+
+
 
     @Override
     public void onClickDetailRestaurant(String restaurantId) {
@@ -92,7 +96,7 @@ public class ListFragment extends Fragment implements RecyclerViewAdapter.Restau
            Log.i("[AUTOCOMPLETE]", "view autocomplete" + myAutocompleteResult.size() );
           // myAutocompleteResult.clear();
          //  myAutocompleteResult.addAll(myAutocompleteResult);
-           recyclerView.setAdapter(new RecyclerViewAdapterAutocomplete(myAutocompleteResult));
+           recyclerView.setAdapter(new RecyclerViewAdapterAutocomplete(myAutocompleteResult, this));
            Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
 
        }else
@@ -100,6 +104,7 @@ public class ListFragment extends Fragment implements RecyclerViewAdapter.Restau
             Log.i("[AUTOCOMPLETE]", "view restaurant" + restaurants.size());
             allResult.clear();
             allResult.addAll(restaurants);
+           // recyclerView.setAdapter(new RecyclerViewAdapter(allResult, this));
             recyclerView.setAdapter(new RecyclerViewAdapter(allResult, this));
             Objects.requireNonNull(recyclerView.getAdapter()).notifyDataSetChanged();
         }

@@ -12,6 +12,7 @@ import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.Geometry;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.Location;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
+import com.hoarauthomas.go4lunchthp7.model.PlaceDetails.PlaceDetailsFinal;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
@@ -58,7 +59,9 @@ public class RestaurantsViewModelTest {
     MutableLiveData<List<RestaurantPojo>> myListRestaurant = new MutableLiveData<>();
     MutableLiveData<List<FirestoreUser>> myListUser = new MutableLiveData<>();
     MutableLiveData<Boolean> myReload = new MutableLiveData<>();
-    MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myPlace = new MutableLiveData<>();
+    MutableLiveData<List<PlaceDetailsFinal>> myPlaces = new MutableLiveData<>();
+
+    //MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myPlace = new MutableLiveData<>();
 
     @Before
     public void setup() throws  InterruptedException{
@@ -76,14 +79,15 @@ public class RestaurantsViewModelTest {
         myReload.setValue(true);
 
         //set places
-        myPlace.setValue(LocalDataForTest.getPlaceForTest());
+        myPlaces.setValue(LocalDataForTest.getPlaceForTest());
 
         //mock methodf
         Mockito.when(myPositionRepository.getLocationLatLgnLiveData()).thenReturn(myLatLng);
         Mockito.when(myRestaurantRepository.getMyRestaurantsList()).thenReturn(myListRestaurant);
         Mockito.when(myFirestoreRepository.getFirestoreWorkmates()).thenReturn(myListUser);
         Mockito.when(mySharedRepository.getReload()).thenReturn(myReload);
-        Mockito.when(myPlaceAutocompleteRepository.getPlaces()).thenReturn(myPlace);
+        Mockito.when(myPlaceAutocompleteRepository.getPlacesForAutocomplete()).thenReturn(myPlaces);
+        //Mockito.when(myPlaceAutocompleteRepository.getPlaces()).thenReturn(myPlace);
 
         //init my viewxmodel
         myRestaurantViewModel = new ViewModelRestaurant(
@@ -122,7 +126,7 @@ public class RestaurantsViewModelTest {
 
     @Test
     public void checkPlace() {
-        assertEquals("fakePlaceId", myPlaceAutocompleteRepository.getPlaces().getValue().getPredictions().get(0).getPlaceId());
+        assertEquals(0, myPlaceAutocompleteRepository.getPlacesForAutocomplete().getValue().size());
     }
 
 

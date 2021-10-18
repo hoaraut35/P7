@@ -119,7 +119,9 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new ViewModelDetail(
                     firebaseAuthRepository,
                     restaurantsRepository,
-                    firestoreRepository);
+                    firestoreRepository
+
+            );
 
         } else if (modelClass.isAssignableFrom(ViewModelRestaurant.class)) {
             return (T) new ViewModelRestaurant(

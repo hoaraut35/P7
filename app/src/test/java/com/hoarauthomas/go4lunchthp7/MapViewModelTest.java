@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
+import com.hoarauthomas.go4lunchthp7.model.PlaceDetails.PlaceDetailsFinal;
 import com.hoarauthomas.go4lunchthp7.permissions.PermissionChecker;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
@@ -56,7 +57,9 @@ public class MapViewModelTest {
     MutableLiveData<List<RestaurantPojo>> myListRestaurant = new MutableLiveData<>();
     MutableLiveData<List<FirestoreUser>> myListUser = new MutableLiveData<>();
     MutableLiveData<Boolean> myReload = new MutableLiveData<>();
-    MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myPlace = new MutableLiveData<>();
+
+    MutableLiveData<List<PlaceDetailsFinal>> myPlaces = new MutableLiveData<>();
+    //MutableLiveData<com.hoarauthomas.go4lunchthp7.PlaceAutocomplete> myPlace = new MutableLiveData<>();
     MutableLiveData<Integer> myZoom = new MutableLiveData<>();
 
     @Before
@@ -75,7 +78,7 @@ public class MapViewModelTest {
         myReload.setValue(true);
 
         //set places
-        myPlace.setValue(LocalDataForTest.getPlaceForTest());
+        myPlaces.setValue(LocalDataForTest.getPlaceForTest());
 
         //set zoom
         myZoom.setValue(LocalDataForTest.getZoom());
@@ -86,7 +89,7 @@ public class MapViewModelTest {
         Mockito.when(myRestaurantRepository.getMyRestaurantsList()).thenReturn(myListRestaurant);
         Mockito.when(myFirestoreRepository.getFirestoreWorkmates()).thenReturn(myListUser);
         Mockito.when(mySharedRepository.getReload()).thenReturn(myReload);
-        Mockito.when(myPlaceAutocompleteRepository.getPlaces()).thenReturn(myPlace);
+        Mockito.when(myPlaceAutocompleteRepository.getPlacesForAutocomplete()).thenReturn(myPlaces);
 
         //init my viewModel
         myViewModelMap = new ViewModelMap(
@@ -124,7 +127,7 @@ public class MapViewModelTest {
 
     @Test
     public void checkPlace() {
-        assertEquals("fakePlaceId", myPlaceAutocompleteRepository.getPlaces().getValue().getPredictions().get(0).getPlaceId());
+        assertEquals(0, myPlaceAutocompleteRepository.getPlacesForAutocomplete().getValue().size());
     }
 
     @Test

@@ -26,14 +26,12 @@ public class PlaceAutocompleteRepository {
     //variable
     private final GooglePlaceApi service;
     private final MutableLiveData<PlaceAutocomplete> myPlaceAutoCompleteListSingle = new MutableLiveData<>();
-
     private final MutableLiveData<List<PlaceDetailsFinal>> myPlaceDataList = new MutableLiveData<>();
 
     //constructor
     public PlaceAutocompleteRepository() {
         service = RetrofitRequest.getRetrofitInstance().create(GooglePlaceApi.class);
     }
-
 
     //getter setter
     public List<Prediction> myList = new ArrayList<>();
@@ -42,37 +40,7 @@ public class PlaceAutocompleteRepository {
         this.myList = myList;
     }
 
-    //method to get autocomplete
-   /* public void getPlaceAutocompleteSingle(String textSearch, Location position) {
-
-        String positionStr;
-
-        if (!Double.isNaN(position.getLatitude()) && !Double.isNaN(position.getLongitude()) && textSearch != null && textSearch.length() > 3) {
-
-            positionStr = position.getLatitude() + "," + position.getLongitude();
-
-            service.getPlaceAutocomplete(BuildConfig.MAPS_API_KEY, textSearch, positionStr).enqueue(new Callback<PlaceAutocomplete>() {
-                @Override
-                public void onResponse(@NonNull Call<PlaceAutocomplete> call, @NonNull Response<PlaceAutocomplete> response) {
-                    myPlaceAutoCompleteListSingle.setValue(response.body());
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<PlaceAutocomplete> call, @NonNull Throwable t) {
-                    myPlaceAutoCompleteListSingle.setValue(null);
-                }
-            });
-
-        } else {
-            myPlaceAutoCompleteListSingle.setValue(null);
-        }
-
-    }
-
-    */
-
-
-    //method to get autocomplete with directly a list of PlaceDEtail
+    //method to get autocomplete with directly a list of PlaceDetail
     public void getAutocompleteDataToPlaceDetailList(String textSearch, Location position) {
 
         String positionStr;
@@ -89,20 +57,15 @@ public class PlaceAutocompleteRepository {
 
                     if (response.isSuccessful()) {
 
-                      //  Log.i("[AUTOCOMPLETE]", "Number of prediction(s) : " + response.body().getPredictions().size());
-
                         for (Prediction myPrediction : response.body().getPredictions()) {
 
                             service.getPlaceWithAllDetails(BuildConfig.MAPS_API_KEY, myPrediction.getPlaceId()).enqueue(new Callback<PlaceDetailsFinal>() {
                                 @Override
                                 public void onResponse(Call<PlaceDetailsFinal> call, Response<PlaceDetailsFinal> response) {
 
-                                  //  Log.i("[AUTOCOMPLETE]", "Working on the : " + myPrediction.getDescription());
-
                                     if (response.isSuccessful()) {
                                         myList.add(response.body());
                                         myPlaceDataList.setValue(myList);
-                                       // Log.i("[AUTOCOMPLETE]", "New size of list result for ui  : " + myList.size());
                                     }
                                 }
 
@@ -113,13 +76,10 @@ public class PlaceAutocompleteRepository {
                             });
                         }
 
-                        //set mutablelivedata
-                        myPlaceDataList.setValue(myList);
-                     //   Log.i("[AUTOCOMPLETE]", "update mutablelivedata for vm  :" + myList.size());
 
+                        myPlaceDataList.setValue(myList);
 
                     }
-
 
                 }
 
@@ -134,13 +94,6 @@ public class PlaceAutocompleteRepository {
             myPlaceDataList.setValue(null);
         }
     }
-
-   /* public MutableLiveData<PlaceAutocomplete> getPlaces() {
-        return myPlaceAutoCompleteListSingle;
-    }
-
-    */
-
 
     public LiveData<List<PlaceDetailsFinal>> getPlacesForAutocomplete() {
         Log.i("[AUTOCOMPLETE]", "retourn data prediction for vm :" + myList.size());

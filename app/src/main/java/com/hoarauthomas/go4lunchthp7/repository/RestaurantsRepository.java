@@ -103,15 +103,6 @@ public class RestaurantsRepository {
         return listOfRestaurantWithLongLat;
     }
 
-
-
-
-
-
-
-
-
-
     public void getRestaurantById(String placeId) {
 
         PlaceDetailsFinal existing = myCache.get(placeId);
@@ -161,6 +152,5 @@ public class RestaurantsRepository {
     public LiveData<List<RestaurantPojo>> getMyRestaurantsList() {
         return listOfRestaurantWithLongLat;
     }
-
 
 }

@@ -22,21 +22,19 @@ import java.util.List;
 public class RecyclerViewAdapterAutocomplete extends RecyclerView.Adapter<RecyclerViewAdapterAutocomplete.ViewHolder> {
 
     private final List<ResultPlaceDetail> myRestaurantAutocompleteResult;
+    public ClickListener onClickListener;
 
-    public RecyclerViewAdapterAutocomplete(List<ResultPlaceDetail> myAutocompleteResult) {
-        Log.i("[AUTOCOMPLETE]","taille a afficher automcomple" + myAutocompleteResult.size());
+    public RecyclerViewAdapterAutocomplete(List<ResultPlaceDetail> myAutocompleteResult, ClickListener myClickListener) {
+        this.onClickListener = myClickListener;
         this.myRestaurantAutocompleteResult = myAutocompleteResult;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-
         View view = inflater.inflate(R.layout.item_restaurant, parent, false);
-
         return new ViewHolder(view);
     }
 
@@ -123,6 +121,12 @@ public class RecyclerViewAdapterAutocomplete extends RecyclerView.Adapter<Recycl
         }
 
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickListener.onClickDetailRestaurant(result.getPlaceId());
+            }
+        });
 
     }
 

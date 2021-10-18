@@ -53,13 +53,7 @@ public class ViewModelMap extends ViewModel {
 
         //start list of workmates
         LiveData<List<FirestoreUser>> myWorkMatesList = myFirestoreRepository.getFirestoreWorkmates();
-
-
         LiveData<List<PlaceDetailsFinal>> myResultPlacesAutocomplete = placeAutocompleteRepository.getPlacesForAutocomplete();
-        //origin
-        //LiveData<PlaceAutocomplete> myPlacesId = placeAutocompleteRepository.getPlaces();
-
-
         LiveData<Boolean> reloadMap = mySharedRepository.getReload();
 
         myViewStateMapMediator.addSource(reloadMap, aBoolean -> {
