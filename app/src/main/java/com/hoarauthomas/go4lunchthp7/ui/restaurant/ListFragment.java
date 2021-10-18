@@ -106,14 +106,6 @@ public class ListFragment extends Fragment implements RecyclerViewAdapter.Restau
 
     }
 
-
-
-   /* private void setupRecyclerViewData() {
-        recyclerView.setAdapter(new RecyclerViewAdapter(allResult, this));
-    }
-
-    */
-
     private void setupRecyclerView(View view) {
         recyclerView = view.findViewWithTag("recycler_view");
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);

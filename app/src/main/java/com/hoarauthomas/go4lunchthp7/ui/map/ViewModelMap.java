@@ -1,5 +1,7 @@
 package com.hoarauthomas.go4lunchthp7.ui.map;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -152,30 +154,44 @@ public class ViewModelMap extends ViewModel {
                 }
 
                 //we set the ViewState for ui
-                myViewStateMapMediator.setValue(new ViewStateMap(position, newRestaurantList));
+                myViewStateMapMediator.setValue(new ViewStateMap(position, newRestaurantList, null));
 
             }//fin si
 
         } else {
 
             //mode autocomplete
-            if (myPlacesAutocomplete != null) {
+            if (myPlacesAutocomplete != null && !myPlacesAutocomplete.isEmpty()) {
 
-               /* List<RestaurantPojo> newPredictionRestaurantList = new ArrayList<>();
 
-                for (RestaurantPojo myRestaurant : restaurants) {
-                    for (Prediction myPrediction : myPlacesId.getPredictions()) {
-                        if (myRestaurant.getPlaceId().equals(myPrediction.getPlaceId())) {
-                            newPredictionRestaurantList.add(myRestaurant);
+                Log.i("[AUTOCOMPLETE]", "In VM we have actualy " + myPlacesAutocomplete.size() + " results " );
+
+
+                List<ResultPlaceDetail> myListForUI = new ArrayList<>();
+                ResultPlaceDetail myPlaceDetail;
+
+                for (PlaceDetailsFinal myPlace : myPlacesAutocomplete) {
+                    Log.i("[AUTOCOMPLETE]", "Places :" + myPlace.getResult().getName());
+
+                    myPlaceDetail = myPlace.getResult();
+
+                    for (int z = 0; z < workmates.size(); z++) {
+
+                        //restaurant already liked
+                        if (myPlace.getResult().getPlaceId().equals(workmates.get(z).getFavoriteRestaurant())) {
+                            myPlaceDetail.setIcon("vert");
+                            break;
                         }
+                        //restaurant is not favorite
+                        myPlaceDetail.setIcon("rouge");
                     }
+
+
+
+                    myListForUI.add(myPlaceDetail);
                 }
 
-                */
-
-
-                //origin
-                //myViewStateMapMediator.setValue(new ViewStateMap(position, newPredictionRestaurantList));
+               myViewStateMapMediator.setValue(new ViewStateMap(position,null, myListForUI));
 
             }
         }

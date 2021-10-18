@@ -124,10 +124,6 @@ public class RestaurantPojo {
         return icon;
     }
 
-
-
-
-
     public void setIcon(String icon) {
         this.icon = icon;
     }
