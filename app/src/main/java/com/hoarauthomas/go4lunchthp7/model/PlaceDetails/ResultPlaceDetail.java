@@ -9,6 +9,25 @@ import com.google.gson.annotations.SerializedName;
 
 public class ResultPlaceDetail {
 
+    public String myDistance;
+
+    public String getMyDistance() {
+        return myDistance;
+    }
+
+    public void setMyDistance(String myDistance) {
+        this.myDistance = myDistance;
+    }
+
+
+    public String myNumberOfWorkmates;
+
+    public String getMyNumberOfWorkmates() {return myNumberOfWorkmates;}
+
+    public void setMyNumberOfWorkmates(String myNumberOfWorkmates) {
+        this.myNumberOfWorkmates = myNumberOfWorkmates;
+    }
+
     @SerializedName("address_components")
     @Expose
     private List<AddressComponent> addressComponents = null;

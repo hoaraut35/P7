@@ -15,37 +15,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.hoarauthomas.go4lunchthp7.BuildConfig;
 import com.hoarauthomas.go4lunchthp7.R;
-import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
 import com.hoarauthomas.go4lunchthp7.model.PlaceDetails.ResultPlaceDetail;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+public class RecyclerViewAdapterAutocomplete extends RecyclerView.Adapter<RecyclerViewAdapterAutocomplete.ViewHolder> {
 
-    //variables ...
-    private final List<RestaurantPojo> myRestaurantResult;
     private final List<ResultPlaceDetail> myRestaurantAutocompleteResult;
 
-
-    // private LatLng myPosition;
-
-    //interface for callback
-    public interface RestaurantListener {
-        void onClickDetailRestaurant(String restaurantId);
-        void popupSnack(String message);
-    }
-
-    //declare callback
-    private final RestaurantListener callback;
-
-    public RecyclerViewAdapter(List<RestaurantPojo> myList, List<ResultPlaceDetail> myAutocompleteResult, RestaurantListener callback) {
-        this.callback = callback;
-        this.myRestaurantResult = myList;
+    public RecyclerViewAdapterAutocomplete(List<ResultPlaceDetail> myAutocompleteResult) {
+        Log.i("[AUTOCOMPLETE]","taille a afficher automcomple" + myAutocompleteResult.size());
         this.myRestaurantAutocompleteResult = myAutocompleteResult;
     }
 
-    //for holder
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -60,18 +42,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     //binding data to holder
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        RestaurantPojo result = myRestaurantResult.get(position);
+        ResultPlaceDetail result = myRestaurantAutocompleteResult.get(position);
 
         //show the name of restaurant
-        holder.nameOfRestaurant.setText(myRestaurantResult.get(position).getName());
+        holder.nameOfRestaurant.setText(myRestaurantAutocompleteResult.get(position).getName());
 
         //show the image of restaurant
         try {
             String base = "https://maps.googleapis.com/maps/api/place/photo?";
             String key = "key=" + BuildConfig.MAPS_API_KEY;
-            String reference = "&photoreference=" + myRestaurantResult.get(position).getPhotos().get(0).getPhotoReference();
+            String reference = "&photoreference=" + myRestaurantAutocompleteResult.get(position).getPhotos().get(0).getPhotoReference();
             String maxH = "&maxheight=157";
             String maxW = "&maxwidth=157";
             String query = base + key + reference + maxH + maxW;
@@ -87,22 +69,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         //show the distance...
         try {
-            holder.distanceOfRestaurant.setText(myRestaurantResult.get(position).getMyDistance() + "m");
+            holder.distanceOfRestaurant.setText(myRestaurantAutocompleteResult.get(position).getMyDistance() + "m");
 
         } catch (Exception e) {
             holder.distanceOfRestaurant.setText("erreur");
         }
 
         //TODO:workmates number don't work
-        try{
-           // holder.numberOfWorkmates.setText(myRestaurantResult.get(position).getMyNumberOfWorkmates());
-        }catch (Exception e)
-        {
+        try {
+            holder.numberOfWorkmates.setText(myRestaurantAutocompleteResult.get(position).getMyNumberOfWorkmates());
+        } catch (Exception e) {
             holder.numberOfWorkmates.setText("?");
         }
 
         //show the address of restaurant
-        holder.addressOfRestaurant.setText(myRestaurantResult.get(position).getVicinity());
+        holder.addressOfRestaurant.setText(myRestaurantAutocompleteResult.get(position).getVicinity());
 
         try {
             switch (result.getOpeningHours().getOpenNow().toString()) {
@@ -141,8 +122,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.rating.setRating(0);
         }
 
-        //TODO add listener
-        holder.itemView.setOnClickListener(v -> callback.onClickDetailRestaurant(result.getPlaceId()));
+
 
     }
 
@@ -154,7 +134,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public int getItemCount() {
-        return myRestaurantResult.size();
+        return myRestaurantAutocompleteResult.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

@@ -1,17 +1,18 @@
 package com.hoarauthomas.go4lunchthp7.ui.restaurant;
 
 import android.location.Location;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
-import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
+import com.hoarauthomas.go4lunchthp7.model.PlaceDetails.PlaceDetailsFinal;
+import com.hoarauthomas.go4lunchthp7.model.PlaceDetails.ResultPlaceDetail;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
@@ -23,6 +24,8 @@ import java.util.List;
 
 public class ViewModelRestaurant extends ViewModel {
 
+    private final RestaurantsRepository myRestaurantRepo;
+    private PlaceAutocompleteRepository myPlaceAutocompleteRepository;
     private final MediatorLiveData<ViewStateRestaurant> myViewStateRestaurantMediator = new MediatorLiveData<>();
 
     public ViewModelRestaurant(
@@ -32,10 +35,15 @@ public class ViewModelRestaurant extends ViewModel {
             SharedRepository mySharedRepository,
             PlaceAutocompleteRepository placeAutocompleteRepository) {
 
+        this.myRestaurantRepo = myRestaurantRepository;
+
         LiveData<LatLng> myPositionLatLng = myPositionRepository.getLocationLatLgnLiveData();
         LiveData<List<RestaurantPojo>> myRestaurantsList = myRestaurantRepository.getMyRestaurantsList();
         LiveData<List<FirestoreUser>> myWorkMatesList = myFirestoreRepository.getFirestoreWorkmates();
-        LiveData<PlaceAutocomplete> myPlacesId = placeAutocompleteRepository.getPlaces();
+
+
+        LiveData<List<PlaceDetailsFinal>> myPlacesAutocomplete = placeAutocompleteRepository.getPlacesForAutocomplete();
+
         LiveData<Boolean> reloadMap = mySharedRepository.getReload();
 
         myViewStateRestaurantMediator.addSource(myPositionLatLng, latLng -> {
@@ -43,7 +51,7 @@ public class ViewModelRestaurant extends ViewModel {
             logicWork(myRestaurantsList.getValue(),
                     myWorkMatesList.getValue(),
                     latLng,
-                    myPlacesId.getValue(),
+                    myPlacesAutocomplete.getValue(),
                     reloadMap.getValue());
         });
 
@@ -53,13 +61,14 @@ public class ViewModelRestaurant extends ViewModel {
             logicWork(myRestaurantsList.getValue(),
                     myWorkMatesList.getValue(),
                     myPositionLatLng.getValue(),
-                    myPlacesId.getValue(),
+                    myPlacesAutocomplete.getValue(),
                     aBoolean);
         });
 
         //source
-        myViewStateRestaurantMediator.addSource(myPlacesId, placeAutocomplete -> {
-            if (placeAutocomplete == null) return;
+        myViewStateRestaurantMediator.addSource(myPlacesAutocomplete, placeAutocomplete -> {
+            if (placeAutocomplete == null || placeAutocomplete.isEmpty()) return;
+
             logicWork(myRestaurantsList.getValue(),
                     myWorkMatesList.getValue(),
                     //myPosition.getValue(),
@@ -75,7 +84,7 @@ public class ViewModelRestaurant extends ViewModel {
                     restaurantPojo,
                     myWorkMatesList.getValue(),
                     myPositionLatLng.getValue(),
-                    myPlacesId.getValue(),
+                    myPlacesAutocomplete.getValue(),
                     reloadMap.getValue());
         });
 
@@ -87,7 +96,7 @@ public class ViewModelRestaurant extends ViewModel {
                     firestoreUsers,
                     //myPosition.getValue(),
                     myPositionLatLng.getValue(),
-                    myPlacesId.getValue(),
+                    myPlacesAutocomplete.getValue(),
                     reloadMap.getValue());
         });
 
@@ -99,7 +108,8 @@ public class ViewModelRestaurant extends ViewModel {
                            List<FirestoreUser> workMates,
                            //@Nullable Location myPosition,
                            LatLng myLatLng,
-                           PlaceAutocomplete myPlaceAuto,
+                           List<PlaceDetailsFinal> myPlacesAutocompleteCombine,
+                           //PlaceAutocomplete myPlaceAuto,
                            Boolean refresh) {
 
         //if (restaurants == null || workMates == null || myPosition == null) return;
@@ -126,6 +136,9 @@ public class ViewModelRestaurant extends ViewModel {
                 int distance = Math.round(getDistance);
                 myRestaurant.setMyDistance(Integer.toString(distance));
 
+
+
+
                 int count = 0;
 
                 //workmates number for an restaurant
@@ -140,24 +153,79 @@ public class ViewModelRestaurant extends ViewModel {
                 newRestaurantsList.add(myRestaurant);
             }
 
-            myViewStateRestaurantMediator.setValue(new ViewStateRestaurant(newRestaurantsList));
+            myViewStateRestaurantMediator.setValue(new ViewStateRestaurant(newRestaurantsList, null));
 
         } else {
 
             //autocomplete mode
-            if (myPlaceAuto != null) {
+            if (myPlacesAutocompleteCombine != null && !myPlacesAutocompleteCombine.isEmpty()) {
 
-                List<RestaurantPojo> newPredictionRestaurantList = new ArrayList<>();
+                Log.i("[AUTOCOMPLETE]", "In VM we have actualy " + myPlacesAutocompleteCombine.size() + " results " );
 
-                for (RestaurantPojo myRestaurant : restaurants) {
-                    //if restaurant = prediction then we work
-                    for (Prediction myPrediction : myPlaceAuto.getPredictions()) {
-                        if (myRestaurant.getPlaceId().equals(myPrediction.getPlaceId())) {
-                            newPredictionRestaurantList.add(myRestaurant);
+
+                List<ResultPlaceDetail> myListForUI = new ArrayList<>();
+
+                ResultPlaceDetail myPlaceDetail;
+
+                for (PlaceDetailsFinal myPlace : myPlacesAutocompleteCombine) {
+                    Log.i("[AUTOCOMPLETE]", "Places :" + myPlace.getResult().getName());
+
+                    myPlaceDetail = myPlace.getResult();
+
+                    //modifier la distance du restaurant dans le pojo
+                    LatLng restaurantPos = new LatLng(myPlaceDetail.getGeometry().getLocation().getLat(), myPlaceDetail.getGeometry().getLocation().getLng());
+                    //LatLng userPos = new LatLng(myPosition.getLatitude(), myPosition.getLongitude());
+                    LatLng userPos = myLatLng;
+                    float getDistance = distanceBetween(restaurantPos, userPos);
+                    int distance = Math.round(getDistance);
+                    myPlaceDetail.setMyDistance(Integer.toString(distance));
+
+
+                    int count = 0;
+                    //workmates number for an restaurant
+                    for (int j = 0; j < workMates.size(); j++) {
+
+                        if (myPlaceDetail.getPlaceId().equals(workMates.get(j).getFavoriteRestaurant())) {
+                            count = count + 1;
                         }
                     }
+                    myPlaceDetail.setMyNumberOfWorkmates(Integer.toString(count));
+
+                    myListForUI.add(myPlaceDetail);
                 }
-                myViewStateRestaurantMediator.setValue(new ViewStateRestaurant(newPredictionRestaurantList));
+
+
+
+
+                // myPlaceAutocompleteRepository.getAutocompleteDataToPlaceDetailList();
+
+                /*
+                ORIGINE
+                //we iterate all result from autocomplete
+                for (Prediction myPrediction : myPlaceAuto.getPredictions()) {
+
+                    //here we must to get place detail
+                   PlaceDetailsFinal myPlaceDetail =  myRestaurantRepo.getPlaceDetail(myPrediction.getPlaceId());
+                    Log.i("[AUTOCOMPLETE]", "Predicion name : " + myPrediction.getDescription());
+
+                    for (RestaurantPojo myRestaurant : restaurants) {
+
+                      //  Log.i("[AUTOCOMPLETE]","Restaurant list actual :" + myRestaurant.getName() + myPrediction.getMatchedSubstrings().);
+
+
+                            if (myRestaurant.getPlaceId().equals(myPrediction.getPlaceId())){
+
+                        //if (myRestaurant.getName().contains(myPrediction.getStructuredFormatting().getMainText())){
+                            newPredictionRestaurantList.add(myRestaurant);
+                        }
+
+                    }
+
+                }
+
+                 */
+
+                myViewStateRestaurantMediator.setValue(new ViewStateRestaurant(null, myListForUI));
             }
         }
     }

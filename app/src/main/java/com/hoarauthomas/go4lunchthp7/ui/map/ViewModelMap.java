@@ -10,6 +10,8 @@ import com.hoarauthomas.go4lunchthp7.PlaceAutocomplete;
 import com.hoarauthomas.go4lunchthp7.Prediction;
 import com.hoarauthomas.go4lunchthp7.model.FirestoreUser;
 import com.hoarauthomas.go4lunchthp7.model.NearbySearch.RestaurantPojo;
+import com.hoarauthomas.go4lunchthp7.model.PlaceDetails.PlaceDetailsFinal;
+import com.hoarauthomas.go4lunchthp7.model.PlaceDetails.ResultPlaceDetail;
 import com.hoarauthomas.go4lunchthp7.repository.FirestoreRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PlaceAutocompleteRepository;
 import com.hoarauthomas.go4lunchthp7.repository.PositionRepository;
@@ -49,7 +51,13 @@ public class ViewModelMap extends ViewModel {
 
         //start list of workmates
         LiveData<List<FirestoreUser>> myWorkMatesList = myFirestoreRepository.getFirestoreWorkmates();
-        LiveData<PlaceAutocomplete> myPlacesId = placeAutocompleteRepository.getPlaces();
+
+
+        LiveData<List<PlaceDetailsFinal>> myResultPlacesAutocomplete = placeAutocompleteRepository.getPlacesForAutocomplete();
+        //origin
+        //LiveData<PlaceAutocomplete> myPlacesId = placeAutocompleteRepository.getPlaces();
+
+
         LiveData<Boolean> reloadMap = mySharedRepository.getReload();
 
         myViewStateMapMediator.addSource(reloadMap, aBoolean -> {
@@ -57,11 +65,11 @@ public class ViewModelMap extends ViewModel {
             logicWork(myPositionLatLng.getValue(),
                     myRestaurantsList.getValue(),
                     myWorkMatesList.getValue(),
-                    myPlacesId.getValue(),
+                    myResultPlacesAutocomplete.getValue(),
                     aBoolean);
         });
 
-        myViewStateMapMediator.addSource(myPlacesId, placeAutocomplete -> {
+        myViewStateMapMediator.addSource(myResultPlacesAutocomplete, placeAutocomplete -> {
             if (placeAutocomplete == null) return;
             logicWork(myPositionLatLng.getValue(),
                     myRestaurantsList.getValue(),
@@ -88,7 +96,7 @@ public class ViewModelMap extends ViewModel {
                 logicWork(myPositionLatLng.getValue(),
                         restaurantsList,
                         myWorkMatesList.getValue(),
-                        myPlacesId.getValue(),
+                        myResultPlacesAutocomplete.getValue(),
                         reloadMap.getValue());
             }
         });
@@ -99,7 +107,7 @@ public class ViewModelMap extends ViewModel {
                 logicWork(myPositionLatLng.getValue(),
                         myRestaurantsList.getValue(),
                         workmates,
-                        myPlacesId.getValue(),
+                        myResultPlacesAutocomplete.getValue(),
                         reloadMap.getValue());
             }
         });
@@ -110,7 +118,7 @@ public class ViewModelMap extends ViewModel {
             LatLng position,
             @Nullable List<RestaurantPojo> restaurants,
             @Nullable List<FirestoreUser> workmates,
-            @Nullable PlaceAutocomplete myPlacesId,
+            @Nullable List<PlaceDetailsFinal> myPlacesAutocomplete,
             Boolean reload) {
 
         if (position == null || restaurants == null || workmates == null) return;
@@ -151,9 +159,9 @@ public class ViewModelMap extends ViewModel {
         } else {
 
             //mode autocomplete
-            if (myPlacesId != null) {
+            if (myPlacesAutocomplete != null) {
 
-                List<RestaurantPojo> newPredictionRestaurantList = new ArrayList<>();
+               /* List<RestaurantPojo> newPredictionRestaurantList = new ArrayList<>();
 
                 for (RestaurantPojo myRestaurant : restaurants) {
                     for (Prediction myPrediction : myPlacesId.getPredictions()) {
@@ -163,7 +171,11 @@ public class ViewModelMap extends ViewModel {
                     }
                 }
 
-                myViewStateMapMediator.setValue(new ViewStateMap(position, newPredictionRestaurantList));
+                */
+
+
+                //origin
+                //myViewStateMapMediator.setValue(new ViewStateMap(position, newPredictionRestaurantList));
 
             }
         }

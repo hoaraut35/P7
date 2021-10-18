@@ -97,11 +97,11 @@ public class MainActivity extends AppCompatActivity {
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         myViewModel.setZoom(sp.getInt("zoom", 55));
 
-        try{
+        try {
             myViewModel.setNotification(myViewModel.getMyUserFromFirestore().getUid(), sp.getBoolean("notifications2", true));
-            Log.i("[SETTINGS]","Notification on/off :" +  sp.getBoolean("notifications2",false));
-        }catch (Exception e){
-            Log.i("[SETTINGS]","error Notification on/off :" +  sp.getBoolean("notifications2",false));
+            Log.i("[SETTINGS]", "Notification on/off :" + sp.getBoolean("notifications2", false));
+        } catch (Exception e) {
+            Log.i("[SETTINGS]", "error Notification on/off :" + sp.getBoolean("notifications2", false));
         }
 
     }
@@ -356,15 +356,24 @@ public class MainActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
                 myViewModel.reloadDataAfterQuery(false);
 
-                if (myViewModel.getMyPosition() != null && query.length() >= 3) {
-                    Location myPosition = myViewModel.getMyPosition();
+                if (myViewModel.getMyPosition() != null) {
 
-                    if (query != null && myPosition != null) {
-                        // myViewModel.stopPositionListener();
-                        myViewModel.getResultAutocomplete(query, myPosition);
-                    } else {
-                        Toast.makeText(getApplicationContext(), R.string.msg_autocomplete, Toast.LENGTH_SHORT).show();
+
+                    if (query.length() >= 3) {
+                        Location myPosition = myViewModel.getMyPosition();
+
+                        if (query != null && myPosition != null) {
+                            myViewModel.getResultAutocomplete(query, myPosition);
+                        } else {
+                            Toast.makeText(getApplicationContext(), R.string.msg_autocomplete, Toast.LENGTH_SHORT).show();
+                        }
+
                     }
+                    else {
+
+                        showSnackBar(getString(R.string.ruleforquery));
+                    }
+
 
                 } else {
                     showSnackBar(getString(R.string.query_error_autocomplete));

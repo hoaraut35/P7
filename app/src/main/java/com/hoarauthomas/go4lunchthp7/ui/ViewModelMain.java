@@ -79,7 +79,9 @@ public class ViewModelMain extends ViewModel {
     }
 
     public void getResultAutocomplete(String query, Location location) {
-        myPlaceAutocompleteRepoVM.getPlaceAutocompleteSingle(query, location);
+        myPlaceAutocompleteRepoVM.getAutocompleteDataToPlaceDetailList(query, location);
+        //origin
+        //myPlaceAutocompleteRepoVM.getPlaceAutocompleteSingle(query, location);
     }
 
     public Location getMyPosition() {
